@@ -1,0 +1,8 @@
+------------------Ponteiros-------------------
+Um ponteiro armazena um ndereço da memória;
+Cada tipo de variável aloca um tamanho na memória;
+
+---------------------------------------------
+
+------------------Pilha----------------------
+typedef tipo nome -> define o tipo de dados que pode ser armazenado
