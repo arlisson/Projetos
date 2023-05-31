@@ -1,0 +1,40 @@
+$sql_code = "INSERT INTO
+     pessoa (matricula, nome, cargo, data_nascimento, data_matricula, carga_horaria, email, telefone, endereco, UF, CEP)
+      VALUES (:matricula,:nome,:cargo,:data_nascimento,:data_matricula,:carga_horaria,:email,:telefone,:endereco,:uf,:cep)";
+    $cadastro = $conexao->prepare($sql_code);
+
+    $cadastro->bindParam(':matricula', $dados['matricula']);
+    $cadastro->bindParam(':nome', $dados['nome']);
+    $cadastro->bindParam(':cargo', $dados['cargo']);
+    $cadastro->bindParam(':data_nascimento', $dados['data_n']);
+    $cadastro->bindParam(':data_matricula', $dados['data_m']);
+    $cadastro->bindParam(':carga_horaria', $dados['carga_h']);
+    $cadastro->bindParam(':email', $dados['email']);
+    $cadastro->bindParam(':telefone', $dados['telefone']);
+    $cadastro->bindParam(':endereco', $dados['endereco']);
+    $cadastro->bindParam(':uf', $dados['uf']);
+    $cadastro->bindParam(':cep', $dados['cep']);
+
+    $cadastro->execute();
+
+    if (!empty($dados['cadastrar'])) {
+    //echo "Deu certo";
+    $matricula = $dados['matricula'];
+    $nome = $dados['nome'];
+    $cargo = $dados['cargo'];
+    $data_n = $dados['data_n'];
+    $data_m = $dados['data_m'];
+    $carga_h = $dados['carga_h'];
+    $email = $dados['email'];
+    $telefone = $dados['telefone'];
+    $endereco = $dados['endereco'];
+    $uf = $dados['uf'];
+    $cep = $dados['cep'];
+
+    $sql_code = "INSERT INTO pessoa (matricula, nome, cargo, data_nascimento, data_matricula, carga_horaria, email, telefone, endereco, UF, CEP)
+     VALUES ('$matricula','$nome','$cargo','$data_n','$data_m',$carga_h,'$email','$telefone','$endereco','$uf',$cep)";
+   
+
+} else {
+    echo "Erro ao inserir dados!";
+}
