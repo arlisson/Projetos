@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Card Game</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        .Profile {
+            padding: 5px;
+        }
+
+        .profile {
+            background-image: url("marrom.jpg");
+            background-repeat: repeat;
+            background-position: right top;
+            background-attachment: fixed;
+            width: 280px;
+            height: auto;
+            padding: 5px;
+            overflow: hidden;
+            border: 5px solid #363636;
+            border-radius: 5px;
+        }
+
+        .pname {
+            font-size: 18px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .profile-name {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 3px;
+            border-radius: 1px;
+            box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.6), -2px -2px 5px rgba(255, 255, 255, 0.8);
+
+        }
+
+        .profile_name {
+            overflow: hidden;
+        }
+
+        .profile_left {
+            width: 80%;
+            float: left;
+        }
+
+        .profile_right {
+            width: 20%;
+            float: right;
+        }
+
+        .profile_right img {
+            float: right;
+        }
+
+        .profile-level {
+            padding: 3px;
+        }
+
+        .profile_level {
+            padding-right: 5px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .profile_level img {
+            float: right;
+            padding: 1px;
+        }
+
+        .profile-img {
+            border-radius: 0px;
+            overflow: hidden;
+            padding: 2px;
+            background: rgba(0, 0, 0, 0.6);
+            margin: 2px 2px;
+        }
+
+        .profile_img {
+            border-radius: 1px;
+            margin: 2px 2px 2px 2px;
+        }
+
+        .profile_desc {
+            background: rgba(255, 255, 255, 0.7);
+            overflow: hidden;
+            margin-top: 5px;
+            border-radius: 0px;
+            border: solid 3px rgb(219, 58, 58, 0.8);
+        }
+
+        .profile_desc h4 {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .profile_desc p {
+            font-size: 10px;
+            padding: 2px;
+        }
+
+        .profile_attack {
+            margin: 3px;
+            font-weight: bold;
+            border-top: solid #000;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="Profile">
+        <div class="profile">
+            <div class="profile-name">
+                <div class="profile_name">
+                    <div class="profile_left">
+                        <p class="pname">YUBEL</p>
+                    </div>
+                    <div class="profile_right">
+                        <img src="trevas.jpg" width="25px">
+                    </div>
+                </div>
+            </div>
+            <div class="profile_level">
+                <div class="profile-level" id="image-container">
+                </div>
+            </div>
+
+            <script>
+                const imageContainer = document.getElementById('image-container');
+                const imageURL = 'Level.jpg';
+                const repeatCount = 12; // Número de vezes que a imagem será repetida
+
+                for (let i = 0; i < repeatCount; i++) {
+                    const image = document.createElement('img');
+                    image.src = imageURL;
+                    image.style.width = '20px';
+                    imageContainer.appendChild(image);
+                }
+            </script>
+
+            <div class="profile_img">
+                <div class="profile-img">
+                    <img src="yubel.jpg" width="100%">
+                </div>
+            </div>
+            <div class="profile_desc">
+                <div class="profile-desc">
+                    <h4>[Demônio/Efeito]</h4>
+                    <p>Este card não pode ser destruído em batalha. Você não sofre dano de batalha de batalhas
+                        envolvendo este card. Antes do cálculo de dano, quando este card com a face para cima em Posição
+                        de Ataque for atacado por um monstro do oponente: cause dano ao seu oponente igual ao ATK desse
+                        monstro. Durante a sua Fase Final: ofereça como Tributo 1 outro monstro ou destrua este card.
+                        Quando este card for destruído, exceto pelo seu próprio efeito: o seu dono pode Invocar por
+                        Invocação-Especial 1 "Yubel - Encarnação do Terror" da sua mão, Deck ou Cemitério.</p>
+                </div>
+                <div class="profile_attack"></div>
+                <p style="float:right;padding:3px">ATK 0 / DEF 0</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
