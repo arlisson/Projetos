@@ -16,8 +16,72 @@
             padding: 5px;
         }
 
-        .profile {
-            background-image: url("marrom.jpg");
+        .profile_monster_effect {
+            background-image: url("monster_effect.jpg");
+            background-repeat: repeat;
+            background-position: right top;
+            background-attachment: fixed;
+            width: 280px;
+            height: auto;
+            padding: 5px;
+            overflow: hidden;
+            border: 5px solid #363636;
+            border-radius: 5px;
+        }
+
+        .profile_monster_normal {
+            background-image: url("fundo_normal.jpg");
+            background-repeat: repeat;
+            background-position: right top;
+            background-attachment: fixed;
+            width: 280px;
+            height: auto;
+            padding: 5px;
+            overflow: hidden;
+            border: 5px solid #363636;
+            border-radius: 5px;
+        }
+
+        .profile_monster_fusion {
+            background-image: url("fundo_fusao.jpg");
+            background-repeat: repeat;
+            background-position: right top;
+            background-attachment: fixed;
+            width: 280px;
+            height: auto;
+            padding: 5px;
+            overflow: hidden;
+            border: 5px solid #363636;
+            border-radius: 5px;
+        }
+
+        .profile_monster_sincro {
+            background-repeat: repeat;
+            background-position: right top;
+            background-attachment: fixed;
+            width: 280px;
+            height: auto;
+            padding: 5px;
+            overflow: hidden;
+            border: 5px solid #363636;
+            border-radius: 5px;
+        }
+
+        .profile_monster_xyz {
+            background-image: url("fundo_xyz.jpg");
+            background-repeat: repeat;
+            background-position: right top;
+            background-attachment: fixed;
+            width: 280px;
+            height: auto;
+            padding: 5px;
+            overflow: hidden;
+            border: 5px solid #363636;
+            border-radius: 5px;
+        }
+
+        .profile_monster_ritual {
+            background-image: url("fundo_ritual.jpg");
             background-repeat: repeat;
             background-position: right top;
             background-attachment: fixed;
@@ -30,9 +94,21 @@
         }
 
         .pname {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
             color: #000;
+        }
+
+        .pname_xyz {
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .pname_fusion {
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
         }
 
         .profile-name {
@@ -40,6 +116,7 @@
             padding: 3px;
             border-radius: 1px;
             box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.6), -2px -2px 5px rgba(255, 255, 255, 0.8);
+            margin: 6px 3px 5px 3px;
 
         }
 
@@ -73,7 +150,18 @@
 
         .profile_level img {
             float: right;
-            padding: 1px;
+            padding: 0px;
+        }
+
+        .profile_level_xyz {
+            padding-right: 5px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .profile_level_xyz img {
+            float: left;
+            padding: 0px;
         }
 
         .profile-img {
@@ -118,14 +206,14 @@
 
 <body>
     <div class="Profile">
-        <div class="profile">
+        <div class="profile_monster_effect">
             <div class="profile-name">
                 <div class="profile_name">
                     <div class="profile_left">
                         <p class="pname">YUBEL</p>
                     </div>
                     <div class="profile_right">
-                        <img src="trevas.jpg" width="25px">
+                        <img src="trevas.jpg" width=" 25px">
                     </div>
                 </div>
             </div>
@@ -167,6 +255,268 @@
             </div>
         </div>
     </div>
+    <br>
+
+    <div class="Profile">
+        <div class="profile_monster_fusion">
+            <div class="profile-name">
+                <div class="profile_name">
+                    <div class="profile_left">
+                        <p class="pname_fusion">YUBEL</p>
+                    </div>
+                    <div class="profile_right">
+                        <img src="terra.jpg" width=" 25px">
+                    </div>
+                </div>
+            </div>
+            <div class="profile_level">
+                <div class="profile-level" id="image-container-fusion">
+                </div>
+            </div>
+
+            <script>
+                const imageFusion = document.getElementById('image-container-fusion');
+                const URLfusion = 'Level.jpg';
+                const Countfusion = 1; // Número de vezes que a imagem será repetida
+
+                for (let i = 0; i < Countfusion; i++) {
+                    const imagefusion = document.createElement('img');
+                    imagefusion.src = URLfusion;
+                    imagefusion.style.width = '20px';
+                    imageFusion.appendChild(imagefusion);
+                }
+            </script>
+
+            <div class="profile_img">
+                <div class="profile-img">
+                    <img src="yubel.jpg" width="100%">
+                </div>
+            </div>
+            <div class="profile_desc">
+                <div class="profile-desc">
+                    <h4>[Demônio/Efeito]</h4>
+                    <p>Este card não pode ser destruído em batalha. Você não sofre dano de batalha de batalhas
+                        envolvendo este card. Antes do cálculo de dano, quando este card com a face para cima em Posição
+                        de Ataque for atacado por um monstro do oponente: cause dano ao seu oponente igual ao ATK desse
+                        monstro. Durante a sua Fase Final: ofereça como Tributo 1 outro monstro ou destrua este card.
+                        Quando este card for destruído, exceto pelo seu próprio efeito: o seu dono pode Invocar por
+                        Invocação-Especial 1 "Yubel - Encarnação do Terror" da sua mão, Deck ou Cemitério.</p>
+                </div>
+                <div class="profile_attack"></div>
+                <p style="float:right;padding:3px">ATK 0 / DEF 0</p>
+            </div>
+        </div>
+    </div>
+    <br>
+
+    <div class="Profile">
+        <div class="profile_monster_normal">
+            <div class="profile-name">
+                <div class="profile_name">
+                    <div class="profile_left">
+                        <p class="pname">YUBEL</p>
+                    </div>
+                    <div class="profile_right">
+                        <img src="luz.jpg" width=" 25px">
+                    </div>
+                </div>
+            </div>
+            <div class="profile_level">
+                <div class="profile-level" id="image-container-normal">
+                </div>
+            </div>
+
+            <script>
+                const imageNormal = document.getElementById('image-container-normal');
+                const URLnormal = 'Level.jpg';
+                const Countnormal = 2; // Número de vezes que a imagem será repetida
+
+                for (let i = 0; i < Countnormal; i++) {
+                    const imagenormal = document.createElement('img');
+                    imagenormal.src = URLnormal;
+                    imagenormal.style.width = '20px';
+                    imageNormal.appendChild(imagenormal);
+                }
+            </script>
+
+            <div class="profile_img">
+                <div class="profile-img">
+                    <img src="yubel.jpg" width="100%">
+                </div>
+            </div>
+            <div class="profile_desc">
+                <div class="profile-desc">
+                    <h4>[Demônio/Efeito]</h4>
+                    <p>Este card não pode ser destruído em batalha. Você não sofre dano de batalha de batalhas
+                        envolvendo este card. Antes do cálculo de dano, quando este card com a face para cima em Posição
+                        de Ataque for atacado por um monstro do oponente: cause dano ao seu oponente igual ao ATK desse
+                        monstro. Durante a sua Fase Final: ofereça como Tributo 1 outro monstro ou destrua este card.
+                        Quando este card for destruído, exceto pelo seu próprio efeito: o seu dono pode Invocar por
+                        Invocação-Especial 1 "Yubel - Encarnação do Terror" da sua mão, Deck ou Cemitério.</p>
+                </div>
+                <div class="profile_attack"></div>
+                <p style="float:right;padding:3px">ATK 0 / DEF 0</p>
+            </div>
+        </div>
+    </div>
+    <br>
+
+    <div class="Profile">
+        <div class="profile_monster_sincro">
+            <div class="profile-name">
+                <div class="profile_name">
+                    <div class="profile_left">
+                        <p class="pname">YUBEL</p>
+                    </div>
+                    <div class="profile_right">
+                        <img src="vento.jpg" width=" 25px">
+                    </div>
+                </div>
+            </div>
+            <div class="profile_level">
+                <div class="profile-level" id="image-container-sincro">
+                </div>
+            </div>
+
+            <script>
+                const imageSincro = document.getElementById('image-container-sincro');
+                const URLsincro = 'Level.jpg';
+                const Countsincro = 3; // Número de vezes que a imagem será repetida
+
+                for (let i = 0; i < Countsincro; i++) {
+                    const imagesincro = document.createElement('img');
+                    imagesincro.src = URLnormal;
+                    imagesincro.style.width = '20px';
+                    imageSincro.appendChild(imagesincro);
+                }
+            </script>
+
+            <div class="profile_img">
+                <div class="profile-img">
+                    <img src="yubel.jpg" width="100%">
+                </div>
+            </div>
+            <div class="profile_desc">
+                <div class="profile-desc">
+                    <h4>[Demônio/Efeito]</h4>
+                    <p>Este card não pode ser destruído em batalha. Você não sofre dano de batalha de batalhas
+                        envolvendo este card. Antes do cálculo de dano, quando este card com a face para cima em Posição
+                        de Ataque for atacado por um monstro do oponente: cause dano ao seu oponente igual ao ATK desse
+                        monstro. Durante a sua Fase Final: ofereça como Tributo 1 outro monstro ou destrua este card.
+                        Quando este card for destruído, exceto pelo seu próprio efeito: o seu dono pode Invocar por
+                        Invocação-Especial 1 "Yubel - Encarnação do Terror" da sua mão, Deck ou Cemitério.</p>
+                </div>
+                <div class="profile_attack"></div>
+                <p style="float:right;padding:3px">ATK 0 / DEF 0</p>
+            </div>
+        </div>
+    </div>
+    <br>
+
+    <div class="Profile">
+        <div class="profile_monster_xyz">
+            <div class="profile-name">
+                <div class="profile_name">
+                    <div class="profile_left">
+                        <p class="pname_xyz">YUBEL</p>
+                    </div>
+                    <div class="profile_right">
+                        <img src="vento.jpg" width=" 25px">
+                    </div>
+                </div>
+            </div>
+            <div class="profile_level_xyz">
+                <div class="profile-level" id="image-container-xyz">
+                </div>
+            </div>
+
+            <script>
+                const imageXyz = document.getElementById('image-container-xyz');
+                const URLxyz = 'Level.jpg';
+                const Countxyz = 4; // Número de vezes que a imagem será repetida
+
+                for (let i = 0; i < Countxyz; i++) {
+                    const imagexyz = document.createElement('img');
+                    imagexyz.src = URLxyz;
+                    imagexyz.style.width = '20px';
+                    imageXyz.appendChild(imagexyz);
+                }
+            </script>
+
+            <div class="profile_img">
+                <div class="profile-img">
+                    <img src="yubel.jpg" width="100%">
+                </div>
+            </div>
+            <div class="profile_desc">
+                <div class="profile-desc">
+                    <h4>[Demônio/Efeito]</h4>
+                    <p>Este card não pode ser destruído em batalha. Você não sofre dano de batalha de batalhas
+                        envolvendo este card. Antes do cálculo de dano, quando este card com a face para cima em Posição
+                        de Ataque for atacado por um monstro do oponente: cause dano ao seu oponente igual ao ATK desse
+                        monstro. Durante a sua Fase Final: ofereça como Tributo 1 outro monstro ou destrua este card.
+                        Quando este card for destruído, exceto pelo seu próprio efeito: o seu dono pode Invocar por
+                        Invocação-Especial 1 "Yubel - Encarnação do Terror" da sua mão, Deck ou Cemitério.</p>
+                </div>
+                <div class="profile_attack"></div>
+                <p style="float:right;padding:3px">ATK 1000 / DEF 1000</p>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="Profile">
+        <div class="profile_monster_ritual">
+            <div class="profile-name">
+                <div class="profile_name">
+                    <div class="profile_left">
+                        <p class="pname_xyz">YUBEL</p>
+                    </div>
+                    <div class="profile_right">
+                        <img src="vento.jpg" width=" 25px">
+                    </div>
+                </div>
+            </div>
+            <div class="profile_level">
+                <div class="profile-level" id="image-container-ritual">
+                </div>
+            </div>
+
+            <script>
+                const imageRitual = document.getElementById('image-container-ritual');
+                const URLritual = 'Level.jpg';
+                const Countritual = 5; // Número de vezes que a imagem será repetida
+
+                for (let i = 0; i < Countritual; i++) {
+                    const imageritual = document.createElement('img');
+                    imageritual.src = URLritual;
+                    imageritual.style.width = '20px';
+                    imageRitual.appendChild(imageritual);
+                }
+            </script>
+
+            <div class="profile_img">
+                <div class="profile-img">
+                    <img src="yubel.jpg" width="100%">
+                </div>
+            </div>
+            <div class="profile_desc">
+                <div class="profile-desc">
+                    <h4>[Demônio/Efeito]</h4>
+                    <p>Este card não pode ser destruído em batalha. Você não sofre dano de batalha de batalhas
+                        envolvendo este card. Antes do cálculo de dano, quando este card com a face para cima em Posição
+                        de Ataque for atacado por um monstro do oponente: cause dano ao seu oponente igual ao ATK desse
+                        monstro. Durante a sua Fase Final: ofereça como Tributo 1 outro monstro ou destrua este card.
+                        Quando este card for destruído, exceto pelo seu próprio efeito: o seu dono pode Invocar por
+                        Invocação-Especial 1 "Yubel - Encarnação do Terror" da sua mão, Deck ou Cemitério.</p>
+                </div>
+                <div class="profile_attack"></div>
+                <p style="float:right;padding:3px">ATK 8000/ DEF 10000</p>
+            </div>
+        </div>
+    </div>
+
 
 </body>
 
