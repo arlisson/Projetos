@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        .container {
+            width: 200px;
+            /* Largura da div */
+            height: 100px;
+            /* Altura da div */
+            overflow: hidden;
+            /* Oculta o texto que excede a div */
+        }
+
+        .content {
+            display: flex;
+            /* Utiliza o flexbox para alinhar o conteúdo verticalmente */
+            align-items: center;
+            /* Centraliza verticalmente o conteúdo */
+            justify-content: center;
+            /* Centraliza horizontalmente o conteúdo */
+        }
+
+        .text {
+            white-space: nowrap;
+            /* Impede que o texto pule linhas */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="content">
+            <span class="text">Yubel Encarnação do Terror</span>
+        </div>
+    </div>
+
+    <script>
+        const container = document.querySelector('.container');
+        const text = document.querySelector('.text');
+
+        while (text.scrollWidth > container.offsetWidth) {
+            let fontSize = parseInt(window.getComputedStyle(text).fontSize);
+            fontSize -= 1;
+            text.style.fontSize = `${fontSize}px`;
+        }
+    </script>
+</body>
+
+</html>
