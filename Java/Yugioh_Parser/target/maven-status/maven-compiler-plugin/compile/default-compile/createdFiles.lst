@@ -1,0 +1,16 @@
+br\edu\iff\ec\compiladores\yugioh_parser\Carta_Magica.class
+br\edu\iff\ec\compiladores\yugioh_parser\ParserVisitor.class
+br\edu\iff\ec\compiladores\yugioh_parser\TabelaDeSimbolos.class
+br\edu\iff\ec\compiladores\yugioh_parser\ParserLexer.class
+br\edu\iff\ec\compiladores\yugioh_parser\Principal.class
+br\edu\iff\ec\compiladores\yugioh_parser\Semantico.class
+br\edu\iff\ec\compiladores\yugioh_parser\ParserListener.class
+br\edu\iff\ec\compiladores\yugioh_parser\ParserParser$CriarCartaContext.class
+br\edu\iff\ec\compiladores\yugioh_parser\GeradorYGOHTML.class
+br\edu\iff\ec\compiladores\yugioh_parser\Carta_Monstro.class
+br\edu\iff\ec\compiladores\yugioh_parser\ParserBaseVisitor.class
+br\edu\iff\ec\compiladores\yugioh_parser\ParserParser.class
+br\edu\iff\ec\compiladores\yugioh_parser\Yugioh_Parser.class
+br\edu\iff\ec\compiladores\yugioh_parser\SemanticoUtils.class
+br\edu\iff\ec\compiladores\yugioh_parser\ParserBaseListener.class
+br\edu\iff\ec\compiladores\yugioh_parser\TabelaDeSimbolos$EntradaTabelaDeSimbolos.class
