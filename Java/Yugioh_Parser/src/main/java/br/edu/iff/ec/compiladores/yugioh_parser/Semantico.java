@@ -175,8 +175,7 @@ public class Semantico extends ParserBaseVisitor<Void> {
             
             for(int i = 0; i<ctx.FIM_CADEIA().size();i++){
                 if(ctx.FIM_CADEIA().get(i).getText().contains("missing")){
-                    mensagem = ("Erro de escrita, ';' não encontrado");
-                    
+                    mensagem = ("Erro de escrita, ';' não encontrado");                    
                     SemanticoUtils.adicionarErroSemantico(ctx.fim_cadeia.get(i), mensagem);
                 }                
             }
@@ -192,7 +191,63 @@ public class Semantico extends ParserBaseVisitor<Void> {
                     SemanticoUtils.adicionarErroSemantico(ctx.tipo_carta.get(i), mensagem);
                 }
             }
-             
+               for(int i =0; i<ctx.monstro_nome.size();i++){
+                if(ctx.monstro_nome.get(i).getText().contains("missing")){
+                    mensagem = ("Erro de declaração, nome de monstro não encontrado!");
+                    SemanticoUtils.adicionarErroSemantico(ctx.monstro_nome.get(i), mensagem);
+                }
+            }
+               for(int i =0; i<ctx.magic_mone.size();i++){
+                if(ctx.magic_mone.get(i).getText().contains("missing")){
+                    mensagem = ("Erro de declaração, nome de carta magica não encontrado!");
+                    SemanticoUtils.adicionarErroSemantico(ctx.magic_mone.get(i), mensagem);
+                }
+            }
+               for(int i =0; i<ctx.png.size();i++){
+                if(ctx.png.get(i).getText().contains("missing")){
+                    mensagem = ("Erro de declaração, Imagem da carta não encontrada!");
+                    SemanticoUtils.adicionarErroSemantico(ctx.png.get(i), mensagem);
+                }
+            }
+               for(int i =0; i<ctx.magic_png.size();i++){
+                if(ctx.magic_png.get(i).getText().contains("missing")){
+                    mensagem = ("Erro de declaração, Imagem da carta não encontrada!");
+                    SemanticoUtils.adicionarErroSemantico(ctx.magic_png.get(i), mensagem);
+                }
+            }
+              for(int i =0; i<ctx.atributo.size();i++){
+                if(ctx.atributo.get(i).getText().contains("missing")){
+                    mensagem = ("Erro de declaração, Atributo da carta não encontrado!");
+                    SemanticoUtils.adicionarErroSemantico(ctx.atributo.get(i), mensagem);
+                }
+            }
+              for(int i =0; i<ctx.tipo.size();i++){
+                if(ctx.tipo.get(i).getText().contains("missing")){
+                    mensagem = ("Erro de declaração, Tipo do monstro não encontrado!");
+                    SemanticoUtils.adicionarErroSemantico(ctx.tipo.get(i), mensagem);
+                }
+            }
+              for(int i =0; i<ctx.desc.size();i++){
+                if(ctx.desc.get(i).getText().contains("missing")){
+                    mensagem = ("Erro de declaração, Descrição do monstro não encontrada!");
+                    SemanticoUtils.adicionarErroSemantico(ctx.desc.get(i), mensagem);
+                }
+            }
+              for(int i =0; i<ctx.desc_m.size();i++){
+                if(ctx.desc_m.get(i).getText().contains("missing")){
+                    mensagem = ("Erro de declaração, Descrição da magia não encontrada!");
+                    SemanticoUtils.adicionarErroSemantico(ctx.desc_m.get(i), mensagem);
+                }
+            }
+            if(ctx.pc_card.isEmpty() && !ctx.tipo_carta.isEmpty()){
+                 mensagem = ("Erro de declaração, tente 'CARD-MONSTER'!");
+                 SemanticoUtils.adicionarErroSemantico(ctx.pc_card.get(0), mensagem);
+            }
+            if(ctx.pc_cardm.isEmpty()&& !ctx.tipo_cartam.isEmpty()){
+                 mensagem = ("Erro de declaração, tente 'CARD-MAGIC'!");
+                 SemanticoUtils.adicionarErroSemantico(ctx.pc_cardm.get(0), mensagem);
+            }
+            
             
             if(!ctx.ERRO_CARD().isEmpty()){
                 
@@ -201,13 +256,12 @@ public class Semantico extends ParserBaseVisitor<Void> {
             }
             
            
-            
+          
+            /*System.out.println(ctx.pc_card);         
+            System.out.println(ctx.pc_cardm);
            
-            
-            
-            /*System.out.println(ctx.PC_CARD());
-            System.out.println(ctx.pc_card);
-            System.out.println(ctx.PC_CARD_MAGIC());
+            System.out.println(ctx.erro); 
+            System.out.println(ctx.pc_card);         
             System.out.println(ctx.pc_cardm);*/
            
         

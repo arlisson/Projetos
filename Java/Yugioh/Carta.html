@@ -16,6 +16,63 @@
             text-align: justify;
         }
 
+        .container {
+            position: relative;
+            padding: auto;
+            max-width: auto;
+            margin: 0 auto;
+
+        }
+
+        body {
+            background-image: url('yugioh.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            flex-direction: column;
+            display: flex;
+            /*min-height: 100vh;*/
+
+        }
+
+        header {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+
+        }
+
+        /* Estilos do footer */
+        footer {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            margin-top: auto;
+            bottom: 0;
+            height: 6vh;
+
+
+        }
+
+        .main {
+            flex-grow: 1;
+            margin-bottom: 6vh;
+        }
+
+        .gallery-wraper {
+            overflow-x: scroll;
+
+        }
+
+        .gallery {
+            display: flex;
+            flex-flow: nowrap;
+        }
+
         .Profile {
 
             padding: 5px;
@@ -24,7 +81,7 @@
         .profile_monster_effect {
             background-image: url("monster_effect.jpg");
             background-repeat: repeat;
-            background-position: right top;
+            background-position: center center;
             background-attachment: fixed;
             width: 280px;
             height: auto;
@@ -61,6 +118,7 @@
         }
 
         .profile_monster_sincro {
+            background-image: url("synchro.jpg");
             background-repeat: repeat;
             background-position: right top;
             background-attachment: fixed;
@@ -325,7 +383,8 @@
             overflow: hidden;
             padding: 2px;
             background: rgba(0, 0, 0, 0.6);
-            margin: 2px 2px;
+            margin: 7px 7px;
+
         }
 
         .profile_img {
@@ -339,754 +398,1094 @@
             margin-top: 5px;
             border-radius: 0px;
             border: solid 3px rgb(219, 58, 58, 0.8);
-            width: 50px 50px;
-
-
+            position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
         .profile_desc h4 {
             font-size: 13px;
             font-weight: bold;
+            position: relative;
         }
 
         .profile_desc p {
             font-size: 10px;
             padding: 2px;
+            width: auto;
+            position: relative;
 
         }
+
+        .profile_attack p {
+            text-align: right;
+        }
+
 
         .profile_attack {
             margin: 3px;
             font-weight: bold;
             border-top: solid #000;
-
+            margin-top: auto;
+            float: right;
 
         }
     </style>
 </head>
 
 <body>
-    <div class="Profile">
-        <div class="profile_monster_effect">
-            <div class="profile-name">
-                <div class="profile_name">
-                    <div class="profile_left">
-                        <p class="pname">Espadas da Luz Reveladora</p>
+    <header>
+        <h1>Custom Deck de YU-GI-OH</h1>
+
+    </header>
+    <main>
+        <div class="container">
+            <div class="gallery-wraper">
+                <div class="gallery">
+                    <div class="Profile">
+                        <div class="profile_monster_effect">
+                            <div class="profile-name">
+                                <div class="profile_name">
+                                    <div class="profile_left">
+                                        <p class="pname">DRAGÃO DE CINCO CABEÇAS</p>
+                                    </div>
+                                    <div class="profile_right">
+                                        <img src="trevas.jpg" width=" 25px">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="profile_level">
+                                <div class="profile-level" id="image-container">
+                                    <img src="Level.jpg" style="width: 20px;">
+                                    <img src="Level.jpg" style="width: 20px;">
+                                    <img src="Level.jpg" style="width: 20px;">
+                                    <img src="Level.jpg" style="width: 20px;">
+                                    <img src="Level.jpg" style="width: 20px;">
+                                    <img src="Level.jpg" style="width: 20px;">
+                                    <img src="Level.jpg" style="width: 20px;">
+                                    <img src="Level.jpg" style="width: 20px;">
+                                    <img src="Level.jpg" style="width: 20px;">
+                                </div>
+                            </div>
+
+
+                            <div class="profile_img">
+                                <div class="profile-img">
+                                    <img src="yubel.jpg" width="100%">
+                                </div>
+                            </div>
+                            <div class="profile_desc">
+                                <div class="profile-desc">
+                                    <h4>[Demônio/Efeito]</h4>
+                                    <p>Este card não pode ser destruído em batalha. Você não sofre
+                                        dano de
+                                        batalha
+                                        de batalhas
+                                        envolvendo este card. Antes do cálculo de dano, quando este card com a face para
+                                        cima em
+                                        Posição
+                                        de Ataque for atacado por um monstro do oponente: cause dano ao seu oponente
+                                        igual
+                                        ao ATK
+                                        desse
+                                        monstro. Durante a sua Fase Final: ofereça como Tributo 1 outro monstro ou
+                                        destrua
+                                        este
+                                        card.
+                                        Quando este card for destruído, exceto pelo seu próprio efeito: o seu dono pode
+                                        Invocar por
+                                        Invocação-Especial 1 "Yubel - Encarnação do Terror" da sua mão, Deck ou
+                                        Cemitério.
+                                    </p>
+                                </div>
+                                <div class="profile_attack"></div>
+                                <p style="float:right;padding:3px; text-align: right;">ATK 0 / DEF 0</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="profile_right">
-                        <img src="trevas.jpg" width=" 25px">
-                    </div>
-                </div>
-            </div>
-            <div class="profile_level">
-                <div class="profile-level" id="image-container">
-                    <img src="Level.jpg" style="width: 20px;">
-                    <img src="Level.jpg" style="width: 20px;">
-                    <img src="Level.jpg" style="width: 20px;">
-                    <img src="Level.jpg" style="width: 20px;">
-                    <img src="Level.jpg" style="width: 20px;">
-                    <img src="Level.jpg" style="width: 20px;">
-                    <img src="Level.jpg" style="width: 20px;">
-                    <img src="Level.jpg" style="width: 20px;">
-                    <img src="Level.jpg" style="width: 20px;">
-                </div>
-            </div>
+                    <br>
 
+                    <div class="Profile">
+                        <div class="profile_monster_fusion">
+                            <div class="profile-name">
+                                <div class="profile_name">
+                                    <div class="profile_left">
+                                        <p class="pname_fusion">DRAGÃO DE CINCO CABEÇAS</p>
+                                    </div>
+                                    <div class="profile_right">
+                                        <img src="terra.jpg" width=" 25px">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="profile_level">
+                                <div class="profile-level" id="image-container-fusion">
+                                </div>
+                            </div>
 
-            <div class="profile_img">
-                <div class="profile-img">
-                    <img src="yubel.jpg" width="100%">
-                </div>
-            </div>
-            <div class="profile_desc">
-                <div class="profile-desc">
-                    <h4>[Demônio/Efeito]</h4>
-                    <p>Este card não pode ser destruído em batalha. Você não sofre
-                        dano de
-                        batalha
-                        de batalhas
-                        envolvendo este card. Antes do cálculo de dano, quando este card com a face para cima em Posição
-                        de Ataque for atacado por um monstro do oponente: cause dano ao seu oponente igual ao ATK desse
-                        monstro. Durante a sua Fase Final: ofereça como Tributo 1 outro monstro ou destrua este card.
-                        Quando este card for destruído, exceto pelo seu próprio efeito: o seu dono pode Invocar por
-                        Invocação-Especial 1 "Yubel - Encarnação do Terror" da sua mão, Deck ou
-                        Cemitério.</p>
-                </div>
-                <div class="profile_attack"></div>
-                <p style="float:right;padding:3px">ATK 0 / DEF 0</p>
-            </div>
-        </div>
-    </div>
-    <br>
+                            <script>
+                                const imageFusion = document.getElementById('image-container-fusion');
+                                const URLfusion = 'Level.jpg';
+                                const Countfusion = 1; // Número de vezes que a imagem será repetida
 
-    <div class="Profile">
-        <div class="profile_monster_fusion">
-            <div class="profile-name">
-                <div class="profile_name">
-                    <div class="profile_left">
-                        <p class="pname_fusion">DRAGÃO BRANCO DE OLHOS AZUIS</p>
-                    </div>
-                    <div class="profile_right">
-                        <img src="terra.jpg" width=" 25px">
-                    </div>
-                </div>
-            </div>
-            <div class="profile_level">
-                <div class="profile-level" id="image-container-fusion">
-                </div>
-            </div>
+                                for (let i = 0; i < Countfusion; i++) {
+                                    const imagefusion = document.createElement('img');
+                                    imagefusion.src = URLfusion;
+                                    imagefusion.style.width = '20px';
+                                    imageFusion.appendChild(imagefusion);
+                                }
+                            </script>
 
-            <script>
-                const imageFusion = document.getElementById('image-container-fusion');
-                const URLfusion = 'Level.jpg';
-                const Countfusion = 1; // Número de vezes que a imagem será repetida
+                            <div class="profile_img">
+                                <div class="profile-img">
+                                    <img src="yubel.jpg" width="100%">
+                                </div>
+                            </div>
+                            <div class="profile_desc">
+                                <div class="profile-desc">
+                                    <h4>[Demônio/Efeito]</h4>
+                                    <p>Este lendário dragão é uma poderosa máquina de destruição. Praticamente
+                                        invencível,
+                                        muito poucos enfrentaram essa magnifica criatura e viveram para contar a
+                                        história.
 
-                for (let i = 0; i < Countfusion; i++) {
-                    const imagefusion = document.createElement('img');
-                    imagefusion.src = URLfusion;
-                    imagefusion.style.width = '20px';
-                    imageFusion.appendChild(imagefusion);
-                }
-            </script>
+                                    </p>
 
-            <div class="profile_img">
-                <div class="profile-img">
-                    <img src="yubel.jpg" width="100%">
-                </div>
-            </div>
-            <div class="profile_desc">
-                <div class="profile-desc">
-                    <h4>[Demônio/Efeito]</h4>
-                    <p>Este card não pode ser destruído em batalha. Você não sofre dano de batalha de batalhas
-                        envolvendo este card. Antes do cálculo de dano, quando este card com a face para cima em Posição
-                        de Ataque for atacado por um monstro do oponente: cause dano ao seu oponente igual ao ATK desse
-                        monstro. Durante a sua Fase Final: ofereça como Tributo 1 outro monstro ou destrua este card.
-                        Quando este card for destruído, exceto pelo seu próprio efeito: o seu dono pode Invocar por
-                        Invocação-Especial 1 "Yubel - Encarnação do Terror" da sua mão, Deck ou Cemitério.</p>
-                </div>
-                <div class="profile_attack"></div>
-                <p style="float:right;padding:3px">ATK 0 / DEF 0</p>
-            </div>
-        </div>
-    </div>
-    <br>
+                                </div>
+                                <div class="profile_attack"></div>
+                                <p style="float:right;padding:3px; text-align: right;"">ATK 0 / DEF 0</p>
+                        </div>
 
-    <div class="Profile">
-        <div class="profile_monster_normal">
-            <div class="profile-name">
-                <div class="profile_name">
-                    <div class="profile_left">
-                        <p class="pname">DRAGÃO BRANCO DE OLHOS AZUIS</p>
-                    </div>
-                    <div class="profile_right">
-                        <img src="luz.jpg" width=" 25px">
-                    </div>
-                </div>
-            </div>
-            <div class="profile_level">
-                <div class="profile-level" id="image-container-normal">
-                </div>
-            </div>
-
-            <script>
-                const imageNormal = document.getElementById('image-container-normal');
-                const URLnormal = 'Level.jpg';
-                const Countnormal = 2; // Número de vezes que a imagem será repetida
-
-                for (let i = 0; i < Countnormal; i++) {
-                    const imagenormal = document.createElement('img');
-                    imagenormal.src = URLnormal;
-                    imagenormal.style.width = '20px';
-                    imageNormal.appendChild(imagenormal);
-                }
-            </script>
-
-            <div class="profile_img">
-                <div class="profile-img">
-                    <img src="yubel.jpg" width="100%">
-                </div>
-            </div>
-            <div class="profile_desc">
-                <div class="profile-desc">
-                    <h4>[Demônio/Efeito]</h4>
-                    <p>Este card não pode ser destruído em batalha. Você não sofre dano de batalha de batalhas
-                        envolvendo este card. Antes do cálculo de dano, quando este card com a face para cima em Posição
-                        de Ataque for atacado por um monstro do oponente: cause dano ao seu oponente igual ao ATK desse
-                        monstro. Durante a sua Fase Final: ofereça como Tributo 1 outro monstro ou destrua este card.
-                        Quando este card for destruído, exceto pelo seu próprio efeito: o seu dono pode Invocar por
-                        Invocação-Especial 1 "Yubel - Encarnação do Terror" da sua mão, Deck ou Cemitério.</p>
-                </div>
-                <div class="profile_attack"></div>
-                <p style="float:right;padding:3px">ATK 0 / DEF 0</p>
-            </div>
-        </div>
-    </div>
-    <br>
-
-    <div class="Profile">
-        <div class="profile_monster_sincro">
-            <div class="profile-name">
-                <div class="profile_name">
-                    <div class="profile_left">
-                        <p class="pname">DRAGÃO BRANCO DE OLHOS AZUIS</p>
-                    </div>
-                    <div class="profile_right">
-                        <img src="vento.jpg" width=" 25px">
                     </div>
                 </div>
-            </div>
-            <div class="profile_level">
-                <div class="profile-level" id="image-container-sincro">
-                </div>
-            </div>
+                <br>
 
-            <script>
-                const imageSincro = document.getElementById('image-container-sincro');
-                const URLsincro = 'Level.jpg';
-                const Countsincro = 10; // Número de vezes que a imagem será repetida
+                <div class=" Profile">
+                                <div class="profile_monster_normal">
+                                    <div class="profile-name">
+                                        <div class="profile_name">
+                                            <div class="profile_left">
+                                                <p class="pname">Restrição do Olho do Milênio</p>
+                                            </div>
+                                            <div class="profile_right">
+                                                <img src="luz.jpg" width=" 25px">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="profile_level">
+                                        <div class="profile-level" id="image-container-normal">
+                                        </div>
+                                    </div>
 
-                for (let i = 0; i < Countsincro; i++) {
-                    const imagesincro = document.createElement('img');
-                    imagesincro.src = URLnormal;
-                    imagesincro.style.width = '20px';
-                    imageSincro.appendChild(imagesincro);
-                }
-            </script>
+                                    <script>
+                                        const imageNormal = document.getElementById('image-container-normal');
+                                        const URLnormal = 'Level.jpg';
+                                        const Countnormal = 2; // Número de vezes que a imagem será repetida
 
-            <div class="profile_img">
-                <div class="profile-img">
-                    <img src="yubel.jpg" width="100%">
-                </div>
-            </div>
-            <div class="profile_desc">
-                <div class="profile-desc">
-                    <h4>[Demônio/Efeito]</h4>
-                    <p>Este card não pode ser destruído em batalha. Você não sofre dano de batalha de batalhas
-                        envolvendo este card. Antes do cálculo de dano, quando este card com a face para cima em Posição
-                        de Ataque for atacado por um monstro do oponente: cause dano ao seu oponente igual ao ATK desse
-                        monstro. Durante a sua Fase Final: ofereça como Tributo 1 outro monstro ou destrua este card.
-                        Quando este card for destruído, exceto pelo seu próprio efeito: o seu dono pode Invocar por
-                        Invocação-Especial 1 "Yubel - Encarnação do Terror" da sua mão, Deck ou Cemitério.</p>
-                </div>
-                <div class="profile_attack"></div>
-                <p style="float:right;padding:3px">ATK 0 / DEF 0</p>
-            </div>
-        </div>
-    </div>
-    <br>
+                                        for (let i = 0; i < Countnormal; i++) {
+                                            const imagenormal = document.createElement('img');
+                                            imagenormal.src = URLnormal;
+                                            imagenormal.style.width = '20px';
+                                            imageNormal.appendChild(imagenormal);
+                                        }
+                                    </script>
 
-    <div class="Profile">
-        <div class="profile_monster_xyz">
-            <div class="profile-name">
-                <div class="profile_name">
-                    <div class="profile_left">
-                        <p class="pname_xyz">DRAGÃO BRANCO DE OLHOS AZUIS</p>
-                    </div>
-                    <div class="profile_right">
-                        <img src="vento.jpg" width=" 25px">
-                    </div>
-                </div>
-            </div>
-            <div class="profile_level_xyz">
-                <div class="profile-level" id="image-container-xyz">
-                </div>
-            </div>
-
-            <script>
-                const imageXyz = document.getElementById('image-container-xyz');
-                const URLxyz = 'Level.jpg';
-                const Countxyz = 4; // Número de vezes que a imagem será repetida
-
-                for (let i = 0; i < Countxyz; i++) {
-                    const imagexyz = document.createElement('img');
-                    imagexyz.src = URLxyz;
-                    imagexyz.style.width = '20px';
-                    imageXyz.appendChild(imagexyz);
-                }
-            </script>
-
-            <div class="profile_img">
-                <div class="profile-img">
-                    <img src="yubel.jpg" width="100%">
-                </div>
-            </div>
-            <div class="profile_desc">
-                <div class="profile-desc">
-                    <h4>[Demônio/Efeito]</h4>
-                    <p>Este card não pode ser destruído em batalha. Você não sofre dano de batalha de batalhas
-                        envolvendo este card. Antes do cálculo de dano, quando este card com a face para cima em Posição
-                        de Ataque for atacado por um monstro do oponente: cause dano ao seu oponente igual ao ATK desse
-                        monstro. Durante a sua Fase Final: ofereça como Tributo 1 outro monstro ou destrua este card.
-                        Quando este card for destruído, exceto pelo seu próprio efeito: o seu dono pode Invocar por
-                        Invocação-Especial 1 "Yubel - Encarnação do Terror" da sua mão, Deck ou Cemitério.</p>
-                </div>
-                <div class="profile_attack"></div>
-                <p style="float:right;padding:3px">ATK 1000 / DEF 1000</p>
-            </div>
-        </div>
-    </div>
-
-    <br>
-
-    <div class="Profile">
-        <div class="profile_monster_ritual">
-            <div class="profile-name">
-                <div class="profile_name">
-                    <div class="profile_left">
-                        <p class="pname_ritual">DRAGÃO BRANCO DE OLHOS AZUIS</p>
-                    </div>
-                    <div class="profile_right">
-                        <img src="vento.jpg" width=" 25px">
+                                    <div class="profile_img">
+                                        <div class="profile-img">
+                                            <img src="yubel.jpg" width="100%">
+                                        </div>
+                                    </div>
+                                    <div class="profile_desc">
+                                        <div class="profile-desc">
+                                            <h4>[Demônio/Efeito]</h4>
+                                            <p>Este card não pode ser destruído em batalha. Você não sofre dano de
+                                                batalha
+                                                de
+                                                batalhas
+                                                envolvendo este card. Antes do cálculo de dano, quando este card com a
+                                                face
+                                                para
+                                                cima em
+                                                Posição
+                                                de Ataque for atacado por um monstro do oponente: cause dano ao seu
+                                                oponente
+                                                igual
+                                                ao ATK
+                                                desse
+                                                monstro. Durante a sua Fase Final: ofereça como Tributo 1 outro monstro
+                                                ou
+                                                destrua
+                                                este
+                                                card.
+                                                Quando este card for destruído, exceto pelo seu próprio efeito: o seu
+                                                dono
+                                                pode
+                                                Invocar por
+                                                Invocação-Especial 1 "Yubel - Encarnação do Terror" da sua mão, Deck ou
+                                                Cemitério.
+                                            </p>
+                                        </div>
+                                        <div class="profile_attack"></div>
+                                        <p style="float:right;padding:3px; text-align: right;"">ATK 0 / DEF 0</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="profile_level">
-                <div class="profile-level" id="image-container-ritual">
-                </div>
-            </div>
+                <br>
 
-            <script>
-                const imageRitual = document.getElementById('image-container-ritual');
-                const URLritual = 'Level.jpg';
-                const Countritual = 5; // Número de vezes que a imagem será repetida
+                <div class=" Profile">
+                                        <div class="profile_monster_sincro">
+                                            <div class="profile-name">
+                                                <div class="profile_name">
+                                                    <div class="profile_left">
+                                                        <p class="pname">Dragão da poeira estelar</p>
+                                                    </div>
+                                                    <div class="profile_right">
+                                                        <img src="vento.jpg" width=" 25px">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="profile_level">
+                                                <div class="profile-level" id="image-container-sincro">
+                                                </div>
+                                            </div>
 
-                for (let i = 0; i < Countritual; i++) {
-                    const imageritual = document.createElement('img');
-                    imageritual.src = URLritual;
-                    imageritual.style.width = '20px';
-                    imageRitual.appendChild(imageritual);
-                }
-            </script>
+                                            <script>
+                                                const imageSincro = document.getElementById('image-container-sincro');
+                                                const URLsincro = 'Level.jpg';
+                                                const Countsincro = 10; // Número de vezes que a imagem será repetida
 
-            <div class="profile_img">
-                <div class="profile-img">
-                    <img src="yubel.jpg" width="100%">
-                </div>
-            </div>
-            <div class="profile_desc">
-                <div class="profile-desc">
-                    <h4>[Demônio/Efeito]</h4>
-                    <p>Este card não pode ser destruído em batalha. Você não sofre dano de batalha de batalhas
-                        envolvendo este card. Antes do cálculo de dano, quando este card com a face para cima em Posição
-                        de Ataque for atacado por um monstro do oponente: cause dano ao seu oponente igual ao ATK desse
-                        monstro. Durante a sua Fase Final: ofereça como Tributo 1 outro monstro ou destrua este card.
-                        Quando este card for destruído, exceto pelo seu próprio efeito: o seu dono pode Invocar por
-                        Invocação-Especial 1 "Yubel - Encarnação do Terror" da sua mão, Deck ou Cemitério.</p>
-                </div>
-                <div class="profile_attack"></div>
-                <p style="float:right;padding:3px">ATK 8000/ DEF 10000</p>
-            </div>
-        </div>
-    </div>
-    <br>
+                                                for (let i = 0; i < Countsincro; i++) {
+                                                    const imagesincro = document.createElement('img');
+                                                    imagesincro.src = URLnormal;
+                                                    imagesincro.style.width = '20px';
+                                                    imageSincro.appendChild(imagesincro);
+                                                }
+                                            </script>
 
-    <div class="Profile">
-        <div class="profile_normal_spell">
-            <div class="profile-name">
-                <div class="profile_name">
-                    <div class="profile_left">
-                        <p class="pname">DRAGÃO BRANCO DE OLHOS AZUIS</p>
-                    </div>
-                    <div class="profile_right">
-                        <img src="SPELL.jpg" width=" 25px">
-                    </div>
-                </div>
-            </div>
-            <div class="profile_level">
-                <h4 class="profile_spell">[SPELL CARD]</h4>
-            </div>
-
-            <div class="profile_img">
-                <div class="profile-img">
-                    <img src="yubel.jpg" width="100%">
-                </div>
-            </div>
-            <div class="profile_desc">
-                <div class="profile-desc">
-                    <p>Este card não pode ser destruído em batalha. Você não sofre dano de batalha de batalhas
-                        envolvendo este card. Antes do cálculo de dano, quando este card com a face para cima em Posição
-                        de Ataque for atacado por um monstro do oponente: cause dano ao seu oponente igual ao ATK desse
-                        monstro. Durante a sua Fase Final: ofereça como Tributo 1 outro monstro ou destrua este card.
-                        Quando este card for destruído, exceto pelo seu próprio efeito: o seu dono pode Invocar por
-                        Invocação-Especial 1 "Yubel - Encarnação do Terror" da sua mão, Deck ou Cemitério.</p>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <br>
-
-    <div class="Profile">
-        <div class="profile_spell_continuous">
-            <div class="profile-name">
-                <div class="profile_name">
-                    <div class="profile_left">
-                        <p class="pname">DRAGÃO BRANCO DE OLHOS AZUIS</p>
-                    </div>
-                    <div class="profile_right">
-                        <img src="SPELL.jpg" width=" 25px">
+                                            <div class="profile_img">
+                                                <div class="profile-img">
+                                                    <img src="yubel.jpg" width="100%">
+                                                </div>
+                                            </div>
+                                            <div class="profile_desc">
+                                                <div class="profile-desc">
+                                                    <h4>[Demônio/Efeito]</h4>
+                                                    <p>Este card não pode ser destruído em batalha. Você não sofre dano
+                                                        de
+                                                        batalha de
+                                                        batalhas
+                                                        envolvendo este card. Antes do cálculo de dano, quando este card
+                                                        com
+                                                        a face para
+                                                        cima em
+                                                        Posição
+                                                        de Ataque for atacado por um monstro do oponente: cause dano ao
+                                                        seu
+                                                        oponente
+                                                        igual
+                                                        ao ATK
+                                                        desse
+                                                        monstro. Durante a sua Fase Final: ofereça como Tributo 1 outro
+                                                        monstro ou
+                                                        destrua
+                                                        este
+                                                        card.
+                                                        Quando este card for destruído, exceto pelo seu próprio efeito:
+                                                        o
+                                                        seu dono pode
+                                                        Invocar por
+                                                        Invocação-Especial 1 "Yubel - Encarnação do Terror" da sua mão,
+                                                        Deck
+                                                        ou
+                                                        Cemitério.
+                                                    </p>
+                                                </div>
+                                                <div class="profile_attack"></div>
+                                                <p style="float:right;padding:3px; text-align: right;"">ATK 0 / DEF 0</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="profile_level">
-                <h4 class="profile_spell">]</h4>
-                <img src="Continuous.jpg" width=" 20px">
-                <h4 class="profile_spell">[SPELL CARD</h4>
+                <br>
 
-            </div>
+                <div class=" Profile">
+                                                <div class="profile_monster_xyz">
+                                                    <div class="profile-name">
+                                                        <div class="profile_name">
+                                                            <div class="profile_left">
+                                                                <p class="pname_xyz">Restrição do Olho do Milênio</p>
+                                                            </div>
+                                                            <div class="profile_right">
+                                                                <img src="vento.jpg" width=" 25px">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="profile_level_xyz">
+                                                        <div class="profile-level" id="image-container-xyz">
+                                                        </div>
+                                                    </div>
 
-            <div class="profile_img">
-                <div class="profile-img">
-                    <img src="yubel.jpg" width="100%">
-                </div>
-            </div>
-            <div class="profile_desc">
-                <div class="profile-desc">
-                    <p>Este card não pode ser destruído em batalha. Você não sofre dano de batalha de batalhas
-                        envolvendo este card. Antes do cálculo de dano, quando este card com a face para cima em Posição
-                        de Ataque for atacado por um monstro do oponente: cause dano ao seu oponente igual ao ATK desse
-                        monstro. Durante a sua Fase Final: ofereça como Tributo 1 outro monstro ou destrua este card.
-                        Quando este card for destruído, exceto pelo seu próprio efeito: o seu dono pode Invocar por
-                        Invocação-Especial 1 "Yubel - Encarnação do Terror" da sua mão, Deck ou Cemitério.</p>
-                </div>
+                                                    <script>
+                                                        const imageXyz = document.getElementById('image-container-xyz');
+                                                        const URLxyz = 'rank.jpg';
+                                                        const Countxyz = 4; // Número de vezes que a imagem será repetida
 
-            </div>
-        </div>
-    </div>
-    <br>
+                                                        for (let i = 0; i < Countxyz; i++) {
+                                                            const imagexyz = document.createElement('img');
+                                                            imagexyz.src = URLxyz;
+                                                            imagexyz.style.width = '20px';
+                                                            imageXyz.appendChild(imagexyz);
+                                                        }
+                                                    </script>
 
-    <div class="Profile">
-        <div class="profile_spell_equip">
-            <div class="profile-name">
-                <div class="profile_name">
-                    <div class="profile_left">
-                        <p class="pname">DRAGÃO BRANCO DE OLHOS AZUIS</p>
-                    </div>
-                    <div class="profile_right">
-                        <img src="SPELL.jpg" width=" 25px">
-                    </div>
-                </div>
-            </div>
-            <div class="profile_level">
-                <h4 class="profile_spell">]</h4>
-                <img src="Equip.jpg" width=" 20px">
-                <h4 class="profile_spell">[SPELL CARD</h4>
-
-            </div>
-
-            <div class="profile_img">
-                <div class="profile-img">
-                    <img src="yubel.jpg" width="100%">
-                </div>
-            </div>
-            <div class="profile_desc">
-                <div class="profile-desc">
-                    <p>Este card não pode ser destruído em batalha. Você não sofre dano de batalha de batalhas
-                        envolvendo este card. Antes do cálculo de dano, quando este card com a face para cima em Posição
-                        de Ataque for atacado por um monstro do oponente: cause dano ao seu oponente igual ao ATK desse
-                        monstro. Durante a sua Fase Final: ofereça como Tributo 1 outro monstro ou destrua este card.
-                        Quando este card for destruído, exceto pelo seu próprio efeito: o seu dono pode Invocar por
-                        Invocação-Especial 1 "Yubel - Encarnação do Terror" da sua mão, Deck ou Cemitério.</p>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <br>
-
-    <div class="Profile">
-        <div class="profile_spell_field">
-            <div class="profile-name">
-                <div class="profile_name">
-                    <div class="profile_left">
-                        <p class="pname">DRAGÃO BRANCO DE OLHOS AZUIS</p>
-                    </div>
-                    <div class="profile_right">
-                        <img src="SPELL.jpg" width=" 25px">
+                                                    <div class="profile_img">
+                                                        <div class="profile-img">
+                                                            <img src="yubel.jpg" width="100%">
+                                                        </div>
+                                                    </div>
+                                                    <div class="profile_desc">
+                                                        <div class="profile-desc">
+                                                            <h4>[Demônio/Efeito]</h4>
+                                                            <p>Este card não pode ser destruído em batalha. Você não
+                                                                sofre
+                                                                dano de batalha de
+                                                                batalhas
+                                                                envolvendo este card. Antes do cálculo de dano, quando
+                                                                este
+                                                                card com a face para
+                                                                cima em
+                                                                Posição
+                                                                de Ataque for atacado por um monstro do oponente: cause
+                                                                dano
+                                                                ao seu oponente
+                                                                igual
+                                                                ao ATK
+                                                                desse
+                                                                monstro. Durante a sua Fase Final: ofereça como Tributo
+                                                                1
+                                                                outro monstro ou
+                                                                destrua
+                                                                este
+                                                                card.
+                                                                Quando este card for destruído, exceto pelo seu próprio
+                                                                efeito: o seu dono pode
+                                                                Invocar por
+                                                                Invocação-Especial 1 "Yubel - Encarnação do Terror" da
+                                                                sua
+                                                                mão, Deck ou
+                                                                Cemitério.
+                                                            </p>
+                                                        </div>
+                                                        <div class="profile_attack"></div>
+                                                        <p style="float:right;padding:3px; text-align: right;"">ATK 1000 / DEF 1000</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="profile_level">
-                <h4 class="profile_spell">]</h4>
-                <img src="Field.jpg" width=" 20px">
-                <h4 class="profile_spell">[SPELL CARD</h4>
 
-            </div>
+                <br>
 
-            <div class="profile_img">
-                <div class="profile-img">
-                    <img src="yubel.jpg" width="100%">
-                </div>
-            </div>
-            <div class="profile_desc">
-                <div class="profile-desc">
-                    <p>Este card não pode ser destruído em batalha. Você não sofre dano de batalha de batalhas
-                        envolvendo este card. Antes do cálculo de dano, quando este card com a face para cima em Posição
-                        de Ataque for atacado por um monstro do oponente: cause dano ao seu oponente igual ao ATK desse
-                        monstro. Durante a sua Fase Final: ofereça como Tributo 1 outro monstro ou destrua este card.
-                        Quando este card for destruído, exceto pelo seu próprio efeito: o seu dono pode Invocar por
-                        Invocação-Especial 1 "Yubel - Encarnação do Terror" da sua mão, Deck ou Cemitério.</p>
-                </div>
+                <div class=" Profile">
+                                                        <div class="profile_monster_ritual">
+                                                            <div class="profile-name">
+                                                                <div class="profile_name">
+                                                                    <div class="profile_left">
+                                                                        <p class="pname_ritual">Restrição do Olho do
+                                                                            Milênio
+                                                                        </p>
+                                                                    </div>
+                                                                    <div class="profile_right">
+                                                                        <img src="vento.jpg" width=" 25px">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="profile_level">
+                                                                <div class="profile-level" id="image-container-ritual">
+                                                                </div>
+                                                            </div>
 
-            </div>
-        </div>
-    </div>
+                                                            <script>
+                                                                const imageRitual = document.getElementById('image-container-ritual');
+                                                                const URLritual = 'Level.jpg';
+                                                                const Countritual = 5; // Número de vezes que a imagem será repetida
 
-    <br>
+                                                                for (let i = 0; i < Countritual; i++) {
+                                                                    const imageritual = document.createElement('img');
+                                                                    imageritual.src = URLritual;
+                                                                    imageritual.style.width = '20px';
+                                                                    imageRitual.appendChild(imageritual);
+                                                                }
+                                                            </script>
 
-    <div class="Profile">
-        <div class="profile_spell_quick">
-            <div class="profile-name">
-                <div class="profile_name">
-                    <div class="profile_left">
-                        <p class="pname">DRAGÃO BRANCO DE OLHOS AZUIS</p>
-                    </div>
-                    <div class="profile_right">
-                        <img src="SPELL.jpg" width=" 25px">
-                    </div>
-                </div>
-            </div>
-            <div class="profile_level">
-                <h4 class="profile_spell">]</h4>
-                <img src="Quick.jpg" width=" 20px">
-                <h4 class="profile_spell">[SPELL CARD</h4>
-
-            </div>
-
-            <div class="profile_img">
-                <div class="profile-img">
-                    <img src="yubel.jpg" width="100%">
-                </div>
-            </div>
-            <div class="profile_desc">
-                <div class="profile-desc">
-                    <p>Este card não pode ser destruído em batalha. Você não sofre dano de batalha de batalhas
-                        envolvendo este card. Antes do cálculo de dano, quando este card com a face para cima em Posição
-                        de Ataque for atacado por um monstro do oponente: cause dano ao seu oponente igual ao ATK desse
-                        monstro. Durante a sua Fase Final: ofereça como Tributo 1 outro monstro ou destrua este card.
-                        Quando este card for destruído, exceto pelo seu próprio efeito: o seu dono pode Invocar por
-                        Invocação-Especial 1 "Yubel - Encarnação do Terror" da sua mão, Deck ou Cemitério.</p>
-                </div>
-
-            </div>
-        </div>
-    </div>
-    <br>
-
-    <div class="Profile">
-        <div class="profile_spell_ritual">
-            <div class="profile-name">
-                <div class="profile_name">
-                    <div class="profile_left">
-                        <p class="pname">DRAGÃO BRANCO DE OLHOS AZUIS</p>
-                    </div>
-                    <div class="profile_right">
-                        <img src="SPELL.jpg" width=" 25px">
+                                                            <div class="profile_img">
+                                                                <div class="profile-img">
+                                                                    <img src="yubel.jpg" width="100%">
+                                                                </div>
+                                                            </div>
+                                                            <div class="profile_desc">
+                                                                <div class="profile-desc">
+                                                                    <h4>[Demônio/Efeito]</h4>
+                                                                    <p>Este card não pode ser destruído em batalha. Você
+                                                                        não
+                                                                        sofre dano de batalha de
+                                                                        batalhas
+                                                                        envolvendo este card. Antes do cálculo de dano,
+                                                                        quando este card com a face para
+                                                                        cima em
+                                                                        Posição
+                                                                        de Ataque for atacado por um monstro do
+                                                                        oponente:
+                                                                        cause dano ao seu oponente
+                                                                        igual
+                                                                        ao ATK
+                                                                        desse
+                                                                        monstro. Durante a sua Fase Final: ofereça como
+                                                                        Tributo 1 outro monstro ou
+                                                                        destrua
+                                                                        este
+                                                                        card.
+                                                                        Quando este card for destruído, exceto pelo seu
+                                                                        próprio efeito: o seu dono pode
+                                                                        Invocar por
+                                                                        Invocação-Especial 1 "Yubel - Encarnação do
+                                                                        Terror"
+                                                                        da sua mão, Deck ou
+                                                                        Cemitério.
+                                                                    </p>
+                                                                </div>
+                                                                <div class="profile_attack"></div>
+                                                                <p style="float:right;padding:3px; text-align: right;"">ATK 8000/ DEF 10000</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="profile_level">
-                <h4 class="profile_spell">]</h4>
-                <img src="Ritual.jpg" width=" 20px">
-                <h4 class="profile_spell">[SPELL CARD</h4>
+                <br>
 
-            </div>
+                <div class=" Profile">
+                                                                <div class="profile_normal_spell">
+                                                                    <div class="profile-name">
+                                                                        <div class="profile_name">
+                                                                            <div class="profile_left">
+                                                                                <p class="pname">Restrição do Olho do
+                                                                                    Milênio</p>
+                                                                            </div>
+                                                                            <div class="profile_right">
+                                                                                <img src="SPELL.jpg" width=" 25px">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="profile_level">
+                                                                        <h4 class="profile_spell">[SPELL CARD]</h4>
+                                                                    </div>
 
-            <div class="profile_img">
-                <div class="profile-img">
-                    <img src="yubel.jpg" width="100%">
-                </div>
-            </div>
-            <div class="profile_desc">
-                <div class="profile-desc">
-                    <p>Este card não pode ser destruído em batalha. Você não sofre dano de batalha de batalhas
-                        envolvendo este card. Antes do cálculo de dano, quando este card com a face para cima em Posição
-                        de Ataque for atacado por um monstro do oponente: cause dano ao seu oponente igual ao ATK desse
-                        monstro. Durante a sua Fase Final: ofereça como Tributo 1 outro monstro ou destrua este card.
-                        Quando este card for destruído, exceto pelo seu próprio efeito: o seu dono pode Invocar por
-                        Invocação-Especial 1 "Yubel - Encarnação do Terror" da sua mão, Deck ou Cemitério.</p>
-                </div>
+                                                                    <div class="profile_img">
+                                                                        <div class="profile-img">
+                                                                            <img src="yubel.jpg" width="100%">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="profile_desc">
+                                                                        <div class="profile-desc">
+                                                                            <p>Este card não pode ser destruído em
+                                                                                batalha.
+                                                                                Você não sofre dano de batalha de
+                                                                                batalhas
+                                                                                envolvendo este card. Antes do cálculo
+                                                                                de
+                                                                                dano, quando este card com a face para
+                                                                                cima em
+                                                                                Posição
+                                                                                de Ataque for atacado por um monstro do
+                                                                                oponente: cause dano ao seu oponente
+                                                                                igual
+                                                                                ao ATK
+                                                                                desse
+                                                                                monstro. Durante a sua Fase Final:
+                                                                                ofereça
+                                                                                como Tributo 1 outro monstro ou
+                                                                                destrua
+                                                                                este
+                                                                                card.
+                                                                                Quando este card for destruído, exceto
+                                                                                pelo
+                                                                                seu próprio efeito: o seu dono pode
+                                                                                Invocar por
+                                                                                Invocação-Especial 1 "Yubel - Encarnação
+                                                                                do
+                                                                                Terror" da sua mão, Deck ou
+                                                                                Cemitério.
+                                                                            </p>
+                                                                        </div>
 
-            </div>
-        </div>
-    </div>
-    <br>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <br>
 
-    <div class="Profile">
-        <div class="profile_continuous_trap">
-            <div class="profile-name">
-                <div class="profile_name">
-                    <div class="profile_left">
-                        <p class="pname">DRAGÃO BRANCO DE OLHOS AZUIS</p>
-                    </div>
-                    <div class="profile_right">
-                        <img src="Trap.jpg" width=" 25px">
-                    </div>
-                </div>
-            </div>
-            <div class="profile_level">
-                <h4 class="profile_spell">]</h4>
-                <img src="Continuous.jpg" width=" 20px">
-                <h4 class="profile_spell">[TRAP CARD</h4>
+                                                            <div class="Profile">
+                                                                <div class="profile_spell_continuous">
+                                                                    <div class="profile-name">
+                                                                        <div class="profile_name">
+                                                                            <div class="profile_left">
+                                                                                <p class="pname">Restrição do Olho do
+                                                                                    Milênio</p>
+                                                                            </div>
+                                                                            <div class="profile_right">
+                                                                                <img src="SPELL.jpg" width=" 25px">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="profile_level">
+                                                                        <h4 class="profile_spell">]</h4>
+                                                                        <img src="Continuous.jpg" width=" 20px">
+                                                                        <h4 class="profile_spell">[SPELL CARD</h4>
 
-            </div>
+                                                                    </div>
 
-            <div class="profile_img">
-                <div class="profile-img">
-                    <img src="yubel.jpg" width="100%">
-                </div>
-            </div>
-            <div class="profile_desc">
-                <div class="profile-desc">
-                    <p>Este card não pode ser destruído em batalha. Você não sofre dano de batalha de batalhas
-                        envolvendo este card. Antes do cálculo de dano, quando este card com a face para cima em Posição
-                        de Ataque for atacado por um monstro do oponente: cause dano ao seu oponente igual ao ATK desse
-                        monstro. Durante a sua Fase Final: ofereça como Tributo 1 outro monstro ou destrua este card.
-                        Quando este card for destruído, exceto pelo seu próprio efeito: o seu dono pode Invocar por
-                        Invocação-Especial 1 "Yubel - Encarnação do Terror" da sua mão, Deck ou Cemitério.</p>
-                </div>
+                                                                    <div class="profile_img">
+                                                                        <div class="profile-img">
+                                                                            <img src="yubel.jpg" width="100%">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="profile_desc">
+                                                                        <div class="profile-desc">
+                                                                            <p>Este card não pode ser destruído em
+                                                                                batalha.
+                                                                                Você não sofre dano de batalha de
+                                                                                batalhas
+                                                                                envolvendo este card. Antes do cálculo
+                                                                                de
+                                                                                dano, quando este card com a face para
+                                                                                cima em
+                                                                                Posição
+                                                                                de Ataque for atacado por um monstro do
+                                                                                oponente: cause dano ao seu oponente
+                                                                                igual
+                                                                                ao ATK
+                                                                                desse
+                                                                                monstro. Durante a sua Fase Final:
+                                                                                ofereça
+                                                                                como Tributo 1 outro monstro ou
+                                                                                destrua
+                                                                                este
+                                                                                card.
+                                                                                Quando este card for destruído, exceto
+                                                                                pelo
+                                                                                seu próprio efeito: o seu dono pode
+                                                                                Invocar por
+                                                                                Invocação-Especial 1 "Yubel - Encarnação
+                                                                                do
+                                                                                Terror" da sua mão, Deck ou
+                                                                                Cemitério.
+                                                                            </p>
+                                                                        </div>
 
-            </div>
-        </div>
-    </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <br>
 
-    <br>
+                                                            <div class="Profile">
+                                                                <div class="profile_spell_equip">
+                                                                    <div class="profile-name">
+                                                                        <div class="profile_name">
+                                                                            <div class="profile_left">
+                                                                                <p class="pname">Restrição do Olho do
+                                                                                    Milênio</p>
+                                                                            </div>
+                                                                            <div class="profile_right">
+                                                                                <img src="SPELL.jpg" width=" 25px">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="profile_level">
+                                                                        <h4 class="profile_spell">]</h4>
+                                                                        <img src="Equip.jpg" width=" 20px">
+                                                                        <h4 class="profile_spell">[SPELL CARD</h4>
 
-    <div class="Profile">
-        <div class="profile_counter_trap">
-            <div class="profile-name">
-                <div class="profile_name">
-                    <div class="profile_left">
-                        <p class="pname">DRAGÃO BRANCO DE OLHOS AZUIS</p>
-                    </div>
-                    <div class="profile_right">
-                        <img src="Trap.jpg" width=" 25px">
-                    </div>
-                </div>
-            </div>
-            <div class="profile_level">
-                <h4 class="profile_spell">]</h4>
-                <img src="Counter.jpg" width=" 20px">
-                <h4 class="profile_spell">[TRAP CARD</h4>
+                                                                    </div>
 
-            </div>
+                                                                    <div class="profile_img">
+                                                                        <div class="profile-img">
+                                                                            <img src="yubel.jpg" width="100%">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="profile_desc">
+                                                                        <div class="profile-desc">
+                                                                            <p>Este card não pode ser destruído em
+                                                                                batalha.
+                                                                                Você não sofre dano de batalha de
+                                                                                batalhas
+                                                                                envolvendo este card. Antes do cálculo
+                                                                                de
+                                                                                dano, quando este card com a face para
+                                                                                cima em
+                                                                                Posição
+                                                                                de Ataque for atacado por um monstro do
+                                                                                oponente: cause dano ao seu oponente
+                                                                                igual
+                                                                                ao ATK
+                                                                                desse
+                                                                                monstro. Durante a sua Fase Final:
+                                                                                ofereça
+                                                                                como Tributo 1 outro monstro ou
+                                                                                destrua
+                                                                                este
+                                                                                card.
+                                                                                Quando este card for destruído, exceto
+                                                                                pelo
+                                                                                seu próprio efeito: o seu dono pode
+                                                                                Invocar por
+                                                                                Invocação-Especial 1 "Yubel - Encarnação
+                                                                                do
+                                                                                Terror" da sua mão, Deck ou
+                                                                                Cemitério.
+                                                                            </p>
+                                                                        </div>
 
-            <div class="profile_img">
-                <div class="profile-img">
-                    <img src="yubel.jpg" width="100%">
-                </div>
-            </div>
-            <div class="profile_desc">
-                <div class="profile-desc">
-                    <p>Este card não pode ser destruído em batalha. Você não sofre dano de batalha de batalhas
-                        envolvendo este card. Antes do cálculo de dano, quando este card com a face para cima em Posição
-                        de Ataque for atacado por um monstro do oponente: cause dano ao seu oponente igual ao ATK desse
-                        monstro. Durante a sua Fase Final: ofereça como Tributo 1 outro monstro ou destrua este card.
-                        Quando este card for destruído, exceto pelo seu próprio efeito: o seu dono pode Invocar por
-                        Invocação-Especial 1 "Yubel - Encarnação do Terror" da sua mão, Deck ou Cemitério.</p>
-                </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
 
-            </div>
-        </div>
-    </div>
+                                                            <br>
 
-    <br>
+                                                            <div class="Profile">
+                                                                <div class="profile_spell_field">
+                                                                    <div class="profile-name">
+                                                                        <div class="profile_name">
+                                                                            <div class="profile_left">
+                                                                                <p class="pname">Restrição do Olho do
+                                                                                    Milênio</p>
+                                                                            </div>
+                                                                            <div class="profile_right">
+                                                                                <img src="SPELL.jpg" width=" 25px">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="profile_level">
+                                                                        <h4 class="profile_spell">]</h4>
+                                                                        <img src="Field.jpg" width=" 20px">
+                                                                        <h4 class="profile_spell">[SPELL CARD</h4>
 
-    <div class="Profile">
-        <div class="profile_counter_trap">
-            <div class="profile-name">
-                <div class="profile_name">
-                    <div class="profile_left">
-                        <p class="pname">DRAGÃO BRANCO DE OLHOS AZUIS</p>
-                    </div>
-                    <div class="profile_right">
-                        <img src="Trap.jpg" width=" 25px">
-                    </div>
-                </div>
-            </div>
-            <div class="profile_level">
-                <h4 class="profile_spell">[TRAP CARD]</h4>
+                                                                    </div>
 
-            </div>
+                                                                    <div class="profile_img">
+                                                                        <div class="profile-img">
+                                                                            <img src="yubel.jpg" width="100%">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="profile_desc">
+                                                                        <div class="profile-desc">
+                                                                            <p>Este card não pode ser destruído em
+                                                                                batalha.
+                                                                                Você não sofre dano de batalha de
+                                                                                batalhas
+                                                                                envolvendo este card. Antes do cálculo
+                                                                                de
+                                                                                dano, quando este card com a face para
+                                                                                cima em
+                                                                                Posição
+                                                                                de Ataque for atacado por um monstro do
+                                                                                oponente: cause dano ao seu oponente
+                                                                                igual
+                                                                                ao ATK
+                                                                                desse
+                                                                                monstro. Durante a sua Fase Final:
+                                                                                ofereça
+                                                                                como Tributo 1 outro monstro ou
+                                                                                destrua
+                                                                                este
+                                                                                card.
+                                                                                Quando este card for destruído, exceto
+                                                                                pelo
+                                                                                seu próprio efeito: o seu dono pode
+                                                                                Invocar por
+                                                                                Invocação-Especial 1 "Yubel - Encarnação
+                                                                                do
+                                                                                Terror" da sua mão, Deck ou
+                                                                                Cemitério.
+                                                                            </p>
+                                                                        </div>
 
-            <div class="profile_img">
-                <div class="profile-img">
-                    <img src="yubel.jpg" width="100%">
-                </div>
-            </div>
-            <div class="profile_desc">
-                <div class="profile-desc">
-                    <p>Este card não pode ser destruído em batalha. Você não sofre dano de batalha de batalhas
-                        envolvendo este card. Antes do cálculo de dano, quando este card com a face para cima em Posição
-                        de Ataque for atacado por um monstro do oponente: cause dano ao seu oponente igual ao ATK desse
-                        monstro. Durante a sua Fase Final: ofereça como Tributo 1 outro monstro ou destrua este card.
-                        Quando este card for destruído, exceto pelo seu próprio efeito: o seu dono pode Invocar por
-                        Invocação-Especial 1 "Yubel - Encarnação do Terror" da sua mão, Deck ou Cemitério.</p>
-                </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
 
-            </div>
-        </div>
-    </div>
-    <script>
-        const containers = document.querySelectorAll('.profile_name');
-        const texts = document.querySelectorAll('.pname');
+                                                            <br>
 
-        texts.forEach((text, index) => {
-            const container = containers[index];
+                                                            <div class="Profile">
+                                                                <div class="profile_spell_quick">
+                                                                    <div class="profile-name">
+                                                                        <div class="profile_name">
+                                                                            <div class="profile_left">
+                                                                                <p class="pname">Restrição do Olho do
+                                                                                    Milênio</p>
+                                                                            </div>
+                                                                            <div class="profile_right">
+                                                                                <img src="SPELL.jpg" width=" 25px">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="profile_level">
+                                                                        <h4 class="profile_spell">]</h4>
+                                                                        <img src="Quick.jpg" width=" 20px">
+                                                                        <h4 class="profile_spell">[SPELL CARD</h4>
 
-            while (text.scrollHeight > container.offsetHeight || text.scrollWidth > container.offsetWidth) {
-                let fontSize = parseInt(window.getComputedStyle(text).fontSize);
-                fontSize -= 3.0001;
-                text.style.fontSize = `${fontSize}px`;
-            }
-        });
+                                                                    </div>
 
-        const xyz = document.querySelectorAll('.profile_name');
-        const xyztext = document.querySelectorAll('.pname_xyz');
+                                                                    <div class="profile_img">
+                                                                        <div class="profile-img">
+                                                                            <img src="yubel.jpg" width="100%">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="profile_desc">
+                                                                        <div class="profile-desc">
+                                                                            <p>Este card não pode ser destruído em
+                                                                                batalha.
+                                                                                Você não sofre dano de batalha de
+                                                                                batalhas
+                                                                                envolvendo este card. Antes do cálculo
+                                                                                de
+                                                                                dano, quando este card com a face para
+                                                                                cima em
+                                                                                Posição
+                                                                                de Ataque for atacado por um monstro do
+                                                                                oponente: cause dano ao seu oponente
+                                                                                igual
+                                                                                ao ATK
+                                                                                desse
+                                                                                monstro. Durante a sua Fase Final:
+                                                                                ofereça
+                                                                                como Tributo 1 outro monstro ou
+                                                                                destrua
+                                                                                este
+                                                                                card.
+                                                                                Quando este card for destruído, exceto
+                                                                                pelo
+                                                                                seu próprio efeito: o seu dono pode
+                                                                                Invocar por
+                                                                                Invocação-Especial 1 "Yubel - Encarnação
+                                                                                do
+                                                                                Terror" da sua mão, Deck ou
+                                                                                Cemitério.
+                                                                            </p>
+                                                                        </div>
 
-        xyztext.forEach((text, index) => {
-            const container = xyz[index];
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <br>
 
-            while (text.scrollHeight > container.offsetHeight || text.scrollWidth > container.offsetWidth) {
-                let fontSize = parseInt(window.getComputedStyle(text).fontSize);
-                fontSize -= 3.0001;
-                text.style.fontSize = `${fontSize}px`;
-            }
-        });
+                                                            <div class="Profile">
+                                                                <div class="profile_spell_ritual">
+                                                                    <div class="profile-name">
+                                                                        <div class="profile_name">
+                                                                            <div class="profile_left">
+                                                                                <p class="pname">Restrição do Olho do
+                                                                                    Milênio</p>
+                                                                            </div>
+                                                                            <div class="profile_right">
+                                                                                <img src="SPELL.jpg" width=" 25px">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="profile_level">
+                                                                        <h4 class="profile_spell">]</h4>
+                                                                        <img src="Ritual.jpg" width=" 20px">
+                                                                        <h4 class="profile_spell">[SPELL CARD</h4>
+
+                                                                    </div>
+
+                                                                    <div class="profile_img">
+                                                                        <div class="profile-img">
+                                                                            <img src="yubel.jpg" width="100%">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="profile_desc">
+                                                                        <div class="profile-desc">
+                                                                            <p>Este lendário dragão é uma poderosa
+                                                                                máquina
+                                                                                de destruição. Praticamente invencível,
+                                                                                muito poucos enfrentaram essa magnifica
+                                                                                criatura e viveram para contar a
+                                                                                história.
+                                                                            </p>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <br>
+
+                                                            <div class="Profile">
+                                                                <div class="profile_continuous_trap">
+                                                                    <div class="profile-name">
+                                                                        <div class="profile_name">
+                                                                            <div class="profile_left">
+                                                                                <p class="pname">Restrição do Olho do
+                                                                                    Milênio</p>
+                                                                            </div>
+                                                                            <div class="profile_right">
+                                                                                <img src="Trap.jpg" width=" 25px">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="profile_level">
+                                                                        <h4 class="profile_spell">]</h4>
+                                                                        <img src="Continuous.jpg" width=" 20px">
+                                                                        <h4 class="profile_spell">[TRAP CARD</h4>
+
+                                                                    </div>
+
+                                                                    <div class="profile_img">
+                                                                        <div class="profile-img">
+                                                                            <img src="yubel.jpg" width="100%">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="profile_desc">
+                                                                        <div class="profile-desc">
+                                                                            <p>Este card não pode ser destruído em
+                                                                                batalha.
+                                                                                Você não sofre dano de batalha de
+                                                                                batalhas
+                                                                                envolvendo este card. Antes do cálculo
+                                                                                de
+                                                                                dano, quando este card com a face para
+                                                                                cima em
+                                                                                Posição
+                                                                                de Ataque for atacado por um monstro do
+                                                                                oponente: cause dano ao seu oponente
+                                                                                igual
+                                                                                ao ATK
+                                                                                desse
+                                                                                monstro. Durante a sua Fase Final:
+                                                                                ofereça
+                                                                                como Tributo 1 outro monstro ou
+                                                                                destrua
+                                                                                este
+                                                                                card.
+                                                                                Quando este card for destruído, exceto
+                                                                                pelo
+                                                                                seu próprio efeito: o seu dono pode
+                                                                                Invocar por
+                                                                                Invocação-Especial 1 "Yubel - Encarnação
+                                                                                do
+                                                                                Terror" da sua mão, Deck ou
+                                                                                Cemitério.
+                                                                            </p>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <br>
+
+                                                            <div class="Profile">
+                                                                <div class="profile_counter_trap">
+                                                                    <div class="profile-name">
+                                                                        <div class="profile_name">
+                                                                            <div class="profile_left">
+                                                                                <p class="pname">Restrição do Olho do
+                                                                                    Milênio</p>
+                                                                            </div>
+                                                                            <div class="profile_right">
+                                                                                <img src="Trap.jpg" width=" 25px">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="profile_level">
+                                                                        <h4 class="profile_spell">]</h4>
+                                                                        <img src="Counter.jpg" width=" 20px">
+                                                                        <h4 class="profile_spell">[TRAP CARD</h4>
+
+                                                                    </div>
+
+                                                                    <div class="profile_img">
+                                                                        <div class="profile-img">
+                                                                            <img src="yubel.jpg" width="100%">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="profile_desc">
+                                                                        <div class="profile-desc">
+                                                                            <p>Este card não pode ser destruído em
+                                                                                batalha.
+                                                                                Você não sofre dano de batalha de
+                                                                                batalhas
+                                                                                envolvendo este card. Antes do cálculo
+                                                                                de
+                                                                                dano, quando este card com a face para
+                                                                                cima em
+                                                                                Posição
+                                                                                de Ataque for atacado por um monstro do
+                                                                                oponente: cause dano ao seu oponente
+                                                                                igual
+                                                                                ao ATK
+                                                                                desse
+                                                                                monstro. Durante a sua Fase Final:
+                                                                                ofereça
+                                                                                como Tributo 1 outro monstro ou
+                                                                                destrua
+                                                                                este
+                                                                                card.
+                                                                                Quando este card for destruído, exceto
+                                                                                pelo
+                                                                                seu próprio efeito: o seu dono pode
+                                                                                Invocar por
+                                                                                Invocação-Especial 1 "Yubel - Encarnação
+                                                                                do
+                                                                                Terror" da sua mão, Deck ou
+                                                                                Cemitério.
+                                                                            </p>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <br>
+
+                                                            <div class="Profile">
+                                                                <div class="profile_counter_trap">
+                                                                    <div class="profile-name">
+                                                                        <div class="profile_name">
+                                                                            <div class="profile_left">
+                                                                                <p class="pname">Restrição do Olho do
+                                                                                    Milênio</p>
+                                                                            </div>
+                                                                            <div class="profile_right">
+                                                                                <img src="Trap.jpg" width=" 25px">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="profile_level">
+                                                                        <h4 class="profile_spell">[TRAP CARD]</h4>
+
+                                                                    </div>
+
+                                                                    <div class="profile_img">
+                                                                        <div class="profile-img">
+                                                                            <img src="yubel.jpg" width="100%">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="profile_desc">
+                                                                        <div class="profile-desc">
+                                                                            <p>Este card não pode ser destruído em
+                                                                                batalha.
+                                                                                Você não sofre dano de batalha de
+                                                                                batalhas
+                                                                                envolvendo este card. Antes do cálculo
+                                                                                de
+                                                                                dano, quando este card com a face para
+                                                                                cima em
+                                                                                Posição
+                                                                                de Ataque for atacado por um monstro do
+                                                                                oponente: cause dano ao seu oponente
+                                                                                igual
+                                                                                ao ATK
+                                                                                desse
+                                                                                monstro. Durante a sua Fase Final:
+                                                                                ofereça
+                                                                                como Tributo 1 outro monstro ou
+                                                                                destrua
+                                                                                este
+                                                                                card.
+                                                                                Quando este card for destruído, exceto
+                                                                                pelo
+                                                                                seu próprio efeito: o seu dono pode
+                                                                                Invocar por
+                                                                                Invocação-Especial 1 "Yubel - Encarnação
+                                                                                do
+                                                                                Terror" da sua mão, Deck ou
+                                                                                Cemitério.
+                                                                            </p>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <script>
+                                                    const containers = document.querySelectorAll('.profile_name');
+                                                    const texts = document.querySelectorAll('.pname');
+
+                                                    texts.forEach((text, index) => {
+                                                        const container = containers[index];
+
+                                                        while (text.scrollWidth > (container.offsetWidth) - 21.5) {
+                                                            let fontSize = parseInt(window.getComputedStyle(text).fontSize);
+                                                            fontSize -= 3.0001;
+                                                            text.style.fontSize = `${fontSize}px`;
+                                                        }
+                                                    });
+
+                                                    const xyz = document.querySelectorAll('.profile_name');
+                                                    const xyztext = document.querySelectorAll('.pname_xyz');
+
+                                                    xyztext.forEach((text, index) => {
+                                                        const container = xyz[index];
+
+                                                        while (text.scrollWidth > (container.offsetWidth) - 21.5) {
+                                                            let fontSize = parseInt(window.getComputedStyle(text).fontSize);
+                                                            fontSize -= 3.0001;
+                                                            text.style.fontSize = `${fontSize}px`;
+                                                        }
+                                                    });
 
 
-        const fusion = document.querySelectorAll('.profile_name');
-        const fusiontext = document.querySelectorAll('.pname_fusion');
+                                                    const fusion = document.querySelectorAll('.profile_name');
+                                                    const fusiontext = document.querySelectorAll('.pname_fusion');
 
-        fusiontext.forEach((text, index) => {
-            const container = fusion[index];
+                                                    fusiontext.forEach((text, index) => {
+                                                        const container = fusion[index];
 
-            while (text.scrollHeight > container.offsetHeight || text.scrollWidth > container.offsetWidth) {
-                let fontSize = parseInt(window.getComputedStyle(text).fontSize);
-                fontSize -= 3.0001;
-                text.style.fontSize = `${fontSize}px`;
-            }
-        });
+                                                        while (text.scrollWidth > (container.offsetWidth) - 21.5) {
+                                                            let fontSize = parseInt(window.getComputedStyle(text).fontSize);
+                                                            fontSize -= 3.0001;
+                                                            text.style.fontSize = `${fontSize}px`;
+                                                        }
+                                                    });
 
-        const ritual = document.querySelectorAll('.profile_name');
-        const ritualtext = document.querySelectorAll('.pname_ritual');
+                                                    const ritual = document.querySelectorAll('.profile_name');
+                                                    const ritualtext = document.querySelectorAll('.pname_ritual');
 
-        ritualtext.forEach((text, index) => {
-            const container = ritual[index];
+                                                    ritualtext.forEach((text, index) => {
+                                                        const container = ritual[index];
 
-            while (text.scrollHeight > container.offsetHeight || text.scrollWidth > container.offsetWidth) {
-                let fontSize = parseInt(window.getComputedStyle(text).fontSize);
-                fontSize -= 3.0001;
-                text.style.fontSize = `${fontSize}px`;
-            }
-        });
-
-
+                                                        while (text.scrollWidth > (container.offsetWidth) - 21.5) {
+                                                            let fontSize = parseInt(window.getComputedStyle(text).fontSize);
+                                                            fontSize -= 3.0001;
+                                                            text.style.fontSize = `${fontSize}px`;
+                                                        }
+                                                    });
 
 
-    </script>
+                                                    const profileDescs = document.querySelectorAll('.profile_desc');
+                                                    let maxHeight = 0;
 
+                                                    profileDescs.forEach((desc) => {
+                                                        const text = desc.querySelector('.profile-desc');
+                                                        const textHeight = text.clientHeight;
+
+                                                        if (textHeight > maxHeight) {
+                                                            maxHeight = textHeight;
+                                                        }
+                                                    });
+
+                                                    profileDescs.forEach((desc) => {
+                                                        desc.style.height = `${maxHeight + 30}px`;
+                                                    });
+
+
+
+
+                                                </script>
+
+    </main>
+    <footer>
+        &copy; Árlisson Alves da Silva Silveira 2023. Todos os direitos
+        reservados.
+    </footer>
 </body>
+
 
 </html>

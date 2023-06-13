@@ -103,8 +103,6 @@ public class ParserParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class CriarCartaContext extends ParserRuleContext {
 		public Token pc_inicio;
-		public Token ERRO_CARD;
-		public List<Token> erro = new ArrayList<Token>();
 		public Token PC_CARD;
 		public List<Token> pc_card = new ArrayList<Token>();
 		public Token ATRIBUICAO;
@@ -113,6 +111,8 @@ public class ParserParser extends Parser {
 		public List<Token> tipo_carta = new ArrayList<Token>();
 		public Token FIM_CADEIA;
 		public List<Token> fim_cadeia = new ArrayList<Token>();
+		public Token ERRO_CARD;
+		public List<Token> erro = new ArrayList<Token>();
 		public Token PC_NAME;
 		public List<Token> pc_name = new ArrayList<Token>();
 		public Token CADEIA;
@@ -266,332 +266,324 @@ public class ParserParser extends Parser {
 			((CriarCartaContext)_localctx).pc_inicio = match(PC_INICIO);
 			setState(3);
 			match(ATRIBUICAO);
-			setState(95); 
+			setState(94);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			do {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & 8204L) != 0)) {
 				{
-				setState(95);
+				setState(92);
 				_errHandler.sync(this);
-				switch ( getInterpreter().adaptivePredict(_input,13,_ctx) ) {
-				case 1:
+				switch (_input.LA(1)) {
+				case PC_CARD:
 					{
 					{
-					setState(5);
-					_errHandler.sync(this);
-					_la = _input.LA(1);
-					if (_la==ERRO_CARD) {
-						{
-						setState(4);
-						((CriarCartaContext)_localctx).ERRO_CARD = match(ERRO_CARD);
-						((CriarCartaContext)_localctx).erro.add(((CriarCartaContext)_localctx).ERRO_CARD);
-						}
-					}
-
-					setState(7);
+					setState(4);
 					((CriarCartaContext)_localctx).PC_CARD = match(PC_CARD);
 					((CriarCartaContext)_localctx).pc_card.add(((CriarCartaContext)_localctx).PC_CARD);
-					setState(8);
+					setState(5);
 					((CriarCartaContext)_localctx).ATRIBUICAO = match(ATRIBUICAO);
 					((CriarCartaContext)_localctx).atribuicao.add(((CriarCartaContext)_localctx).ATRIBUICAO);
-					setState(9);
+					setState(6);
 					((CriarCartaContext)_localctx).CARD_MONSTER = match(CARD_MONSTER);
 					((CriarCartaContext)_localctx).tipo_carta.add(((CriarCartaContext)_localctx).CARD_MONSTER);
-					setState(10);
+					setState(7);
 					((CriarCartaContext)_localctx).FIM_CADEIA = match(FIM_CADEIA);
 					((CriarCartaContext)_localctx).fim_cadeia.add(((CriarCartaContext)_localctx).FIM_CADEIA);
-					setState(12);
+					setState(9);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==ERRO_CARD) {
 						{
-						setState(11);
+						setState(8);
 						((CriarCartaContext)_localctx).ERRO_CARD = match(ERRO_CARD);
 						((CriarCartaContext)_localctx).erro.add(((CriarCartaContext)_localctx).ERRO_CARD);
 						}
 					}
 
-					setState(14);
+					setState(11);
 					((CriarCartaContext)_localctx).PC_NAME = match(PC_NAME);
 					((CriarCartaContext)_localctx).pc_name.add(((CriarCartaContext)_localctx).PC_NAME);
-					setState(15);
+					setState(12);
 					((CriarCartaContext)_localctx).ATRIBUICAO = match(ATRIBUICAO);
 					((CriarCartaContext)_localctx).atribuicao.add(((CriarCartaContext)_localctx).ATRIBUICAO);
-					setState(16);
+					setState(13);
 					((CriarCartaContext)_localctx).CADEIA = match(CADEIA);
 					((CriarCartaContext)_localctx).monstro_nome.add(((CriarCartaContext)_localctx).CADEIA);
-					setState(17);
+					setState(14);
 					((CriarCartaContext)_localctx).FIM_CADEIA = match(FIM_CADEIA);
 					((CriarCartaContext)_localctx).fim_cadeia.add(((CriarCartaContext)_localctx).FIM_CADEIA);
-					setState(19);
+					setState(16);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==ERRO_CARD) {
 						{
-						setState(18);
+						setState(15);
 						((CriarCartaContext)_localctx).ERRO_CARD = match(ERRO_CARD);
 						((CriarCartaContext)_localctx).erro.add(((CriarCartaContext)_localctx).ERRO_CARD);
 						}
 					}
 
-					setState(21);
+					setState(18);
 					((CriarCartaContext)_localctx).PC_LEVEL = match(PC_LEVEL);
 					((CriarCartaContext)_localctx).pc_level.add(((CriarCartaContext)_localctx).PC_LEVEL);
-					setState(22);
+					setState(19);
 					((CriarCartaContext)_localctx).ATRIBUICAO = match(ATRIBUICAO);
 					((CriarCartaContext)_localctx).atribuicao.add(((CriarCartaContext)_localctx).ATRIBUICAO);
-					setState(23);
+					setState(20);
 					((CriarCartaContext)_localctx).DIGITO = match(DIGITO);
 					((CriarCartaContext)_localctx).level.add(((CriarCartaContext)_localctx).DIGITO);
-					setState(24);
+					setState(21);
 					((CriarCartaContext)_localctx).FIM_CADEIA = match(FIM_CADEIA);
 					((CriarCartaContext)_localctx).fim_cadeia.add(((CriarCartaContext)_localctx).FIM_CADEIA);
-					setState(26);
+					setState(23);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==ERRO_CARD) {
 						{
-						setState(25);
+						setState(22);
 						((CriarCartaContext)_localctx).ERRO_CARD = match(ERRO_CARD);
 						((CriarCartaContext)_localctx).erro.add(((CriarCartaContext)_localctx).ERRO_CARD);
 						}
 					}
 
-					setState(28);
+					setState(25);
 					((CriarCartaContext)_localctx).PC_ATTRIBUTE = match(PC_ATTRIBUTE);
 					((CriarCartaContext)_localctx).pc_atributo.add(((CriarCartaContext)_localctx).PC_ATTRIBUTE);
-					setState(29);
+					setState(26);
 					((CriarCartaContext)_localctx).ATRIBUICAO = match(ATRIBUICAO);
 					((CriarCartaContext)_localctx).atribuicao.add(((CriarCartaContext)_localctx).ATRIBUICAO);
-					setState(30);
+					setState(27);
 					((CriarCartaContext)_localctx).ATTRIBUTE = match(ATTRIBUTE);
 					((CriarCartaContext)_localctx).atributo.add(((CriarCartaContext)_localctx).ATTRIBUTE);
-					setState(31);
+					setState(28);
 					((CriarCartaContext)_localctx).FIM_CADEIA = match(FIM_CADEIA);
 					((CriarCartaContext)_localctx).fim_cadeia.add(((CriarCartaContext)_localctx).FIM_CADEIA);
-					setState(33);
+					setState(30);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==ERRO_CARD) {
 						{
-						setState(32);
+						setState(29);
 						((CriarCartaContext)_localctx).ERRO_CARD = match(ERRO_CARD);
 						((CriarCartaContext)_localctx).erro.add(((CriarCartaContext)_localctx).ERRO_CARD);
 						}
 					}
 
-					setState(35);
+					setState(32);
 					((CriarCartaContext)_localctx).PC_TYPE = match(PC_TYPE);
 					((CriarCartaContext)_localctx).pc_tipo.add(((CriarCartaContext)_localctx).PC_TYPE);
-					setState(36);
+					setState(33);
 					((CriarCartaContext)_localctx).ATRIBUICAO = match(ATRIBUICAO);
 					((CriarCartaContext)_localctx).atribuicao.add(((CriarCartaContext)_localctx).ATRIBUICAO);
-					setState(37);
+					setState(34);
 					((CriarCartaContext)_localctx).TYPE = match(TYPE);
 					((CriarCartaContext)_localctx).tipo.add(((CriarCartaContext)_localctx).TYPE);
-					setState(38);
+					setState(35);
 					((CriarCartaContext)_localctx).FIM_CADEIA = match(FIM_CADEIA);
 					((CriarCartaContext)_localctx).fim_cadeia.add(((CriarCartaContext)_localctx).FIM_CADEIA);
-					setState(40);
+					setState(37);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==ERRO_CARD) {
 						{
-						setState(39);
+						setState(36);
 						((CriarCartaContext)_localctx).ERRO_CARD = match(ERRO_CARD);
 						((CriarCartaContext)_localctx).erro.add(((CriarCartaContext)_localctx).ERRO_CARD);
 						}
 					}
 
-					setState(42);
+					setState(39);
 					((CriarCartaContext)_localctx).PC_ATTACK = match(PC_ATTACK);
 					((CriarCartaContext)_localctx).pc_atk.add(((CriarCartaContext)_localctx).PC_ATTACK);
-					setState(43);
+					setState(40);
 					((CriarCartaContext)_localctx).ATRIBUICAO = match(ATRIBUICAO);
 					((CriarCartaContext)_localctx).atribuicao.add(((CriarCartaContext)_localctx).ATRIBUICAO);
-					setState(44);
+					setState(41);
 					((CriarCartaContext)_localctx).DIGITO = match(DIGITO);
 					((CriarCartaContext)_localctx).atk.add(((CriarCartaContext)_localctx).DIGITO);
-					setState(45);
+					setState(42);
 					((CriarCartaContext)_localctx).FIM_CADEIA = match(FIM_CADEIA);
 					((CriarCartaContext)_localctx).fim_cadeia.add(((CriarCartaContext)_localctx).FIM_CADEIA);
-					setState(47);
+					setState(44);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==ERRO_CARD) {
 						{
-						setState(46);
+						setState(43);
 						((CriarCartaContext)_localctx).ERRO_CARD = match(ERRO_CARD);
 						((CriarCartaContext)_localctx).erro.add(((CriarCartaContext)_localctx).ERRO_CARD);
 						}
 					}
 
-					setState(49);
+					setState(46);
 					((CriarCartaContext)_localctx).PC_DEFFENSE = match(PC_DEFFENSE);
 					((CriarCartaContext)_localctx).pc_def.add(((CriarCartaContext)_localctx).PC_DEFFENSE);
-					setState(50);
+					setState(47);
 					((CriarCartaContext)_localctx).ATRIBUICAO = match(ATRIBUICAO);
 					((CriarCartaContext)_localctx).atribuicao.add(((CriarCartaContext)_localctx).ATRIBUICAO);
-					setState(51);
+					setState(48);
 					((CriarCartaContext)_localctx).DIGITO = match(DIGITO);
 					((CriarCartaContext)_localctx).def.add(((CriarCartaContext)_localctx).DIGITO);
-					setState(52);
+					setState(49);
 					((CriarCartaContext)_localctx).FIM_CADEIA = match(FIM_CADEIA);
 					((CriarCartaContext)_localctx).fim_cadeia.add(((CriarCartaContext)_localctx).FIM_CADEIA);
-					setState(54);
+					setState(51);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==ERRO_CARD) {
 						{
-						setState(53);
+						setState(50);
 						((CriarCartaContext)_localctx).ERRO_CARD = match(ERRO_CARD);
 						((CriarCartaContext)_localctx).erro.add(((CriarCartaContext)_localctx).ERRO_CARD);
 						}
 					}
 
-					setState(56);
+					setState(53);
 					((CriarCartaContext)_localctx).PC_DESCRIPTION = match(PC_DESCRIPTION);
 					((CriarCartaContext)_localctx).pc_desc.add(((CriarCartaContext)_localctx).PC_DESCRIPTION);
-					setState(57);
+					setState(54);
 					((CriarCartaContext)_localctx).ATRIBUICAO = match(ATRIBUICAO);
 					((CriarCartaContext)_localctx).atribuicao.add(((CriarCartaContext)_localctx).ATRIBUICAO);
-					setState(58);
+					setState(55);
 					((CriarCartaContext)_localctx).CADEIA = match(CADEIA);
 					((CriarCartaContext)_localctx).desc.add(((CriarCartaContext)_localctx).CADEIA);
-					setState(59);
+					setState(56);
 					((CriarCartaContext)_localctx).FIM_CADEIA = match(FIM_CADEIA);
 					((CriarCartaContext)_localctx).fim_cadeia.add(((CriarCartaContext)_localctx).FIM_CADEIA);
-					setState(61);
+					setState(58);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==ERRO_CARD) {
 						{
-						setState(60);
+						setState(57);
 						((CriarCartaContext)_localctx).ERRO_CARD = match(ERRO_CARD);
 						((CriarCartaContext)_localctx).erro.add(((CriarCartaContext)_localctx).ERRO_CARD);
 						}
 					}
 
-					setState(63);
+					setState(60);
 					((CriarCartaContext)_localctx).PC_IMAGE = match(PC_IMAGE);
 					((CriarCartaContext)_localctx).pc_image.add(((CriarCartaContext)_localctx).PC_IMAGE);
-					setState(64);
+					setState(61);
 					((CriarCartaContext)_localctx).ATRIBUICAO = match(ATRIBUICAO);
 					((CriarCartaContext)_localctx).atribuicao.add(((CriarCartaContext)_localctx).ATRIBUICAO);
-					setState(65);
+					setState(62);
 					((CriarCartaContext)_localctx).PNG = match(PNG);
 					((CriarCartaContext)_localctx).png.add(((CriarCartaContext)_localctx).PNG);
-					setState(66);
+					setState(63);
 					((CriarCartaContext)_localctx).FIM_CADEIA = match(FIM_CADEIA);
 					((CriarCartaContext)_localctx).fim_cadeia.add(((CriarCartaContext)_localctx).FIM_CADEIA);
 					}
 					}
 					break;
-				case 2:
+				case PC_CARD_MAGIC:
+				case ERRO_CARD:
 					{
 					{
-					setState(68);
+					setState(65);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==ERRO_CARD) {
 						{
-						setState(67);
+						setState(64);
 						((CriarCartaContext)_localctx).ERRO_CARD = match(ERRO_CARD);
 						((CriarCartaContext)_localctx).erro.add(((CriarCartaContext)_localctx).ERRO_CARD);
 						}
 					}
 
-					setState(70);
+					setState(67);
 					((CriarCartaContext)_localctx).PC_CARD_MAGIC = match(PC_CARD_MAGIC);
 					((CriarCartaContext)_localctx).pc_cardm.add(((CriarCartaContext)_localctx).PC_CARD_MAGIC);
-					setState(71);
+					setState(68);
 					((CriarCartaContext)_localctx).ATRIBUICAO = match(ATRIBUICAO);
 					((CriarCartaContext)_localctx).atribuicao.add(((CriarCartaContext)_localctx).ATRIBUICAO);
-					setState(72);
+					setState(69);
 					((CriarCartaContext)_localctx).CARD_MAGIC = match(CARD_MAGIC);
 					((CriarCartaContext)_localctx).tipo_cartam.add(((CriarCartaContext)_localctx).CARD_MAGIC);
-					setState(73);
+					setState(70);
 					match(FIM_CADEIA);
-					setState(75);
+					setState(72);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==ERRO_CARD) {
 						{
-						setState(74);
+						setState(71);
 						((CriarCartaContext)_localctx).ERRO_CARD = match(ERRO_CARD);
 						((CriarCartaContext)_localctx).erro.add(((CriarCartaContext)_localctx).ERRO_CARD);
 						}
 					}
 
-					setState(77);
+					setState(74);
 					((CriarCartaContext)_localctx).PC_NAME = match(PC_NAME);
 					((CriarCartaContext)_localctx).pc_namem.add(((CriarCartaContext)_localctx).PC_NAME);
-					setState(78);
+					setState(75);
 					((CriarCartaContext)_localctx).ATRIBUICAO = match(ATRIBUICAO);
 					((CriarCartaContext)_localctx).atribuicao.add(((CriarCartaContext)_localctx).ATRIBUICAO);
-					setState(79);
+					setState(76);
 					((CriarCartaContext)_localctx).CADEIA = match(CADEIA);
 					((CriarCartaContext)_localctx).magic_mone.add(((CriarCartaContext)_localctx).CADEIA);
-					setState(80);
+					setState(77);
 					match(FIM_CADEIA);
-					setState(82);
+					setState(79);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==ERRO_CARD) {
 						{
-						setState(81);
+						setState(78);
 						((CriarCartaContext)_localctx).ERRO_CARD = match(ERRO_CARD);
 						((CriarCartaContext)_localctx).erro.add(((CriarCartaContext)_localctx).ERRO_CARD);
 						}
 					}
 
-					setState(84);
+					setState(81);
 					((CriarCartaContext)_localctx).PC_DESCRIPTION = match(PC_DESCRIPTION);
 					((CriarCartaContext)_localctx).pc_descm.add(((CriarCartaContext)_localctx).PC_DESCRIPTION);
-					setState(85);
+					setState(82);
 					((CriarCartaContext)_localctx).ATRIBUICAO = match(ATRIBUICAO);
 					((CriarCartaContext)_localctx).atribuicao.add(((CriarCartaContext)_localctx).ATRIBUICAO);
-					setState(86);
+					setState(83);
 					((CriarCartaContext)_localctx).CADEIA = match(CADEIA);
 					((CriarCartaContext)_localctx).desc_m.add(((CriarCartaContext)_localctx).CADEIA);
-					setState(87);
+					setState(84);
 					match(FIM_CADEIA);
-					setState(89);
+					setState(86);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 					if (_la==ERRO_CARD) {
 						{
-						setState(88);
+						setState(85);
 						((CriarCartaContext)_localctx).ERRO_CARD = match(ERRO_CARD);
 						((CriarCartaContext)_localctx).erro.add(((CriarCartaContext)_localctx).ERRO_CARD);
 						}
 					}
 
-					setState(91);
+					setState(88);
 					((CriarCartaContext)_localctx).PC_IMAGE = match(PC_IMAGE);
 					((CriarCartaContext)_localctx).pc_imagem.add(((CriarCartaContext)_localctx).PC_IMAGE);
-					setState(92);
+					setState(89);
 					((CriarCartaContext)_localctx).ATRIBUICAO = match(ATRIBUICAO);
 					((CriarCartaContext)_localctx).atribuicao.add(((CriarCartaContext)_localctx).ATRIBUICAO);
-					setState(93);
+					setState(90);
 					((CriarCartaContext)_localctx).PNG = match(PNG);
 					((CriarCartaContext)_localctx).magic_png.add(((CriarCartaContext)_localctx).PNG);
-					setState(94);
+					setState(91);
 					match(FIM_CADEIA);
 					}
 					}
 					break;
+				default:
+					throw new NoViableAltException(this);
 				}
 				}
-				setState(97); 
+				setState(96);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & 8204L) != 0) );
-			setState(99);
+			}
+			setState(97);
 			((CriarCartaContext)_localctx).pc_fim = match(PC_FIM);
-			setState(100);
+			setState(98);
 			match(FIM_CADEIA);
-			setState(101);
+			setState(99);
 			match(EOF);
 			}
 		}
@@ -607,70 +599,69 @@ public class ParserParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\u0019h\u0002\u0000\u0007\u0000\u0001\u0000\u0001\u0000\u0001"+
-		"\u0000\u0003\u0000\u0006\b\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001"+
-		"\u0000\u0001\u0000\u0003\u0000\r\b\u0000\u0001\u0000\u0001\u0000\u0001"+
-		"\u0000\u0001\u0000\u0001\u0000\u0003\u0000\u0014\b\u0000\u0001\u0000\u0001"+
-		"\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0003\u0000\u001b\b\u0000\u0001"+
-		"\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0003\u0000\"\b"+
+		"\u0004\u0001\u0019f\u0002\u0000\u0007\u0000\u0001\u0000\u0001\u0000\u0001"+
+		"\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0003\u0000\n\b"+
 		"\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0003"+
-		"\u0000)\b\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001"+
-		"\u0000\u0003\u00000\b\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001"+
-		"\u0000\u0001\u0000\u0003\u00007\b\u0000\u0001\u0000\u0001\u0000\u0001"+
-		"\u0000\u0001\u0000\u0001\u0000\u0003\u0000>\b\u0000\u0001\u0000\u0001"+
-		"\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0003\u0000E\b\u0000\u0001"+
-		"\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0003\u0000L\b"+
+		"\u0000\u0011\b\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001"+
+		"\u0000\u0003\u0000\u0018\b\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001"+
+		"\u0000\u0001\u0000\u0003\u0000\u001f\b\u0000\u0001\u0000\u0001\u0000\u0001"+
+		"\u0000\u0001\u0000\u0001\u0000\u0003\u0000&\b\u0000\u0001\u0000\u0001"+
+		"\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0003\u0000-\b\u0000\u0001"+
+		"\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0003\u00004\b"+
 		"\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0003"+
-		"\u0000S\b\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001"+
-		"\u0000\u0003\u0000Z\b\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001"+
-		"\u0000\u0004\u0000`\b\u0000\u000b\u0000\f\u0000a\u0001\u0000\u0001\u0000"+
-		"\u0001\u0000\u0001\u0000\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0000"+
-		"u\u0000\u0002\u0001\u0000\u0000\u0000\u0002\u0003\u0005\u0001\u0000\u0000"+
-		"\u0003_\u0005\u0016\u0000\u0000\u0004\u0006\u0005\r\u0000\u0000\u0005"+
-		"\u0004\u0001\u0000\u0000\u0000\u0005\u0006\u0001\u0000\u0000\u0000\u0006"+
-		"\u0007\u0001\u0000\u0000\u0000\u0007\b\u0005\u0002\u0000\u0000\b\t\u0005"+
-		"\u0016\u0000\u0000\t\n\u0005\u000e\u0000\u0000\n\f\u0005\u0015\u0000\u0000"+
-		"\u000b\r\u0005\r\u0000\u0000\f\u000b\u0001\u0000\u0000\u0000\f\r\u0001"+
-		"\u0000\u0000\u0000\r\u000e\u0001\u0000\u0000\u0000\u000e\u000f\u0005\u0004"+
-		"\u0000\u0000\u000f\u0010\u0005\u0016\u0000\u0000\u0010\u0011\u0005\u0014"+
-		"\u0000\u0000\u0011\u0013\u0005\u0015\u0000\u0000\u0012\u0014\u0005\r\u0000"+
-		"\u0000\u0013\u0012\u0001\u0000\u0000\u0000\u0013\u0014\u0001\u0000\u0000"+
-		"\u0000\u0014\u0015\u0001\u0000\u0000\u0000\u0015\u0016\u0005\u0005\u0000"+
-		"\u0000\u0016\u0017\u0005\u0016\u0000\u0000\u0017\u0018\u0005\u0013\u0000"+
-		"\u0000\u0018\u001a\u0005\u0015\u0000\u0000\u0019\u001b\u0005\r\u0000\u0000"+
-		"\u001a\u0019\u0001\u0000\u0000\u0000\u001a\u001b\u0001\u0000\u0000\u0000"+
-		"\u001b\u001c\u0001\u0000\u0000\u0000\u001c\u001d\u0005\u0006\u0000\u0000"+
-		"\u001d\u001e\u0005\u0016\u0000\u0000\u001e\u001f\u0005\u0010\u0000\u0000"+
-		"\u001f!\u0005\u0015\u0000\u0000 \"\u0005\r\u0000\u0000! \u0001\u0000\u0000"+
-		"\u0000!\"\u0001\u0000\u0000\u0000\"#\u0001\u0000\u0000\u0000#$\u0005\u0007"+
-		"\u0000\u0000$%\u0005\u0016\u0000\u0000%&\u0005\u0011\u0000\u0000&(\u0005"+
-		"\u0015\u0000\u0000\')\u0005\r\u0000\u0000(\'\u0001\u0000\u0000\u0000("+
-		")\u0001\u0000\u0000\u0000)*\u0001\u0000\u0000\u0000*+\u0005\b\u0000\u0000"+
-		"+,\u0005\u0016\u0000\u0000,-\u0005\u0013\u0000\u0000-/\u0005\u0015\u0000"+
-		"\u0000.0\u0005\r\u0000\u0000/.\u0001\u0000\u0000\u0000/0\u0001\u0000\u0000"+
-		"\u000001\u0001\u0000\u0000\u000012\u0005\t\u0000\u000023\u0005\u0016\u0000"+
-		"\u000034\u0005\u0013\u0000\u000046\u0005\u0015\u0000\u000057\u0005\r\u0000"+
-		"\u000065\u0001\u0000\u0000\u000067\u0001\u0000\u0000\u000078\u0001\u0000"+
-		"\u0000\u000089\u0005\n\u0000\u00009:\u0005\u0016\u0000\u0000:;\u0005\u0014"+
-		"\u0000\u0000;=\u0005\u0015\u0000\u0000<>\u0005\r\u0000\u0000=<\u0001\u0000"+
-		"\u0000\u0000=>\u0001\u0000\u0000\u0000>?\u0001\u0000\u0000\u0000?@\u0005"+
-		"\u000b\u0000\u0000@A\u0005\u0016\u0000\u0000AB\u0005\u0012\u0000\u0000"+
-		"B`\u0005\u0015\u0000\u0000CE\u0005\r\u0000\u0000DC\u0001\u0000\u0000\u0000"+
-		"DE\u0001\u0000\u0000\u0000EF\u0001\u0000\u0000\u0000FG\u0005\u0003\u0000"+
-		"\u0000GH\u0005\u0016\u0000\u0000HI\u0005\u000f\u0000\u0000IK\u0005\u0015"+
-		"\u0000\u0000JL\u0005\r\u0000\u0000KJ\u0001\u0000\u0000\u0000KL\u0001\u0000"+
-		"\u0000\u0000LM\u0001\u0000\u0000\u0000MN\u0005\u0004\u0000\u0000NO\u0005"+
-		"\u0016\u0000\u0000OP\u0005\u0014\u0000\u0000PR\u0005\u0015\u0000\u0000"+
-		"QS\u0005\r\u0000\u0000RQ\u0001\u0000\u0000\u0000RS\u0001\u0000\u0000\u0000"+
-		"ST\u0001\u0000\u0000\u0000TU\u0005\n\u0000\u0000UV\u0005\u0016\u0000\u0000"+
-		"VW\u0005\u0014\u0000\u0000WY\u0005\u0015\u0000\u0000XZ\u0005\r\u0000\u0000"+
-		"YX\u0001\u0000\u0000\u0000YZ\u0001\u0000\u0000\u0000Z[\u0001\u0000\u0000"+
-		"\u0000[\\\u0005\u000b\u0000\u0000\\]\u0005\u0016\u0000\u0000]^\u0005\u0012"+
-		"\u0000\u0000^`\u0005\u0015\u0000\u0000_\u0005\u0001\u0000\u0000\u0000"+
-		"_D\u0001\u0000\u0000\u0000`a\u0001\u0000\u0000\u0000a_\u0001\u0000\u0000"+
-		"\u0000ab\u0001\u0000\u0000\u0000bc\u0001\u0000\u0000\u0000cd\u0005\f\u0000"+
-		"\u0000de\u0005\u0015\u0000\u0000ef\u0005\u0000\u0000\u0001f\u0001\u0001"+
-		"\u0000\u0000\u0000\u000f\u0005\f\u0013\u001a!(/6=DKRY_a";
+		"\u0000;\b\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001"+
+		"\u0000\u0003\u0000B\b\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001"+
+		"\u0000\u0001\u0000\u0003\u0000I\b\u0000\u0001\u0000\u0001\u0000\u0001"+
+		"\u0000\u0001\u0000\u0001\u0000\u0003\u0000P\b\u0000\u0001\u0000\u0001"+
+		"\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0003\u0000W\b\u0000\u0001"+
+		"\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0005\u0000]\b\u0000\n\u0000"+
+		"\f\u0000`\t\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001"+
+		"\u0000\u0000\u0000\u0001\u0000\u0000\u0000r\u0000\u0002\u0001\u0000\u0000"+
+		"\u0000\u0002\u0003\u0005\u0001\u0000\u0000\u0003^\u0005\u0016\u0000\u0000"+
+		"\u0004\u0005\u0005\u0002\u0000\u0000\u0005\u0006\u0005\u0016\u0000\u0000"+
+		"\u0006\u0007\u0005\u000e\u0000\u0000\u0007\t\u0005\u0015\u0000\u0000\b"+
+		"\n\u0005\r\u0000\u0000\t\b\u0001\u0000\u0000\u0000\t\n\u0001\u0000\u0000"+
+		"\u0000\n\u000b\u0001\u0000\u0000\u0000\u000b\f\u0005\u0004\u0000\u0000"+
+		"\f\r\u0005\u0016\u0000\u0000\r\u000e\u0005\u0014\u0000\u0000\u000e\u0010"+
+		"\u0005\u0015\u0000\u0000\u000f\u0011\u0005\r\u0000\u0000\u0010\u000f\u0001"+
+		"\u0000\u0000\u0000\u0010\u0011\u0001\u0000\u0000\u0000\u0011\u0012\u0001"+
+		"\u0000\u0000\u0000\u0012\u0013\u0005\u0005\u0000\u0000\u0013\u0014\u0005"+
+		"\u0016\u0000\u0000\u0014\u0015\u0005\u0013\u0000\u0000\u0015\u0017\u0005"+
+		"\u0015\u0000\u0000\u0016\u0018\u0005\r\u0000\u0000\u0017\u0016\u0001\u0000"+
+		"\u0000\u0000\u0017\u0018\u0001\u0000\u0000\u0000\u0018\u0019\u0001\u0000"+
+		"\u0000\u0000\u0019\u001a\u0005\u0006\u0000\u0000\u001a\u001b\u0005\u0016"+
+		"\u0000\u0000\u001b\u001c\u0005\u0010\u0000\u0000\u001c\u001e\u0005\u0015"+
+		"\u0000\u0000\u001d\u001f\u0005\r\u0000\u0000\u001e\u001d\u0001\u0000\u0000"+
+		"\u0000\u001e\u001f\u0001\u0000\u0000\u0000\u001f \u0001\u0000\u0000\u0000"+
+		" !\u0005\u0007\u0000\u0000!\"\u0005\u0016\u0000\u0000\"#\u0005\u0011\u0000"+
+		"\u0000#%\u0005\u0015\u0000\u0000$&\u0005\r\u0000\u0000%$\u0001\u0000\u0000"+
+		"\u0000%&\u0001\u0000\u0000\u0000&\'\u0001\u0000\u0000\u0000\'(\u0005\b"+
+		"\u0000\u0000()\u0005\u0016\u0000\u0000)*\u0005\u0013\u0000\u0000*,\u0005"+
+		"\u0015\u0000\u0000+-\u0005\r\u0000\u0000,+\u0001\u0000\u0000\u0000,-\u0001"+
+		"\u0000\u0000\u0000-.\u0001\u0000\u0000\u0000./\u0005\t\u0000\u0000/0\u0005"+
+		"\u0016\u0000\u000001\u0005\u0013\u0000\u000013\u0005\u0015\u0000\u0000"+
+		"24\u0005\r\u0000\u000032\u0001\u0000\u0000\u000034\u0001\u0000\u0000\u0000"+
+		"45\u0001\u0000\u0000\u000056\u0005\n\u0000\u000067\u0005\u0016\u0000\u0000"+
+		"78\u0005\u0014\u0000\u00008:\u0005\u0015\u0000\u00009;\u0005\r\u0000\u0000"+
+		":9\u0001\u0000\u0000\u0000:;\u0001\u0000\u0000\u0000;<\u0001\u0000\u0000"+
+		"\u0000<=\u0005\u000b\u0000\u0000=>\u0005\u0016\u0000\u0000>?\u0005\u0012"+
+		"\u0000\u0000?]\u0005\u0015\u0000\u0000@B\u0005\r\u0000\u0000A@\u0001\u0000"+
+		"\u0000\u0000AB\u0001\u0000\u0000\u0000BC\u0001\u0000\u0000\u0000CD\u0005"+
+		"\u0003\u0000\u0000DE\u0005\u0016\u0000\u0000EF\u0005\u000f\u0000\u0000"+
+		"FH\u0005\u0015\u0000\u0000GI\u0005\r\u0000\u0000HG\u0001\u0000\u0000\u0000"+
+		"HI\u0001\u0000\u0000\u0000IJ\u0001\u0000\u0000\u0000JK\u0005\u0004\u0000"+
+		"\u0000KL\u0005\u0016\u0000\u0000LM\u0005\u0014\u0000\u0000MO\u0005\u0015"+
+		"\u0000\u0000NP\u0005\r\u0000\u0000ON\u0001\u0000\u0000\u0000OP\u0001\u0000"+
+		"\u0000\u0000PQ\u0001\u0000\u0000\u0000QR\u0005\n\u0000\u0000RS\u0005\u0016"+
+		"\u0000\u0000ST\u0005\u0014\u0000\u0000TV\u0005\u0015\u0000\u0000UW\u0005"+
+		"\r\u0000\u0000VU\u0001\u0000\u0000\u0000VW\u0001\u0000\u0000\u0000WX\u0001"+
+		"\u0000\u0000\u0000XY\u0005\u000b\u0000\u0000YZ\u0005\u0016\u0000\u0000"+
+		"Z[\u0005\u0012\u0000\u0000[]\u0005\u0015\u0000\u0000\\\u0004\u0001\u0000"+
+		"\u0000\u0000\\A\u0001\u0000\u0000\u0000]`\u0001\u0000\u0000\u0000^\\\u0001"+
+		"\u0000\u0000\u0000^_\u0001\u0000\u0000\u0000_a\u0001\u0000\u0000\u0000"+
+		"`^\u0001\u0000\u0000\u0000ab\u0005\f\u0000\u0000bc\u0005\u0015\u0000\u0000"+
+		"cd\u0005\u0000\u0000\u0001d\u0001\u0001\u0000\u0000\u0000\u000e\t\u0010"+
+		"\u0017\u001e%,3:AHOV\\^";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

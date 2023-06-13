@@ -16,6 +16,63 @@
             text-align: justify;
         }
 
+        .container {
+            position: relative;
+            padding: auto;
+            max-width: auto;
+            margin: 0 auto;
+
+        }
+
+        body {
+            background-image: url('yugioh.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            flex-direction: column;
+            display: flex;
+            /*min-height: 100vh;*/
+
+        }
+
+        header {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+
+        }
+
+        /* Estilos do footer */
+        footer {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            margin-top: auto;
+            bottom: 0;
+            height: 6vh;
+
+
+        }
+
+        .main {
+            flex-grow: 1;
+            margin-bottom: 6vh;
+        }
+
+        .gallery-wraper {
+            overflow-x: scroll;
+
+        }
+
+        .gallery {
+            display: flex;
+            flex-flow: nowrap;
+        }
+
         .Profile {
 
             padding: 5px;
@@ -23,9 +80,9 @@
 
         .profile_monster_effect {
             background-image: url("monster_effect.jpg");
-            background-repeat: repeat;
-            background-position: right top;
-            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
             width: 280px;
             height: auto;
             padding: 5px;
@@ -36,9 +93,9 @@
 
         .profile_monster_normal {
             background-image: url("fundo_normal.jpg");
-            background-repeat: repeat;
-            background-position: right top;
-            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
             width: 280px;
             height: auto;
             padding: 5px;
@@ -49,9 +106,9 @@
 
         .profile_monster_fusion {
             background-image: url("fundo_fusao.jpg");
-            background-repeat: repeat;
-            background-position: right top;
-            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
             width: 280px;
             height: auto;
             padding: 5px;
@@ -61,9 +118,10 @@
         }
 
         .profile_monster_sincro {
-            background-repeat: repeat;
-            background-position: right top;
-            background-attachment: fixed;
+            background-image: url("synchro.jpg");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
             width: 280px;
             height: auto;
             padding: 5px;
@@ -74,9 +132,9 @@
 
         .profile_monster_xyz {
             background-image: url("fundo_xyz.jpg");
-            background-repeat: repeat;
-            background-position: right top;
-            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
             width: 280px;
             height: auto;
             padding: 5px;
@@ -87,9 +145,9 @@
 
         .profile_monster_ritual {
             background-image: url("fundo_ritual.jpg");
-            background-repeat: repeat;
+            background-repeat: no-repeat;
             background-position: center;
-            background-attachment: fixed;
+            background-size: cover;
             width: 280px;
             height: auto;
             padding: 5px;
@@ -100,9 +158,9 @@
 
         .profile_normal_spell {
             background-image: url("fundo_spell.jpg");
-            background-repeat: repeat;
+            background-repeat: no-repeat;
             background-position: center;
-            background-attachment: fixed;
+            background-size: cover;
             width: 280px;
             height: auto;
             padding: 5px;
@@ -113,9 +171,9 @@
 
         .profile_spell_continuous {
             background-image: url("fundo_spell.jpg");
-            background-repeat: repeat;
+            background-repeat: no-repeat;
             background-position: center;
-            background-attachment: fixed;
+            background-size: cover;
             width: 280px;
             height: auto;
             padding: 5px;
@@ -126,9 +184,9 @@
 
         .profile_spell_equip {
             background-image: url("fundo_spell.jpg");
-            background-repeat: repeat;
+            background-repeat: no-repeat;
             background-position: center;
-            background-attachment: fixed;
+            background-size: cover;
             width: 280px;
             height: auto;
             padding: 5px;
@@ -139,9 +197,9 @@
 
         .profile_spell_field {
             background-image: url("fundo_spell.jpg");
-            background-repeat: repeat;
+            background-repeat: no-repeat;
             background-position: center;
-            background-attachment: fixed;
+            background-size: cover;
             width: 280px;
             height: auto;
             padding: 5px;
@@ -152,9 +210,9 @@
 
         .profile_spell_quick {
             background-image: url("fundo_spell.jpg");
-            background-repeat: repeat;
+            background-repeat: no-repeat;
             background-position: center;
-            background-attachment: fixed;
+            background-size: cover;
             width: 280px;
             height: auto;
             padding: 5px;
@@ -165,9 +223,9 @@
 
         .profile_spell_ritual {
             background-image: url("fundo_spell.jpg");
-            background-repeat: repeat;
+            background-repeat: no-repeat;
             background-position: center;
-            background-attachment: fixed;
+            background-size: cover;
             width: 280px;
             height: auto;
             padding: 5px;
@@ -178,9 +236,9 @@
 
         .profile_normal_trap {
             background-image: url("fundo_trap.jpg");
-            background-repeat: repeat;
+            background-repeat: no-repeat;
             background-position: center;
-            background-attachment: fixed;
+            background-size: cover;
             width: 280px;
             height: auto;
             padding: 5px;
@@ -191,9 +249,9 @@
 
         .profile_counter_trap {
             background-image: url("fundo_trap.jpg");
-            background-repeat: repeat;
+            background-repeat: no-repeat;
             background-position: center;
-            background-attachment: fixed;
+            background-size: cover;
             width: 280px;
             height: auto;
             padding: 5px;
@@ -204,9 +262,9 @@
 
         .profile_continuous_trap {
             background-image: url("fundo_trap.jpg");
-            background-repeat: repeat;
+            background-repeat: no-repeat;
             background-position: center;
-            background-attachment: fixed;
+            background-size: cover;
             width: 280px;
             height: auto;
             padding: 5px;
@@ -325,7 +383,8 @@
             overflow: hidden;
             padding: 2px;
             background: rgba(0, 0, 0, 0.6);
-            margin: 2px 2px;
+            margin: 7px 7px;
+
         }
 
         .profile_img {
@@ -335,35 +394,54 @@
 
         .profile_desc {
             background: rgba(255, 255, 255, 0.7);
-            overflow: auto;
+            overflow: hidden;
             margin-top: 5px;
             border-radius: 0px;
             border: solid 3px rgb(219, 58, 58, 0.8);
-            width: 50px 50px;
-
-
+            position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
         .profile_desc h4 {
             font-size: 13px;
             font-weight: bold;
+            position: relative;
         }
 
         .profile_desc p {
             font-size: 10px;
             padding: 2px;
+            width: auto;
+            position: relative;
 
         }
+
+        .profile_attack p {
+            text-align: right;
+        }
+
 
         .profile_attack {
             margin: 3px;
             font-weight: bold;
             border-top: solid #000;
+            margin-top: auto;
+            float: right;
 
         }
     </style>
 </head>
-<body><br>
+
+<body>
+    <header>
+        <h1>Custom Deck de YU-GI-OH</h1>
+
+    </header>
+    <main>
+        <div class="container">
+            <div class="gallery-wraper">
+                <div class="gallery"><br>
 
     <div class="Profile">
         <div class="profile_monster_normal">
@@ -392,7 +470,7 @@
                     <p>Este lendário dragão é uma poderosa máquina de destruição. Praticamente invencível, muito poucos enfrentaram essa magnifica criatura e viveram para contar a história.</p>
                 </div>
                 <div class="profile_attack"></div>
-                <p style="float:right;padding:3px">ATK3000 / DEF 2500</p>
+                <p style="float:right;padding:3px; text-align: right;">ATK/ 3000 DEF/ 2500</p>
             </div>
         </div>
     </div>
@@ -402,7 +480,7 @@
             <div class="profile-name">
                 <div class="profile_name">
                     <div class="profile_left">
-                        <p class="pname">Yubel</p>
+                        <p class="pname">yubel</p>
                     </div>
                     <div class="profile_right"><img src="trevas.jpg" width=" 25px">
                     </div>
@@ -423,7 +501,169 @@
                     <p>Este card não pode ser destruído em batalha. Você não sofre dano de batalha de batalhas envolvendo este card. Antes do cálculo de dano, quando este card com a face para cima em Posição de Ataque for atacado por um monstro do oponente: cause dano ao seu oponente igual ao ATK desse monstro. Durante a sua Fase Final: ofereça como Tributo 1 outro monstro ou destrua este card. Quando este card for destruído, exceto pelo seu próprio efeito: o seu dono pode Invocar por Invocação-Especial 1 Yubel - Encarnação do Terror da sua mão, Deck ou Cemitério.</p>
                 </div>
                 <div class="profile_attack"></div>
-                <p style="float:right;padding:3px">ATK0 / DEF 0</p>
+                <p style="float:right;padding:3px; text-align: right;">ATK/ 0 DEF/ 0</p>
+            </div>
+        </div>
+    </div>
+    <br><div class="Profile">
+        <div class="profile_monster_ritual">
+            <div class="profile-name">
+                <div class="profile_name">
+                    <div class="profile_left">
+                        <p class="pname_ritual">Renunciado</p>
+                    </div>
+                    <div class="profile_right"><img src="trevas.jpg" width=" 25px">
+                    </div>
+                </div>
+            </div><div class="profile_level">
+                <div class="profile-level" id="image-container"> <img src="Level.jpg" style="width: 20px;"> </div>
+            </div>
+
+
+            <div class="profile_img">
+                <div class="profile-img">
+                    <img src="renunciado.png" width="100%">
+                </div>
+            </div>
+            <div class="profile_desc">
+                <div class="profile-desc">
+                    <h4>[SPELLCASTER/RITUAL/EFFECT]</h4>
+                    <p>Você pode Invocar este card por Invocação-Ritual com 'Ritual de Ilusão Negra'. Uma vez por turno: você pode escolher 1 monstro que seu oponente controla; equipe o alvo a este card (máx. 1). O ATK/DEF deste card se tornam iguais aos do monstro equipado. Se este card seria destruído em batalha, em vez disso, destrua o monstro equipado. Enquanto estiver equipado com esse monstro, qualquer dano de batalha que você sofrer de batalhas envolvendo este card causam o mesmo dano de efeito ao seu oponente.</p>
+                </div>
+                <div class="profile_attack"></div>
+                <p style="float:right;padding:3px; text-align: right;">ATK/ 0 DEF/ 0</p>
+            </div>
+        </div>
+    </div>
+    <br> <br>
+
+    <div class="Profile">
+        <div class="profile_monster_fusion">
+            <div class="profile-name">
+                <div class="profile_name">
+                    <div class="profile_left">
+                        <p class="pname_fusion">Restrição do Olho do Milênio</p>
+                    </div>
+                    <div class="profile_right"><img src="trevas.jpg" width=" 25px">
+                    </div>
+                </div>
+            </div><div class="profile_level">
+                <div class="profile-level" id="image-container"> <img src="Level.jpg" style="width: 20px;"> </div>
+            </div>
+
+
+            <div class="profile_img">
+                <div class="profile-img">
+                    <img src="milenium.jpg" width="100%">
+                </div>
+            </div>
+            <div class="profile_desc">
+                <div class="profile-desc">
+                    <h4>[SPELLCASTER/FUSION/EFFECT]</h4>
+                    <p>Renunciado + 1 Monstro de Efeito
+	Uma vez por turno, quando seu oponente ativar um efeito de monstro (Efeito Rápido): você pode escolher 1 Monstro de Efeito que seu oponente controla ou no Cemitério dele; equipe o alvo a este card que você controla. Este card ganha ATK/DEF iguais aos do monstro equipado. Monstros com o nome desse monstro equipado não podem atacar e, além disso, seus efeitos no campo e seus efeitos ativados são negados.</p>
+                </div>
+                <div class="profile_attack"></div>
+                <p style="float:right;padding:3px; text-align: right;">ATK/ 0 DEF/ 0</p>
+            </div>
+        </div>
+    </div>
+    <br><br>
+
+    <div class="Profile">
+        <div class="profile_monster_sincro">
+            <div class="profile-name">
+                <div class="profile_name">
+                    <div class="profile_left">
+                        <p class="pname">Dragão da Poeira Estelar  </p>
+                    </div>
+                    <div class="profile_right"><img src="vento.jpg" width=" 25px">
+                    </div>
+                </div>
+            </div><div class="profile_level">
+                <div class="profile-level" id="image-container"> <img src="Level.jpg" style="width: 20px;"> <img src="Level.jpg" style="width: 20px;"> <img src="Level.jpg" style="width: 20px;"> <img src="Level.jpg" style="width: 20px;"> <img src="Level.jpg" style="width: 20px;"> <img src="Level.jpg" style="width: 20px;"> <img src="Level.jpg" style="width: 20px;"> <img src="Level.jpg" style="width: 20px;"> </div>
+            </div>
+
+
+            <div class="profile_img">
+                <div class="profile-img">
+                    <img src="stardust.jpg" width="100%">
+                </div>
+            </div>
+            <div class="profile_desc">
+                <div class="profile-desc">
+                    <h4>[DRAGON/SYNCRO/EFFECT]</h4>
+                    <p>1 Regulador + 1 ou mais monstros não-Reguladores
+	Durante o turno de qualquer duelista, quando um card ou efeito que destruiria um ou mais cards for ativado: você pode oferecer este card como Tributo; negue a ativação e, se isso acontecer, destrua-o. Durante a Fase Final, se este efeito foi ativado neste turno (e não foi negado): você pode Invocar este card por Invocação-Especial do seu Cemitério.</p>
+                </div>
+                <div class="profile_attack"></div>
+                <p style="float:right;padding:3px; text-align: right;">ATK/ 2500 DEF/ 2000</p>
+            </div>
+        </div>
+    </div>
+    <br><br>
+
+    <div class="Profile">
+        <div class="profile_monster_xyz">
+            <div class="profile-name">
+                <div class="profile_name">
+                    <div class="profile_left">
+                        <p class="pname_xyz">NÚMERO 39: UTOPIA</p>
+                    </div>
+                    <div class="profile_right"><img src="luz.jpg" width=" 25px">
+                    </div>
+                </div>
+            </div> <div class="profile_level_xyz">
+                <div class="profile-level" id="image-container-xyz"> <img src="rank.jpg" style="width: 20px;"> <img src="rank.jpg" style="width: 20px;"> <img src="rank.jpg" style="width: 20px;"> <img src="rank.jpg" style="width: 20px;"> </div>
+            </div>
+
+
+            <div class="profile_img">
+                <div class="profile-img">
+                    <img src="utopia.jpg" width="100%">
+                </div>
+            </div>
+            <div class="profile_desc">
+                <div class="profile-desc">
+                    <h4>[WARRIOR/XYZ/EFFECT]</h4>
+                    <p>2 monstros de Nível 4
+	Quando o monstro de qualquer duelista declarar um ataque: você pode desassociar 1 Matéria Xyz deste card; negue o ataque. Quando este card for alvo de um ataque enquanto ele não tem Matérias Xyz: destrua este card.</p>
+                </div>
+                <div class="profile_attack"></div>
+                <p style="float:right;padding:3px; text-align: right;">ATK/ 2500 DEF/ 2000</p>
+            </div>
+        </div>
+    </div>
+    <br> <br>
+
+    <div class="Profile">
+        <div class="profile_monster_fusion">
+            <div class="profile-name">
+                <div class="profile_name">
+                    <div class="profile_left">
+                        <p class="pname_fusion">Dragão de cinco cabeças</p>
+                    </div>
+                    <div class="profile_right"><img src="trevas.jpg" width=" 25px">
+                    </div>
+                </div>
+            </div><div class="profile_level">
+                <div class="profile-level" id="image-container"> <img src="Level.jpg" style="width: 20px;"> <img src="Level.jpg" style="width: 20px;"> <img src="Level.jpg" style="width: 20px;"> <img src="Level.jpg" style="width: 20px;"> <img src="Level.jpg" style="width: 20px;"> <img src="Level.jpg" style="width: 20px;"> <img src="Level.jpg" style="width: 20px;"> <img src="Level.jpg" style="width: 20px;"> <img src="Level.jpg" style="width: 20px;"> <img src="Level.jpg" style="width: 20px;"> <img src="Level.jpg" style="width: 20px;"> <img src="Level.jpg" style="width: 20px;"> </div>
+            </div>
+
+
+            <div class="profile_img">
+                <div class="profile-img">
+                    <img src="five.jpg" width="100%">
+                </div>
+            </div>
+            <div class="profile_desc">
+                <div class="profile-desc">
+                    <h4>[DRAGON/FUSION/EFFECT]</h4>
+                    <p>5 monstros Dragão
+	Deve ser Invocado por Invocação-Fusão. Não pode ser destruído em batalha com um monstro de TREVAS, TERRA, ÁGUA, FOGO ou VENTO.</p>
+                </div>
+                <div class="profile_attack"></div>
+                <p style="float:right;padding:3px; text-align: right;">ATK/ 5000 DEF/ 5000</p>
             </div>
         </div>
     </div>
@@ -434,7 +674,7 @@
             <div class="profile-name">
                 <div class="profile_name">
                     <div class="profile_left">
-                        <p class="pname">Espadas da Luz reveladora</p>
+                        <p class="pname">Espadas da Luz Reveladora</p>
                     </div>
                     <div class="profile_right">
                         <img src="SPELL.jpg" width=" 25px">
@@ -458,14 +698,304 @@
             </div>
         </div>
     </div>
-    <br><script>
+    <br><div class="Profile">
+        <div class="profile_spell_ritual">
+            <div class="profile-name">
+                <div class="profile_name">
+                    <div class="profile_left">
+                        <p class="pname">Ritual de Ilusão Negra</p>
+                    </div>
+                    <div class="profile_right">
+                        <img src="SPELL.jpg" width=" 25px">
+                    </div>
+                </div>
+            </div>
+            <div class="profile_level">
+                <h4 class="profile_spell">]</h4>
+                <img src="Ritual.jpg" width=" 20px">
+                <h4 class="profile_spell">[SPELL CARD</h4>
+
+            </div>
+
+            <div class="profile_img">
+                <div class="profile-img">
+                    <img src="ilusao.jpg" width="100%">
+                </div>
+            </div>
+            <div class="profile_desc">
+                <div class="profile-desc">
+                    <p>Este card é usado para a Invocação-Ritual de 'Renunciado'. Também deve oferecer como Tributo monstros cuja soma dos Níveis seja igual ou maior que 1, do Campo ou da sua mão.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <br><div class="Profile">
+        <div class="profile_spell_continuous">
+            <div class="profile-name">
+                <div class="profile_name">
+                    <div class="profile_left">
+                        <p class="pname">bArreira de terreno</p>
+                    </div>
+                    <div class="profile_right">
+                        <img src="SPELL.jpg" width=" 25px">
+                    </div>
+                </div>
+            </div>
+            <div class="profile_level">
+                <h4 class="profile_spell">]</h4>
+                <img src="Continuous.jpg" width=" 20px">
+                <h4 class="profile_spell">[SPELL CARD</h4>
+
+            </div>
+
+            <div class="profile_img">
+                <div class="profile-img">
+                    <img src="barrier.jpg" width="100%">
+                </div>
+            </div>
+            <div class="profile_desc">
+                <div class="profile-desc">
+                    <p>Cards de Magia de Campo no campo não podem ser destruídos. Nenhum duelista pode ativar um novo Card de Magia de Campo. Você só pode controlar 1 'Barreira de Terreno'.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <br><div class="Profile">
+        <div class="profile_spell_field">
+            <div class="profile-name">
+                <div class="profile_name">
+                    <div class="profile_left">
+                        <p class="pname">canyon</p>
+                    </div>
+                    <div class="profile_right">
+                        <img src="SPELL.jpg" width=" 25px">
+                    </div>
+                </div>
+            </div>
+            <div class="profile_level">
+                <h4 class="profile_spell">]</h4>
+                <img src="Field.jpg" width=" 20px">
+                <h4 class="profile_spell">[SPELL CARD</h4>
+
+            </div>
+
+            <div class="profile_img">
+                <div class="profile-img">
+                    <img src="canyon.jpg" width="100%">
+                </div>
+            </div>
+            <div class="profile_desc">
+                <div class="profile-desc">
+                    <p>Se um monstro do Tipo Rocha em Posição de Defesa for atacado, dobre qualquer dano de batalha para o controlador do monstro atacante.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <br><div class="Profile">
+        <div class="profile_spell_quick">
+            <div class="profile-name">
+                <div class="profile_name">
+                    <div class="profile_left">
+                        <p class="pname">Ciclone Místico do espaço</p>
+                    </div>
+                    <div class="profile_right">
+                        <img src="SPELL.jpg" width=" 25px">
+                    </div>
+                </div>
+            </div>
+            <div class="profile_level">
+                <h4 class="profile_spell">]</h4>
+                <img src="Quick.jpg" width=" 20px">
+                <h4 class="profile_spell">[SPELL CARD</h4>
+
+            </div>
+
+            <div class="profile_img">
+                <div class="profile-img">
+                    <img src="ciclone.jpg" width="100%">
+                </div>
+            </div>
+            <div class="profile_desc">
+                <div class="profile-desc">
+                    <p>Escolha 1 Card de Magia/Armadilha no campo; destrua o alvo.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <br><div class="Profile">
+        <div class="profile_spell_equip">
+            <div class="profile-name">
+                <div class="profile_name">
+                    <div class="profile_left">
+                        <p class="pname">Punhal Borboleta - Elma</p>
+                    </div>
+                    <div class="profile_right">
+                        <img src="SPELL.jpg" width=" 25px">
+                    </div>
+                </div>
+            </div>
+            <div class="profile_level">
+                <h4 class="profile_spell">]</h4>
+                <img src="Equip.jpg" width=" 20px">
+                <h4 class="profile_spell">[SPELL CARD</h4>
+
+            </div>
+
+            <div class="profile_img">
+                <div class="profile-img">
+                    <img src="elga.jpg" width="100%">
+                </div>
+            </div>
+            <div class="profile_desc">
+                <div class="profile-desc">
+                    <p>O monstro equipado ganha 300 de ATK. Quando este card for destruído e enviado para o Cemitério enquanto equipado: você pode devolver este card para a mão.</p>
+                </div>
+
+            </div>
+        </div>
+    </div> 
+<br><br>
+
+    <div class="Profile">
+        <div class="profile_counter_trap">
+            <div class="profile-name">
+                <div class="profile_name">
+                    <div class="profile_left">
+                        <p class="pname">FORÇA DO ESPELHO</p>
+                    </div>
+                    <div class="profile_right">
+                        <img src="Trap.jpg" width=" 25px">
+                    </div>
+                </div>
+            </div>
+            <div class="profile_level">
+                <h4 class="profile_spell">[TRAP CARD]</h4>
+
+            </div>
+
+            <div class="profile_img">
+                <div class="profile-img">
+                    <img src="mirror.jpg" width="100%">
+                </div>
+            </div>
+            <div class="profile_desc">
+                <div class="profile-desc">
+                    <p>Quando um monstro do oponente declarar um ataque: destrua todos os monstros em Posição de Ataque que seu oponente controla.</p>
+                </div>
+
+            </div>
+        </div>
+    </div> <div class="Profile">
+        <div class="profile_continuous_trap">
+            <div class="profile-name">
+                <div class="profile_name">
+                    <div class="profile_left">
+                        <p class="pname">Círculo da Profecia</p>
+                    </div>
+                    <div class="profile_right">
+                        <img src="Trap.jpg" width=" 25px">
+                    </div>
+                </div>
+            </div>
+            <div class="profile_level">
+                <h4 class="profile_spell">]</h4>
+                <img src="Continuous.jpg" width=" 20px">
+                <h4 class="profile_spell">[TRAP CARD</h4>
+
+            </div>
+
+            <div class="profile_img">
+                <div class="profile-img">
+                    <img src="circulo.jpg" width="100%">
+                </div>
+            </div>
+            <div class="profile_desc">
+                <div class="profile-desc">
+                    <p>Ative esse card ao escolher 1 monstro que seu oponente controla; ele não pode atacar ou mudar sua posição de batalha. Quando esse monstro for destruído, destrua este card.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <br><div class="Profile">
+        <div class="profile_counter_trap">
+            <div class="profile-name">
+                <div class="profile_name">
+                    <div class="profile_left">
+                        <p class="pname">suborno obscuro</p>
+                    </div>
+                    <div class="profile_right">
+                        <img src="Trap.jpg" width=" 25px">
+                    </div>
+                </div>
+            </div>
+            <div class="profile_level">
+                <h4 class="profile_spell">]</h4>
+                <img src="Counter.jpg" width=" 20px">
+                <h4 class="profile_spell">[TRAP CARD</h4>
+
+            </div>
+
+            <div class="profile_img">
+                <div class="profile-img">
+                    <img src="brib.png" width="100%">
+                </div>
+            </div>
+            <div class="profile_desc">
+                <div class="profile-desc">
+                    <p>Quando um Card de Magia/Armadilha de um oponente for ativado: seu oponente compra 1 card e, além disso, negue a ativado da Magia/Armadilha e, se isso acontecer, destrua-a.</p>
+                </div>
+
+            </div>
+        </div>
+    </div><br>
+
+    <div class="Profile">
+        <div class="profile_normal_spell">
+            <div class="profile-name">
+                <div class="profile_name">
+                    <div class="profile_left">
+                        <p class="pname">pote da ganância</p>
+                    </div>
+                    <div class="profile_right">
+                        <img src="SPELL.jpg" width=" 25px">
+                    </div>
+                </div>
+            </div>
+            <div class="profile_level">
+                <h4 class="profile_spell">[SPELL CARD]</h4>
+            </div>
+
+            <div class="profile_img">
+                <div class="profile-img">
+                    <img src="greed.jpg" width="100%">
+                </div>
+            </div>
+            <div class="profile_desc">
+                <div class="profile-desc">
+                    <p>Compre 2 cards.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <br>  </div>
+
+        </div>
+    </div><script>
         const containers = document.querySelectorAll('.profile_name');
         const texts = document.querySelectorAll('.pname');
 
         texts.forEach((text, index) => {
             const container = containers[index];
 
-            while (text.scrollHeight > container.offsetHeight || text.scrollWidth > container.offsetWidth) {
+            while ( text.scrollWidth > (container.offsetWidth) - 21.5) {
                 let fontSize = parseInt(window.getComputedStyle(text).fontSize);
                 fontSize -= 3.0001;
                 text.style.fontSize = `${fontSize}px`;
@@ -478,7 +1008,7 @@
         xyztext.forEach((text, index) => {
             const container = xyz[index];
 
-            while (text.scrollHeight > container.offsetHeight || text.scrollWidth > container.offsetWidth) {
+            while ( text.scrollWidth > (container.offsetWidth)- 21.5) {
                 let fontSize = parseInt(window.getComputedStyle(text).fontSize);
                 fontSize -= 3.0001;
                 text.style.fontSize = `${fontSize}px`;
@@ -492,7 +1022,7 @@
         fusiontext.forEach((text, index) => {
             const container = fusion[index];
 
-            while (text.scrollHeight > container.offsetHeight || text.scrollWidth > container.offsetWidth) {
+            while ( text.scrollWidth > (container.offsetWidth)- 21.5) {
                 let fontSize = parseInt(window.getComputedStyle(text).fontSize);
                 fontSize -= 3.0001;
                 text.style.fontSize = `${fontSize}px`;
@@ -505,7 +1035,7 @@
         ritualtext.forEach((text, index) => {
             const container = ritual[index];
 
-            while (text.scrollHeight > container.offsetHeight || text.scrollWidth > container.offsetWidth) {
+            while ( text.scrollWidth > (container.offsetWidth)- 21.5) {
                 let fontSize = parseInt(window.getComputedStyle(text).fontSize);
                 fontSize -= 3.0001;
                 text.style.fontSize = `${fontSize}px`;
@@ -513,10 +1043,32 @@
         });
 
 
+        const profileDescs = document.querySelectorAll('.profile_desc');
+        let maxHeight = 0;
+
+        profileDescs.forEach((desc) => {
+            const text = desc.querySelector('.profile-desc');
+            const textHeight = text.clientHeight;
+
+            if (textHeight > maxHeight) {
+                maxHeight = textHeight;
+            }
+        });
+
+        profileDescs.forEach((desc) => {
+            desc.style.height = `${maxHeight + 30}px`;
+        });
+
+
 
 
     </script>
 
+
+
+</main><footer>
+    &copy; Árlisson Alves da Silva Silveira 2023. Todos os direitos reservados.
+</footer>
 </body>
 
 </html>

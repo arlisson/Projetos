@@ -3,48 +3,55 @@
 
 <head>
     <style>
-        .container {
-            width: 200px;
-            /* Largura da div */
-            height: 100px;
-            /* Altura da div */
-            overflow: hidden;
-            /* Oculta o texto que excede a div */
+        /* Estilos gerais */
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
         }
 
-        .content {
-            display: flex;
-            /* Utiliza o flexbox para alinhar o conteúdo verticalmente */
-            align-items: center;
-            /* Centraliza verticalmente o conteúdo */
-            justify-content: center;
-            /* Centraliza horizontalmente o conteúdo */
+        /* Estilos do conteúdo principal */
+        main {
+            min-height: calc(100% - 50px);
+            /* Altura mínima do conteúdo principal */
+            padding-bottom: 50px;
+            /* Altura do footer */
         }
 
-        .text {
-            white-space: nowrap;
-            /* Impede que o texto pule linhas */
+        /* Estilos do footer */
+        footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 50px;
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="content">
-            <span class="text">Yubel Encarnação do Terror</span>
-        </div>
-    </div>
+    <header>
+        <h1>Meu Website</h1>
+        <nav>
+            <ul>
+                <li><a href="#">Página Inicial</a></li>
+                <li><a href="#">Sobre</a></li>
+                <li><a href="#">Contato</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <script>
-        const container = document.querySelector('.container');
-        const text = document.querySelector('.text');
+    <main>
+        <!-- Conteúdo principal da página -->
+    </main>
 
-        while (text.scrollWidth > container.offsetWidth) {
-            let fontSize = parseInt(window.getComputedStyle(text).fontSize);
-            fontSize -= 1;
-            text.style.fontSize = `${fontSize}px`;
-        }
-    </script>
+    <footer>
+        &copy; 2023 Meu Website. Todos os direitos reservados.
+    </footer>
 </body>
-
-</html>
+</

@@ -16,6 +16,7 @@ PC_FIM: 'END_CREATE_CARD';
 ERRO_CARD: ((FIM_CADEIA|ATRIBUICAO)(ESPACO_BRANCO)*)ATRIBUICAO;
 
 
+
 CARD_MONSTER:'NORMAL-MONSTER'| 'EFFECT-MONSTER'| 'XYZ-MONSTER'|'XYZ-EFFECT-MONSTER'| 'RITUAL-MONSTER'|'RITUAL-EFFECT-MONSTER'
             | 'FUSION-MONSTER'|'FUSION-EFFECT-MONSTER'| 'SYNCRO-MONSTER'|'SYNCRO-EFFECT-MONSTER';
             
@@ -28,7 +29,7 @@ TYPE: 'AQUA'| 'SPELLCASTER'| 'FIEND'| 'DINOSSAUR'|'NORMAL'|'EFFECT'|'DRAGON'|
       'THUNDER'|'WYRM'|'ZOMBIE'|'CREATOR-GOD'|'CIBERSE'|'FUSION'|'XYZ'|'SYNCRO'|'REGULATOR';
 
 
-PNG: '"'(PALAVRA|DIGITO)('_')*(PALAVRA|DIGITO)*('.png'|'.jpg')'"';
+PNG: '"'(PALAVRA|DIGITO)*('.png'|'.jpg')'"';
 
 DIGITO: ('+'|'-')?'0'..'9'('0'..'9')*;
 CADEIA: '"'.*?'"';
@@ -45,7 +46,7 @@ COMENTARIO: ('/*'.*?'*/')->skip;
 criarCarta:
     pc_inicio=PC_INICIO ATRIBUICAO
     
-   (((erro+=ERRO_CARD)?pc_card+=PC_CARD atribuicao+=ATRIBUICAO tipo_carta+=CARD_MONSTER fim_cadeia+=FIM_CADEIA
+   ((pc_card+=PC_CARD atribuicao+=ATRIBUICAO tipo_carta+=CARD_MONSTER fim_cadeia+=FIM_CADEIA
     (erro+=ERRO_CARD)?pc_name+=PC_NAME atribuicao+=ATRIBUICAO  monstro_nome+=CADEIA fim_cadeia+=FIM_CADEIA
     (erro+=ERRO_CARD)?pc_level+=PC_LEVEL atribuicao+=ATRIBUICAO level += DIGITO fim_cadeia+=FIM_CADEIA 
     (erro+=ERRO_CARD)?pc_atributo+=PC_ATTRIBUTE atribuicao+=ATRIBUICAO atributo+=ATTRIBUTE fim_cadeia+=FIM_CADEIA 
@@ -58,7 +59,7 @@ criarCarta:
     ((erro+=ERRO_CARD)?pc_cardm+=PC_CARD_MAGIC atribuicao+=ATRIBUICAO tipo_cartam+=CARD_MAGIC FIM_CADEIA
     (erro+=ERRO_CARD)?pc_namem+=PC_NAME atribuicao+=ATRIBUICAO  magic_mone+=CADEIA FIM_CADEIA    
     (erro+=ERRO_CARD)?pc_descm+=PC_DESCRIPTION atribuicao+=ATRIBUICAO desc_m+=CADEIA FIM_CADEIA 
-    (erro+=ERRO_CARD)?pc_imagem+=PC_IMAGE atribuicao+=ATRIBUICAO magic_png+=PNG FIM_CADEIA ))+
+    (erro+=ERRO_CARD)?pc_imagem+=PC_IMAGE atribuicao+=ATRIBUICAO magic_png+=PNG FIM_CADEIA ))*
     
     pc_fim=PC_FIM FIM_CADEIA EOF
 

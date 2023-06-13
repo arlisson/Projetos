@@ -17,8 +17,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
  * @author T-GAMER
  */
 public class Principal {
-    public static void main(String args[]) throws IOException{
-        PrintWriter pw = new PrintWriter(new File(args[1]));
+    public static void main(String args[]) throws IOException{        
         
         CharStream cs = CharStreams.fromFileName(args[0]);
         ParserLexer lexer = new ParserLexer(cs);              
@@ -26,13 +25,11 @@ public class Principal {
         ParserParser parser =  new ParserParser(tokens);        
         ParserParser.CriarCartaContext arvore = parser.criarCarta();        
          
-        
-       
+               
             //verificação semântica
             Semantico s = new Semantico();
             s.visitCriarCarta(arvore);  
-           
-            
+                    
            
             
             //Se encontrar erros semanticos
@@ -44,6 +41,7 @@ public class Principal {
                 }   
             //Se não encontrar erros semanticos gera o HTML       
             }else{
+                PrintWriter pw = new PrintWriter(new File(args[1]));
                 GeradorYGOHTML g = new GeradorYGOHTML();
                 g.visitCriarCarta(arvore);
                  try (PrintWriter pwc = new PrintWriter(args[1])) {
@@ -52,11 +50,11 @@ public class Principal {
                     r.printStackTrace(pw);
                 }
                  
-                System.out.println("Arquivo criado com sucesso no diretório -> "+args[1]);
+                
             }
                 
         
-        parser.criarCarta();
+        //parser.criarCarta();
         
     }
     

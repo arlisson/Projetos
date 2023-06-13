@@ -20,6 +20,8 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
     @Override
     public Void visitCriarCarta(ParserParser.CriarCartaContext ctx) {
         
+      
+        
         saida.append("<!DOCTYPE html>\n" +
 "<html>\n" +
 "\n" +
@@ -38,6 +40,63 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "            text-align: justify;\n" +
 "        }\n" +
 "\n" +
+"        .container {\n" +
+"            position: relative;\n" +
+"            padding: auto;\n" +
+"            max-width: auto;\n" +
+"            margin: 0 auto;\n" +
+"\n" +
+"        }\n" +
+"\n" +
+"        body {\n" +
+"            background-image: url('yugioh.jpg');\n" +
+"            background-repeat: no-repeat;\n" +
+"            background-size: cover;\n" +
+"            position: absolute;\n" +
+"            height: 100%;\n" +
+"            width: 100%;\n" +
+"            flex-direction: column;\n" +
+"            display: flex;\n" +
+"            /*min-height: 100vh;*/\n" +
+"\n" +
+"        }\n" +
+"\n" +
+"        header {\n" +
+"            background-color: rgba(0, 0, 0, 0.8);\n" +
+"            color: #fff;\n" +
+"            padding: 20px;\n" +
+"            text-align: center;\n" +
+"\n" +
+"        }\n" +
+"\n" +
+"        /* Estilos do footer */\n" +
+"        footer {\n" +
+"            background-color: rgba(0, 0, 0, 0.8);\n" +
+"            color: #fff;\n" +
+"            padding: 10px;\n" +
+"            text-align: center;\n" +
+"            margin-top: auto;\n" +
+"            bottom: 0;\n" +
+"            height: 6vh;\n" +
+"\n" +
+"\n" +
+"        }\n" +
+"\n" +
+"        .main {\n" +
+"            flex-grow: 1;\n" +
+"            margin-bottom: 6vh;\n" +
+"        }\n" +
+"\n" +
+"        .gallery-wraper {\n" +
+"            overflow-x: scroll;\n" +
+"\n" +
+"        }\n" +
+"\n" +
+"        .gallery {\n" +
+"            display: flex;\n" +
+"            flex-flow: nowrap;\n" +
+"        }\n" +
+"\n" +
 "        .Profile {\n" +
 "\n" +
 "            padding: 5px;\n" +
@@ -45,9 +104,9 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "\n" +
 "        .profile_monster_effect {\n" +
 "            background-image: url(\"monster_effect.jpg\");\n" +
-"            background-repeat: repeat;\n" +
-"            background-position: right top;\n" +
-"            background-attachment: fixed;\n" +
+"            background-repeat: no-repeat;\n" +
+"            background-position: center;\n" +
+"            background-size: cover;\n" +
 "            width: 280px;\n" +
 "            height: auto;\n" +
 "            padding: 5px;\n" +
@@ -58,9 +117,9 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "\n" +
 "        .profile_monster_normal {\n" +
 "            background-image: url(\"fundo_normal.jpg\");\n" +
-"            background-repeat: repeat;\n" +
-"            background-position: right top;\n" +
-"            background-attachment: fixed;\n" +
+"            background-repeat: no-repeat;\n" +
+"            background-position: center;\n" +
+"            background-size: cover;\n" +
 "            width: 280px;\n" +
 "            height: auto;\n" +
 "            padding: 5px;\n" +
@@ -71,9 +130,9 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "\n" +
 "        .profile_monster_fusion {\n" +
 "            background-image: url(\"fundo_fusao.jpg\");\n" +
-"            background-repeat: repeat;\n" +
-"            background-position: right top;\n" +
-"            background-attachment: fixed;\n" +
+"            background-repeat: no-repeat;\n" +
+"            background-position: center;\n" +
+"            background-size: cover;\n" +
 "            width: 280px;\n" +
 "            height: auto;\n" +
 "            padding: 5px;\n" +
@@ -83,9 +142,10 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "        }\n" +
 "\n" +
 "        .profile_monster_sincro {\n" +
-"            background-repeat: repeat;\n" +
-"            background-position: right top;\n" +
-"            background-attachment: fixed;\n" +
+"            background-image: url(\"synchro.jpg\");\n" +
+"            background-repeat: no-repeat;\n" +
+"            background-position: center;\n" +
+"            background-size: cover;\n" +
 "            width: 280px;\n" +
 "            height: auto;\n" +
 "            padding: 5px;\n" +
@@ -96,9 +156,9 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "\n" +
 "        .profile_monster_xyz {\n" +
 "            background-image: url(\"fundo_xyz.jpg\");\n" +
-"            background-repeat: repeat;\n" +
-"            background-position: right top;\n" +
-"            background-attachment: fixed;\n" +
+"            background-repeat: no-repeat;\n" +
+"            background-position: center;\n" +
+"            background-size: cover;\n" +
 "            width: 280px;\n" +
 "            height: auto;\n" +
 "            padding: 5px;\n" +
@@ -109,9 +169,9 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "\n" +
 "        .profile_monster_ritual {\n" +
 "            background-image: url(\"fundo_ritual.jpg\");\n" +
-"            background-repeat: repeat;\n" +
+"            background-repeat: no-repeat;\n" +
 "            background-position: center;\n" +
-"            background-attachment: fixed;\n" +
+"            background-size: cover;\n" +
 "            width: 280px;\n" +
 "            height: auto;\n" +
 "            padding: 5px;\n" +
@@ -122,9 +182,9 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "\n" +
 "        .profile_normal_spell {\n" +
 "            background-image: url(\"fundo_spell.jpg\");\n" +
-"            background-repeat: repeat;\n" +
+"            background-repeat: no-repeat;\n" +
 "            background-position: center;\n" +
-"            background-attachment: fixed;\n" +
+"            background-size: cover;\n" +
 "            width: 280px;\n" +
 "            height: auto;\n" +
 "            padding: 5px;\n" +
@@ -135,9 +195,9 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "\n" +
 "        .profile_spell_continuous {\n" +
 "            background-image: url(\"fundo_spell.jpg\");\n" +
-"            background-repeat: repeat;\n" +
+"            background-repeat: no-repeat;\n" +
 "            background-position: center;\n" +
-"            background-attachment: fixed;\n" +
+"            background-size: cover;\n" +
 "            width: 280px;\n" +
 "            height: auto;\n" +
 "            padding: 5px;\n" +
@@ -148,9 +208,9 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "\n" +
 "        .profile_spell_equip {\n" +
 "            background-image: url(\"fundo_spell.jpg\");\n" +
-"            background-repeat: repeat;\n" +
+"            background-repeat: no-repeat;\n" +
 "            background-position: center;\n" +
-"            background-attachment: fixed;\n" +
+"            background-size: cover;\n" +
 "            width: 280px;\n" +
 "            height: auto;\n" +
 "            padding: 5px;\n" +
@@ -161,9 +221,9 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "\n" +
 "        .profile_spell_field {\n" +
 "            background-image: url(\"fundo_spell.jpg\");\n" +
-"            background-repeat: repeat;\n" +
+"            background-repeat: no-repeat;\n" +
 "            background-position: center;\n" +
-"            background-attachment: fixed;\n" +
+"            background-size: cover;\n" +
 "            width: 280px;\n" +
 "            height: auto;\n" +
 "            padding: 5px;\n" +
@@ -174,9 +234,9 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "\n" +
 "        .profile_spell_quick {\n" +
 "            background-image: url(\"fundo_spell.jpg\");\n" +
-"            background-repeat: repeat;\n" +
+"            background-repeat: no-repeat;\n" +
 "            background-position: center;\n" +
-"            background-attachment: fixed;\n" +
+"            background-size: cover;\n" +
 "            width: 280px;\n" +
 "            height: auto;\n" +
 "            padding: 5px;\n" +
@@ -187,9 +247,9 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "\n" +
 "        .profile_spell_ritual {\n" +
 "            background-image: url(\"fundo_spell.jpg\");\n" +
-"            background-repeat: repeat;\n" +
+"            background-repeat: no-repeat;\n" +
 "            background-position: center;\n" +
-"            background-attachment: fixed;\n" +
+"            background-size: cover;\n" +
 "            width: 280px;\n" +
 "            height: auto;\n" +
 "            padding: 5px;\n" +
@@ -200,9 +260,9 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "\n" +
 "        .profile_normal_trap {\n" +
 "            background-image: url(\"fundo_trap.jpg\");\n" +
-"            background-repeat: repeat;\n" +
+"            background-repeat: no-repeat;\n" +
 "            background-position: center;\n" +
-"            background-attachment: fixed;\n" +
+"            background-size: cover;\n" +
 "            width: 280px;\n" +
 "            height: auto;\n" +
 "            padding: 5px;\n" +
@@ -213,9 +273,9 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "\n" +
 "        .profile_counter_trap {\n" +
 "            background-image: url(\"fundo_trap.jpg\");\n" +
-"            background-repeat: repeat;\n" +
+"            background-repeat: no-repeat;\n" +
 "            background-position: center;\n" +
-"            background-attachment: fixed;\n" +
+"            background-size: cover;\n" +
 "            width: 280px;\n" +
 "            height: auto;\n" +
 "            padding: 5px;\n" +
@@ -226,9 +286,9 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "\n" +
 "        .profile_continuous_trap {\n" +
 "            background-image: url(\"fundo_trap.jpg\");\n" +
-"            background-repeat: repeat;\n" +
+"            background-repeat: no-repeat;\n" +
 "            background-position: center;\n" +
-"            background-attachment: fixed;\n" +
+"            background-size: cover;\n" +
 "            width: 280px;\n" +
 "            height: auto;\n" +
 "            padding: 5px;\n" +
@@ -347,7 +407,8 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "            overflow: hidden;\n" +
 "            padding: 2px;\n" +
 "            background: rgba(0, 0, 0, 0.6);\n" +
-"            margin: 2px 2px;\n" +
+"            margin: 7px 7px;\n" +
+"\n" +
 "        }\n" +
 "\n" +
 "        .profile_img {\n" +
@@ -357,35 +418,54 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "\n" +
 "        .profile_desc {\n" +
 "            background: rgba(255, 255, 255, 0.7);\n" +
-"            overflow: auto;\n" +
+"            overflow: hidden;\n" +
 "            margin-top: 5px;\n" +
 "            border-radius: 0px;\n" +
 "            border: solid 3px rgb(219, 58, 58, 0.8);\n" +
-"            width: 50px 50px;\n" +
-"\n" +
-"\n" +
+"            position: relative;\n" +
+"            display: flex;\n" +
+"            flex-direction: column;\n" +
 "        }\n" +
 "\n" +
 "        .profile_desc h4 {\n" +
 "            font-size: 13px;\n" +
 "            font-weight: bold;\n" +
+"            position: relative;\n" +
 "        }\n" +
 "\n" +
 "        .profile_desc p {\n" +
 "            font-size: 10px;\n" +
 "            padding: 2px;\n" +
+"            width: auto;\n" +
+"            position: relative;\n" +
 "\n" +
 "        }\n" +
+"\n" +
+"        .profile_attack p {\n" +
+"            text-align: right;\n" +
+"        }\n" +
+"\n" +
 "\n" +
 "        .profile_attack {\n" +
 "            margin: 3px;\n" +
 "            font-weight: bold;\n" +
 "            border-top: solid #000;\n" +
+"            margin-top: auto;\n" +
+"            float: right;\n" +
 "\n" +
 "        }\n" +
 "    </style>\n" +
-"</head>\n"+
-                "<body>");
+"</head>\n" +
+"\n" +
+"<body>\n" +
+"    <header>\n" +
+"        <h1>Custom Deck de YU-GI-OH</h1>\n" +
+"\n" +
+"    </header>\n" +
+"    <main>\n" +
+"        <div class=\"container\">\n" +
+"            <div class=\"gallery-wraper\">\n" +
+"                <div class=\"gallery\">");
        
         for(int i=0;i<ctx.tipo_carta.size();i++){
             switch(ctx.tipo_carta.get(i).getText()){
@@ -570,17 +650,23 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
                     break;
             }
             
-            if(ctx.tipo_carta.get(i).getText().equals("XYZ-MONSTER")){
+            if(ctx.tipo_carta.get(i).getText().equals("XYZ-MONSTER")||ctx.tipo_carta.get(i).getText().equals("XYZ-EFFECT-MONSTER")){
                 saida.append(" <div class=\"profile_level_xyz\">\n" +
 "                <div class=\"profile-level\" id=\"image-container-xyz\">");
             }else{
                 saida.append("<div class=\"profile_level\">\n" +
 "                <div class=\"profile-level\" id=\"image-container\">");
             }
-            
-            for(int j =0;j<Integer.parseInt(ctx.level.get(i).getText());j++){
+            if(ctx.tipo_carta.get(i).getText().equals("XYZ-MONSTER")||ctx.tipo_carta.get(i).getText().equals("XYZ-EFFECT-MONSTER")){
+                for(int j =0;j<Integer.parseInt(ctx.level.get(i).getText());j++){
+                    saida.append(" <img src=\"rank.jpg\" style=\"width: 20px;\">");
+                }
+            }else{
+               for(int j =0;j<Integer.parseInt(ctx.level.get(i).getText());j++){
                 saida.append(" <img src=\"Level.jpg\" style=\"width: 20px;\">");
+                } 
             }
+            
             
            
             switch (ctx.tipo_carta.get(i).getText()){
@@ -600,7 +686,7 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "                    <p>"+ctx.desc.get(i).getText().replace("\"","")+"</p>\n" +
 "                </div>\n" +
 "                <div class=\"profile_attack\"></div>\n" +
-"                <p style=\"float:right;padding:3px\">ATK"+ctx.atk.get(i).getText()+" / DEF "+ctx.def.get(i).getText()+"</p>\n" +
+"                <p style=\"float:right;padding:3px; text-align: right;\">ATK/ "+ctx.atk.get(i).getText()+" DEF/ "+ctx.def.get(i).getText()+"</p>\n" +
 "            </div>\n" +
 "        </div>\n" +
 "    </div>\n" +
@@ -623,7 +709,7 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "                    <p>"+ctx.desc.get(i).getText().replace("\"","")+"</p>\n" +
 "                </div>\n" +
 "                <div class=\"profile_attack\"></div>\n" +
-"                <p style=\"float:right;padding:3px\">ATK"+ctx.atk.get(i).getText()+" / DEF "+ctx.def.get(i).getText()+"</p>\n" +
+"                <p style=\"float:right;padding:3px; text-align: right;\">ATK/ "+ctx.atk.get(i).getText()+" DEF/ "+ctx.def.get(i).getText()+"</p>\n" +
 "            </div>\n" +
 "        </div>\n" +
 "    </div>\n" +
@@ -646,7 +732,7 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "                    <p>"+ctx.desc.get(i).getText().replace("\"","")+"</p>\n" +
 "                </div>\n" +
 "                <div class=\"profile_attack\"></div>\n" +
-"                <p style=\"float:right;padding:3px\">ATK"+ctx.atk.get(i).getText()+" / DEF "+ctx.def.get(i).getText()+"</p>\n" +
+"                <p style=\"float:right;padding:3px; text-align: right;\">ATK/ "+ctx.atk.get(i).getText()+" DEF/ "+ctx.def.get(i).getText()+"</p>\n" +
 "            </div>\n" +
 "        </div>\n" +
 "    </div>\n" +
@@ -669,7 +755,7 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "                    <p>"+ctx.desc.get(i).getText().replace("\"","")+"</p>\n" +
 "                </div>\n" +
 "                <div class=\"profile_attack\"></div>\n" +
-"                <p style=\"float:right;padding:3px\">ATK"+ctx.atk.get(i).getText()+" / DEF "+ctx.def.get(i).getText()+"</p>\n" +
+"                <p style=\"float:right;padding:3px; text-align: right;\">ATK/ "+ctx.atk.get(i).getText()+" DEF/ "+ctx.def.get(i).getText()+"</p>\n" +
 "            </div>\n" +
 "        </div>\n" +
 "    </div>\n" +
@@ -693,7 +779,7 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "                    <p>"+ctx.desc.get(i).getText().replace("\"","")+"</p>\n" +
 "                </div>\n" +
 "                <div class=\"profile_attack\"></div>\n" +
-"                <p style=\"float:right;padding:3px\">ATK"+ctx.atk.get(i).getText()+" / DEF "+ctx.def.get(i).getText()+"</p>\n" +
+"                <p style=\"float:right;padding:3px; text-align: right;\">ATK/ "+ctx.atk.get(i).getText()+" DEF/ "+ctx.def.get(i).getText()+"</p>\n" +
 "            </div>\n" +
 "        </div>\n" +
 "    </div>\n" +
@@ -717,7 +803,7 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "                    <p>"+ctx.desc.get(i).getText().replace("\"","")+"</p>\n" +
 "                </div>\n" +
 "                <div class=\"profile_attack\"></div>\n" +
-"                <p style=\"float:right;padding:3px\">ATK"+ctx.atk.get(i).getText()+" / DEF "+ctx.def.get(i).getText()+"</p>\n" +
+"                <p style=\"float:right;padding:3px; text-align: right;\">ATK/ "+ctx.atk.get(i).getText()+" DEF/ "+ctx.def.get(i).getText()+"</p>\n" +
 "            </div>\n" +
 "        </div>\n" +
 "    </div>\n" +
@@ -740,7 +826,7 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "                    <p>"+ctx.desc.get(i).getText().replace("\"","")+"</p>\n" +
 "                </div>\n" +
 "                <div class=\"profile_attack\"></div>\n" +
-"                <p style=\"float:right;padding:3px\">ATK"+ctx.atk.get(i).getText()+" / DEF "+ctx.def.get(i).getText()+"</p>\n" +
+"                <p style=\"float:right;padding:3px; text-align: right;\">ATK/ "+ctx.atk.get(i).getText()+" DEF/ "+ctx.def.get(i).getText()+"</p>\n" +
 "            </div>\n" +
 "        </div>\n" +
 "    </div>\n" +
@@ -763,7 +849,7 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "                    <p>"+ctx.desc.get(i).getText().replace("\"","")+"</p>\n" +
 "                </div>\n" +
 "                <div class=\"profile_attack\"></div>\n" +
-"                <p style=\"float:right;padding:3px\">ATK"+ctx.atk.get(i).getText()+" / DEF "+ctx.def.get(i).getText()+"</p>\n" +
+"                <p style=\"float:right;padding:3px; text-align: right;\">ATK/ "+ctx.atk.get(i).getText()+" DEF/ "+ctx.def.get(i).getText()+"</p>\n" +
 "            </div>\n" +
 "        </div>\n" +
 "    </div>\n" +
@@ -786,7 +872,7 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "                    <p>"+ctx.desc.get(i).getText().replace("\"","")+"</p>\n" +
 "                </div>\n" +
 "                <div class=\"profile_attack\"></div>\n" +
-"                <p style=\"float:right;padding:3px\">ATK"+ctx.atk.get(i).getText()+" / DEF "+ctx.def.get(i).getText()+"</p>\n" +
+"                <p style=\"float:right;padding:3px; text-align: right;\">ATK/ "+ctx.atk.get(i).getText()+" DEF/ "+ctx.def.get(i).getText()+"</p>\n" +
 "            </div>\n" +
 "        </div>\n" +
 "    </div>\n" +
@@ -809,7 +895,7 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "                    <p>"+ctx.desc.get(i).getText().replace("\"","")+"</p>\n" +
 "                </div>\n" +
 "                <div class=\"profile_attack\"></div>\n" +
-"                <p style=\"float:right;padding:3px\">ATK"+ctx.atk.get(i).getText()+" / DEF "+ctx.def.get(i).getText()+"</p>\n" +
+"                <p style=\"float:right;padding:3px; text-align: right;\">ATK/ "+ctx.atk.get(i).getText()+" DEF/ "+ctx.def.get(i).getText()+"</p>\n" +
 "            </div>\n" +
 "        </div>\n" +
 "    </div>\n" +
@@ -1153,14 +1239,17 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
             
         }
         
-         saida.append("<script>\n" +
+         saida.append("  </div>\n" +
+"\n" +
+"        </div>\n" +
+"    </div><script>\n" +
 "        const containers = document.querySelectorAll('.profile_name');\n" +
 "        const texts = document.querySelectorAll('.pname');\n" +
 "\n" +
 "        texts.forEach((text, index) => {\n" +
 "            const container = containers[index];\n" +
 "\n" +
-"            while (text.scrollHeight > container.offsetHeight || text.scrollWidth > container.offsetWidth) {\n" +
+"            while ( text.scrollWidth > (container.offsetWidth) - 21.5) {\n" +
 "                let fontSize = parseInt(window.getComputedStyle(text).fontSize);\n" +
 "                fontSize -= 3.0001;\n" +
 "                text.style.fontSize = `${fontSize}px`;\n" +
@@ -1173,7 +1262,7 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "        xyztext.forEach((text, index) => {\n" +
 "            const container = xyz[index];\n" +
 "\n" +
-"            while (text.scrollHeight > container.offsetHeight || text.scrollWidth > container.offsetWidth) {\n" +
+"            while ( text.scrollWidth > (container.offsetWidth)- 21.5) {\n" +
 "                let fontSize = parseInt(window.getComputedStyle(text).fontSize);\n" +
 "                fontSize -= 3.0001;\n" +
 "                text.style.fontSize = `${fontSize}px`;\n" +
@@ -1187,7 +1276,7 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "        fusiontext.forEach((text, index) => {\n" +
 "            const container = fusion[index];\n" +
 "\n" +
-"            while (text.scrollHeight > container.offsetHeight || text.scrollWidth > container.offsetWidth) {\n" +
+"            while ( text.scrollWidth > (container.offsetWidth)- 21.5) {\n" +
 "                let fontSize = parseInt(window.getComputedStyle(text).fontSize);\n" +
 "                fontSize -= 3.0001;\n" +
 "                text.style.fontSize = `${fontSize}px`;\n" +
@@ -1200,7 +1289,7 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "        ritualtext.forEach((text, index) => {\n" +
 "            const container = ritual[index];\n" +
 "\n" +
-"            while (text.scrollHeight > container.offsetHeight || text.scrollWidth > container.offsetWidth) {\n" +
+"            while ( text.scrollWidth > (container.offsetWidth)- 21.5) {\n" +
 "                let fontSize = parseInt(window.getComputedStyle(text).fontSize);\n" +
 "                fontSize -= 3.0001;\n" +
 "                text.style.fontSize = `${fontSize}px`;\n" +
@@ -1208,11 +1297,36 @@ public class GeradorYGOHTML extends ParserBaseVisitor<Void>{
 "        });\n" +
 "\n" +
 "\n" +
+"        const profileDescs = document.querySelectorAll('.profile_desc');\n" +
+"        let maxHeight = 0;\n" +
+"\n" +
+"        profileDescs.forEach((desc) => {\n" +
+"            const text = desc.querySelector('.profile-desc');\n" +
+"            const textHeight = text.clientHeight;\n" +
+"\n" +
+"            if (textHeight > maxHeight) {\n" +
+"                maxHeight = textHeight;\n" +
+"            }\n" +
+"        });\n" +
+"\n" +
+"        profileDescs.forEach((desc) => {\n" +
+"            desc.style.height = `${maxHeight + 30}px`;\n" +
+"        });" +
+"\n" +
+"\n" +
+"\n" +
 "\n" +
 "\n" +
 "    </script>\n" +
 "\n" +
+"\n" +
+"\n" +
+                 "</main>"
+                 + "<footer>\n" +
+"    &copy; Árlisson Alves da Silva Silveira 2023. Todos os direitos reservados.\n" +
+"</footer>\n" +
 "</body>\n" +
+
 "\n" +
 "</html>");
         return null;
