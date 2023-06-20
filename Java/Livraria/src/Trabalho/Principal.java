@@ -13,7 +13,7 @@ public class Principal {
 		ArrayList<Livro> livros = new ArrayList<Livro>(); 
 		ArrayList<Emprestimo> emprestimos = new ArrayList<Emprestimo>();		
 		
-		usuarios.add(new Usuario("Árlisson","122.325.587-54","GROSSO"));		
+		usuarios.add(new Usuario("Árlisson","111.111.111","GROSSO"));		
 		usuarios.add(new Usuario("Maria", "222.222.222-22", "Av. B, 456"));
         usuarios.add(new Usuario("Pedro", "333.333.333-33", "Travessa C, 789"));
         usuarios.add(new Usuario("Ana", "444.444.444-44", "Alameda D, 101"));
