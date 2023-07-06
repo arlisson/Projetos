@@ -1,1 +1,3 @@
 VAI TOMAR NO SEU CU VELHO BROXA
+
+Arquivo python .exe -> pyinstaller --onefile nome_arquivo
