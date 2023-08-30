@@ -3,7 +3,7 @@ import requests
 from bs4 import *
 import gtts
 import pyttsx3
-
+import wikipedia
 
 def pegar_hora():
 
@@ -38,19 +38,24 @@ with sr.Microphone(1) as mic:
 text = text.upper()
 print(text)
 
+speaker = pyttsx3.init()
+voices = speaker.getProperty('voices')
 
-if(text == 'QUE HORAS SÃO'):
+speaker.setProperty('voice', voices[0].id)  # definindo linguagm do sistema
+rate = speaker.getProperty('rate')  # definindo propriedade de velocidade
+speaker.setProperty('rate', rate-25)  # definindo velocidade
 
-    speaker = pyttsx3.init()
-    voices = speaker.getProperty('voices')
 
-    speaker.setProperty('voice', voices[0].id)  # definindo linguagm do sistema
-    rate = speaker.getProperty('rate')  # definindo propriedade de velocidade
-    speaker.setProperty('rate', rate-25)  # definindo velocidade
-
+if(text == 'QUE HORAS SÃO'):    
     speaker.say(pegar_hora())  # dizer
     speaker.runAndWait()  # executar e falar
 
+
+busca = wikipedia.search(text)
+
+print(wikipedia.summary(busca[0], sentences= 20))
+speaker.say(wikipedia.summary(busca[0], sentences= 1))
+speaker.runAndWait()
 
 '''for voice in voices:
     print(voice,voice.id)'''
