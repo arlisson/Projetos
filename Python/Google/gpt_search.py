@@ -5,7 +5,7 @@ import re
 from urllib.parse import urlsplit
 import json
 
-apikey = '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'
+
 model_id = 'gpt-3.5-turbo'
 headers = {"Authorization": f"Bearer {apikey}",
            "Content-Type": "application/json"}
