@@ -2,69 +2,118 @@ import pygame
 from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLUT import *
-from OpenGL.GLU import *
 
-vertices = (
-    (1, -1, -1),
-    (1, -1, 1),
-    (-1, -1, 1),
-    (-1, -1, -1),
-    (0, 1, 0)
-)
+# Inicializa o Pygame
+pygame.init()
 
-linhas = (
-    (0, 1),
-    (1, 2),
-    (2, 3),
-    (3, 0),
-    (0, 4),
-    (1, 4),
-    (2, 4),
-    (3, 4)
-)
-
-faces = (
-    (0, 1, 2, 3),
-    (4, 0, 1),
-    (4, 1, 2),
-    (4, 2, 3),
-    (4, 3, 0)
-)
+# Configurações iniciais
+largura, altura = 1200, 800
+display = (largura, altura)
+pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
+glViewport(0, 0, largura, altura)
+glMatrixMode(GL_PROJECTION)
+glLoadIdentity()
+glOrtho(0, largura, 0, altura, 0, 1)
+glMatrixMode(GL_MODELVIEW)
+glLoadIdentity()
 
 
-def desenhar_piramide():
-
-    glBegin(GL_LINES)
-    for linha in linhas:
-        for vertice in linha:
-            glVertex3fv(vertices[vertice])
+def draw():
+    a, b, c = [500, 300], [600, 400], [600, 300]
+    glBegin(GL_LINE_LOOP)
+    glVertex2f(a[0], a[1])
+    #glVertex2f(500, 400)
+    glVertex2f(b[0], b[1])
+    glVertex2f(c[0], c[1])
     glEnd()
+    return a, b, c
 
 
-def trans(x, y, z):
-    glTranslatef(x, y, z)
+def translation(x, y, z):
+    glPushMatrix()
+    glTranslatef(x, y, z)  # Ajuste da translação (x, y, z)
+    draw()
+    glPopMatrix()
 
 
-def main():
-    pygame.init()
-    largura, altura = 1600, 800
-    tela = pygame.display.set_mode((largura, altura), DOUBLEBUF | OPENGL)
-
-    gluPerspective(90, (largura / altura), 0.1, 50.0)
-    glTranslatef(0.0, 0.0, -5)
-
-    while True:
-        for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        desenhar_piramide()
-        pygame.display.flip()
-        pygame.time.wait(10)
-        trans(0.01, 0.0, 0.0)
+def scale(x, y, z):
+    a, b, c = draw()
+    glPushMatrix()
+    # Translação para o centro
+    glTranslatef(a[0]+((c[0]-a[0])/2), a[1]+((c[0]-a[0])/2), 0)
+    glScalef(x, y, z)  # Escala (x,y,z)
+    # Translação de volta para a posição original
+    glTranslatef(-(a[0]+((c[0]-a[0])/2)), -(a[1]+((c[0]-a[0])/2)), 0)
+    draw()
+    glPopMatrix()
 
 
-if __name__ == "__main__":
-    main()
+def rotate(p, x, y, z):
+    a, b, c = draw()
+    glPushMatrix()
+    # Translação para o centro
+    glTranslatef(a[0]+((c[0]-a[0])/2), a[1]+((c[0]-a[0])/2), 0)
+    glRotatef(p, x, y, z)     # Rotação
+    # Translação de volta para a posição original
+    glTranslatef(-(a[0]+((c[0]-a[0])/2)), -(a[1]+((c[0]-a[0])/2)), 0)
+
+    draw()
+    glPopMatrix()
+
+
+def reflex_y():
+    a, b, c = draw()
+    glPushMatrix()
+    draw()
+    glBegin(GL_LINE_LOOP)
+    glVertex2f(a[0], b[0] - a[1])  # Inverte a coordenada y
+    glVertex2f(b[0], b[0] - b[1])
+    glVertex2f(c[0], b[0] - c[1])
+    glEnd()
+    glPopMatrix()
+
+
+def reflex_x():
+    a, b, c = draw()
+    glPushMatrix()
+    draw()
+    glBegin(GL_LINE_LOOP)
+    glVertex2f(a[0]+(c[0]-a[0])*2, a[1])  # Inverte a coordenada x
+    glVertex2f(b[0], b[1])
+    glVertex2f(c[0], c[1])
+    glEnd()
+    glPopMatrix()
+
+
+def cis_x():
+    a, b, c = draw()
+    glPushMatrix()
+    draw()
+    glBegin(GL_LINE_LOOP)
+    glVertex2f(a[0] + 0 * a[1], a[1])  # Cisalha a coordenada x
+    glVertex2f(b[0] + 0.5 * b[1], b[1])
+    glVertex2f(c[0] + 0.5 * c[1], c[1])
+    glEnd()
+    glPopMatrix()
+
+
+# Loop principal
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            quit()
+
+    # Limpa a tela
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
+    draw()
+    #translation(100, 100, 0)
+    #scale(2, 2, 2)
+    #rotate(45, 0, 0, 1)
+    # reflex_y()
+    # cis_x()
+
+    # Atualiza a tela
+    pygame.display.flip()
+    pygame.time.wait(10)

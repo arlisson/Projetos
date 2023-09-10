@@ -13,20 +13,22 @@ pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
 glViewport(0, 0, largura, altura)
 glMatrixMode(GL_PROJECTION)
 glLoadIdentity()
-glOrtho(0, largura, 0, altura, 0, 1)
+glOrtho(-largura/2, largura/2, -altura/2, altura/2,
+        0, 1)  # Define uma nova matriz de projeção
+
 glMatrixMode(GL_MODELVIEW)
 glLoadIdentity()
 
 
 def draw():
-    a, b, c = [500, 300], [600, 400], [600, 300]
+    pontos = ((0, 0), (100, 100), (100, 0))
     glBegin(GL_LINE_LOOP)
-    glVertex2f(a[0], a[1])
+    glVertex2f(pontos[0][0], pontos[0][1])
     #glVertex2f(500, 400)
-    glVertex2f(b[0], b[1])
-    glVertex2f(c[0], c[1])
+    glVertex2f(pontos[1][0], pontos[1][1])
+    glVertex2f(pontos[2][0], pontos[2][1])
     glEnd()
-    return a, b, c
+    return pontos
 
 
 def translation(x, y, z):
@@ -37,62 +39,63 @@ def translation(x, y, z):
 
 
 def scale(x, y, z):
-    a, b, c = draw()
+
     glPushMatrix()
-    # Translação para o centro
-    glTranslatef(a[0]+((c[0]-a[0])/2), a[1]+((c[0]-a[0])/2), 0)
-    glScalef(x, y, z)  # Escala (x,y,z)
-    # Translação de volta para a posição original
-    glTranslatef(-(a[0]+((c[0]-a[0])/2)), -(a[1]+((c[0]-a[0])/2)), 0)
+    glScalef(x, y, z)  # Aplica a escala em relação a origem do plano (0,0,0)
     draw()
     glPopMatrix()
 
 
 def rotate(p, x, y, z):
-    a, b, c = draw()
     glPushMatrix()
-    # Translação para o centro
-    glTranslatef(a[0]+((c[0]-a[0])/2), a[1]+((c[0]-a[0])/2), 0)
-    glRotatef(p, x, y, z)     # Rotação
-    # Translação de volta para a posição original
-    glTranslatef(-(a[0]+((c[0]-a[0])/2)), -(a[1]+((c[0]-a[0])/2)), 0)
-
+    glRotatef(p, x, y, z)    # Rotação
     draw()
     glPopMatrix()
 
 
-def reflex_y():
-    a, b, c = draw()
+def reflex_y(positivo=True):
+    pontos = draw()
     glPushMatrix()
-    draw()
+    if positivo == False:
+        glTranslatef(0, 200, 0)
     glBegin(GL_LINE_LOOP)
-    glVertex2f(a[0], b[0] - a[1])  # Inverte a coordenada y
-    glVertex2f(b[0], b[0] - b[1])
-    glVertex2f(c[0], b[0] - c[1])
+    for ponto in pontos:
+        if positivo:
+            # Reflete em relação ao eixo y positivo
+            glVertex2f(ponto[0], -ponto[1])
+        else:
+            # Reflete em relação ao eixo y negativo
+            glVertex2f(ponto[0], -ponto[1])
     glEnd()
     glPopMatrix()
 
 
-def reflex_x():
-    a, b, c = draw()
+def reflex_x(positivo=True):
+    pontos = draw()
     glPushMatrix()
-    draw()
+    if positivo == False:
+        glTranslatef(200, 0, 0)  # Ajuste da translação (x, y, z)
+
     glBegin(GL_LINE_LOOP)
-    glVertex2f(a[0]+(c[0]-a[0])*2, a[1])  # Inverte a coordenada x
-    glVertex2f(b[0], b[1])
-    glVertex2f(c[0], c[1])
+    for ponto in pontos:
+        if positivo:
+            # Reflete em relação ao eixo x positivo
+            glVertex2f(-ponto[0], ponto[1])
+        else:
+            # Reflete em relação ao eixo x negativo
+            glVertex2f(-ponto[0], ponto[1])
+
     glEnd()
     glPopMatrix()
 
 
-def cis_x():
-    a, b, c = draw()
+def cis(fator):
+    pontos = draw()
     glPushMatrix()
-    draw()
     glBegin(GL_LINE_LOOP)
-    glVertex2f(a[0] + 0 * a[1], a[1])  # Cisalha a coordenada x
-    glVertex2f(b[0] + 0.5 * b[1], b[1])
-    glVertex2f(c[0] + 0.5 * c[1], c[1])
+    for ponto in pontos:
+        # Cisalha a coordenada x
+        glVertex2f(ponto[0] + fator * ponto[1], ponto[1])
     glEnd()
     glPopMatrix()
 
@@ -108,11 +111,12 @@ while True:
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
     draw()
-    #translation(50, 100, 0)
+    #translation(100, 100, 0)
     #scale(2, 2, 2)
     #rotate(45, 0, 0, 1)
-    # reflex_x()
-    cis_x()
+    # reflex_x(positivo=True)
+    # reflex_y(positivo=False)
+    # cis(1)
 
     # Atualiza a tela
     pygame.display.flip()

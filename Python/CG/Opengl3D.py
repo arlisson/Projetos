@@ -92,8 +92,8 @@ def main():
         #translation(4, 0, 0)
         #rotate(90, 1, 0, 0)
         #scale(2, 2, 2)
-        #reflex()
-        cis()
+        # reflex()
+        # cis()
 
         pygame.display.flip()
         pygame.time.wait(10)
