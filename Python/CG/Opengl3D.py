@@ -55,8 +55,8 @@ def rotate(a, x, y, z):
 
 def reflex():
     glPushMatrix()
-    glScalef(1, -1, 1)  # Escala (x,y,z)
-    glTranslatef(0, -2, 0)
+    glScalef(1, 1, 1)  # Escala (x,y,z)
+    glTranslatef(0, 0, -2)
     draw()
     glPopMatrix()
 
@@ -77,9 +77,13 @@ def main():
     pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
 
     # (angulo, razão da largura e altura da tela, zNear, zFar )
-    gluPerspective(90, ((display[0]/display[1])), 0.1, 50.0)
+    #gluPerspective(90, ((display[0]/display[1])), 0.1, 50.0)
+
+    # (left,right,bottom,top,zNear,zFar)
+    glOrtho(-5, 5, -5, 5, 0.1, 50.0)
 
     glTranslatef(0.0, 0.0, -6)
+    glRotatef(30, 1, 1, 0)
 
     while True:
         for event in pygame.event.get():
@@ -90,10 +94,10 @@ def main():
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         draw()
         #translation(4, 0, 0)
-        #rotate(90, 1, 0, 0)
+        #rotate(180, 1, 0, 0)
         #scale(2, 2, 2)
-        #reflex()
-        cis()
+        # reflex()
+        # cis()
 
         pygame.display.flip()
         pygame.time.wait(10)
