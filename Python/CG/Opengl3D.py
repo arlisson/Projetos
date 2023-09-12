@@ -62,13 +62,16 @@ def reflex():
 
 
 def cis():
+    glPushMatrix()
     matriz_cisalhamento = [
-        1, 0.01, 0, 0,
-        0.01, 1, 0, 0,
+        1, 0.0, 0, 0,
+        0.9, 1, 0, 0,
         0.01, 0, 1, 0,
         0, 0, 0, 1
     ]
     glMultMatrixf(matriz_cisalhamento)
+    draw()
+    glPopMatrix()
 
 
 def main():
@@ -83,7 +86,7 @@ def main():
     glOrtho(-5, 5, -5, 5, 0.1, 50.0)
 
     glTranslatef(0.0, 0.0, -6)
-    glRotatef(30, 1, 1, 0)
+    glRotatef(15, 1, 1, 0)
 
     while True:
         for event in pygame.event.get():
@@ -93,8 +96,8 @@ def main():
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         draw()
-        #translation(4, 0, 0)
-        #rotate(180, 1, 0, 0)
+        #translation(3, 0, 0)
+        #rotate(180, 0, 0, 0)
         #scale(2, 2, 2)
         # reflex()
         # cis()
