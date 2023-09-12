@@ -30,11 +30,13 @@ def draw():
         for vertex in edge:
             glVertex3fv(vertices[vertex])
     glEnd()
+    glColor3f(1.0,1.0,1.0)
 
 
 def translation(x, y, z):
     glPushMatrix()
     glTranslatef(x, y, z)
+    glColor3f(1.0,0.0,0.0)
     draw()
     glPopMatrix()
 
@@ -42,6 +44,7 @@ def translation(x, y, z):
 def scale(x, y, z):
     glPushMatrix()
     glScalef(x, y, z)  # Escala (x,y,z)
+    glColor3f(1.0,0.0,0.0)
     draw()
     glPopMatrix()
 
@@ -49,14 +52,16 @@ def scale(x, y, z):
 def rotate(a, x, y, z):
     glPushMatrix()
     glRotatef(a, x, y, z)  # (angulo,x,y,z)
+    glColor3f(1.0,0.0,0.0)
     draw()
     glPopMatrix()
 
 
 def reflex():
     glPushMatrix()
-    glScalef(1, 1, 1)  # Escala (x,y,z)
-    glTranslatef(0, 0, -2)
+    glScalef(-1, 1, 1)  # Escala (x,y,z)
+    glTranslatef(-2, 0, 0)
+    glColor3f(1.0,0.0,0.0)
     draw()
     glPopMatrix()
 
@@ -64,12 +69,13 @@ def reflex():
 def cis():
     glPushMatrix()
     matriz_cisalhamento = [
-        1, 0.0, 0, 0,
-        0.9, 1, 0, 0,
-        0.01, 0, 1, 0,
+        1, 0.9, 0, 0,
+        0.0, 1, 0, 0,
+        0.0, 0, 1, 0,
         0, 0, 0, 1
     ]
     glMultMatrixf(matriz_cisalhamento)
+    glColor3f(1.0,0.0,0.0)
     draw()
     glPopMatrix()
 
@@ -96,11 +102,11 @@ def main():
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         draw()
-        #translation(3, 0, 0)
-        #rotate(180, 0, 0, 0)
+        #translation(0, -3, 0)
+        #rotate(45, 0, 0, 1)
         #scale(2, 2, 2)
-        # reflex()
-        # cis()
+        #reflex()
+        #cis()
 
         pygame.display.flip()
         pygame.time.wait(10)
