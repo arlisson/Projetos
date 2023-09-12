@@ -7,7 +7,7 @@ from urllib.parse import urlsplit
 import json
 
 
-apigoogle = '535839478340-fa6qfec20kfnctghhc8h8f3pp1ps4lp4.apps.googleusercontent.com'
+
 
 url = 'https://www.ebiografia.com/duque_caxias/'
 
