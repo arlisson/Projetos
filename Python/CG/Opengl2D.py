@@ -53,37 +53,30 @@ def rotate(p, x, y, z):
     glPopMatrix()
 
 
-def reflex_y(positivo=True):
+def reflex_y(positivo=False):
     pontos = draw()
     glPushMatrix()
-    if positivo == False:
+    if positivo == True:
         glTranslatef(0, 200, 0)
     glBegin(GL_LINE_LOOP)
     for ponto in pontos:
-        if positivo:
-            # Reflete em relação ao eixo y positivo
-            glVertex2f(ponto[0], -ponto[1])
-        else:
-            # Reflete em relação ao eixo y negativo
-            glVertex2f(ponto[0], -ponto[1])
+        # Reflete em relação ao eixo y positivo
+        glVertex2f(ponto[0], -ponto[1])
+
     glEnd()
     glPopMatrix()
 
 
-def reflex_x(positivo=True):
+def reflex_x(positivo=False):
     pontos = draw()
     glPushMatrix()
-    if positivo == False:
+    if positivo == True:
         glTranslatef(200, 0, 0)  # Ajuste da translação (x, y, z)
 
     glBegin(GL_LINE_LOOP)
     for ponto in pontos:
-        if positivo:
-            # Reflete em relação ao eixo x positivo
-            glVertex2f(-ponto[0], ponto[1])
-        else:
-            # Reflete em relação ao eixo x negativo
-            glVertex2f(-ponto[0], ponto[1])
+        # Reflete em relação ao eixo x positivo
+        glVertex2f(-ponto[0], ponto[1])
 
     glEnd()
     glPopMatrix()
@@ -111,11 +104,11 @@ while True:
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
     draw()
-    #translation(100, 100, 0)
-    #scale(2, 2, 2)
+    #translation(100, 0, 0)
+    #scale(2, 2, 0)
     #rotate(45, 0, 0, 1)
-    # reflex_x(positivo=True)
-    # reflex_y(positivo=False)
+    # reflex_x(positivo=False)
+    # reflex_y(positivo=True)
     # cis(1)
 
     # Atualiza a tela
