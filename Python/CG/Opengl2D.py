@@ -21,34 +21,37 @@ glLoadIdentity()
 
 
 def draw():
-    pontos = ((0, 0), (100, 100), (100, 0))
+    pontos = ((0, 0),(0,100), (100, 100), (100, 0))
     glBegin(GL_LINE_LOOP)
-    glVertex2f(pontos[0][0], pontos[0][1])
-    #glVertex2f(500, 400)
+    glVertex2f(pontos[0][0], pontos[0][1])    
     glVertex2f(pontos[1][0], pontos[1][1])
     glVertex2f(pontos[2][0], pontos[2][1])
+    glVertex2f(pontos[3][0], pontos[3][1])
+    glColor3f(1.0,1.0,1.0)
     glEnd()
     return pontos
 
 
-def translation(x, y, z):
-    glPushMatrix()
-    glTranslatef(x, y, z)  # Ajuste da translação (x, y, z)
-    draw()
+def translation(x, y, z):    
+    glPushMatrix()    
+    glTranslatef(x, y, z)  # Ajuste da translação (x, y, z) 
+    glColor3f(1.0,0.0,0.0)
+    draw()    
     glPopMatrix()
-
+    
 
 def scale(x, y, z):
-
     glPushMatrix()
     glScalef(x, y, z)  # Aplica a escala em relação a origem do plano (0,0,0)
+    glColor3f(1.0,0.0,0.0)
     draw()
     glPopMatrix()
 
 
 def rotate(p, x, y, z):
     glPushMatrix()
-    glRotatef(p, x, y, z)    # Rotação
+    glRotatef(p, x, y, z)    # Rotação   
+    glColor3f(1.0,0.0,0.0) 
     draw()
     glPopMatrix()
 
@@ -56,6 +59,7 @@ def rotate(p, x, y, z):
 def reflex_y(positivo=False):
     pontos = draw()
     glPushMatrix()
+    glColor3f(1.0,0.0,0.0)
     if positivo == True:
         glTranslatef(0, 200, 0)
     glBegin(GL_LINE_LOOP)
@@ -69,6 +73,7 @@ def reflex_y(positivo=False):
 
 def reflex_x(positivo=False):
     pontos = draw()
+    glColor3f(1.0,0.0,0.0)
     glPushMatrix()
     if positivo == True:
         glTranslatef(200, 0, 0)  # Ajuste da translação (x, y, z)
@@ -84,6 +89,7 @@ def reflex_x(positivo=False):
 
 def cis(fator):
     pontos = draw()
+    glColor3f(1.0,0.0,0.0)
     glPushMatrix()
     glBegin(GL_LINE_LOOP)
     for ponto in pontos:
@@ -103,13 +109,13 @@ while True:
     # Limpa a tela
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-    draw()
-    #translation(100, 0, 0)
+    draw()    
+    #translation(0, 200, 0)
     #scale(2, 2, 0)
     #rotate(45, 0, 0, 1)
-    # reflex_x(positivo=False)
-    # reflex_y(positivo=True)
-    # cis(1)
+    #reflex_x(positivo=True)
+    #reflex_y(positivo=False)
+    #cis(1)
 
     # Atualiza a tela
     pygame.display.flip()
