@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Retângulo com Informações</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .card {
+            width: 500px;
+            height: 650px;
+            background-image: url('fundo.png');
+            /* Substitua pelo caminho da imagem de fundo desejada */
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 20px;
+        }
+
+        .rectangle {
+            width: auto;
+            height: auto;
+            background-color: #f2f2f2;
+            border: 2px solid #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 20px;
+        }
+
+        .image {
+            width: auto;
+            height: auto;
+            background-color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #999;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <div class="rectangle">
+            <div class="image">
+                <img src="mago.png" width="200" height="200">
+            </div>
+            <div class="field">
+                <label for="nome">Nome:</label>
+                <p>Satanas</p>
+            </div>
+            <div class="field">
+                <label for="raca">Raça:</label>
+                <p>Humano</p>
+            </div>
+            <div class="field">
+                <label for="classe">Classe:</label>
+                <p>Mago</p>
+            </div>
+            <div class="field">
+                <label for="level">Level:</label>
+                <p>1</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
