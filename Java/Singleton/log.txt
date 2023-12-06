@@ -1,0 +1,5 @@
+[10-07-2023 20:24:56]INFO: Realizada a soma entre 2.0 e 2.0
+[10-07-2023 20:26:31]ERROR: Foi feita uma tentativa de divisão por zero
+[07-10-2023 20:33:32]ERROR: Foi feita uma tentativa de divisão por zero
+[07-10-2023 20:33:44]ERROR: Foi feita uma tentativa de divisão por zero
+[07-10-2023 20:34:04]INFO: Realizada a divisão entre 2.0 e 2.0

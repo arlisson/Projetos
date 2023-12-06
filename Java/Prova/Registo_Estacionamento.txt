@@ -1,0 +1,64 @@
+
+----------Nota Fiscal----------
+Cpf: 1234567887
+Código do ticket: 1
+Data de entrada: 20-10-2023 10:58:33
+Data de Saída: 20-10-2023 10:59:00null
+
+----------Nota Fiscal----------
+Cpf: Não informado
+Código do ticket: 1
+Data de entrada: 20-10-2023 11:01:44
+Data de Saída: 20-10-2023 11:01:54null
+
+----------Nota Fiscal----------
+Cpf: Não informado
+Código do ticket: 1
+Data de entrada: 20-10-2023 11:03:34
+Data de Saída: 20-10-2023 11:03:49
+Valor Pago: R$20.0
+Valor do Troco: R$5.0Método de pagamento: Dinheiro
+
+----------Nota Fiscal----------
+Cpf: 12334556778
+Código do ticket: 1
+Data de entrada: 20-10-2023 11:26:25
+Data de Saída: 20-10-2023 11:26:43
+Número do Cartão: 123123123
+Parcelas12X
+Método de pagamento: Crédito
+
+----------Nota Fiscal----------
+Cpf: 12334556778
+Código do ticket: 1
+Data de entrada: 20-10-2023 11:32:21
+Data de Saída: 20-10-2023 11:32:48
+Número do Cartão: 1234135
+Parcelas: 2
+Método de pagamento: Crédito
+
+----------Nota Fiscal----------
+Cpf: Não informado
+Código do ticket: 3
+Data de entrada: 20-10-2023 12:05:36
+Data de Saída: 20-10-2023 12:05:53
+Número do Cartão: 123123123
+Parcelas: 1
+Método de pagamento: Crédito
+
+----------Nota Fiscal----------
+Cpf: 12334556778
+Código do ticket: 2
+Data de entrada: 20-10-2023 12:05:28
+Data de Saída: 20-10-2023 12:06:13
+Número do Cartão:234234234
+Forma de Pagamento: Débito
+
+----------Nota Fiscal----------
+Cpf: 12334556778
+Código do ticket: 1
+Data de entrada: 20-10-2023 12:05:23
+Data de Saída: 20-10-2023 12:06:44
+Valor Pago: R$15.0
+Valor do Troco: R$0.0
+Método de pagamento: Dinheiro
