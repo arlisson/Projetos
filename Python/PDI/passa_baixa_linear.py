@@ -41,7 +41,7 @@ def main():
 
     if image_path:
         # Solicitar ao usuário para definir o tamanho da máscara
-        tamanho_filtro = 10
+        tamanho_filtro = 3
         apply_low_pass_filter(image_path, tamanho_filtro)
 
     else:

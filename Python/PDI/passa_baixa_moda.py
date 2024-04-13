@@ -9,7 +9,7 @@ def apply_mode_filter(image_path):
 
     mode_filtered_image = image.filter(ImageFilter.ModeFilter)
 
-    for _ in range(0, 8):
+    for _ in range(0, 3):
 
         mode_filtered_image = mode_filtered_image.filter(
             ImageFilter.ModeFilter)
