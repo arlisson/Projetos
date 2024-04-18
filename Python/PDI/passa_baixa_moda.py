@@ -1,6 +1,7 @@
 from PIL import Image, ImageFilter
 from tkinter import filedialog, Tk
 from matplotlib import pyplot as plt
+import cv2
 
 
 def apply_mode_filter(image_path):
@@ -9,7 +10,7 @@ def apply_mode_filter(image_path):
 
     mode_filtered_image = image.filter(ImageFilter.ModeFilter)
 
-    for _ in range(0, 3):
+    for _ in range(0, 1):
 
         mode_filtered_image = mode_filtered_image.filter(
             ImageFilter.ModeFilter)

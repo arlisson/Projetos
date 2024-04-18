@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 class ModeFilterApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Filtro de Mediana")
+        self.root.title("Filtro de Moda")
 
         # Variáveis para armazenar a imagem original e a imagem filtrada
         self.image = None
@@ -63,7 +63,7 @@ class ModeFilterApp:
             mode_filtered_image = self.image
             for _ in range(filter_count):
                 mode_filtered_image = mode_filtered_image.filter(
-                    ImageFilter.MedianFilter)
+                    ImageFilter.ModeFilter)
 
             # Exibir a imagem filtrada na label correspondente
             self.display_image(mode_filtered_image, self.label_filtered_image,
