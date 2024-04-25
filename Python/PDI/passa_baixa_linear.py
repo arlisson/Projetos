@@ -9,7 +9,7 @@ from PIL import Image, ImageTk
 class LowPassFilterApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Filtro Passa-baixa")
+        self.root.title("Filtro Passa-baixa Média")
 
         # Variáveis para armazenar a imagem original e a imagem filtrada
         self.image_rgb = None
@@ -63,15 +63,38 @@ class LowPassFilterApp:
     def apply_filter(self):
         # Obter o tamanho do filtro do campo de entrada
         filter_size = self.get_filter_size()
+        custom_kernel = np.array([[0.1, 0.1, 0.1],
+                                  [0.1, 0.1, 0.1],
+                                  [0.1, 0.1, 0.1]])
 
-        if self.image_rgb is not None and filter_size:
+        custom_kernel_5x5 = np.array([[0.04, 0.04, 0.04, 0.04, 0.04],
+                                      [0.04, 0.04, 0.04, 0.04, 0.04],
+                                      [0.04, 0.04, 0.04, 0.04, 0.04],
+                                      [0.04, 0.04, 0.04, 0.04, 0.04],
+                                      [0.04, 0.04, 0.04, 0.04, 0.04]])
+
+        custom_kernel_7x7 = np.array([[0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02],
+                                      [0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02],
+                                      [0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02],
+                                      [0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02],
+                                      [0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02],
+                                      [0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02],
+                                      [0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02]])
+
+        # Aplicar o filtro de convolução personalizado
+        self.filtered_image = cv2.filter2D(self.image_rgb, -1, custom_kernel)
+        '''if self.image_rgb is not None and filter_size:
             # Aplicar filtro passa-baixa linear (filtro de média)
             self.filtered_image = cv2.blur(
-                self.image_rgb, (filter_size, filter_size))
+                self.image_rgb, (filter_size, filter_size), anchor=(-1, -1))
 
-            # Exibir a imagem filtrada na label correspondente
-            self.display_image(self.filtered_image, self.label_filtered_image,
-                               f"Imagem Filtrada (Máscara: {filter_size}x{filter_size})")
+            # Imprimir os valores da matriz
+            print("Matriz do Filtro Blur:")
+            print(self.filtered_image)'''
+
+        # Exibir a imagem filtrada na label correspondente
+        self.display_image(self.filtered_image, self.label_filtered_image,
+                           f"Imagem Filtrada (Máscara: {filter_size}x{filter_size})")
 
     def get_filter_size(self):
         # Obter o valor inserido no campo de entrada

@@ -1,28 +1,31 @@
-from PIL import Image, ImageFilter, ImageTk
-from tkinter import filedialog, Tk, Button, Label, Entry
+import cv2
+import numpy as np
+import tkinter as tk
+from tkinter import filedialog, Button, Entry, Label
 from matplotlib import pyplot as plt
+from PIL import Image, ImageTk
 
 
-class ModeFilterApp:
+class LowPassFilterApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Filtro de Mediana")
+        self.root.title("Filtro Passa-baixa Mediana")
 
         # Variáveis para armazenar a imagem original e a imagem filtrada
-        self.image = None
-        self.mode_filtered_image = None
+        self.image_rgb = None
+        self.filtered_image = None
 
         # Criar um botão para escolher uma imagem
         self.button_choose_image = Button(
             self.root, text="Escolha uma imagem", command=self.choose_image)
         self.button_choose_image.pack(pady=10)
 
-        # Criar um campo de entrada para definir quantas vezes o filtro é aplicado
-        self.entry_filter_count = Entry(self.root)
-        self.entry_filter_count.insert(0, "1")  # Valor padrão: 1
-        self.entry_filter_count.pack()
+        # Criar um campo de entrada para ajustar o tamanho do filtro
+        self.entry_filter_size = Entry(self.root)
+        self.entry_filter_size.insert(0, "3")  # Valor padrão 3
+        self.entry_filter_size.pack()
 
-        # Criar um botão para aplicar o filtro de moda
+        # Criar um botão para aplicar o filtro passa-baixa
         self.button_apply_filter = Button(
             self.root, text="Aplicar filtro", command=self.apply_filter)
         self.button_apply_filter.pack(pady=10)
@@ -48,68 +51,76 @@ class ModeFilterApp:
 
     def load_image(self, image_path):
         # Carregar a imagem do caminho fornecido
-        self.image = Image.open(image_path)
+        image = cv2.imread(image_path)
+
+        # Converter a imagem para RGB para exibir com matplotlib
+        self.image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
         # Exibir a imagem original na label correspondente
         self.display_image(
-            self.image, self.label_original_image, "Imagem Original")
+            self.image_rgb, self.label_original_image, "Imagem Original")
 
     def apply_filter(self):
-        # Obter o número de vezes que o filtro deve ser aplicado
-        filter_count = self.get_filter_count()
+        # Obter o tamanho do filtro do campo de entrada
+        filter_size = self.get_filter_size()
 
-        if self.image is not None and filter_count is not None:
-            # Aplicar o filtro de mediana o número de vezes especificado
-            mode_filtered_image = self.image
-            for _ in range(filter_count):
-                mode_filtered_image = mode_filtered_image.filter(
-                    ImageFilter.MedianFilter)
+        if self.image_rgb is not None and filter_size:
+            # Aplicar filtro passa-baixa linear (filtro de mediana)
+            self.filtered_image = cv2.medianBlur(
+                self.image_rgb, filter_size)
+
+            # Imprimir os valores da matriz
+            print("Matriz do Filtro Blur:")
+            print(self.filtered_image)
 
             # Exibir a imagem filtrada na label correspondente
-            self.display_image(mode_filtered_image, self.label_filtered_image,
-                               f"Imagem Filtrada ({filter_count} vezes)")
+            self.display_image(self.filtered_image, self.label_filtered_image,
+                               f"Imagem Filtrada (Filtro:{filter_size})")
 
-    def get_filter_count(self):
+    def get_filter_size(self):
         # Obter o valor inserido no campo de entrada
-        filter_count = self.entry_filter_count.get()
+        filter_size = self.entry_filter_size.get()
         try:
-            filter_count = int(filter_count)
-            # Verificar se o valor é válido (positivo)
-            if filter_count < 0:
-                raise ValueError(
-                    "O número de vezes que o filtro é aplicado deve ser positivo.")
-            return filter_count
+            filter_size = int(filter_size)
+            # Verificar se o tamanho do filtro é ímpar
+            if filter_size % 2 == 0:
+                raise ValueError("O tamanho do filtro deve ser ímpar.")
+            return filter_size
         except ValueError as e:
             # Exibir uma mensagem de erro para o usuário
             tk.messagebox.showerror("Erro", f"Valor inválido: {e}")
             return None
 
     def display_image(self, image, label, title):
-        # Definir tamanho fixo da imagem
-        fixed_width = 400
+
+        # Definir o tamanho fixo da imagem
+        fixed_width = 600
         fixed_height = 400
 
-        # Redimensionar a imagem para o tamanho fixo
-        image = image.resize((fixed_width, fixed_height), Image.ANTIALIAS)
+        # Converter a imagem para um formato que pode ser exibido pelo tkinter
+        img = Image.fromarray(image)
+
+        # Redimensionar a imagem para o tamanho fixo (400x400)
+        img = img.resize((fixed_width, fixed_height), Image.ANTIALIAS)
 
         # Converter a imagem para um formato compatível com Tkinter
-        img_tk = ImageTk.PhotoImage(image)
+        img_tk = ImageTk.PhotoImage(img)
 
-        # Atualizar a label com a imagem
+        # Atualizar a label com a imagem redimensionada
         label.config(text=title, image=img_tk,
-                     compound='top', font=("Arial", 20))
+                     compound='top', font=("Arial", 30))
         label.image = img_tk  # Manter uma referência para evitar garbage collection
 
 
 def main():
     # Inicializar a interface Tkinter
-    root = Tk()
+    root = tk.Tk()
 
     # Definir a janela para ocupar a tela inteira
     root.state("zoomed")  # Modo de tela cheia
 
     # Criar a aplicação
-    app = ModeFilterApp(root)
+    app = LowPassFilterApp(root)
 
     # Iniciar a interface Tkinter
     root.mainloop()
