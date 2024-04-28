@@ -63,9 +63,9 @@ class LowPassFilterApp:
     def apply_filter(self):
         # Obter o tamanho do filtro do campo de entrada
         filter_size = self.get_filter_size()
-        custom_kernel = np.array([[0.1, 0.1, 0.1],
-                                  [0.1, 0.1, 0.1],
-                                  [0.1, 0.1, 0.1]])
+        '''custom_kernel = np.array([[1, 1, 1],
+                                  [1, 1, 1],
+                                  [1, 1, 1]])
 
         custom_kernel_5x5 = np.array([[0.04, 0.04, 0.04, 0.04, 0.04],
                                       [0.04, 0.04, 0.04, 0.04, 0.04],
@@ -80,17 +80,17 @@ class LowPassFilterApp:
                                       [0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02],
                                       [0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02],
                                       [0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02]])
-
+'''
         # Aplicar o filtro de convolução personalizado
-        self.filtered_image = cv2.filter2D(self.image_rgb, -1, custom_kernel)
-        '''if self.image_rgb is not None and filter_size:
+        self.filtered_image = cv2.filter2D(self.image_rgb, -1, filter_size)
+        if self.image_rgb is not None and filter_size:
             # Aplicar filtro passa-baixa linear (filtro de média)
             self.filtered_image = cv2.blur(
                 self.image_rgb, (filter_size, filter_size), anchor=(-1, -1))
 
             # Imprimir os valores da matriz
             print("Matriz do Filtro Blur:")
-            print(self.filtered_image)'''
+            print(self.filtered_image)
 
         # Exibir a imagem filtrada na label correspondente
         self.display_image(self.filtered_image, self.label_filtered_image,

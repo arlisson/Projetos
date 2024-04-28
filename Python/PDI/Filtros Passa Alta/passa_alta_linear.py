@@ -55,9 +55,9 @@ class LowPassFilterApp:
             self.image_rgb, self.label_original_image, "Imagem Original")
 
     def apply_filter(self):
-        custom_kernel = np.array([[-1, -1, -1],
+        custom_kernel = np.array([[1, -1, 1],
                                   [-1, 8, -1],
-                                  [-1, -1, -1]])
+                                  [1, -1, 1]])
 
         '''custom_kernel = np.array([[-10, -10, -10, -10, -10],
                                   [-10, -10, -10, -10, -10],

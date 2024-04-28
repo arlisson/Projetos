@@ -57,8 +57,8 @@ class EdgeDetectionApp:
     def apply_roberts_filter(self):
         if self.image_rgb is not None:
             # Aplicar filtro de detecção de bordas roberts
-            sobel_x = cv2.Sobel(self.image_rgb, cv2.CV_64F, 1, 0, ksize=3)
-            sobel_y = cv2.Sobel(self.image_rgb, cv2.CV_64F, 0, 1, ksize=3)
+            sobel_x = cv2.Sobel(self.image_rgb, cv2.CV_64F, 1, 0, ksize=1)
+            sobel_y = cv2.Sobel(self.image_rgb, cv2.CV_64F, 0, 1, ksize=1)
             sobel_combined = cv2.magnitude(sobel_x, sobel_y)
 
             # Normalizar valores para exibição
