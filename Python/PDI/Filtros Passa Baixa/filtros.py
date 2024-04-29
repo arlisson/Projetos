@@ -1,36 +1,49 @@
 import cv2
+import numpy as np
+import matplotlib.pyplot as plt
 
-# Read the original image
-img = cv2.imread('peixe.jpg')
-# Display original image
-cv2.imshow('Original', img)
-cv2.waitKey(0)
 
-# Convert to graycsale
-img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-# Blur the image for better edge detection
-img_blur = cv2.GaussianBlur(img_gray, (3, 3), 0)
+def sobel_edge_detector(image_path):
+    # Read the image using OpenCV
+    image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+    image = cv2.blur(image, (5, 5))
+    # Apply Sobel operator
+    sobel_x = cv2.Sobel(image, cv2.CV_64F, 1, 0, ksize=3)
+    sobel_y = cv2.Sobel(image, cv2.CV_64F, 0, 1, ksize=3)
 
-# Sobel Edge Detection
-sobelx = cv2.Sobel(src=img_blur, ddepth=cv2.CV_64F, dx=1,
-                   dy=0, ksize=5)  # Sobel Edge Detection on the X axis
-sobely = cv2.Sobel(src=img_blur, ddepth=cv2.CV_64F, dx=0,
-                   dy=1, ksize=5)  # Sobel Edge Detection on the Y axis
-# Combined X and Y Sobel Edge Detection
-sobelxy = cv2.Sobel(src=img_blur, ddepth=cv2.CV_64F, dx=1, dy=1, ksize=5)
-# Display Sobel Edge Detection Images
-cv2.imshow('Sobel X', sobelx)
-cv2.waitKey(0)
-cv2.imshow('Sobel Y', sobely)
-cv2.waitKey(0)
-cv2.imshow('Sobel X Y using Sobel() function', sobelxy)
-cv2.waitKey(0)
+    # Calculate gradient magnitude
+    magnitude = np.sqrt(sobel_x**2 + sobel_y**2)
 
-# Canny Edge Detection
-edges = cv2.Canny(image=img_blur, threshold1=100,
-                  threshold2=200)  # Canny Edge Detection
-# Display Canny Edge Detection Image
-cv2.imshow('Canny Edge Detection', edges)
-cv2.waitKey(0)
+    # Apply a threshold to identify edges
+    threshold = 40
+    edges = magnitude > threshold
 
-cv2.destroyAllWindows()
+    return edges
+
+
+# Example usage
+image_path = 'peixe.jpg'
+edge_image = sobel_edge_detector(image_path)
+#edge_image = cv2.cvtColor(edge_image, cv2.COLOR_BGR2RGB)
+# Display the original and edge-detected images
+original_image = cv2.imread(image_path)
+original_image_rgb = cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB)
+
+# Plotting the images using matplotlib
+plt.figure(figsize=(10, 5))
+
+# Original Image
+plt.subplot(1, 2, 1)
+plt.imshow(original_image_rgb)
+plt.title('Original Image')
+plt.axis('off')
+
+# Edge-detected Image
+plt.subplot(1, 2, 2)
+plt.imshow(edge_image, cmap='gray')
+plt.title('Edge-detected Image (Sobel)')
+plt.axis('off')
+
+# Display the images
+plt.show()
+# pare aki

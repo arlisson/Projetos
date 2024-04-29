@@ -10,33 +10,28 @@ class EdgeDetectionApp:
         self.root = root
         self.root.title("Detector de Bordas - Sobel")
 
-        # Variáveis para armazenar a imagem original e a imagem filtrada
+        # Variáveis para armazenar a imagem original e as imagens filtradas
         self.image_rgb = None
         self.filtered_image_sobel = None
         self.filtered_image_roberts = None
+        self.filtered_image_linear = None
 
-        # Criar um botão para escolher uma imagem
+        # Criar um botão para escolher uma imagem e aplicar filtros
         self.button_choose_image = Button(
             self.root, text="Escolha uma imagem", command=self.choose_image)
         self.button_choose_image.pack(pady=10)
-
-        # Criar um botão para aplicar o filtro de detecção de bordas Sobel
-        self.button_apply_sobel_filter = Button(
-            self.root, text="Aplicar filtro Sobel", command=self.apply_sobel_filter)
-        self.button_apply_sobel_filter.pack(pady=10)
-
-        # Criar um botão para aplicar o filtro de detecção de bordas Roberts
-        self.button_apply_roberts_filter = Button(
-            self.root, text="Aplicar filtro Roberts", command=self.apply_roberts_filter)
-        self.button_apply_roberts_filter.pack(pady=10)
 
         # Label para exibir a imagem original
         self.label_original_image = Label(self.root)
         self.label_original_image.pack(side='left')
 
+        # Label para exibir a imagem filtrada com o filtro Linear
+        self.label_filtered_image_linear = Label(self.root)
+        self.label_filtered_image_linear.pack(side='left')
+
         # Label para exibir a imagem filtrada com o filtro de Sobel
         self.label_filtered_image_sobel = Label(self.root)
-        self.label_filtered_image_sobel.pack(side='left', padx=20)
+        self.label_filtered_image_sobel.pack(side='right')
 
         # Label para exibir a imagem filtrada com o filtro de Roberts
         self.label_filtered_image_roberts = Label(self.root)
@@ -50,6 +45,8 @@ class EdgeDetectionApp:
         if image_path:
             # Carregar a imagem escolhida
             self.load_image(image_path)
+            # Aplicar todos os filtros
+            self.apply_all_filters()
         else:
             print("Nenhuma imagem foi selecionada.")
 
@@ -66,7 +63,7 @@ class EdgeDetectionApp:
 
     def apply_roberts_filter(self):
         if self.image_rgb is not None:
-            # Aplicar filtro de detecção de bordas Sobel
+            # Aplicar filtro de detecção de bordas Roberts
             roberts_x = cv2.Sobel(self.image_rgb, cv2.CV_64F, 1, 0, ksize=1)
             roberts_y = cv2.Sobel(self.image_rgb, cv2.CV_64F, 0, 1, ksize=1)
             roberts_combined = cv2.bitwise_or(
@@ -79,11 +76,9 @@ class EdgeDetectionApp:
             # Converter para imagem RGB para exibição
             roberts_rgb = np.uint8(np.absolute(roberts_normalized))
 
-            print('ROBERTS: {}'.format(roberts_rgb))
-
             # Exibir a imagem filtrada na label correspondente
             self.display_image(roberts_rgb, self.label_filtered_image_roberts,
-                               "Imagem Filtrada (Detector de Bordas Roberts)")
+                               "Detector de Bordas Roberts")
             self.filtered_image_roberts = roberts_rgb
 
     def apply_sobel_filter(self):
@@ -93,14 +88,32 @@ class EdgeDetectionApp:
             sobel_x = cv2.Sobel(self.image_rgb, cv2.CV_64F, 1, 0, ksize=3)
             sobel_y = cv2.Sobel(self.image_rgb, cv2.CV_64F, 0, 1, ksize=3)
             sobel_combined = np.sqrt(sobel_x**2 + sobel_y**2)
-            sobel_combined = np.uint8(sobel_combined)
 
-            print('SOBEL: {}'.format(sobel_combined))
+            sobel_combined = np.uint8(sobel_combined)
 
             # Exibir a imagem filtrada na label correspondente
             self.display_image(sobel_combined, self.label_filtered_image_sobel,
-                               "Imagem Filtrada (Detector de Bordas Sobel)")
+                               "Detector de Bordas Sobel")
             self.filtered_image_sobel = sobel_combined
+
+    def apply_linear_filter(self):
+        custom_kernel = np.array([[-1, -1, -1],
+                                  [-1, 8, -1],
+                                  [-1, -1, -1]])
+        # Aplicar o filtro de convolução personalizado
+        self.filtered_image = cv2.filter2D(
+            self.image_rgb, -1, custom_kernel)
+
+        # Exibir a imagem filtrada na label correspondente
+        self.display_image(self.filtered_image, self.label_filtered_image_linear,
+                           "Passa-Alta Linear")
+        self.filtered_linear_image = self.filtered_image
+
+    def apply_all_filters(self):
+        # Aplicar todos os filtros
+        self.apply_linear_filter()
+        self.apply_roberts_filter()
+        self.apply_sobel_filter()
 
     def display_image(self, image, label, title):
         # Redimensionar a imagem para o tamanho fixo
