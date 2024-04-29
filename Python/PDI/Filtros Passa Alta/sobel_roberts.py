@@ -64,32 +64,13 @@ class EdgeDetectionApp:
         self.display_image(
             self.image_rgb, self.label_original_image, "Imagem Original")
 
-    def apply_sobel_filter(self):
-        if self.image_rgb is not None:
-            # Aplicar filtro de detecção de bordas Sobel
-            sobel_x = cv2.Sobel(self.image_rgb, cv2.CV_64F, 1, 0, ksize=1)
-            sobel_y = cv2.Sobel(self.image_rgb, cv2.CV_64F, 0, 1, ksize=1)
-            sobel_combined = cv2.bitwise_or(
-                np.uint8(np.absolute(sobel_x)), np.uint8(np.absolute(sobel_y)))
-
-            # Normalizar valores para exibição
-            sobel_normalized = cv2.normalize(
-                sobel_combined, None, 0, 255, cv2.NORM_MINMAX)
-
-            # Converter para imagem RGB para exibição
-            sobel_rgb = np.uint8(np.absolute(sobel_normalized))
-
-            # Exibir a imagem filtrada na label correspondente
-            self.display_image(sobel_rgb, self.label_filtered_image_sobel,
-                               "Imagem Filtrada (Detector de Bordas Sobel)")
-            self.filtered_image_sobel = sobel_rgb
-
     def apply_roberts_filter(self):
         if self.image_rgb is not None:
-            # Aplicar filtro de detecção de bordas Roberts
+            # Aplicar filtro de detecção de bordas Sobel
             roberts_x = cv2.Sobel(self.image_rgb, cv2.CV_64F, 1, 0, ksize=1)
             roberts_y = cv2.Sobel(self.image_rgb, cv2.CV_64F, 0, 1, ksize=1)
-            roberts_combined = cv2.magnitude(roberts_x, roberts_y)
+            roberts_combined = cv2.bitwise_or(
+                np.uint8(np.absolute(roberts_x)), np.uint8(np.absolute(roberts_y)))
 
             # Normalizar valores para exibição
             roberts_normalized = cv2.normalize(
@@ -98,10 +79,28 @@ class EdgeDetectionApp:
             # Converter para imagem RGB para exibição
             roberts_rgb = np.uint8(np.absolute(roberts_normalized))
 
+            print('ROBERTS: {}'.format(roberts_rgb))
+
             # Exibir a imagem filtrada na label correspondente
             self.display_image(roberts_rgb, self.label_filtered_image_roberts,
                                "Imagem Filtrada (Detector de Bordas Roberts)")
             self.filtered_image_roberts = roberts_rgb
+
+    def apply_sobel_filter(self):
+        if self.image_rgb is not None:
+            # Aplicar filtro de detecção de bordas Sobel
+            self.image_rgb = cv2.GaussianBlur(self.image_rgb, (5, 5), 0)
+            sobel_x = cv2.Sobel(self.image_rgb, cv2.CV_64F, 1, 0, ksize=3)
+            sobel_y = cv2.Sobel(self.image_rgb, cv2.CV_64F, 0, 1, ksize=3)
+            sobel_combined = np.sqrt(sobel_x**2 + sobel_y**2)
+            sobel_combined = np.uint8(sobel_combined)
+
+            print('SOBEL: {}'.format(sobel_combined))
+
+            # Exibir a imagem filtrada na label correspondente
+            self.display_image(sobel_combined, self.label_filtered_image_sobel,
+                               "Imagem Filtrada (Detector de Bordas Sobel)")
+            self.filtered_image_sobel = sobel_combined
 
     def display_image(self, image, label, title):
         # Redimensionar a imagem para o tamanho fixo
