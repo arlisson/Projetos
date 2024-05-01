@@ -84,13 +84,16 @@ class EdgeDetectionApp:
     def apply_sobel_filter(self):
         if self.image_rgb is not None:
             # Aplicar filtro de detecção de bordas Sobel
-            self.image_rgb = cv2.GaussianBlur(self.image_rgb, (5, 5), 0)
+            self.image_rgb = cv2.GaussianBlur(self.image_rgb, (3, 3), 0)
             sobel_x = cv2.Sobel(self.image_rgb, cv2.CV_64F, 1, 0, ksize=3)
             sobel_y = cv2.Sobel(self.image_rgb, cv2.CV_64F, 0, 1, ksize=3)
-            sobel_combined = np.sqrt(sobel_x**2 + sobel_y**2)
+            sobel_combined = np.sqrt(sobel_x*sobel_x + sobel_y*sobel_y)
 
             sobel_combined = np.uint8(sobel_combined)
-
+            '''threshold = 40
+            sobel_combined = (sobel_combined > threshold).astype(
+                np.uint8) * 255'''
+            #sobel_combined = cv2.GaussianBlur(sobel_combined, (5, 5), 0)
             # Exibir a imagem filtrada na label correspondente
             self.display_image(sobel_combined, self.label_filtered_image_sobel,
                                "Detector de Bordas Sobel")
