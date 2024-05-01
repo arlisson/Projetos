@@ -83,21 +83,62 @@ class EdgeDetectionApp:
 
     def apply_sobel_filter(self):
         if self.image_rgb is not None:
-            # Aplicar filtro de detecção de bordas Sobel
-            self.image_rgb = cv2.GaussianBlur(self.image_rgb, (3, 3), 0)
-            sobel_x = cv2.Sobel(self.image_rgb, cv2.CV_64F, 1, 0, ksize=3)
-            sobel_y = cv2.Sobel(self.image_rgb, cv2.CV_64F, 0, 1, ksize=3)
-            sobel_combined = np.sqrt(sobel_x*sobel_x + sobel_y*sobel_y)
 
-            sobel_combined = np.uint8(sobel_combined)
-            '''threshold = 40
-            sobel_combined = (sobel_combined > threshold).astype(
-                np.uint8) * 255'''
-            #sobel_combined = cv2.GaussianBlur(sobel_combined, (5, 5), 0)
-            # Exibir a imagem filtrada na label correspondente
-            self.display_image(sobel_combined, self.label_filtered_image_sobel,
+            # Obter largura e altura da imagem
+            height, width, _ = self.image_rgb.shape
+
+            # Criar uma cópia da imagem para armazenar o resultado
+            output_image = np.zeros_like(self.image_rgb)
+
+            # Definir os kernels Sobel
+            sobel_x = np.array([[1, 0, -1],
+                                [2, 0, -2],
+                                [1, 0, -1]])
+
+            sobel_y = np.array([[1, 2, 1],
+                                [0, 0, 0],
+                                [-1, -2, -1]])
+
+            # Função para convolução
+            def convolution(x, y, p, kernel):
+                sum_value = 0
+                for i in range(-1, 2):
+                    for j in range(-1, 2):
+                        #pixel_index = ((y + j) * width + (x + i))
+                        value = self.image_rgb[y + j, x + i, p]
+                        sum_value += value * kernel[j + 1][i + 1]
+                return sum_value
+
+            # Função para normalizar um valor entre 0 e 255
+            def normalize(value):
+                return max(0, min(255, value))
+
+            # Aplicar o filtro Sobel
+            for y in range(1, height - 1):
+                for x in range(1, width - 1):
+                    total_red = convolution(x, y, 0, sobel_x)
+                    temp_calculation = convolution(x, y, 0, sobel_y)
+                    total_red = np.sqrt(total_red * total_red +
+                                        temp_calculation * temp_calculation)
+                    total_green = convolution(x, y, 1, sobel_x)
+                    temp_calculation = convolution(x, y, 1, sobel_y)
+                    total_green = np.sqrt(
+                        total_green * total_green + temp_calculation * temp_calculation)
+                    total_blue = convolution(x, y, 2, sobel_x)
+                    temp_calculation = convolution(x, y, 2, sobel_y)
+                    total_blue = np.sqrt(total_blue * total_blue +
+                                         temp_calculation * temp_calculation)
+
+                    # Normalizar o gradiente para o intervalo entre 0 e 255
+                    temp_red = normalize(total_red)
+                    temp_green = normalize(total_green)
+                    temp_blue = normalize(total_blue)
+
+                    output_image[y, x] = [temp_red, temp_green, temp_blue]
+
+            self.display_image(output_image, self.label_filtered_image_sobel,
                                "Detector de Bordas Sobel")
-            self.filtered_image_sobel = sobel_combined
+            self.filtered_image_sobel = output_image
 
     def apply_linear_filter(self):
         custom_kernel = np.array([[-1, -1, -1],
