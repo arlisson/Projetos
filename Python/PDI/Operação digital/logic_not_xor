@@ -62,9 +62,9 @@ class EdgeDetectionApp:
 
         # Exibir a imagem original na label correspondente
         self.display_image(
-            self.image_rgb1, self.label_original_image_1, "Imagem Original")
+            self.image_rgb1, self.label_original_image_1, "Imagem 1")
         self.display_image(
-            self.image_rgb2, self.label_original_image_2, "Imagem Original")
+            self.image_rgb2, self.label_original_image_2, "Imagem 2")
 
     def apply_not_filter(self):
         if self.image_rgb1 is not None and self.image_rgb2 is not None:
@@ -73,9 +73,9 @@ class EdgeDetectionApp:
                 self.image_rgb1, (self.image_rgb2.shape[1], self.image_rgb2.shape[0]))
 
             # Aplicar a operação AND entre as duas imagens
-            result = cv2.bitwise_not(self.image_rgb1, self.image_rgb2)
+            result = cv2.bitwise_not(self.image_rgb1, self.image_rgb1)
             self.display_image(result, self.label_filtered_image_not,
-                               "Operação Lógica NOT")
+                               "Operação Lógica NOT Imagem 1")
             self.filtered_image_not = result
 
     def apply_xor_filter(self):
