@@ -70,7 +70,6 @@ class LowPassFilterApp:
                 self.image_rgb, filter_size)
 
             # Imprimir os valores da matriz
-            print("Matriz do Filtro Blur:")
             print(self.filtered_image)
 
             # Exibir a imagem filtrada na label correspondente

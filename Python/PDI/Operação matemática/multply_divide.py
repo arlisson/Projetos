@@ -72,7 +72,7 @@ class EdgeDetectionApp:
             self.image_rgb1 = cv2.resize(
                 self.image_rgb1, (self.image_rgb2.shape[1], self.image_rgb2.shape[0]))
 
-            # Aplicar a operação AND entre as duas imagens
+            # Aplicar a operação multiplicação entre as duas imagens
             result = cv2.multiply(self.image_rgb1, self.image_rgb2)
             self.display_image(result, self.label_filtered_image_multply,
                                "Operação Aritmética Multiplicação")
@@ -84,7 +84,7 @@ class EdgeDetectionApp:
             self.image_rgb1 = cv2.resize(
                 self.image_rgb1, (self.image_rgb2.shape[1], self.image_rgb2.shape[0]))
 
-            # Aplicar a operação AND entre as duas imagens
+            # Aplicar a operação Divisão entre as duas imagens
             result = cv2.divide(self.image_rgb1, self.image_rgb2)
             self.display_image(result, self.label_filtered_image_divide,
                                "Operação Aritmética Divisão")
