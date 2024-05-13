@@ -1,0 +1,90 @@
+.data
+	msg_1: .asciz "Informe o primeiro número: "
+	msg_2: .asciz "Informe o Segundo número: "
+	resultado_1: .asciz " é maior que "
+	resultado_2: .asciz " é menor que "
+	resultado_3: .asciz " é igual a\n "
+	
+.text
+.global main
+main:
+	li a7 4
+	la a0 msg_1
+	ecall
+	
+	li a7 5
+	ecall
+	mv t0 a0
+	
+	li a7 4
+	la a0 msg_2
+	ecall
+	
+	li a7 5
+	ecall
+	mv t1 a0
+	
+	blt t1 t0 t0_maior_t1 #Salta para a função se t1 < t0
+	blt t0 t1 t1_maior_t0 #Salta para a função se t0 < t1
+	j t0_igual_t1
+	
+t0_maior_t1:
+	
+	li a7 1
+	mv a0 t0
+	ecall
+	
+	li a7 4
+	la a0 resultado_1
+	ecall
+	
+	li a7 1
+	mv a0 t1
+	ecall
+	
+	j sair
+
+t1_maior_t0:
+	
+	li a7 1
+	mv a0 t0
+	ecall
+	
+	li a7 4
+	la a0 resultado_2	
+	ecall
+	
+	li a7 1
+	mv a0 t1
+	ecall
+	
+	j sair
+	
+t0_igual_t1:
+	
+	li a7 1
+	mv a0 t0
+	ecall
+	
+	li a7 4
+	la a0 resultado_3
+	ecall
+	
+	li a7 1
+	mv a0 t1
+	ecall
+	
+	j sair
+	
+sair:
+	li a7 10
+	ecall
+	
+	
+	
+	
+	
+	
+
+
+	 

@@ -1,0 +1,111 @@
+.data
+	msg_1: .asciz "Informe o primeiro número: "
+	msg_2: .asciz "Informe o segundo número: "
+	msg_3: .asciz "Informe a operação:\n1- soma\n2-subtração\n3-multiplicação\n4-Divisão\n"	
+	resultado: .asciz "\nO resultado é: "	
+	zerou: .asciz "\nDivisão por zero"
+
+.text
+.global main
+main:
+	li t3 1
+	li t4 2
+	li t5 3
+	li t6 4
+	
+	
+	li a7 4
+	la a0 msg_1
+	ecall
+	
+	li a7 5
+	ecall
+	mv t0 a0
+	
+	li a7 4
+	la a0 msg_2
+	ecall
+	
+	li a7 5
+	ecall
+	mv t1 a0
+	
+	li a7 4
+	la a0 msg_3
+	ecall
+	
+	li a7 5
+	ecall
+	mv t2 a0	
+	
+	
+	beq t2 t3 somar
+	beq t2 t4 subt
+	beq t2 t5 multi	
+	beq t2 t6 divis
+	j sair
+	
+	
+somar:
+	add s2 t0 t1
+	
+	li a7 4
+	la a0 resultado
+	ecall
+	
+	li a7 1
+	mv a0 s2
+	ecall
+	j sair
+	
+subt:
+	sub s3 t0 t1
+	
+	li a7 4
+	la a0 resultado
+	ecall
+	
+	li a7 1
+	mv a0 s3
+	ecall
+	j sair
+	
+multi:
+	mul s4 t0 t1
+	
+	li a7 4
+	la a0 resultado
+	ecall
+	
+	li a7 1
+	mv a0 s4
+	ecall
+	j sair
+divis:
+	
+	div s5 t0 t1
+	
+	beqz t1 zer
+	
+	li a7 4
+	la a0 resultado
+	ecall
+	
+	li a7 1
+	mv a0 s5
+	ecall
+	j sair
+
+zer:
+	li a7 4
+	la a0 zerou
+	ecall
+	j sair
+	
+
+sair: 
+	li a7 10
+	ecall
+
+	 
+	

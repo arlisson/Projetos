@@ -1,0 +1,40 @@
+.data
+num:    .word 32        # Número a ser verificado
+result: .word 0         # Resultado (1 se for potência de dois, 0 caso contrário)
+
+.text
+.globl main
+main:
+    # Carregar o número
+    lw  t0, num            # Carrega o número para o registrador t0
+
+    # Verificar se o número é uma potência de dois
+    # Verificamos se o número é diferente de zero e se o número AND (bitwise) com o número menos um é zero
+    # Isso é uma propriedade de potências de dois, onde apenas um bit é setado
+    bnez    t0, check_power_of_two   # Se o número não for zero, verifica se é uma potência de dois
+    j   not_power_of_two   # Se o número for zero, não é uma potência de dois
+
+check_power_of_two:
+    # Subtrai 1 do número
+    addi    t1, t0, -1       # Subtrai 1 do número
+
+    # Verifica se o AND do número original com o número decrementado é zero
+    and     t1, t0, t1       # Faz o AND bitwise
+    bnez    t1, not_power_of_two   # Se o resultado não for zero, não é uma potência de dois
+
+    # Se chegamos aqui, o número é uma potência de dois
+    li  t2, 1          # Armazena 1 no registrador de resultado
+    j   end_checking   # Pula para o fim da verificação
+
+not_power_of_two:
+    # O número não é uma potência de 2
+    li  t2, 0          # Armazena 0 no registrador de resultado
+    j   end_checking   # Pula para o fim da verificação
+
+end_checking:
+    # Armazena o resultado no registrador apropriado
+    sw  t2, result         # Armazena o resultado no registrador result
+
+    # Encerra o programa
+    li  a7, 10         # Chamada de sistema para encerrar o programa
+    ecall

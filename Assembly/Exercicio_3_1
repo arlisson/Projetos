@@ -1,0 +1,66 @@
+.data
+	msg: .asciz "\nO número: "
+	msg2: .asciz " é primo"
+	msg3: .asciz " não é primo"
+
+.text
+.global main
+main:
+	li t1, 1
+	li t2,23
+	
+	j for
+for:
+	bge t1 t2 end_for
+	rem t0 t2 t1
+	addi t1 t1 1
+	beqz t0 for_1
+		
+		
+	
+	
+	
+	j for
+	
+for_1:
+	bge t1 t2 end_for	
+	rem t0 t2 t1
+	beqz t0 not_prime
+		
+	addi t1 t1 1
+	
+	
+	j for_1
+
+not_prime:
+	li a7 4
+	la a0 msg
+	ecall
+	
+	li a7 1
+	mv a0 t2
+	ecall
+	
+	li a7 4
+	la a0 msg3
+	ecall
+	
+	li a7 10
+	ecall
+
+end_for:
+	li a7 4
+	la a0 msg
+	ecall
+	
+	li a7 1
+	mv a0 t2
+	ecall
+	
+	li a7 4
+	la a0 msg2
+	ecall
+	
+
+	li a7 10
+	ecall

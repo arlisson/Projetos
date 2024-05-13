@@ -1,0 +1,40 @@
+addi a0 a0 -1		
+	jal ra torre_hanoi #Chamada Recursiva	
+	
+	mv t0 a1
+	mv a1 a2
+	mv a2 t0
+	
+	li a7 4
+	la a0 mova
+	ecall
+	
+	li a7 1
+	lw a0 0(sp) #Recuperar o Vaor Original de a0, no caso, o valor que foi salvo em 0(sp)
+	ecall
+	
+	li a7 4
+	la a0 de
+	ecall
+	
+	li a7 4
+	mv a0 a2
+	ecall	
+	
+	li a7 4
+	la a0 para
+	ecall	
+	
+	li a7 4
+	mv a0 a3
+	ecall
+		
+	li a7 4
+	la a0 n
+	ecall
+	
+	
+	lw a0 0(sp) #Recuperar o Vaor Original de a0, no caso, o valor que foi salvo em 0(sp)
+	lw ra 4 (sp) # Restaurar o valor original de ra
+	addi sp sp 8 # Restaurar o ponteiro da p i l h a
+	ret # Retornar ao endereco salvo em ra

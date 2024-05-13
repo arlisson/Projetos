@@ -1,0 +1,83 @@
+.data 
+	vetor: .space 60	
+	maior_valor: .asciz "\nMaior número do vetor: "
+	virgula: .asciz ", "
+	v: .asciz "\nVetor: "
+	#linha: .asciz "\n"
+	
+.text
+.global main
+main :
+	la t1 vetor # carregar o endereco do vetor	
+	li t2 0 #indice do vetor
+	li t3 15 #tamanho do vetor
+
+inserir:
+	
+	mv a0 t2 #a0 recebe o valor de t2
+	
+	sw a0 0(t1) #t1 no indice do endereço de 4 bytes recebe o valor de a0
+	
+	addi t1 t1 4 #incrementa endereco	
+	addi t2 t2 1 #incrementa i n d i c e
+	
+	blt t2 t3 inserir #continua se t2 < t3	
+	la t1 vetor #carrega o valor do vetor no registrador
+	li t2 0 #indice do vetor
+	lw t4 0(t1)
+	
+maior:
+	lw t5 0(t1)
+	
+	blt t4 t5 valor_maior 
+	
+	
+	addi t1 t1 4 #incrementa endereco	
+	addi t2 t2 1 #incrementa i n d i c e
+	
+	
+	blt t2 t3 maior  #continua se t2 < t3	
+	
+	li a7 4
+	la a0 v
+	ecall
+	
+	la t1 vetor #carrega o valor do vetor no registrador
+	li t2 0 #indice do vetor
+		
+	j impressao
+	
+valor_maior:
+	
+	mv t4 t5
+	j maior
+			
+impressao:
+		
+	lw s1 0(t1) #carrega numero da posicao para r e g i s t r a d o r
+	li a7 1
+	mv a0 s1
+	ecall
+	
+	li a7 4
+	la a0 virgula
+	ecall
+	
+	addi t1 t1 4 #incrementa endereco da memória
+	
+	
+	addi t2 t2 1 #incrementa indice do vetor 
+	
+	blt t2 t3 impressao #continua se t2 < t3
+
+end:
+	li a7 4
+	la a0 maior_valor
+	ecall	
+	
+	li a7 1
+	mv a0 t4
+	ecall
+	
+	li a7 10
+	ecall

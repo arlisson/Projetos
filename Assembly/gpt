@@ -1,0 +1,94 @@
+# Inicialização de variáveis de string
+.data
+prompt: .asciz "Quantos discos você quer jogar? "
+scan_fmt: .asciz "%u"
+scan_fail: .asciz "Uh-oh, não consegui entender isso... Nada de Torre de Hanoi para você!"
+prompt_move_one_disk: .asciz "Mova o disco 1 de %d para %d\n"
+prompt_move_disk: .asciz "Mova o disco %d de %d para %d\n"
+
+.text
+.global main
+.global hanoi
+
+main:
+li t0 45
+    sub     sp, sp, t0
+    la      a0, prompt          # Endereço da string prompt
+    j    printf              # Chama printf para imprimir a mensagem
+    lw      a1, 32(sp)          # Endereço do espaço reservado para o número de discos
+    la      a0, scan_fmt        # Endereço do formato de scanf
+    call    scanf               # Chama scanf para ler o número de discos
+    bnez    a0, call_hanoi      # Se a leitura foi bem-sucedida, chama a função hanoi
+    la      a0, scan_fail       # Se a leitura falhou, imprime a mensagem de erro
+    call    printf
+    li      a0, 1               # Retorna 1
+    addi    sp, sp, 56          # Restaura o ponteiro da pilha
+    ret
+
+call_hanoi:
+    mv      t0, a1              # t0 = num_disks
+    li      t1, 3                # t1 = tmp
+    li      t2, 2                # t2 = dst
+    li      t3, 1                # t3 = src
+    jal     hanoi                # Chama a função hanoi
+    li      a0, 0                # Retorna 0
+    ret
+
+hanoi:
+    # Backup de registradores
+    addi    sp, sp, -40
+    sw      ra, 36(sp)
+    sw      s0, 32(sp)
+    sw      s1, 28(sp)
+    sw      s2, 24(sp)
+    sw      s3, 20(sp)
+
+    # Inicialização de variáveis locais
+    mv      s0, a0              # s0 = num_disks
+    mv      s1, a2              # s1 = dst
+    mv      s2, a3              # s2 = src
+    mv      s3, a1              # s3 = tmp
+
+    # Caso base
+    li      t0, 1
+    beq     s0, t0, move_one_disk
+
+    # Chamada recursiva
+    addi    a0, s0, -1          # num_disks - 1
+    mv      a1, s3              # tmp
+    mv      a2, s1              # dst
+    mv      a3, s2              # src
+    jal     hanoi
+
+    # Movimento do disco
+    la      a0, prompt_move_disk
+    mv      a1, s0              # num_disks
+    mv      a2, s2              # src
+    mv      a3, s1              # dst
+    call    printf
+
+    # Chamada recursiva
+    addi    a0, s0, -1          # num_disks - 1
+    mv      a1, s2              # src
+    mv      a2, s1              # dst
+    mv      a3, s3              # tmp
+    jal     hanoi
+
+    j       end
+
+move_one_disk:
+    la      a0, prompt_move_one_disk
+    li      a1, 1                # num_disks
+    mv      a2, s2              # src
+    mv      a3, s1              # dst
+    call    printf
+
+end:
+    # Restauração de registradores e retorno
+    lw      ra, 36(sp)
+    lw      s0, 32(sp)
+    lw      s1, 28(sp)
+    lw      s2, 24(sp)
+    lw      s3, 20(sp)
+    addi    sp, sp, 40
+    ret

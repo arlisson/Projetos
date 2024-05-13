@@ -1,0 +1,55 @@
+.data 
+	numeros1: .space 40
+	numeros2: .space 40
+	resultado: .space 40
+	linha: .asciz "\n"
+	
+.text
+.global main
+main :
+	la t1 numeros1 # carregar o endereco do vetor
+	la t2 numeros2
+	la t3 resultado
+	li t4 0 # i n i c i a l i z a o i n d i c e do vetor
+	li s10 10
+
+soma:
+		
+	mv a0 t4
+	
+	sw a0 0(t1) #armazena numero na posicao
+	sw a0 0(t2)
+	
+	lw s1 0(t1)
+	lw s2 0(t2)
+															
+	add s7 s1 s2
+	sw s7 0(t3)
+	addi t1 t1 4 #incrementa endereco
+	addi t2 t2 4 #incrementa endereco
+	addi t3 t3 4
+	addi t4 t4 1 #incrementa i n d i c e
+	
+	blt t4 s10 soma #continua se t 1 < 10
+	la t1 numeros1 # carregar o
+	la t2 numeros2 # carregar o
+	la t3 resultado
+	li t4 0
+	
+impressao:
+		
+	lw s1 0(t3) #carrega numero da posicao para r e g i s t r a d o r
+	li a7 1
+	mv a0 s1
+	ecall
+	
+	li a7 4
+	la a0 linha
+	ecall
+	
+	addi t3 t3 4 #incrementa endereco
+	
+	
+	addi t4 t4 1 #incrementa i n d i c e
+	
+	blt t4 s10 impressao #continua se t 1 < 10
