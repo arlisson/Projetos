@@ -1,0 +1,2 @@
+https://labdegaragem.com/profiles/blogs/hino-de-times-de-futebol-de-sao-paulo-tocados-pelo-arduino
+Instalação das bibliotecas tensorflow, statsmodels, scipy, sklearn, keras, easygui, pathlib, math, seaborn, matplotlib, pandas e numpy.
