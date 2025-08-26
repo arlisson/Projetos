@@ -1,0 +1,15 @@
+===== NOTA FISCAL =====
+Data: 26/08/2025 19:19:44
+
+Arroz                R$ 5,00
+Arroz                R$ 5,00
+Feijão               R$ 2,50
+Feijão               R$ 2,50
+Biscoito             R$ 1,00
+Macarrão             R$ 4,00
+Macarrão             R$ 4,00
+
+------------------------
+Quantidade: 7
+Total:      R$ 24,00
+========================
