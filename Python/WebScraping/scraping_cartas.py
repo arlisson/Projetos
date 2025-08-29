@@ -1,12 +1,21 @@
 import requests
 from bs4 import BeautifulSoup
 import cloudscraper
+import json
 
-headers = {
+HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
 }
 
-scraper = cloudscraper.create_scraper()
+SCRAPER = cloudscraper.create_scraper()
+SESSION = requests.Session()
+
+SESSION.headers.update({
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                  "AppleWebKit/537.36 (KHTML, like Gecko) "
+                  "Chrome/115.0.0.0 Safari/537.36"
+})
+
 
 def buscar_carta(url):
     """
@@ -15,7 +24,7 @@ def buscar_carta(url):
     """
     try:
         dados = []
-        response = scraper.get(url, headers=headers)
+        response = SCRAPER.get(url, headers=HEADERS)
         soup = BeautifulSoup(response.content, "html.parser")    
 
         # Nome e imagem
@@ -50,3 +59,26 @@ def buscar_carta(url):
 def buscar_por_raridade(lista, chave):
     chave = chave.lower()
     return [item for item in lista if chave in item["raridade"].lower()]
+
+
+
+def buscar_produtos(url):
+    try:
+        # with open("session_token.json", "r") as f:
+        #     cookies = json.load(f)
+        
+        resultados = SESSION.get(url, headers=HEADERS)
+        cookies = SESSION.cookies.get_dict()
+        resultados = SESSION.get(url, headers=HEADERS, cookies=cookies)
+        soup = BeautifulSoup(resultados.content, "html.parser")
+        produtos = soup.find_all("div", class_="new-price price-with-image")
+
+        return produtos
+
+    except Exception as e:
+        print("Erro ao fazer a requisição:", e)
+        return []
+
+resultado = buscar_produtos('https://www.ligayugioh.com.br/?view=prod/view&pcode=131327&prod=Collector%20Set%20-%20Speed%20Duel:%20Battle%20City%20Finals')
+
+print(resultado)
