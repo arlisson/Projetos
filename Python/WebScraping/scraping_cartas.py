@@ -1,7 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 import cloudscraper
-import json
+import asyncio
+from playwright.sync_api import sync_playwright
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
@@ -15,12 +16,12 @@ SESSION.headers.update({
                   "AppleWebKit/537.36 (KHTML, like Gecko) "
                   "Chrome/115.0.0.0 Safari/537.36"
 })
+IMAGEM = 'https://i.pinimg.com/736x/71/1e/da/711eda25308c65a7756751088866e181.jpg'
 
-
-def buscar_carta(url):
+def buscar_carta(url, chave):
     """
-    Faz scraping da página de um produto no mypcards
-    e retorna uma lista de dicionários com nome, imagem, raridade e preço.
+    Faz scraping da página de um produto no mypcards,
+    filtra por raridade e retorna uma lista de dicionários com nome, imagem, raridade e preço.
     """
     try:
         dados = []
@@ -30,55 +31,78 @@ def buscar_carta(url):
         # Nome e imagem
         nome = soup.find("span", class_="subtitulo").get_text(strip=True)
         imagem = soup.find_all("img")[3]["src"]
-
+        preco_minimo = soup.find("span", class_="moeda").get_text(strip=True)        
         # Tabela de preços/raridades
-        tabela = soup.find("table", class_="table table-striped table-bordered")   
-        for linha in tabela.find_all("tr"):
-            colunas = linha.find_all("td")
-            valores = [coluna.get_text(strip=True) for coluna in colunas]        
+        tabela = soup.find("table", class_="table table-striped table-bordered")
 
-            if valores:
-                raridade = valores[1].split(",")[0]  # antes da vírgula
-                preco = valores[4]
+        if tabela and "Nenhum resultado foi encontrado." not in tabela.get_text():
+            for linha in tabela.find_all("tr"):
+                colunas = linha.find_all("td")
+                valores = [coluna.get_text(strip=True) for coluna in colunas]        
 
-                dados.append({
-                    "imagem": imagem,
-                    "nome": nome,
-                    "raridade": raridade,
-                    "preco": preco
-                })
+                if valores:
+                    raridade = valores[1].split(",")[0]  # antes da vírgula
+                    preco = valores[4]
 
-        return dados
+                    dados.append({
+                        "imagem": imagem if imagem else IMAGEM,
+                        "nome": nome,
+                        "raridade": raridade,
+                        "preco": preco if preco else preco_minimo
+                    })
+        else:
+            dados.append({
+                "imagem": IMAGEM,
+                "nome": "Não encontrado",
+                "raridade": "Não encontrado",
+                "preco": preco_minimo
+            })
+
+        # Filtro por raridade
+        chave = chave.lower()
+        if len(dados) == 1:
+            return [{
+                "imagem": IMAGEM,
+                "nome": nome if nome else "Não encontrado",
+                "raridade": "Não encontrado",
+                "preco": preco_minimo
+            }]
+
+        return [item for item in dados if chave in item["raridade"].lower()]
 
     except requests.RequestException as e:
         print("Erro ao fazer a requisição:", e)
         return []
 
 
-
-def buscar_por_raridade(lista, chave):
-    chave = chave.lower()
-    return [item for item in lista if chave in item["raridade"].lower()]
-
-
-
 def buscar_produtos(url):
-    try:
-        # with open("session_token.json", "r") as f:
-        #     cookies = json.load(f)
-        
+    try:               
         resultados = SESSION.get(url, headers=HEADERS)
         cookies = SESSION.cookies.get_dict()
         resultados = SESSION.get(url, headers=HEADERS, cookies=cookies)
         soup = BeautifulSoup(resultados.content, "html.parser")
-        produtos = soup.find_all("div", class_="new-price price-with-image")
+        produtos = soup.find_all("div", class_="item-name")
+        imagem = soup.find("img", id="featuredImage")     
+     
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)  # Sem janela
+            page = browser.new_page()
+            page.goto(url)
+            page.wait_for_selector(".price")  # Espera o JS renderizar o preço
+            preco = page.locator(".price").first.text_content()          
 
-        return produtos
+            browser.close()
+        produto = {
+            "imagem": "https:" + imagem["src"] if imagem else IMAGEM,
+            "nome": produtos[0].text.strip() if produtos else "Não encontrado",
+            "preco": preco.strip() if preco else 0.00,
+            
+        }
+
+        return produto
 
     except Exception as e:
         print("Erro ao fazer a requisição:", e)
         return []
+    
 
-resultado = buscar_produtos('https://www.ligayugioh.com.br/?view=prod/view&pcode=131327&prod=Collector%20Set%20-%20Speed%20Duel:%20Battle%20City%20Finals')
-
-print(resultado)
