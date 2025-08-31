@@ -1,6 +1,6 @@
 from scraping_cartas import *
 
-cartas = buscar_carta("https://mypcards.com/yugioh/produto/187637/acao-de-gracas-dos-tokens", "Secret Rare")
+cartas = buscar_carta("https://mypcards.com/yugioh/produto/187637/acao-de-gracas-dos-tokens", "Ultra Rare")
 
 print(cartas[0])
 

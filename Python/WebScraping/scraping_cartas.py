@@ -32,6 +32,11 @@ def buscar_carta(url, chave):
         nome = soup.find("span", class_="subtitulo").get_text(strip=True)
         imagem = soup.find_all("img")[3]["src"]
         preco_minimo = soup.find("span", class_="moeda").get_text(strip=True)        
+        colecao = soup.find_all("a", href=lambda h: h and "/yugioh/" in h)        
+
+        colecao_carta = colecao[23].text
+        codigo_carta = imagem.split("/")[-2].split("_")[1]
+       
         # Tabela de preços/raridades
         tabela = soup.find("table", class_="table table-striped table-bordered")
 
@@ -48,14 +53,18 @@ def buscar_carta(url, chave):
                         "imagem": imagem if imagem else IMAGEM,
                         "nome": nome,
                         "raridade": raridade,
-                        "preco": preco if preco else preco_minimo
+                        "preco": preco if preco else preco_minimo,
+                        "codigo": codigo_carta,
+                        "colecao": colecao_carta
                     })
         else:
             dados.append({
                 "imagem": IMAGEM,
-                "nome": "Não encontrado",
+                "nome": nome,
                 "raridade": "Não encontrado",
-                "preco": preco_minimo
+                "preco": preco_minimo,
+                "codigo": codigo_carta,
+                "colecao": colecao_carta
             })
 
         # Filtro por raridade
@@ -65,7 +74,9 @@ def buscar_carta(url, chave):
                 "imagem": IMAGEM,
                 "nome": nome if nome else "Não encontrado",
                 "raridade": "Não encontrado",
-                "preco": preco_minimo
+                "preco": preco_minimo,
+                "codigo": codigo_carta,
+                "colecao": colecao_carta
             }]
 
         return [item for item in dados if chave in item["raridade"].lower()]
@@ -105,4 +116,3 @@ def buscar_produtos(url):
         print("Erro ao fazer a requisição:", e)
         return []
     
-
