@@ -18,10 +18,16 @@ SESSION.headers.update({
 })
 IMAGEM = 'https://i.pinimg.com/736x/71/1e/da/711eda25308c65a7756751088866e181.jpg'
 
-def buscar_carta(url, chave):
+def buscar_carta_myp(url, chave):
     """
-    Faz scraping da página de um produto no mypcards,
-    filtra por raridade e retorna uma lista de dicionários com nome, imagem, raridade e preço.
+    Faz o scraping da página de uma carta no MyPCards e retorna os dados da carta.
+
+    Args:
+        url (str): URL da página da carta.
+        chave (str): Raridade a ser buscada.
+
+    Returns:
+        list[dict]: Lista de dicionários com nome, imagem, raridade, preço, etc.
     """
     try:
         dados = []
@@ -35,8 +41,9 @@ def buscar_carta(url, chave):
         colecao = soup.find_all("a", href=lambda h: h and "/yugioh/" in h)        
 
         colecao_carta = colecao[23].text
-        codigo_carta = imagem.split("/")[-2].split("_")[1]
-       
+        codigo_carta = "_".join(imagem.split("/")[-2].split("_")[1:])
+
+      
         # Tabela de preços/raridades
         tabela = soup.find("table", class_="table table-striped table-bordered")
 
@@ -55,7 +62,9 @@ def buscar_carta(url, chave):
                         "raridade": raridade,
                         "preco": preco if preco else preco_minimo,
                         "codigo": codigo_carta,
-                        "colecao": colecao_carta
+                        "colecao": colecao_carta,
+                        "origem": "MyPCards",
+                        "link_site": url
                     })
         else:
             dados.append({
@@ -64,19 +73,23 @@ def buscar_carta(url, chave):
                 "raridade": "Não encontrado",
                 "preco": preco_minimo,
                 "codigo": codigo_carta,
-                "colecao": colecao_carta
+                "colecao": colecao_carta,
+                "origem": "MyPCards",
+                "link_site": url
             })
 
         # Filtro por raridade
         chave = chave.lower()
-        if len(dados) == 1:
+        if len(dados) == 1:            
             return [{
                 "imagem": IMAGEM,
                 "nome": nome if nome else "Não encontrado",
                 "raridade": "Não encontrado",
                 "preco": preco_minimo,
                 "codigo": codigo_carta,
-                "colecao": colecao_carta
+                "colecao": colecao_carta,
+                "origem": "MyPCards",
+                "link_site": url
             }]
 
         return [item for item in dados if chave in item["raridade"].lower()]
@@ -86,7 +99,7 @@ def buscar_carta(url, chave):
         return []
 
 
-def buscar_produtos(url):
+def buscar_produto_liga(url):
     try:               
         resultados = SESSION.get(url, headers=HEADERS)
         cookies = SESSION.cookies.get_dict()
@@ -107,7 +120,8 @@ def buscar_produtos(url):
             "imagem": "https:" + imagem["src"] if imagem else IMAGEM,
             "nome": produtos[0].text.strip() if produtos else "Não encontrado",
             "preco": preco.strip() if preco else 0.00,
-            
+            "origem": "Liga Yu-Gi-Oh",
+            "link_site": url
         }
 
         return produto
@@ -115,4 +129,4 @@ def buscar_produtos(url):
     except Exception as e:
         print("Erro ao fazer a requisição:", e)
         return []
-    
+

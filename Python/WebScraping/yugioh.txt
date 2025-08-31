@@ -1,0 +1,120 @@
+-- SQLite Script adapted from MySQL model
+
+PRAGMA foreign_keys = ON;
+
+-- Table: colecao
+CREATE TABLE IF NOT EXISTS colecao (
+  id_colecao INTEGER PRIMARY KEY AUTOINCREMENT,
+  nome TEXT,
+  codigo TEXT
+);
+
+-- Table: qualidade
+CREATE TABLE IF NOT EXISTS qualidade (
+  id_qualidade INTEGER PRIMARY KEY AUTOINCREMENT,
+  nome TEXT
+);
+
+-- Table: raridade
+CREATE TABLE IF NOT EXISTS raridade (
+  id_raridade INTEGER PRIMARY KEY AUTOINCREMENT,
+  nome TEXT
+);
+
+-- Table: carta
+CREATE TABLE IF NOT EXISTS carta (
+  id_carta INTEGER PRIMARY KEY AUTOINCREMENT,
+  link_site TEXT,
+  nome TEXT,
+  colecao INTEGER NOT NULL,
+  codigo TEXT,
+  preco_da_compra REAL,
+  data_da_compra TEXT,
+  raridade INTEGER,
+  qualidade INTEGER,
+  quantidade INTEGER,
+  imagem TEXT,
+  origem TEXT DEFAULT 'MypCards',
+  preco_atual REAL,
+  FOREIGN KEY (colecao) REFERENCES colecao(id_colecao),
+  FOREIGN KEY (raridade) REFERENCES raridade(id_raridade),
+  FOREIGN KEY (qualidade) REFERENCES qualidade(id_qualidade)
+);
+
+-- Table: venda
+CREATE TABLE IF NOT EXISTS venda (
+  id_carta INTEGER PRIMARY KEY AUTOINCREMENT,
+  link_site TEXT,
+  nome TEXT,
+  colecao INTEGER NOT NULL,
+  codigo TEXT,
+  preco_da_compra REAL,
+  data_da_compra TEXT,
+  raridade INTEGER,
+  qualidade INTEGER,
+  quantidade INTEGER,
+  data_da_venda TEXT,
+  preco_da_venda REAL,
+  imagem TEXT,
+  origem TEXT DEFAULT 'MypCards',
+  preco_atual REAL,
+  FOREIGN KEY (colecao) REFERENCES colecao(id_colecao),
+  FOREIGN KEY (raridade) REFERENCES raridade(id_raridade),
+  FOREIGN KEY (qualidade) REFERENCES qualidade(id_qualidade)
+);
+
+-- Table: produto
+CREATE TABLE IF NOT EXISTS produto (
+  id_produto INTEGER PRIMARY KEY AUTOINCREMENT,
+  nome_produto TEXT,
+  link TEXT,
+  imagem TEXT,
+  preco_compra REAL,
+  data_scraping TEXT,
+  origem TEXT DEFAULT 'Liga Yugioh',
+  preco_atual REAL
+);
+
+-- Table: venda_produto
+CREATE TABLE IF NOT EXISTS venda_produto (
+  id_produto INTEGER PRIMARY KEY AUTOINCREMENT,
+  nome_produto TEXT,
+  link TEXT,
+  imagem TEXT,
+  preco_compra REAL,
+  data_scraping TEXT,
+  preco_venda REAL,
+  data_venda TEXT,
+  origem TEXT,
+  preco_atual REAL
+);
+
+-- Table: historico_precos
+CREATE TABLE IF NOT EXISTS historico_precos (
+  id_historico_precos INTEGER PRIMARY KEY AUTOINCREMENT,
+  id_carta INTEGER,
+  id_produto INTEGER,
+  data TEXT,
+  preco REAL,
+  origem TEXT,
+  FOREIGN KEY (id_carta) REFERENCES carta(id_carta),
+  FOREIGN KEY (id_produto) REFERENCES produto(id_produto)
+);
+
+
+-- Inserir Raridades
+INSERT INTO raridade (nome) VALUES
+('Common'),
+('Rare'),
+('Super Rare'),
+('Ultra Rare'),
+('Secret Rare'),
+('Quarter Century');
+
+-- Inserir Qualidades
+INSERT INTO qualidade (nome) VALUES
+('Nova'),
+('Quase Nova'),
+('Pouco Jogada'),
+('Muito Jogada'),
+('Danificada');
