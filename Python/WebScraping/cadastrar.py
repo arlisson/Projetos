@@ -10,8 +10,8 @@ from tkcalendar import Calendar
 
 IMAGEM_PADRAO = "https://i.pinimg.com/736x/71/1e/da/711eda25308c65a7756751088866e181.jpg"
 
-def criar_tela_cadastro():
-    root = tk.Tk()
+def criar_tela_cadastro(app):
+    root = tk.Toplevel(app)
     root.title("Cadastro de Carta")
     root.resizable(True, True)
 
@@ -48,9 +48,11 @@ def criar_tela_cadastro():
 
         ttk.Button(top, text="Selecionar", command=selecionar_data).pack(pady=5)
 
-    def criar_rotulo_entrada(frame, texto, linha, largura=50):
+    def criar_rotulo_entrada(frame, texto, linha, largura=50, somente_leitura=False):
         ttk.Label(frame, text=texto).grid(row=linha, column=0, sticky="w", padx=5, pady=3)
         entrada = ttk.Entry(frame, width=largura)
+        if somente_leitura:
+            entrada.configure(state="readonly")
         entrada.grid(row=linha, column=1, columnspan=2, padx=5, pady=3, sticky="we")
         return entrada
 
@@ -62,7 +64,7 @@ def criar_tela_cadastro():
     campos["nome"] = criar_rotulo_entrada(form_frame, "Nome:", 1)
     campos["codigo"] = criar_rotulo_entrada(form_frame, "Código:", 2)
     campos["preco"] = criar_rotulo_entrada(form_frame, "Preço pago:", 3)
-    campos["preco_atual"] = criar_rotulo_entrada(form_frame, "Preço atual:", 4)
+    campos["preco_atual"] = criar_rotulo_entrada(form_frame, "Preço atual:", 4, somente_leitura=True)
 
     # Campo de data com botão de calendário
     ttk.Label(form_frame, text="Data da compra:").grid(row=5, column=0, sticky="w", padx=5, pady=3)
@@ -135,18 +137,22 @@ def criar_tela_cadastro():
                 messagebox.showwarning("Aviso", "Nenhum resultado encontrado.")
                 return
             dados = resultados[0]
+
             campos["nome"].delete(0, tk.END)
             campos["nome"].insert(0, dados["nome"])
             campos["codigo"].delete(0, tk.END)
             campos["codigo"].insert(0, dados["codigo"])
-            preco_convertido = limpar_preco(dados["preco"])
-            campos["preco"].delete(0, tk.END)
-            campos["preco"].insert(0, preco_convertido)
+
+            # Preencher somente o campo de preço atual (somente leitura)
+            campos["preco_atual"].configure(state="normal")
             campos["preco_atual"].delete(0, tk.END)
-            campos["preco_atual"].insert(0, preco_convertido)
+            campos["preco_atual"].insert(0, limpar_preco(dados["preco_atual"]))
+            campos["preco_atual"].configure(state="readonly")
+
             campos["imagem"].delete(0, tk.END)
             campos["imagem"].insert(0, dados["imagem"])
             atualizar_imagem(dados["imagem"])
+
             colecao_nome = dados["colecao"]
             colecao_id = buscar_colecao_por_nome(colecao_nome)
             if not colecao_id:
@@ -156,6 +162,7 @@ def criar_tela_cadastro():
                 if val.startswith(f"{colecao_id} -"):
                     campos["colecao"].current(i)
                     break
+
             messagebox.showinfo("Sucesso", "Dados preenchidos com sucesso!")
         except Exception as e:
             messagebox.showerror("Erro", f"Erro ao buscar: {e}")
@@ -194,4 +201,7 @@ def criar_tela_cadastro():
 
 
 if __name__ == "__main__":
-    criar_tela_cadastro()
+    app = tk.Tk()
+    app.withdraw()
+    criar_tela_cadastro(app)
+    app.mainloop()

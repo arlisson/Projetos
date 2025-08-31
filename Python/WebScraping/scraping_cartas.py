@@ -60,7 +60,7 @@ def buscar_carta_myp(url, chave):
                         "imagem": imagem if imagem else IMAGEM,
                         "nome": nome,
                         "raridade": raridade,
-                        "preco": preco if preco else preco_minimo,
+                        "preco_atual": preco if preco else preco_minimo,
                         "codigo": codigo_carta,
                         "colecao": colecao_carta,
                         "origem": "MyPCards",
@@ -71,7 +71,7 @@ def buscar_carta_myp(url, chave):
                 "imagem": IMAGEM,
                 "nome": nome,
                 "raridade": "Não encontrado",
-                "preco": preco_minimo,
+                "preco_atual": preco_minimo,
                 "codigo": codigo_carta,
                 "colecao": colecao_carta,
                 "origem": "MyPCards",
@@ -85,7 +85,7 @@ def buscar_carta_myp(url, chave):
                 "imagem": IMAGEM,
                 "nome": nome if nome else "Não encontrado",
                 "raridade": "Não encontrado",
-                "preco": preco_minimo,
+                "preco_atual": preco_minimo,
                 "codigo": codigo_carta,
                 "colecao": colecao_carta,
                 "origem": "MyPCards",
@@ -119,7 +119,7 @@ def buscar_produto_liga(url):
         produto = {
             "imagem": "https:" + imagem["src"] if imagem else IMAGEM,
             "nome": produtos[0].text.strip() if produtos else "Não encontrado",
-            "preco": preco.strip() if preco else 0.00,
+            "preco_atual": preco.strip() if preco else 0.00,
             "origem": "Liga Yu-Gi-Oh",
             "link_site": url
         }
