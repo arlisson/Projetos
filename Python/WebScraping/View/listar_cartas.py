@@ -4,7 +4,7 @@ from PIL import Image, ImageTk
 import urllib.request
 from io import BytesIO
 
-from DAO import (
+from DAO.database import (
     buscar_todas_cartas,
     buscar_carta_por_texto,
     calcular_lucro_total_cartas_em_posse,    

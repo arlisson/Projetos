@@ -4,8 +4,8 @@ from PIL import ImageTk, Image
 import urllib.request
 from io import BytesIO
 from datetime import datetime
-from scraping_cartas import *
-from DAO import *
+from scraping.scraping_cartas import *
+from DAO.database import *
 from tkcalendar import Calendar
 
 IMAGEM_PADRAO = "https://i.pinimg.com/736x/71/1e/da/711eda25308c65a7756751088866e181.jpg"
@@ -81,6 +81,7 @@ def criar_tela_cadastro(app):
 
     campos["quantidade"] = criar_rotulo_entrada(form_frame, "Quantidade:", 6)
     campos["imagem"] = criar_rotulo_entrada(form_frame, "Imagem URL:", 7)
+    campos["origem"] = criar_rotulo_entrada(form_frame, "Origem:", 8)
 
     def popular_dropdown(combo, dados):
         valores = [f"{item[0]} - {item[1]}" for item in dados]
@@ -178,14 +179,17 @@ def criar_tela_cadastro(app):
                 "data_da_compra": campos["data"].get(),
                 "quantidade": int(campos["quantidade"].get()),
                 "imagem": campos["imagem"].get() or IMAGEM_PADRAO,
+                "origem": campos["origem"].get(),
                 "raridade": int(campos["raridade"].get().split(" - ")[0]),
                 "qualidade": int(campos["qualidade"].get().split(" - ")[0]),
                 "colecao": int(campos["colecao"].get().split(" - ")[0]),
             }
+
             inserir_carta(carta)
             messagebox.showinfo("Sucesso", "Carta cadastrada com sucesso!")
         except Exception as e:
             messagebox.showerror("Erro", f"Erro ao salvar no banco: {e}")
+
 
     botoes_frame = ttk.Frame(main_frame)
     botoes_frame.grid(row=2, column=0, pady=10)

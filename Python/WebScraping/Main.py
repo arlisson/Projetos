@@ -1,9 +1,9 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from cadastrar import criar_tela_cadastro  # importe sua função real
-from listar import abrir_tela_listagem  # idem
-# from cadastro_produto import criar_tela_cadastro_produto
-# from listagem_produtos import abrir_tela_listagem_produtos
+from View.cadastrar_cartas import criar_tela_cadastro
+from View.listar_cartas import abrir_tela_listagem  
+from View.cadastrar_produtos import criar_tela_cadastro_produto
+from View.listar_produtos import abrir_tela_listagem_produtos  
 
 
 def criar_tela_principal():
@@ -29,8 +29,8 @@ def criar_tela_principal():
 
     # --- Produtos ---
     menu_produtos = tk.Menu(menu_bar, tearoff=0)
-    menu_produtos.add_command(label="Cadastrar Produto", command=lambda: messagebox.showinfo("Em breve", "Tela de produto ainda não implementada."))
-    menu_produtos.add_command(label="Listar Produtos", command=lambda: messagebox.showinfo("Em breve", "Tela de produto ainda não implementada."))
+    menu_produtos.add_command(label="Cadastrar Produto", command=lambda: criar_tela_cadastro_produto(root))
+    menu_produtos.add_command(label="Listar Produtos", command=lambda: abrir_tela_listagem_produtos(root))
     menu_bar.add_cascade(label="Produtos", menu=menu_produtos)
 
     # --- Sair ---

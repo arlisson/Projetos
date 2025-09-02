@@ -261,3 +261,228 @@ def calcular_total_vendido_cartas():
         return None
     finally:
         conn.close()
+
+
+def inserir_produto(produto):
+    """
+    Insere um novo produto no banco de dados.
+
+    Args:
+        produto (dict): Dicionário com as chaves:
+            - nome_produto
+            - link
+            - imagem
+            - preco_compra
+            - data_scraping
+            - origem
+            - preco_atual
+
+    Returns:
+        int: ID do produto inserido (ou None se falhar)
+    """
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+
+        query = """
+            INSERT INTO produto (
+                nome_produto, link, imagem, preco_compra,
+                data_scraping, origem, preco_atual
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
+        """
+        valores = (
+            produto["nome_produto"],
+            produto["link"],
+            produto["imagem"],
+            produto["preco_compra"],
+            produto["data_scraping"],
+            produto.get("origem", "Liga Yugioh"),  # padrão se não vier
+            produto["preco_atual"]
+        )
+
+        cursor.execute(query, valores)
+        conn.commit()
+        return cursor.lastrowid
+
+    except Exception as e:
+        print(f"Erro ao inserir produto: {e}")
+        return None
+
+    finally:
+        conn.close()
+
+
+
+
+def listar_todos_produtos(filtro=""):
+    """
+    Lista todos os produtos cadastrados no banco de dados.
+    args:
+        filtro (str): Um filtro opcional para buscar produtos pelo nome.
+    returns:
+        list: Uma lista de dicionários representando os produtos.
+
+    """
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+
+        if filtro:
+            cursor.execute("""
+                SELECT
+                    id_produto,
+                    nome_produto,
+                    link,
+                    imagem,
+                    preco_compra,
+                    preco_atual,
+                    data_scraping,
+                    origem
+                FROM produto
+                WHERE nome_produto LIKE ?
+                ORDER BY id_produto DESC
+            """, (f"%{filtro}%",))
+        else:
+            cursor.execute("""
+                SELECT
+                    id_produto,
+                    nome_produto,
+                    link,
+                    imagem,
+                    preco_compra,
+                    preco_atual,
+                    data_scraping,
+                    origem
+                FROM produto
+                ORDER BY id_produto DESC
+            """)
+
+        colunas = [desc[0] for desc in cursor.description]
+        resultados = [dict(zip(colunas, linha)) for linha in cursor.fetchall()]
+        return resultados
+
+    except Exception as e:
+        print(f"Erro ao listar produtos: {e}")
+        return []
+    finally:
+        conn.close()
+
+
+def calcular_lucro_total_produtos_em_posse():
+    '''
+    Calcula o lucro total dos produtos em posse.
+    returns:
+        float: O lucro total dos produtos em posse, ou 0.0 se não houver produtos.
+    '''
+    query = """
+        SELECT SUM((preco_atual - preco_compra) * quantidade) AS lucro_total
+        FROM produto
+        WHERE preco_atual IS NOT NULL AND preco_compra IS NOT NULL;
+    """
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute(query)
+        resultado = cursor.fetchone()
+        print(resultado[0] if resultado[0] is not None else 0.0)
+        return resultado[0] if resultado[0] is not None else 0.0
+    except Exception as e:
+        print("Erro ao calcular lucro de produtos em posse:", e)
+        return None
+    finally:
+        conn.close()
+
+
+def calcular_lucro_total_produtos_vendidos():
+    '''
+    Calcula o lucro total dos produtos vendidos.
+    returns:
+        float: O lucro total dos produtos vendidos, ou 0.0 se não houver produtos.
+    '''
+    query = """
+        SELECT SUM((preco_venda - preco_compra) * quantidade) AS lucro_total
+        FROM venda_produto
+        WHERE preco_venda IS NOT NULL AND preco_compra IS NOT NULL;
+    """
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute(query)
+        resultado = cursor.fetchone()
+        return resultado[0] if resultado[0] is not None else 0.0
+    except Exception as e:
+        print("Erro ao calcular lucro de produtos vendidos:", e)
+        return 0.0
+    finally:
+        conn.close()
+
+def calcular_total_gasto_produtos():
+    '''
+    Calcula o total gasto em produtos em posse.
+    returns:
+        float: O total gasto em produtos, ou 0.0 se não houver produtos.
+    '''
+    query = """
+        SELECT SUM(preco_compra * quantidade) AS valor_total
+        FROM produto
+        WHERE preco_compra IS NOT NULL;
+    """
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute(query)
+        resultado = cursor.fetchone()
+        return resultado[0] if resultado[0] is not None else 0.0
+    except Exception as e:
+        print("Erro ao calcular valor total de produtos:", e)
+        return None
+    finally:
+        conn.close()
+
+
+def calcular_total_vendido_produtos():
+    '''
+    Calcula o total vendido em produtos.
+    returns:
+        float: O total vendido em produtos, ou 0.0 se não houver vendas.
+    '''
+    query = """
+        SELECT SUM(preco_venda * quantidade) AS total_vendido
+        FROM venda_produto
+        WHERE preco_venda IS NOT NULL;
+    """
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute(query)
+        resultado = cursor.fetchone()
+        return resultado[0] if resultado[0] is not None else 0.0
+    except Exception as e:
+        print("Erro ao calcular total vendido em produtos:", e)
+        return 0.0
+    finally:
+        conn.close()
+
+
+def calcular_total_valor_produtos():
+    '''
+    Calcula o valor atual total dos produtos em posse.
+    returns:
+        float: O valor atual, ou 0.0 se não houver produtos.
+    '''
+    query = """
+        SELECT SUM(preco_atual * quantidade) AS total_atual
+        FROM produto
+        WHERE preco_atual IS NOT NULL;
+    """
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute(query)
+        resultado = cursor.fetchone()
+        return resultado[0] if resultado[0] is not None else 0.0
+    except Exception as e:
+        print("Erro ao calcular valor total atual de produtos:", e)
+        return 0.0
+    finally:
+        conn.close()

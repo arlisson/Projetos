@@ -1,4 +1,4 @@
-from scraping_cartas import *
+from scraping.scraping_cartas import *
 
 cartas = buscar_carta_myp("https://mypcards.com/yugioh/produto/187637/acao-de-gracas-dos-tokens", "Ultra Rare")
 

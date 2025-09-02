@@ -1,27 +1,25 @@
--- SQLite Script adapted from MySQL model
-
 PRAGMA foreign_keys = ON;
 
--- Table: colecao
+-- Tabela: colecao
 CREATE TABLE IF NOT EXISTS colecao (
   id_colecao INTEGER PRIMARY KEY AUTOINCREMENT,
   nome TEXT,
   codigo TEXT
 );
 
--- Table: qualidade
+-- Tabela: qualidade
 CREATE TABLE IF NOT EXISTS qualidade (
   id_qualidade INTEGER PRIMARY KEY AUTOINCREMENT,
   nome TEXT
 );
 
--- Table: raridade
+-- Tabela: raridade
 CREATE TABLE IF NOT EXISTS raridade (
   id_raridade INTEGER PRIMARY KEY AUTOINCREMENT,
   nome TEXT
 );
 
--- Table: carta
+-- Tabela: carta
 CREATE TABLE IF NOT EXISTS carta (
   id_carta INTEGER PRIMARY KEY AUTOINCREMENT,
   link_site TEXT,
@@ -36,12 +34,12 @@ CREATE TABLE IF NOT EXISTS carta (
   imagem TEXT,
   origem TEXT DEFAULT 'MypCards',
   preco_atual REAL,
-  FOREIGN KEY (colecao) REFERENCES colecao(id_colecao),
-  FOREIGN KEY (raridade) REFERENCES raridade(id_raridade),
-  FOREIGN KEY (qualidade) REFERENCES qualidade(id_qualidade)
+  FOREIGN KEY (colecao) REFERENCES colecao (id_colecao),
+  FOREIGN KEY (qualidade) REFERENCES qualidade (id_qualidade),
+  FOREIGN KEY (raridade) REFERENCES raridade (id_raridade)
 );
 
--- Table: venda
+-- Tabela: venda
 CREATE TABLE IF NOT EXISTS venda (
   id_carta INTEGER PRIMARY KEY AUTOINCREMENT,
   link_site TEXT,
@@ -58,12 +56,12 @@ CREATE TABLE IF NOT EXISTS venda (
   imagem TEXT,
   origem TEXT DEFAULT 'MypCards',
   preco_atual REAL,
-  FOREIGN KEY (colecao) REFERENCES colecao(id_colecao),
-  FOREIGN KEY (raridade) REFERENCES raridade(id_raridade),
-  FOREIGN KEY (qualidade) REFERENCES qualidade(id_qualidade)
+  FOREIGN KEY (colecao) REFERENCES colecao (id_colecao),
+  FOREIGN KEY (qualidade) REFERENCES qualidade (id_qualidade),
+  FOREIGN KEY (raridade) REFERENCES raridade (id_raridade)
 );
 
--- Table: produto
+-- Tabela: produto
 CREATE TABLE IF NOT EXISTS produto (
   id_produto INTEGER PRIMARY KEY AUTOINCREMENT,
   nome_produto TEXT,
@@ -72,10 +70,11 @@ CREATE TABLE IF NOT EXISTS produto (
   preco_compra REAL,
   data_scraping TEXT,
   origem TEXT DEFAULT 'Liga Yugioh',
-  preco_atual REAL
+  preco_atual REAL,
+  quantidade INTEGER
 );
 
--- Table: venda_produto
+-- Tabela: venda_produto
 CREATE TABLE IF NOT EXISTS venda_produto (
   id_produto INTEGER PRIMARY KEY AUTOINCREMENT,
   nome_produto TEXT,
@@ -86,10 +85,11 @@ CREATE TABLE IF NOT EXISTS venda_produto (
   preco_venda REAL,
   data_venda TEXT,
   origem TEXT,
-  preco_atual REAL
+  preco_atual REAL,
+  quantidade INTEGER
 );
 
--- Table: historico_precos
+-- Tabela: historico_precos
 CREATE TABLE IF NOT EXISTS historico_precos (
   id_historico_precos INTEGER PRIMARY KEY AUTOINCREMENT,
   id_carta INTEGER,
@@ -97,8 +97,8 @@ CREATE TABLE IF NOT EXISTS historico_precos (
   data TEXT,
   preco REAL,
   origem TEXT,
-  FOREIGN KEY (id_carta) REFERENCES carta(id_carta),
-  FOREIGN KEY (id_produto) REFERENCES produto(id_produto)
+  FOREIGN KEY (id_carta) REFERENCES carta (id_carta),
+  FOREIGN KEY (id_produto) REFERENCES produto (id_produto)
 );
 
 
