@@ -591,3 +591,58 @@ def criar_banco_inicial():
         messagebox.showerror("Erro", f"Erro ao criar banco inicial: {e}")
         conn.rollback()
         conn.close()
+
+
+def buscar_carta_por_id(id):
+    """
+    Busca uma carta pelo seu ID.
+    args:
+        id (int): O ID da carta a ser buscada.
+    returns:
+        dict: Os dados da carta, ou None se não encontrada.
+    """
+    query = """
+        SELECT * FROM carta WHERE id_carta = ?;
+    """
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute(query, (id,))
+        resultado = cursor.fetchone()
+        if resultado:
+            colunas = [desc[0] for desc in cursor.description]
+            return dict(zip(colunas, resultado))
+        return None
+    except Exception as e:
+        messagebox.showerror("Erro", f"Erro ao buscar carta por ID: {e}")
+        conn.close()
+        return None
+    finally:
+        conn.close()
+
+def atualizar_carta(carta):
+    query = """
+        UPDATE carta
+        SET link_site = ?, nome = ?, codigo = ?, preco_da_compra = ?, preco_atual = ?,
+            data_da_compra = ?, quantidade = ?, imagem = ?, origem = ?,
+            raridade = ?, qualidade = ?, colecao = ?, data_scraping = ?
+        WHERE id_carta = ?;
+    """
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute(query, (
+            carta["link_site"], carta["nome"], carta["codigo"],
+            carta["preco_da_compra"], carta["preco_atual"],
+            carta["data_da_compra"], carta["quantidade"],
+            carta["imagem"], carta["origem"],
+            carta["raridade"], carta["qualidade"],
+            carta["colecao"],carta["data_scraping"],
+            carta["id_carta"]
+        ))
+        conn.commit()
+    except Exception as e:
+        messagebox.showerror("Erro", f"Erro ao atualizar carta: {e}")
+        conn.rollback()
+    finally:
+        conn.close()

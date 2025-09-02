@@ -13,7 +13,9 @@ from DAO.database import (
     calcular_lucro_total_cartas_vendidas
 )
 
+
 def abrir_tela_listagem(app):
+    from View.editar_cartas import criar_tela_editar_carta
     root = tk.Toplevel(app)
     root.title("Listagem de Cartas")
     #root.protocol("WM_DELETE_WINDOW", app.destroy)  # Comentar esta linha depois
@@ -155,19 +157,29 @@ def abrir_tela_listagem(app):
             )
             lbl_vazio.grid(row=1, column=0, columnspan=len(headers), pady=20)
             return
-
+       
         for row, carta in enumerate(cartas, start=1):
+            id_carta = carta['id_carta']
+
+            # Imagem
             try:
                 with urllib.request.urlopen(carta['imagem']) as u:
                     raw_data = u.read()
                 im = Image.open(BytesIO(raw_data)).resize((80, 112))
                 photo = ImageTk.PhotoImage(im)
-                lbl = tk.Label(scrollable_frame, image=photo, borderwidth=1, relief="solid")
-                lbl.image = photo
-                lbl.grid(row=row, column=0, padx=1, pady=1, sticky="nsew")
-            except:
-                tk.Label(scrollable_frame, text="Erro img", borderwidth=1, relief="solid").grid(row=row, column=0, sticky="nsew")
+                lbl_img = tk.Label(scrollable_frame, image=photo, borderwidth=1, relief="solid")
+                lbl_img.image = photo
+                lbl_img.grid(row=row, column=0, padx=1, pady=1, sticky="nsew")
 
+                # Clique na imagem
+                lbl_img.bind("<Button-1>", lambda evt, id=id_carta: abrir_edicao(evt, id))
+
+            except:
+                lbl_img = tk.Label(scrollable_frame, text="Erro img", borderwidth=1, relief="solid")
+                lbl_img.grid(row=row, column=0, sticky="nsew")
+                lbl_img.bind("<Button-1>", lambda evt, id=id_carta: abrir_edicao(evt, id))
+
+            # Dados da carta
             preco_pago = carta['preco_da_compra']
             preco_atual = carta['preco_atual']
             quantidade = carta['quantidade']
@@ -191,13 +203,19 @@ def abrir_tela_listagem(app):
             ]
 
             for col, valor in enumerate(dados, start=1):
-                ttk.Label(
-                    scrollable_frame,
-                    text=valor,
-                    borderwidth=1,
-                    relief="solid",
-                    padding=5
-                ).grid(row=row, column=col, sticky="nsew", padx=1, pady=1)
+                lbl = ttk.Label(scrollable_frame, text=valor, borderwidth=1, relief="solid", padding=5)
+                lbl.grid(row=row, column=col, sticky="nsew", padx=1, pady=1)
+
+                # Clique nos dados
+                lbl.bind("<Button-1>", lambda evt, id=id_carta: abrir_edicao(evt, id))
+
+    def abrir_edicao(evt, id_carta):
+        # print(f"[Clique] Editar carta ID: {id_carta}")
+        # Exemplo:   
+        root.destroy()     
+        criar_tela_editar_carta(app, id_carta)
+       
+
 
     # Atualizar ao digitar
     def ao_digitar(event):
