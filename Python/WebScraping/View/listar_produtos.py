@@ -71,7 +71,7 @@ def abrir_tela_listagem_produtos(app):
     ]
 
     for col, header in enumerate(headers):
-        ttk.Label(scrollable_frame, text=header, font=("Segoe UI", 10, "bold"), borderwidth=1, relief="solid", padding=5).grid(row=0, column=col, sticky="nsew", padx=1, pady=1)
+        ttk.Label(scrollable_frame, text=header, font=("Segoe UI", 10, "bold"), borderwidth=1, relief="solid", padding=5).grid(row=0, column=col, sticky="nsew", padx=2, pady=1)
         scrollable_frame.columnconfigure(col, weight=1)
 
     def carregar_produtos(filtro=""):
@@ -89,7 +89,7 @@ def abrir_tela_listagem_produtos(app):
                 photo = ImageTk.PhotoImage(im)
                 img_label = tk.Label(scrollable_frame, image=photo, borderwidth=1, relief="solid")
                 img_label.image = photo
-                img_label.grid(row=row, column=0, padx=1, pady=1, sticky="nsew")
+                img_label.grid(row=row, column=0, padx=2, pady=1, sticky="nsew")
             except:
                 tk.Label(scrollable_frame, text="Erro img", borderwidth=1, relief="solid").grid(row=row, column=0, sticky="nsew")
 

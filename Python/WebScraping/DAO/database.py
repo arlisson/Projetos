@@ -287,8 +287,8 @@ def inserir_produto(produto):
         query = """
             INSERT INTO produto (
                 nome_produto, link, imagem, preco_compra,
-                data_scraping, origem, preco_atual
-            ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                data_scraping, origem, preco_atual, quantidade
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """
         valores = (
             produto["nome_produto"],
@@ -297,7 +297,8 @@ def inserir_produto(produto):
             produto["preco_compra"],
             produto["data_scraping"],
             produto.get("origem", "Liga Yugioh"),  # padrão se não vier
-            produto["preco_atual"]
+            produto["preco_atual"],
+            produto["quantidade"]
         )
 
         cursor.execute(query, valores)
@@ -384,7 +385,7 @@ def calcular_lucro_total_produtos_em_posse():
         cursor = conn.cursor()
         cursor.execute(query)
         resultado = cursor.fetchone()
-        print(resultado[0] if resultado[0] is not None else 0.0)
+        
         return resultado[0] if resultado[0] is not None else 0.0
     except Exception as e:
         print("Erro ao calcular lucro de produtos em posse:", e)
