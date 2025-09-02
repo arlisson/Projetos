@@ -646,3 +646,81 @@ def atualizar_carta(carta):
         conn.rollback()
     finally:
         conn.close()
+
+def buscar_produto_por_id(id):
+    """
+    Busca um produto pelo seu ID.
+    args:
+        id (int): O ID do produto a ser buscado.
+    returns:
+        dict: Os dados do produto, ou None se não encontrado.
+    """
+    query = """
+        SELECT * FROM produto WHERE id_produto = ?;
+    """
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute(query, (id,))
+        resultado = cursor.fetchone()
+        if resultado:
+            colunas = [desc[0] for desc in cursor.description]
+            return dict(zip(colunas, resultado))
+        return None
+    except Exception as e:
+        messagebox.showerror("Erro", f"Erro ao buscar produto por ID: {e}")
+        conn.close()
+        return None
+    finally:
+        conn.close()
+
+def atualizar_produto(produto):
+    query = """
+        UPDATE produto
+        SET nome_produto = ?, link = ?, imagem = ?, preco_compra = ?,
+            data_scraping = ?, origem = ?, preco_atual = ?, quantidade = ?
+        WHERE id_produto = ?;
+    """
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute(query, (
+            produto["nome_produto"], produto["link"], produto["imagem"],
+            produto["preco_compra"], produto["data_scraping"],
+            produto["origem"], produto["preco_atual"],
+            produto["quantidade"], produto["id_produto"]
+        ))
+        conn.commit()
+    except Exception as e:
+        messagebox.showerror("Erro", f"Erro ao atualizar produto: {e}")
+        conn.rollback()
+    finally:
+        conn.close()
+
+def deletar(id, tabela):
+    query = f"DELETE FROM {tabela} WHERE id_{tabela} = ?;"
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute(query, (id,))
+        conn.commit()        
+        return True
+    except Exception as e:        
+        conn.rollback()
+        return False
+    finally:
+        conn.close()
+
+def calcula_quantidade(tabela):
+    query = f"SELECT SUM(quantidade) FROM {tabela};"
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute(query)
+        resultado = cursor.fetchone()
+        return resultado[0] if resultado else 0
+    except Exception as e:
+        messagebox.showerror("Erro", f"Erro ao calcular quantidade: {e}")
+        return 0
+    finally:
+        conn.close()

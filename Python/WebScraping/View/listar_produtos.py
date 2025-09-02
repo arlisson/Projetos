@@ -4,12 +4,17 @@ from PIL import Image, ImageTk
 import urllib.request
 from io import BytesIO
 from DAO.database import (
+    calcula_quantidade,
     listar_todos_produtos,
     calcular_lucro_total_produtos_em_posse,
     calcular_lucro_total_produtos_vendidos,
     calcular_total_gasto_produtos,
     calcular_total_vendido_produtos,
 )
+
+def abrir_tela_editar_produto(app, id_produto):
+    from View.editar_produto import criar_tela_editar_produto
+    app.after(100, lambda: criar_tela_editar_produto(app, id_produto))
 
 def abrir_tela_listagem_produtos(app):
     root = tk.Toplevel(app)
@@ -36,8 +41,9 @@ def abrir_tela_listagem_produtos(app):
 
     ttk.Label(lucro_frame, text=f"💰 Lucro em posse: R$ {lucro_posse:.2f}", font=("Segoe UI", 10, "bold")).grid(row=0, column=0, sticky="w")
     ttk.Label(lucro_frame, text=f"💵 Lucro com vendas: R$ {lucro_venda:.2f}", font=("Segoe UI", 10, "bold")).grid(row=0, column=1, sticky="e")
-    ttk.Label(lucro_frame, text=f"💵 Total gasto: R$ {total_gasto:.2f}", font=("Segoe UI", 10, "bold")).grid(row=1, column=0, sticky="w")
-    ttk.Label(lucro_frame, text=f"💵 Total vendido: R$ {total_vendido:.2f}", font=("Segoe UI", 10, "bold")).grid(row=1, column=1, sticky="e")
+    ttk.Label(lucro_frame, text=f"📉 Total gasto: R$ {total_gasto:.2f}", font=("Segoe UI", 10, "bold")).grid(row=1, column=0, sticky="w")
+    ttk.Label(lucro_frame, text=f"💸 Total vendido: R$ {total_vendido:.2f}", font=("Segoe UI", 10, "bold")).grid(row=1, column=1, sticky="e")
+
 
     busca_frame = ttk.Frame(root, padding=5)
     busca_frame.grid(row=1, column=0, sticky="ew")
@@ -61,17 +67,11 @@ def abrir_tela_listagem_produtos(app):
 
     canvas.bind("<Configure>", lambda event: canvas.itemconfig(canvas_window, width=event.width))
     scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-
-    # Scroll com roda do mouse funcionando fora da barra
-    def _on_mousewheel(event):
-        canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
-
-    canvas.bind_all("<MouseWheel>", _on_mousewheel)
+    canvas.bind_all("<MouseWheel>", lambda e: canvas.yview_scroll(int(-1 * (e.delta / 120)), "units"))
 
     headers = [
         "Imagem", "Nome", "Preço Compra", "Preço Atual",
-        "Total Pago", "Total Atual",
-        "Lucro Unit.", "Lucro Total",
+        "Total Pago", "Total Atual", "Lucro Unit.", "Lucro Total",
         "Quantidade", "Data da compra", "Origem", "Data Scraping"
     ]
 
@@ -79,14 +79,23 @@ def abrir_tela_listagem_produtos(app):
         ttk.Label(scrollable_frame, text=header, font=("Segoe UI", 10, "bold"), borderwidth=1, relief="solid", padding=5).grid(row=0, column=col, sticky="nsew", padx=1, pady=1)
         scrollable_frame.columnconfigure(col, weight=1)
 
+    def abrir_edicao(evt, id_produto):
+        root.destroy()
+        abrir_tela_editar_produto(app, id_produto)
+
     def carregar_produtos(filtro=""):
         for widget in scrollable_frame.winfo_children():
             if int(widget.grid_info()["row"]) > 0:
                 widget.destroy()
 
         produtos = listar_todos_produtos(filtro)
+        ttk.Label(lucro_frame, text=f"# Total Produtos unidade: {len(produtos)}", font=("Segoe UI", 10, "bold")).grid(row=2, column=0, sticky="w")
+        ttk.Label(lucro_frame, text=f"# Total Produtos quantidade: {calcula_quantidade('produto')}", font=("Segoe UI", 10, "bold")).grid(row=2, column=1, sticky="e")
+
 
         for row, produto in enumerate(produtos, start=1):
+            id_produto = produto["id_produto"]
+
             try:
                 with urllib.request.urlopen(produto["imagem"]) as u:
                     raw_data = u.read()
@@ -95,8 +104,11 @@ def abrir_tela_listagem_produtos(app):
                 img_label = tk.Label(scrollable_frame, image=photo, borderwidth=1, relief="solid")
                 img_label.image = photo
                 img_label.grid(row=row, column=0, padx=1, pady=1, sticky="nsew")
+                img_label.bind("<Button-1>", lambda e, id=id_produto: abrir_edicao(e, id))
             except:
-                tk.Label(scrollable_frame, text="Erro img", borderwidth=1, relief="solid").grid(row=row, column=0, sticky="nsew")
+                erro_img = tk.Label(scrollable_frame, text="Erro img", borderwidth=1, relief="solid")
+                erro_img.grid(row=row, column=0, sticky="nsew")
+                erro_img.bind("<Button-1>", lambda e, id=id_produto: abrir_edicao(e, id))
 
             preco_compra = produto['preco_compra'] or 0.0
             preco_atual = produto['preco_atual'] or 0.0
@@ -121,14 +133,11 @@ def abrir_tela_listagem_produtos(app):
             ]
 
             for col, valor in enumerate(dados, start=1):
-                ttk.Label(scrollable_frame, text=valor, borderwidth=1, relief="solid", padding=5).grid(
-                    row=row, column=col, sticky="nsew", padx=1, pady=1
-                )
+                lbl = ttk.Label(scrollable_frame, text=valor, borderwidth=1, relief="solid", padding=5)
+                lbl.grid(row=row, column=col, sticky="nsew", padx=1, pady=1)
+                lbl.bind("<Button-1>", lambda e, id=id_produto: abrir_edicao(e, id))
 
-    def ao_digitar(event):
-        carregar_produtos(entrada_busca.get())
-
-    entrada_busca.bind("<KeyRelease>", ao_digitar)
+    entrada_busca.bind("<KeyRelease>", lambda e: carregar_produtos(entrada_busca.get()))
     carregar_produtos()
 
 if __name__ == "__main__":

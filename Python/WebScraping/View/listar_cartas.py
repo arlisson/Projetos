@@ -7,6 +7,7 @@ from io import BytesIO
 from DAO.database import (
     buscar_todas_cartas,
     buscar_carta_por_texto,
+    calcula_quantidade,
     calcular_lucro_total_cartas_em_posse,    
     calcular_total_gasto_cartas,
     calcular_total_vendido_cartas,
@@ -50,14 +51,14 @@ def abrir_tela_listagem(app):
 
     lbl_lucro_venda = ttk.Label(
         lucro_frame,
-        text=f"💵 Lucro com vendas: R$ {lucro_venda:.2f}",
+        text=f"💸 Lucro com vendas: R$ {lucro_venda:.2f}",
         font=("Segoe UI", 10, "bold")
     )
     lbl_lucro_venda.grid(row=0, column=1, sticky="e", padx=5, pady=2)
 
     lbl_total_gasto = ttk.Label(
         lucro_frame,
-        text=f"💵 Total gasto: R$ {total_gasto:.2f}",
+        text=f"📉 Total gasto: R$ {total_gasto:.2f}",
         font=("Segoe UI", 10, "bold")
     )
     lbl_total_gasto.grid(row=1, column=0, sticky="w", padx=5, pady=2)
@@ -145,8 +146,14 @@ def abrir_tela_listagem(app):
 
         if filtro:
             cartas = buscar_carta_por_texto(filtro)
+            ttk.Label(lucro_frame, text=f"# Total Cartas unidade: {len(cartas)}", font=("Segoe UI", 10, "bold")).grid(row=2, column=0, sticky="w")
+            ttk.Label(lucro_frame, text=f"# Total Cartas quantidade: {calcula_quantidade('carta')}", font=("Segoe UI", 10, "bold")).grid(row=2, column=1, sticky="e")
         else:
             cartas = buscar_todas_cartas()
+            ttk.Label(lucro_frame, text=f"# Total Cartas unidade: {len(cartas)}", font=("Segoe UI", 10, "bold")).grid(row=2, column=0, sticky="w")
+            ttk.Label(lucro_frame, text=f"# Total Cartas quantidade: {calcula_quantidade('carta')}", font=("Segoe UI", 10, "bold")).grid(row=2, column=1, sticky="e")
+
+
 
         if not cartas:
             lbl_vazio = ttk.Label(

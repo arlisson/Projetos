@@ -231,10 +231,19 @@ def criar_tela_editar_carta(app, id_carta):
         except Exception as e:
             messagebox.showerror("Erro", f"Erro ao atualizar carta: {e}", parent=root)
 
+    def apagar():
+        if messagebox.askokcancel("Confirmar", "Tem certeza que deseja deletar esta carta?", parent=root):
+            if deletar(id=id_carta, tabela="carta"):
+                messagebox.showinfo("Sucesso", f"Carta: {campos['nome'].get()} deletada com sucesso!", parent=root)
+                ao_fechar()
+            else:
+                messagebox.showerror("Erro", f"Erro ao deletar a carta: {campos['nome'].get()}.", parent=root)
+
     botoes_frame = ttk.Frame(main_frame)
     botoes_frame.grid(row=2, column=0, pady=10)
     ttk.Button(botoes_frame, text="Buscar via scraping", command=preencher_com_scraping).grid(row=0, column=0, padx=10)
     ttk.Button(botoes_frame, text="Salvar Alterações", command=salvar).grid(row=0, column=1, padx=10)
+    ttk.Button(botoes_frame, text="Deletar", command=apagar).grid(row=0, column=2, padx=10)
 
     root.mainloop()
 
