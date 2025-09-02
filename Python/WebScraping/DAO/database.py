@@ -1,49 +1,68 @@
 import sqlite3
+from datetime import datetime
+from tkinter import messagebox
 
 DB_PATH = "yugioh.db"
-
+DATA_SCRAPING = datetime.today().strftime('%Y-%m-%d')
 def conectar():
     return sqlite3.connect(DB_PATH)
 
+from datetime import datetime
+
 def inserir_carta(dados):
     '''
-    Insere uma nova carta no banco de dados.
+    Insere uma nova carta no banco de dados, incluindo a data atual como data_scraping.
+    args:
+        dados (dict): Um dicionário contendo os dados da carta a ser inserida.
+
+    returns:
+        None
     '''
-    conn = conectar()
-    cursor = conn.cursor()
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
 
-    cursor.execute("""
-        INSERT INTO carta (
-            link_site,
-            nome,
-            colecao,
-            codigo,
-            preco_da_compra,
-            data_da_compra,
-            raridade,
-            qualidade,
-            quantidade,
-            imagem,
-            origem,
-            preco_atual
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (
-        dados.get("link_site"),
-        dados.get("nome"),
-        dados.get("colecao"),
-        dados.get("codigo"),
-        float(dados.get("preco")),             # preco pago
-        dados.get("data_da_compra"),
-        dados.get("raridade"),
-        dados.get("qualidade"),
-        int(dados.get("quantidade")),
-        dados.get("imagem"),
-        dados.get("origem", "MypCards"),
-        float(dados.get("preco_atual"))        # preco atual correto agora ✅
-    ))
+        
 
-    conn.commit()
-    conn.close()
+        cursor.execute("""
+            INSERT INTO carta (
+                link_site,
+                nome,
+                colecao,
+                codigo,
+                preco_da_compra,
+                data_da_compra,
+                raridade,
+                qualidade,
+                quantidade,
+                imagem,
+                origem,
+                preco_atual,
+                data_scraping
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            dados.get("link_site"),
+            dados.get("nome"),
+            dados.get("colecao"),
+            dados.get("codigo"),
+            float(dados.get("preco")),             # preco pago
+            dados.get("data_da_compra"),
+            dados.get("raridade"),
+            dados.get("qualidade"),
+            int(dados.get("quantidade")),
+            dados.get("imagem"),
+            dados.get("origem", "MypCards"),
+            float(dados.get("preco_atual")),       # preco atual
+            DATA_SCRAPING                          # NOVO campo
+        ))
+
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        messagebox.showerror("Erro", f"Erro ao inserir carta: {e}")
+        conn.rollback()
+        conn.close()
+
 
 
 def buscar_valores_tabela(tabela):
@@ -56,12 +75,16 @@ def buscar_valores_tabela(tabela):
     returns:
         list: Uma lista de tuplas contendo os valores encontrados.
     '''
-    conn = conectar()
-    cursor = conn.cursor()
-    cursor.execute(f"SELECT id_{tabela}, nome FROM {tabela}")
-    resultados = cursor.fetchall()
-    conn.close()
-    return resultados
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT id_{tabela}, nome FROM {tabela}")
+        resultados = cursor.fetchall()
+        conn.close()
+        return resultados
+    except Exception as e:
+        messagebox.showerror("Erro", f"Erro ao buscar valores da tabela {tabela}: {e}")
+        return []
 
 def buscar_colecao_por_nome(nome):
     '''
@@ -72,12 +95,17 @@ def buscar_colecao_por_nome(nome):
     returns:
         int: O ID da coleção, ou None se não encontrada.
     '''
-    conn = conectar()
-    cursor = conn.cursor()
-    cursor.execute("SELECT id_colecao FROM colecao WHERE nome = ?", (nome,))
-    resultado = cursor.fetchone()
-    conn.close()
-    return resultado[0] if resultado else None
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute("SELECT id_colecao FROM colecao WHERE nome = ?", (nome,))
+        resultado = cursor.fetchone()
+        conn.close()
+        return resultado[0] if resultado else None
+    except Exception as e:
+        messagebox.showerror("Erro", f"Erro ao buscar coleção por nome: {e}")
+        conn.close()
+        return None
 
 def inserir_colecao(nome, codigo=""):
     '''
@@ -90,15 +118,19 @@ def inserir_colecao(nome, codigo=""):
     returns:
         int: O ID da nova coleção inserida.
     '''
-    conn = conectar()
-    cursor = conn.cursor()
-    cursor.execute("INSERT INTO colecao (nome, codigo) VALUES (?, ?)", (nome, codigo))
-    conn.commit()
-    novo_id = cursor.lastrowid
-    conn.close()
-    return novo_id
-
-import sqlite3
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO colecao (nome, codigo) VALUES (?, ?)", (nome, codigo))
+        conn.commit()
+        novo_id = cursor.lastrowid
+        conn.close()
+        return novo_id
+    except Exception as e:
+        conn.rollback()
+        conn.close()
+        messagebox.showerror("Erro", f"Erro ao inserir coleção: {e}")
+        return None
 
 def buscar_todas_cartas():
     '''
@@ -107,33 +139,33 @@ def buscar_todas_cartas():
         list: Uma lista de dicionários contendo as informações das cartas.
 
     '''
-    conn = conectar()
-    cursor = conn.cursor()
+    try:
+            
+        conn = conectar()
+        cursor = conn.cursor()
 
-    query = """
-        SELECT
-            imagem,
-            nome,
-            codigo,
-            preco_da_compra, 
-            preco_atual,
-            data_da_compra,
-            quantidade
-        FROM carta
-    """
+        query = """
+            SELECT
+                *
+            FROM carta
+        """
 
-    cursor.execute(query)
-    resultados = cursor.fetchall()
+        cursor.execute(query)
+        resultados = cursor.fetchall()
 
-    colunas = [desc[0] for desc in cursor.description]
+        colunas = [desc[0] for desc in cursor.description]
 
-    cartas = []
-    for linha in resultados:
-        carta = dict(zip(colunas, linha))
-        cartas.append(carta)
+        cartas = []
+        for linha in resultados:
+            carta = dict(zip(colunas, linha))
+            cartas.append(carta)
 
-    conn.close()
-    return cartas
+        conn.close()
+        return cartas
+    except Exception as e:
+        messagebox.showerror("Erro", f"Erro ao buscar todas as cartas: {e}")
+        conn.close()
+        return []
 
 def buscar_carta_por_texto(texto):
     '''
@@ -144,31 +176,30 @@ def buscar_carta_por_texto(texto):
     returns:
         list: Uma lista de dicionários contendo as informações das cartas encontradas.
     '''
-    conn = conectar()
-    cursor = conn.cursor()
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
 
-    query = """
-        SELECT
-            imagem,
-            nome,
-            codigo,
-            preco_da_compra,
-            preco_atual,
-            data_da_compra,
-            quantidade
-        FROM carta
-        WHERE nome LIKE ? OR codigo LIKE ?
-    """
+        query = """
+            SELECT
+            *
+            FROM carta
+            WHERE nome LIKE ? OR codigo LIKE ?
+        """
 
-    texto_param = f"%{texto}%"
-    cursor.execute(query, (texto_param, texto_param))
-    resultados = cursor.fetchall()
+        texto_param = f"%{texto}%"
+        cursor.execute(query, (texto_param, texto_param))
+        resultados = cursor.fetchall()
 
-    colunas = [desc[0] for desc in cursor.description]
-    cartas = [dict(zip(colunas, linha)) for linha in resultados]
+        colunas = [desc[0] for desc in cursor.description]
+        cartas = [dict(zip(colunas, linha)) for linha in resultados]
 
-    conn.close()
-    return cartas
+        conn.close()
+        return cartas
+    except Exception as e:
+        messagebox.showerror("Erro", f"Erro ao buscar carta por texto: {e}")
+        conn.close()
+        return []
 
 def calcular_lucro_total_cartas_em_posse():
     '''
@@ -188,7 +219,8 @@ def calcular_lucro_total_cartas_em_posse():
         resultado = cursor.fetchone()
         return resultado[0] if resultado[0] is not None else 0.0
     except Exception as e:
-        print("Erro ao calcular lucro de cartas em posse:", e)
+        messagebox.showerror("Erro", f"Erro ao calcular lucro de cartas em posse: {e}")
+        conn.close()
         return None
     finally:
         conn.close()
@@ -211,7 +243,8 @@ def calcular_lucro_total_cartas_vendidas():
         resultado = cursor.fetchone()
         return resultado[0] if resultado[0] is not None else 0.0
     except Exception as e:
-        print("Erro ao calcular lucro de cartas vendidas:", e)
+        messagebox.showerror("Erro", f"Erro ao calcular lucro de cartas vendidas: {e}")
+        conn.close()
         return None
     finally:
         conn.close()
@@ -234,7 +267,8 @@ def calcular_total_gasto_cartas():
         resultado = cursor.fetchone()
         return resultado[0] if resultado[0] is not None else 0.0
     except Exception as e:
-        print("Erro ao calcular valor total de cartas em posse:", e)
+        messagebox.showerror("Erro", f"Erro ao calcular valor total de cartas em posse: {e}")
+        conn.close()
         return None
     finally:
         conn.close()
@@ -257,7 +291,8 @@ def calcular_total_vendido_cartas():
         resultado = cursor.fetchone()
         return resultado[0] if resultado[0] is not None else 0.0
     except Exception as e:
-        print("Erro ao calcular total vendido em cartas:", e)
+        messagebox.showerror("Erro", f"Erro ao calcular total vendido em cartas: {e}")
+        conn.close()
         return None
     finally:
         conn.close()
@@ -276,6 +311,8 @@ def inserir_produto(produto):
             - data_scraping
             - origem
             - preco_atual
+            - quantidade
+            - data_scraping
 
     Returns:
         int: ID do produto inserido (ou None se falhar)
@@ -287,8 +324,9 @@ def inserir_produto(produto):
         query = """
             INSERT INTO produto (
                 nome_produto, link, imagem, preco_compra,
-                data_scraping, origem, preco_atual, quantidade
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                data_scraping, origem, preco_atual, quantidade,
+                data_scraping
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """
         valores = (
             produto["nome_produto"],
@@ -298,7 +336,8 @@ def inserir_produto(produto):
             produto["data_scraping"],
             produto.get("origem", "Liga Yugioh"),  # padrão se não vier
             produto["preco_atual"],
-            produto["quantidade"]
+            produto["quantidade"],
+            DATA_SCRAPING
         )
 
         cursor.execute(query, valores)
@@ -306,7 +345,9 @@ def inserir_produto(produto):
         return cursor.lastrowid
 
     except Exception as e:
-        print(f"Erro ao inserir produto: {e}")
+        messagebox.showerror("Erro", f"Erro ao inserir produto: {e}")
+        conn.rollback()
+        conn.close()
         return None
 
     finally:
@@ -331,14 +372,7 @@ def listar_todos_produtos(filtro=""):
         if filtro:
             cursor.execute("""
                 SELECT
-                    id_produto,
-                    nome_produto,
-                    link,
-                    imagem,
-                    preco_compra,
-                    preco_atual,
-                    data_scraping,
-                    origem
+                   *
                 FROM produto
                 WHERE nome_produto LIKE ?
                 ORDER BY id_produto DESC
@@ -346,14 +380,7 @@ def listar_todos_produtos(filtro=""):
         else:
             cursor.execute("""
                 SELECT
-                    id_produto,
-                    nome_produto,
-                    link,
-                    imagem,
-                    preco_compra,
-                    preco_atual,
-                    data_scraping,
-                    origem
+                    *
                 FROM produto
                 ORDER BY id_produto DESC
             """)
@@ -363,7 +390,8 @@ def listar_todos_produtos(filtro=""):
         return resultados
 
     except Exception as e:
-        print(f"Erro ao listar produtos: {e}")
+        messagebox.showerror("Erro", f"Erro ao listar produtos: {e}")
+        conn.close()
         return []
     finally:
         conn.close()
@@ -388,7 +416,8 @@ def calcular_lucro_total_produtos_em_posse():
         
         return resultado[0] if resultado[0] is not None else 0.0
     except Exception as e:
-        print("Erro ao calcular lucro de produtos em posse:", e)
+        messagebox.showerror("Erro", f"Erro ao calcular lucro de produtos em posse: {e}")
+        conn.close()
         return None
     finally:
         conn.close()
@@ -412,7 +441,8 @@ def calcular_lucro_total_produtos_vendidos():
         resultado = cursor.fetchone()
         return resultado[0] if resultado[0] is not None else 0.0
     except Exception as e:
-        print("Erro ao calcular lucro de produtos vendidos:", e)
+        messagebox.showerror("Erro", f"Erro ao calcular lucro de produtos vendidos: {e}")
+        conn.close()
         return 0.0
     finally:
         conn.close()
@@ -435,7 +465,8 @@ def calcular_total_gasto_produtos():
         resultado = cursor.fetchone()
         return resultado[0] if resultado[0] is not None else 0.0
     except Exception as e:
-        print("Erro ao calcular valor total de produtos:", e)
+        messagebox.showerror("Erro", f"Erro ao calcular valor total de produtos: {e}")
+        conn.close()
         return None
     finally:
         conn.close()
@@ -459,7 +490,8 @@ def calcular_total_vendido_produtos():
         resultado = cursor.fetchone()
         return resultado[0] if resultado[0] is not None else 0.0
     except Exception as e:
-        print("Erro ao calcular total vendido em produtos:", e)
+        messagebox.showerror("Erro", f"Erro ao calcular total vendido em produtos: {e}")
+        conn.close()
         return 0.0
     finally:
         conn.close()
@@ -483,7 +515,79 @@ def calcular_total_valor_produtos():
         resultado = cursor.fetchone()
         return resultado[0] if resultado[0] is not None else 0.0
     except Exception as e:
-        print("Erro ao calcular valor total atual de produtos:", e)
+        messagebox.showerror("Erro", f"Erro ao calcular valor total atual de produtos: {e}")
+        conn.rollback()
+        conn.close()
         return 0.0
     finally:
+        conn.close()
+
+
+def apagar_todos_os_dados():
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+
+        # Desabilitar restrições temporariamente
+        cursor.execute("PRAGMA foreign_keys = OFF;")
+
+        # Apagar os dados (ordem importa por causa das FK)
+        tabelas = [
+            "historico_precos",
+            "venda_produto",
+            "venda",
+            "carta",
+            "produto",
+            "raridade",
+            "qualidade",
+            "colecao"
+        ]
+
+        for tabela in tabelas:
+            cursor.execute(f"DELETE FROM {tabela};")
+            cursor.execute(f"DELETE FROM sqlite_sequence WHERE name='{tabela}';")  # Zera autoincremento
+
+        # Reabilitar restrições
+        cursor.execute("PRAGMA foreign_keys = ON;")
+
+        conn.commit()
+        conn.close()
+        messagebox.showinfo("Sucesso", "Todos os dados foram apagados.")
+    except Exception as e:
+        messagebox.showerror("Erro", f"Erro ao apagar dados: {e}")
+        conn.rollback()
+        conn.close()
+
+
+def criar_banco_inicial():
+    """
+    Cria o banco de dados inicial com as tabelas e dados padrão.
+    args:
+        None
+    return:
+        None
+    """
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+
+        # Raridades
+        raridades = [
+            ('Common',), ('Rare',), ('Super Rare',),
+            ('Ultra Rare',), ('Secret Rare',), ('Quarter Century',)
+        ]
+        cursor.executemany("INSERT INTO raridade (nome) VALUES (?)", raridades)
+
+        # Qualidades
+        qualidades = [
+            ('Nova',), ('Quase Nova',), ('Pouco Jogada',),
+            ('Muito Jogada',), ('Danificada',)
+        ]
+        cursor.executemany("INSERT INTO qualidade (nome) VALUES (?)", qualidades)
+
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        messagebox.showerror("Erro", f"Erro ao criar banco inicial: {e}")
+        conn.rollback()
         conn.close()

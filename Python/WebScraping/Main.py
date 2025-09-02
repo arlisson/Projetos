@@ -4,7 +4,11 @@ from View.cadastrar_cartas import criar_tela_cadastro
 from View.listar_cartas import abrir_tela_listagem  
 from View.cadastrar_produtos import criar_tela_cadastro_produto
 from View.listar_produtos import abrir_tela_listagem_produtos  
-
+from DAO.database import ( 
+    
+    apagar_todos_os_dados,
+    criar_banco_inicial
+)
 
 def criar_tela_principal():
     root = tk.Tk()
@@ -33,6 +37,23 @@ def criar_tela_principal():
     menu_produtos.add_command(label="Listar Produtos", command=lambda: abrir_tela_listagem_produtos(root))
     menu_bar.add_cascade(label="Produtos", menu=menu_produtos)
 
+    # --- Opções ---
+    def confirmar_e_apagar():
+        resp = messagebox.askyesno("Confirmar", "Tem certeza que deseja apagar todos os dados?\nEssa ação não pode ser desfeita.")
+        if resp:
+            apagar_todos_os_dados()
+            messagebox.showinfo("Sucesso", "Todos os dados foram apagados com sucesso.")
+    def confirmar_e_criar():
+            resp = messagebox.askyesno("Confirmar", "Deseja carregar os dados padrão de raridade e qualidade?")
+            if resp:
+                criar_banco_inicial()
+                messagebox.showinfo("Sucesso", "Dados carregados com sucesso.")
+
+    menu_opcoes = tk.Menu(menu_bar, tearoff=0)
+    menu_opcoes.add_command(label="Apagar todos os dados", command=confirmar_e_apagar)
+    menu_opcoes.add_command(label="Criar banco", command=confirmar_e_criar)
+    menu_bar.add_cascade(label="Opções", menu=menu_opcoes)
+
     # --- Sair ---
     menu_bar.add_command(label="Sair", command=root.quit)
 
@@ -41,9 +62,8 @@ def criar_tela_principal():
     # Tela de boas-vindas ou conteúdo inicial
     label = ttk.Label(root, text="Bem-vindo ao Gerenciador de Coleção!", font=("Segoe UI", 16))
     label.pack(pady=50)
-
+    
     root.mainloop()
-
 
 if __name__ == "__main__":
     criar_tela_principal()

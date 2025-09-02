@@ -1,105 +1,115 @@
+-- SQLite schema convertido de MySQL
+
 PRAGMA foreign_keys = ON;
 
--- Tabela: colecao
 CREATE TABLE IF NOT EXISTS colecao (
   id_colecao INTEGER PRIMARY KEY AUTOINCREMENT,
-  nome TEXT,
-  codigo TEXT
+  nome VARCHAR(100),
+  codigo VARCHAR(45)
 );
 
--- Tabela: qualidade
 CREATE TABLE IF NOT EXISTS qualidade (
   id_qualidade INTEGER PRIMARY KEY AUTOINCREMENT,
-  nome TEXT
+  nome VARCHAR(100)
 );
 
--- Tabela: raridade
 CREATE TABLE IF NOT EXISTS raridade (
   id_raridade INTEGER PRIMARY KEY AUTOINCREMENT,
-  nome TEXT
+  nome VARCHAR(100)
 );
 
--- Tabela: carta
 CREATE TABLE IF NOT EXISTS carta (
   id_carta INTEGER PRIMARY KEY AUTOINCREMENT,
-  link_site TEXT,
-  nome TEXT,
+  link_site VARCHAR(500),
+  nome VARCHAR(100),
   colecao INTEGER NOT NULL,
-  codigo TEXT,
-  preco_da_compra REAL,
-  data_da_compra TEXT,
+  codigo VARCHAR(45),
+  preco_da_compra DOUBLE,
+  data_da_compra VARCHAR(45),
   raridade INTEGER,
   qualidade INTEGER,
   quantidade INTEGER,
-  imagem TEXT,
-  origem TEXT DEFAULT 'MypCards',
-  preco_atual REAL,
-  FOREIGN KEY (colecao) REFERENCES colecao (id_colecao),
-  FOREIGN KEY (qualidade) REFERENCES qualidade (id_qualidade),
-  FOREIGN KEY (raridade) REFERENCES raridade (id_raridade)
+  imagem VARCHAR(10000),
+  origem VARCHAR(50) DEFAULT 'MypCards',
+  preco_atual DOUBLE,
+  data_scraping VARCHAR(45),
+  FOREIGN KEY (colecao) REFERENCES colecao(id_colecao),
+  FOREIGN KEY (qualidade) REFERENCES qualidade(id_qualidade),
+  FOREIGN KEY (raridade) REFERENCES raridade(id_raridade)
 );
 
--- Tabela: venda
+CREATE INDEX IF NOT EXISTS idx_carta_colecao ON carta(colecao);
+CREATE INDEX IF NOT EXISTS idx_carta_qualidade ON carta(qualidade);
+CREATE INDEX IF NOT EXISTS idx_carta_raridade ON carta(raridade);
+
 CREATE TABLE IF NOT EXISTS venda (
   id_carta INTEGER PRIMARY KEY AUTOINCREMENT,
-  link_site TEXT,
-  nome TEXT,
+  link_site VARCHAR(500),
+  nome VARCHAR(100),
   colecao INTEGER NOT NULL,
-  codigo TEXT,
-  preco_da_compra REAL,
-  data_da_compra TEXT,
+  codigo VARCHAR(45),
+  preco_da_compra DOUBLE,
+  data_da_compra VARCHAR(45),
   raridade INTEGER,
   qualidade INTEGER,
   quantidade INTEGER,
-  data_da_venda TEXT,
-  preco_da_venda REAL,
-  imagem TEXT,
-  origem TEXT DEFAULT 'MypCards',
-  preco_atual REAL,
-  FOREIGN KEY (colecao) REFERENCES colecao (id_colecao),
-  FOREIGN KEY (qualidade) REFERENCES qualidade (id_qualidade),
-  FOREIGN KEY (raridade) REFERENCES raridade (id_raridade)
+  data_da_venda VARCHAR(45),
+  preco_da_venda FLOAT,
+  imagem VARCHAR(1000),
+  origem VARCHAR(50) DEFAULT 'MypCards',
+  preco_atual DOUBLE,
+  data_scraping VARCHAR(45),
+  FOREIGN KEY (colecao) REFERENCES colecao(id_colecao),
+  FOREIGN KEY (qualidade) REFERENCES qualidade(id_qualidade),
+  FOREIGN KEY (raridade) REFERENCES raridade(id_raridade)
 );
 
--- Tabela: produto
+CREATE INDEX IF NOT EXISTS idx_venda_colecao ON venda(colecao);
+CREATE INDEX IF NOT EXISTS idx_venda_qualidade ON venda(qualidade);
+CREATE INDEX IF NOT EXISTS idx_venda_raridade ON venda(raridade);
+
 CREATE TABLE IF NOT EXISTS produto (
   id_produto INTEGER PRIMARY KEY AUTOINCREMENT,
-  nome_produto TEXT,
-  link TEXT,
-  imagem TEXT,
-  preco_compra REAL,
-  data_scraping TEXT,
-  origem TEXT DEFAULT 'Liga Yugioh',
-  preco_atual REAL,
-  quantidade INTEGER
+  nome_produto VARCHAR(500),
+  link VARCHAR(1000),
+  imagem VARCHAR(1000),
+  preco_compra DOUBLE,
+  data_compra VARCHAR(45),
+  origem VARCHAR(45) DEFAULT 'Liga Yugioh',
+  preco_atual DOUBLE,
+  quantidade INTEGER,
+  data_scraping VARCHAR(45)
 );
 
--- Tabela: venda_produto
 CREATE TABLE IF NOT EXISTS venda_produto (
   id_produto INTEGER PRIMARY KEY AUTOINCREMENT,
-  nome_produto TEXT,
-  link TEXT,
-  imagem TEXT,
-  preco_compra REAL,
-  data_scraping TEXT,
-  preco_venda REAL,
-  data_venda TEXT,
-  origem TEXT,
-  preco_atual REAL,
-  quantidade INTEGER
+  nome_produto VARCHAR(500),
+  link VARCHAR(1000),
+  imagem VARCHAR(1000),
+  preco_compra DOUBLE,
+  data_compra VARCHAR(45),
+  preco_venda DOUBLE,
+  data_venda DOUBLE,
+  origem VARCHAR(45),
+  preco_atual DOUBLE,
+  quantidade INTEGER,
+  data_scraping VARCHAR(45)
 );
 
--- Tabela: historico_precos
 CREATE TABLE IF NOT EXISTS historico_precos (
   id_historico_precos INTEGER PRIMARY KEY AUTOINCREMENT,
   id_carta INTEGER,
   id_produto INTEGER,
-  data TEXT,
-  preco REAL,
-  origem TEXT,
-  FOREIGN KEY (id_carta) REFERENCES carta (id_carta),
-  FOREIGN KEY (id_produto) REFERENCES produto (id_produto)
+  data VARCHAR(45),
+  preco DOUBLE,
+  origem VARCHAR(45),
+  FOREIGN KEY (id_carta) REFERENCES carta(id_carta),
+  FOREIGN KEY (id_produto) REFERENCES produto(id_produto)
 );
+
+CREATE INDEX IF NOT EXISTS idx_historico_carta ON historico_precos(id_carta);
+CREATE INDEX IF NOT EXISTS idx_historico_produto ON historico_precos(id_produto);
+
 
 
 -- Inserir Raridades

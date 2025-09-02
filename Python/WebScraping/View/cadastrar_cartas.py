@@ -12,6 +12,10 @@ IMAGEM_PADRAO = "https://i.pinimg.com/736x/71/1e/da/711eda25308c65a7756751088866
 
 def criar_tela_cadastro(app):
     root = tk.Toplevel(app)
+    root.grab_set()
+    root.focus_force()
+
+
     root.title("Cadastro de Carta")
     root.resizable(True, True)
 
@@ -64,7 +68,8 @@ def criar_tela_cadastro(app):
     campos["nome"] = criar_rotulo_entrada(form_frame, "Nome:", 1)
     campos["codigo"] = criar_rotulo_entrada(form_frame, "Código:", 2)
     campos["preco"] = criar_rotulo_entrada(form_frame, "Preço pago:", 3)
-    campos["preco_atual"] = criar_rotulo_entrada(form_frame, "Preço atual:", 4, somente_leitura=True)
+    campos["preco_atual"] = criar_rotulo_entrada(form_frame, "Preço atual:", 4)
+
 
     # Campo de data com botão de calendário
     ttk.Label(form_frame, text="Data da compra:").grid(row=5, column=0, sticky="w", padx=5, pady=3)
@@ -81,7 +86,7 @@ def criar_tela_cadastro(app):
 
     campos["quantidade"] = criar_rotulo_entrada(form_frame, "Quantidade:", 6)
     campos["imagem"] = criar_rotulo_entrada(form_frame, "Imagem URL:", 7)
-    campos["origem"] = criar_rotulo_entrada(form_frame, "Origem:", 8)
+    campos["origem"] = criar_rotulo_entrada(form_frame, "Origem:", 13)
 
     def popular_dropdown(combo, dados):
         valores = [f"{item[0]} - {item[1]}" for item in dados]
@@ -135,7 +140,7 @@ def criar_tela_cadastro(app):
             raridade_nome = campos["raridade"].get().split(" - ")[1]
             resultados = buscar_carta_myp(url=campos["link"].get(), chave=raridade_nome)
             if not resultados:
-                messagebox.showwarning("Aviso", "Nenhum resultado encontrado.")
+                messagebox.showwarning("Aviso", "Nenhum resultado encontrado.", parent=root)
                 return
             dados = resultados[0]
 
@@ -145,14 +150,17 @@ def criar_tela_cadastro(app):
             campos["codigo"].insert(0, dados["codigo"])
 
             # Preencher somente o campo de preço atual (somente leitura)
-            campos["preco_atual"].configure(state="normal")
+           
             campos["preco_atual"].delete(0, tk.END)
             campos["preco_atual"].insert(0, limpar_preco(dados["preco_atual"]))
-            campos["preco_atual"].configure(state="readonly")
+            
 
             campos["imagem"].delete(0, tk.END)
             campos["imagem"].insert(0, dados["imagem"])
             atualizar_imagem(dados["imagem"])
+            
+            campos["origem"].delete(0, tk.END)
+            campos["origem"].insert(0, dados["origem"])
 
             colecao_nome = dados["colecao"]
             colecao_id = buscar_colecao_por_nome(colecao_nome)
@@ -164,12 +172,35 @@ def criar_tela_cadastro(app):
                     campos["colecao"].current(i)
                     break
 
-            messagebox.showinfo("Sucesso", "Dados preenchidos com sucesso!")
+            messagebox.showinfo("Sucesso", "Dados preenchidos com sucesso!", parent=root)
         except Exception as e:
-            messagebox.showerror("Erro", f"Erro ao buscar: {e}")
+            messagebox.showerror("Erro", f"Erro ao buscar: {e}", parent=root)
+
+        
 
     def salvar():
         try:
+            campos_obrigatorios = [
+                ("link", "Link da carta"),
+                ("nome", "Nome"),
+                ("codigo", "Código"),
+                ("preco", "Preço pago"),
+                ("preco_atual", "Preço atual"),
+                ("data", "Data da compra"),
+                ("quantidade", "Quantidade"),
+                ("imagem", "Imagem"),
+                ("origem", "Origem"),
+                ("raridade", "Raridade"),
+                ("qualidade", "Qualidade"),
+                ("colecao", "Coleção")
+            ]
+
+            for chave, nome in campos_obrigatorios:
+                valor = campos[chave].get().strip()
+                if not valor:
+                    messagebox.showerror("Erro", f"O campo '{nome}' não pode estar vazio.", parent=root)
+                    return
+
             carta = {
                 "link_site": campos["link"].get(),
                 "nome": campos["nome"].get(),
@@ -186,10 +217,9 @@ def criar_tela_cadastro(app):
             }
 
             inserir_carta(carta)
-            messagebox.showinfo("Sucesso", "Carta cadastrada com sucesso!")
+            messagebox.showinfo("Sucesso", "Carta cadastrada com sucesso!", parent=root)
         except Exception as e:
-            messagebox.showerror("Erro", f"Erro ao salvar no banco: {e}")
-
+            messagebox.showerror("Erro", f"Erro ao salvar no banco: {e}", parent=root)
 
     botoes_frame = ttk.Frame(main_frame)
     botoes_frame.grid(row=2, column=0, pady=10)
@@ -200,6 +230,7 @@ def criar_tela_cadastro(app):
     campos["quantidade"].insert(0, "1")
     campos["imagem"].insert(0, IMAGEM_PADRAO)
     atualizar_imagem(IMAGEM_PADRAO)
+    campos["origem"].insert(0, "MypCards")
 
     root.mainloop()
 

@@ -118,7 +118,7 @@ def abrir_tela_listagem(app):
         "Imagem", "Nome", "Código", "Preço Pago", "Preço Atual",
         "Total Pago", "Total Atual",
         "Lucro Unit.", "Lucro Total",
-        "Data Compra", "Quantidade"
+        "Data Compra", "Quantidade", "Data Scraping"
     ]
 
     for col, header in enumerate(headers):
@@ -186,7 +186,8 @@ def abrir_tela_listagem(app):
                 f"R$ {lucro_unit:.2f}",
                 f"R$ {lucro_total:.2f}",
                 carta['data_da_compra'],
-                str(quantidade)
+                str(quantidade),
+                carta['data_scraping']
             ]
 
             for col, valor in enumerate(dados, start=1):

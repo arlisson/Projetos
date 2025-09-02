@@ -9,7 +9,6 @@ from DAO.database import (
     calcular_lucro_total_produtos_vendidos,
     calcular_total_gasto_produtos,
     calcular_total_vendido_produtos,
-    
 )
 
 def abrir_tela_listagem_produtos(app):
@@ -63,15 +62,21 @@ def abrir_tela_listagem_produtos(app):
     canvas.bind("<Configure>", lambda event: canvas.itemconfig(canvas_window, width=event.width))
     scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
 
+    # Scroll com roda do mouse funcionando fora da barra
+    def _on_mousewheel(event):
+        canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+
+    canvas.bind_all("<MouseWheel>", _on_mousewheel)
+
     headers = [
         "Imagem", "Nome", "Preço Compra", "Preço Atual",
         "Total Pago", "Total Atual",
         "Lucro Unit.", "Lucro Total",
-        "Quantidade", "Data", "Origem"
+        "Quantidade", "Data da compra", "Origem", "Data Scraping"
     ]
 
     for col, header in enumerate(headers):
-        ttk.Label(scrollable_frame, text=header, font=("Segoe UI", 10, "bold"), borderwidth=1, relief="solid", padding=5).grid(row=0, column=col, sticky="nsew", padx=2, pady=1)
+        ttk.Label(scrollable_frame, text=header, font=("Segoe UI", 10, "bold"), borderwidth=1, relief="solid", padding=5).grid(row=0, column=col, sticky="nsew", padx=1, pady=1)
         scrollable_frame.columnconfigure(col, weight=1)
 
     def carregar_produtos(filtro=""):
@@ -89,7 +94,7 @@ def abrir_tela_listagem_produtos(app):
                 photo = ImageTk.PhotoImage(im)
                 img_label = tk.Label(scrollable_frame, image=photo, borderwidth=1, relief="solid")
                 img_label.image = photo
-                img_label.grid(row=row, column=0, padx=2, pady=1, sticky="nsew")
+                img_label.grid(row=row, column=0, padx=1, pady=1, sticky="nsew")
             except:
                 tk.Label(scrollable_frame, text="Erro img", borderwidth=1, relief="solid").grid(row=row, column=0, sticky="nsew")
 
@@ -111,7 +116,8 @@ def abrir_tela_listagem_produtos(app):
                 f"R$ {lucro_total:.2f}",
                 str(quantidade),
                 produto["data_scraping"],
-                produto["origem"]
+                produto["origem"],
+                produto["data_scraping"]
             ]
 
             for col, valor in enumerate(dados, start=1):
