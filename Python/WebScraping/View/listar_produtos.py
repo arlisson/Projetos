@@ -95,20 +95,22 @@ def abrir_tela_listagem_produtos(app):
 
         for row, produto in enumerate(produtos, start=1):
             id_produto = produto["id_produto"]
+            widgets_linha = []
 
+            # Imagem
             try:
                 with urllib.request.urlopen(produto["imagem"]) as u:
                     raw_data = u.read()
                 im = Image.open(BytesIO(raw_data)).resize((80, 112))
                 photo = ImageTk.PhotoImage(im)
-                img_label = tk.Label(scrollable_frame, image=photo, borderwidth=1, relief="solid")
+                img_label = tk.Label(scrollable_frame, image=photo, borderwidth=1, relief="solid", bg="white")
                 img_label.image = photo
-                img_label.grid(row=row, column=0, padx=1, pady=1, sticky="nsew")
-                img_label.bind("<Button-1>", lambda e, id=id_produto: abrir_edicao(e, id))
             except:
-                erro_img = tk.Label(scrollable_frame, text="Erro img", borderwidth=1, relief="solid")
-                erro_img.grid(row=row, column=0, sticky="nsew")
-                erro_img.bind("<Button-1>", lambda e, id=id_produto: abrir_edicao(e, id))
+                img_label = tk.Label(scrollable_frame, text="Erro img", borderwidth=1, relief="solid", bg="white")
+
+            img_label.grid(row=row, column=0, padx=1, pady=1, sticky="nsew")
+            img_label.bind("<Button-1>", lambda e, id=id_produto: abrir_edicao(e, id))
+            widgets_linha.append(img_label)
 
             preco_compra = produto['preco_compra'] or 0.0
             preco_atual = produto['preco_atual'] or 0.0
@@ -133,9 +135,24 @@ def abrir_tela_listagem_produtos(app):
             ]
 
             for col, valor in enumerate(dados, start=1):
-                lbl = ttk.Label(scrollable_frame, text=valor, borderwidth=1, relief="solid", padding=5)
+                lbl = tk.Label(scrollable_frame, text=valor, borderwidth=1, relief="solid", bg="white", padx=5, pady=3)
                 lbl.grid(row=row, column=col, sticky="nsew", padx=1, pady=1)
                 lbl.bind("<Button-1>", lambda e, id=id_produto: abrir_edicao(e, id))
+                widgets_linha.append(lbl)
+
+            # Hover visual
+            def on_enter(event, widgets=widgets_linha):
+                for w in widgets:
+                    w.configure(bg="#e0e0e0")
+
+            def on_leave(event, widgets=widgets_linha):
+                for w in widgets:
+                    w.configure(bg="white")
+
+            for widget in widgets_linha:
+                widget.bind("<Enter>", on_enter)
+                widget.bind("<Leave>", on_leave)
+
 
     entrada_busca.bind("<KeyRelease>", lambda e: carregar_produtos(entrada_busca.get()))
     carregar_produtos()

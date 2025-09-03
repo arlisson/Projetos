@@ -167,6 +167,7 @@ def abrir_tela_listagem(app):
        
         for row, carta in enumerate(cartas, start=1):
             id_carta = carta['id_carta']
+            widgets_linha = []
 
             # Imagem
             try:
@@ -174,19 +175,16 @@ def abrir_tela_listagem(app):
                     raw_data = u.read()
                 im = Image.open(BytesIO(raw_data)).resize((80, 112))
                 photo = ImageTk.PhotoImage(im)
-                lbl_img = tk.Label(scrollable_frame, image=photo, borderwidth=1, relief="solid")
+                lbl_img = tk.Label(scrollable_frame, image=photo, borderwidth=1, relief="solid", bg="white")
                 lbl_img.image = photo
-                lbl_img.grid(row=row, column=0, padx=1, pady=1, sticky="nsew")
-
-                # Clique na imagem
-                lbl_img.bind("<Button-1>", lambda evt, id=id_carta: abrir_edicao(evt, id))
-
             except:
-                lbl_img = tk.Label(scrollable_frame, text="Erro img", borderwidth=1, relief="solid")
-                lbl_img.grid(row=row, column=0, sticky="nsew")
-                lbl_img.bind("<Button-1>", lambda evt, id=id_carta: abrir_edicao(evt, id))
+                lbl_img = tk.Label(scrollable_frame, text="Erro img", borderwidth=1, relief="solid", bg="white")
 
-            # Dados da carta
+            lbl_img.grid(row=row, column=0, padx=1, pady=1, sticky="nsew")
+            lbl_img.bind("<Button-1>", lambda evt, id=id_carta: abrir_edicao(evt, id))
+            widgets_linha.append(lbl_img)
+
+            # Dados
             preco_pago = carta['preco_da_compra']
             preco_atual = carta['preco_atual']
             quantidade = carta['quantidade']
@@ -210,11 +208,24 @@ def abrir_tela_listagem(app):
             ]
 
             for col, valor in enumerate(dados, start=1):
-                lbl = ttk.Label(scrollable_frame, text=valor, borderwidth=1, relief="solid", padding=5)
+                lbl = tk.Label(scrollable_frame, text=valor, borderwidth=1, relief="solid", bg="white", padx=5, pady=3)
                 lbl.grid(row=row, column=col, sticky="nsew", padx=1, pady=1)
-
-                # Clique nos dados
                 lbl.bind("<Button-1>", lambda evt, id=id_carta: abrir_edicao(evt, id))
+                widgets_linha.append(lbl)
+
+            # Eventos de hover
+            def on_enter(event, widgets=widgets_linha):
+                for w in widgets:
+                    w.configure(bg="#e0e0e0")
+
+            def on_leave(event, widgets=widgets_linha):
+                for w in widgets:
+                    w.configure(bg="white")
+
+            for widget in widgets_linha:
+                widget.bind("<Enter>", on_enter)
+                widget.bind("<Leave>", on_leave)
+
 
     def abrir_edicao(evt, id_carta):
         # print(f"[Clique] Editar carta ID: {id_carta}")
