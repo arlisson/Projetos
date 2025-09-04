@@ -1,4 +1,5 @@
 # ... imports
+import re
 import tkinter as tk
 from tkinter import ttk, messagebox
 from PIL import ImageTk, Image
@@ -141,9 +142,19 @@ def criar_tela_editar_carta(app, id_carta):
 
     def limpar_preco(preco_str):
         try:
-            preco_str = preco_str.replace("R$", "").replace(",", ".").strip()
-            return float(preco_str)
-        except:
+            
+            # Encontra todos os valores no formato "R$ x,xx"
+            valores = re.findall(r'R\$ ?\d+,\d+', preco_str)
+            
+            if valores:
+                # Tenta pegar o segundo valor, senão o primeiro
+                valor = valores[1] if len(valores) > 1 else valores[0]
+                valor = valor.replace("R$", "").replace(",", ".").strip()
+                return float(valor)
+            else:
+                return 0.0
+        except Exception as e:
+            
             return 0.0
 
     def preencher_com_scraping():

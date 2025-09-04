@@ -42,12 +42,12 @@ def criar_tela_principal():
         resp = messagebox.askyesno("Confirmar", "Tem certeza que deseja apagar todos os dados?\nEssa ação não pode ser desfeita.")
         if resp:
             apagar_todos_os_dados()
-            messagebox.showinfo("Sucesso", "Todos os dados foram apagados com sucesso.")
+            
     def confirmar_e_criar():
             resp = messagebox.askyesno("Confirmar", "Deseja carregar os dados padrão de raridade e qualidade?")
             if resp:
                 criar_banco_inicial()
-                messagebox.showinfo("Sucesso", "Dados carregados com sucesso.")
+              
 
     menu_opcoes = tk.Menu(menu_bar, tearoff=0)
     menu_opcoes.add_command(label="Apagar todos os dados", command=confirmar_e_apagar)

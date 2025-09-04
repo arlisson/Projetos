@@ -129,7 +129,7 @@ def abrir_tela_listagem_produtos(app):
                 f"R$ {lucro_unit:.2f}",
                 f"R$ {lucro_total:.2f}",
                 str(quantidade),
-                produto["data_scraping"],
+                produto["data_compra"],
                 produto["origem"],
                 produto["data_scraping"]
             ]

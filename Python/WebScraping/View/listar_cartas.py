@@ -5,8 +5,10 @@ import urllib.request
 from io import BytesIO
 
 from DAO.database import (
+    buscar_raridade_qualidade_id,
     buscar_todas_cartas,
     buscar_carta_por_texto,
+    buscar_valores_tabela,
     calcula_quantidade,
     calcular_lucro_total_cartas_em_posse,    
     calcular_total_gasto_cartas,
@@ -146,14 +148,11 @@ def abrir_tela_listagem(app):
 
         if filtro:
             cartas = buscar_carta_por_texto(filtro)
-            ttk.Label(lucro_frame, text=f"# Total Cartas unidade: {len(cartas)}", font=("Segoe UI", 10, "bold")).grid(row=2, column=0, sticky="w")
-            ttk.Label(lucro_frame, text=f"# Total Cartas quantidade: {calcula_quantidade('carta')}", font=("Segoe UI", 10, "bold")).grid(row=2, column=1, sticky="e")
         else:
             cartas = buscar_todas_cartas()
-            ttk.Label(lucro_frame, text=f"# Total Cartas unidade: {len(cartas)}", font=("Segoe UI", 10, "bold")).grid(row=2, column=0, sticky="w")
-            ttk.Label(lucro_frame, text=f"# Total Cartas quantidade: {calcula_quantidade('carta')}", font=("Segoe UI", 10, "bold")).grid(row=2, column=1, sticky="e")
 
-
+        ttk.Label(lucro_frame, text=f"# Total Cartas unidade: {len(cartas)}", font=("Segoe UI", 10, "bold")).grid(row=2, column=0, sticky="w")
+        ttk.Label(lucro_frame, text=f"# Total Cartas quantidade: {calcula_quantidade('carta')}", font=("Segoe UI", 10, "bold")).grid(row=2, column=1, sticky="e")
 
         if not cartas:
             lbl_vazio = ttk.Label(
@@ -164,27 +163,47 @@ def abrir_tela_listagem(app):
             )
             lbl_vazio.grid(row=1, column=0, columnspan=len(headers), pady=20)
             return
-       
+
         for row, carta in enumerate(cartas, start=1):
             id_carta = carta['id_carta']
             widgets_linha = []
 
-            # Imagem
+            # Frame para imagem + raridade
+            frame_img = ttk.Frame(scrollable_frame, relief="solid", borderwidth=1)
+            frame_img.grid(row=row, column=0, padx=1, pady=1, sticky="nsew")
+
             try:
                 with urllib.request.urlopen(carta['imagem']) as u:
                     raw_data = u.read()
                 im = Image.open(BytesIO(raw_data)).resize((80, 112))
                 photo = ImageTk.PhotoImage(im)
-                lbl_img = tk.Label(scrollable_frame, image=photo, borderwidth=1, relief="solid", bg="white")
+                lbl_img = tk.Label(frame_img, image=photo, bg="white")
                 lbl_img.image = photo
             except:
-                lbl_img = tk.Label(scrollable_frame, text="Erro img", borderwidth=1, relief="solid", bg="white")
+                lbl_img = tk.Label(frame_img, text="Erro img", bg="white")
 
-            lbl_img.grid(row=row, column=0, padx=1, pady=1, sticky="nsew")
+            lbl_img.pack()
+
+            # Raridade abaixo da imagem
+            lbl_raridade = ttk.Label(
+                frame_img,
+                text=buscar_raridade_qualidade_id(carta['raridade'], "raridade"),
+                font=("Segoe UI", 8),
+                anchor="center",
+                justify="center",
+                wraplength=80
+            )
+            lbl_raridade.pack(fill="x", padx=2, pady=(2, 4))
+
+            # Bind clique
+            frame_img.bind("<Button-1>", lambda evt, id=id_carta: abrir_edicao(evt, id))
             lbl_img.bind("<Button-1>", lambda evt, id=id_carta: abrir_edicao(evt, id))
+            lbl_raridade.bind("<Button-1>", lambda evt, id=id_carta: abrir_edicao(evt, id))
+
+            # Só adicionar lbl_img (tk.Label) para hover (evita erro em ttk)
             widgets_linha.append(lbl_img)
 
-            # Dados
+            # Cálculos
             preco_pago = carta['preco_da_compra']
             preco_atual = carta['preco_atual']
             quantidade = carta['quantidade']
@@ -213,18 +232,26 @@ def abrir_tela_listagem(app):
                 lbl.bind("<Button-1>", lambda evt, id=id_carta: abrir_edicao(evt, id))
                 widgets_linha.append(lbl)
 
-            # Eventos de hover
+            # Hover highlight SOMENTE nos widgets que aceitam `bg`
             def on_enter(event, widgets=widgets_linha):
                 for w in widgets:
-                    w.configure(bg="#e0e0e0")
+                    try:
+                        w.configure(bg="#e0e0e0")
+                    except tk.TclError:
+                        pass  # Ignora widgets que não suportam bg
 
             def on_leave(event, widgets=widgets_linha):
                 for w in widgets:
-                    w.configure(bg="white")
+                    try:
+                        w.configure(bg="white")
+                    except tk.TclError:
+                        pass  # Ignora widgets que não suportam bg
 
             for widget in widgets_linha:
                 widget.bind("<Enter>", on_enter)
                 widget.bind("<Leave>", on_leave)
+
+
 
 
     def abrir_edicao(evt, id_carta):

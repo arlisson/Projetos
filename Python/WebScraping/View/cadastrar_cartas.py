@@ -6,7 +6,8 @@ from io import BytesIO
 from datetime import datetime
 from scraping.scraping_cartas import *
 from DAO.database import *
-from tkcalendar import Calendar
+import re
+from Components.entrada_padrao import criar_entrada_padrao, criar_entrada_data_com_calendario
 
 IMAGEM_PADRAO = "https://i.pinimg.com/736x/71/1e/da/711eda25308c65a7756751088866e181.jpg"
 
@@ -14,7 +15,6 @@ def criar_tela_cadastro(app):
     root = tk.Toplevel(app)
     root.grab_set()
     root.focus_force()
-
 
     root.title("Cadastro de Carta")
     root.resizable(True, True)
@@ -36,57 +36,19 @@ def criar_tela_cadastro(app):
 
     campos = {}
 
-    def abrir_calendario():
-        top = tk.Toplevel(root)
-        top.title("Selecionar Data")
-        top.grab_set()
-        top.resizable(False, False)
-        top.geometry(f"+{root.winfo_rootx() + 200}+{root.winfo_rooty() + 150}")
-        cal = Calendar(top, selectmode='day', date_pattern='yyyy-mm-dd')
-        cal.pack(padx=10, pady=10)
-
-        def selecionar_data():
-            campos["data"].delete(0, tk.END)
-            campos["data"].insert(0, cal.get_date())
-            top.destroy()
-
-        ttk.Button(top, text="Selecionar", command=selecionar_data).pack(pady=5)
-
-    def criar_rotulo_entrada(frame, texto, linha, largura=50, somente_leitura=False):
-        ttk.Label(frame, text=texto).grid(row=linha, column=0, sticky="w", padx=5, pady=3)
-        entrada = ttk.Entry(frame, width=largura)
-        if somente_leitura:
-            entrada.configure(state="readonly")
-        entrada.grid(row=linha, column=1, columnspan=2, padx=5, pady=3, sticky="we")
-        return entrada
-
     form_frame = ttk.LabelFrame(main_frame, text="Dados da Carta", padding=10)
     form_frame.grid(row=0, column=0, sticky="nsew")
     form_frame.columnconfigure(1, weight=1)
 
-    campos["link"] = criar_rotulo_entrada(form_frame, "Link da carta:", 0)
-    campos["nome"] = criar_rotulo_entrada(form_frame, "Nome:", 1)
-    campos["codigo"] = criar_rotulo_entrada(form_frame, "Código:", 2)
-    campos["preco"] = criar_rotulo_entrada(form_frame, "Preço pago:", 3)
-    campos["preco_atual"] = criar_rotulo_entrada(form_frame, "Preço atual:", 4)
-
-
-    # Campo de data com botão de calendário
-    ttk.Label(form_frame, text="Data da compra:").grid(row=5, column=0, sticky="w", padx=5, pady=3)
-    data_frame = ttk.Frame(form_frame)
-    data_frame.grid(row=5, column=1, columnspan=2, padx=5, pady=3, sticky="we")
-    data_frame.columnconfigure(0, weight=1)
-
-    campos["data"] = ttk.Entry(data_frame)
-    campos["data"].grid(row=0, column=0, sticky="we", padx=(0, 5))
-
-    btn = ttk.Button(data_frame, image=CALENDAR_ICON, command=abrir_calendario)
-    btn.image = CALENDAR_ICON
-    btn.grid(row=0, column=1)
-
-    campos["quantidade"] = criar_rotulo_entrada(form_frame, "Quantidade:", 6)
-    campos["imagem"] = criar_rotulo_entrada(form_frame, "Imagem URL:", 7)
-    campos["origem"] = criar_rotulo_entrada(form_frame, "Origem:", 13)
+    campos["link"] = criar_entrada_padrao(form_frame, "Link da carta:", 0)
+    campos["nome"] = criar_entrada_padrao(form_frame, "Nome:", 1)
+    campos["codigo"] = criar_entrada_padrao(form_frame, "Código:", 2)
+    campos["preco"] = criar_entrada_padrao(form_frame, "Preço pago:", 3)
+    campos["preco_atual"] = criar_entrada_padrao(form_frame, "Preço atual:", 4)
+    campos["data"] = criar_entrada_data_com_calendario(form_frame, root, 5, "Data da compra:", CALENDAR_ICON)
+    campos["quantidade"] = criar_entrada_padrao(form_frame, "Quantidade:", 6)
+    campos["imagem"] = criar_entrada_padrao(form_frame, "Imagem URL:", 7)
+    campos["origem"] = criar_entrada_padrao(form_frame, "Origem:", 13)
 
     def popular_dropdown(combo, dados):
         valores = [f"{item[0]} - {item[1]}" for item in dados]
@@ -128,12 +90,25 @@ def criar_tela_cadastro(app):
             imagem_label.configure(image='')
             imagem_label.image = None
 
+    
+
     def limpar_preco(preco_str):
         try:
-            preco_str = preco_str.replace("R$", "").replace(",", ".").strip()
-            return float(preco_str)
-        except:
+            
+            # Encontra todos os valores no formato "R$ x,xx"
+            valores = re.findall(r'R\$ ?\d+,\d+', preco_str)
+            
+            if valores:
+                # Tenta pegar o segundo valor, senão o primeiro
+                valor = valores[1] if len(valores) > 1 else valores[0]
+                valor = valor.replace("R$", "").replace(",", ".").strip()
+                return float(valor)
+            else:
+                return 0.0
+        except Exception as e:
+            
             return 0.0
+
 
     def preencher_com_scraping():
         try:
@@ -148,17 +123,11 @@ def criar_tela_cadastro(app):
             campos["nome"].insert(0, dados["nome"])
             campos["codigo"].delete(0, tk.END)
             campos["codigo"].insert(0, dados["codigo"])
-
-            # Preencher somente o campo de preço atual (somente leitura)
-           
             campos["preco_atual"].delete(0, tk.END)
             campos["preco_atual"].insert(0, limpar_preco(dados["preco_atual"]))
-            
-
             campos["imagem"].delete(0, tk.END)
             campos["imagem"].insert(0, dados["imagem"])
             atualizar_imagem(dados["imagem"])
-            
             campos["origem"].delete(0, tk.END)
             campos["origem"].insert(0, dados["origem"])
 
@@ -175,8 +144,6 @@ def criar_tela_cadastro(app):
             messagebox.showinfo("Sucesso", "Dados preenchidos com sucesso!", parent=root)
         except Exception as e:
             messagebox.showerror("Erro", f"Erro ao buscar: {e}", parent=root)
-
-        
 
     def salvar():
         try:
@@ -226,11 +193,11 @@ def criar_tela_cadastro(app):
     ttk.Button(botoes_frame, text="Buscar via scraping", command=preencher_com_scraping).grid(row=0, column=0, padx=10)
     ttk.Button(botoes_frame, text="Salvar Carta", command=salvar).grid(row=0, column=1, padx=10)
 
-    campos["data"].insert(0, datetime.today().strftime("%Y-%m-%d"))
+    
     campos["quantidade"].insert(0, "1")
     campos["imagem"].insert(0, IMAGEM_PADRAO)
     atualizar_imagem(IMAGEM_PADRAO)
-    campos["origem"].insert(0, "MypCards")
+    campos["origem"].insert(0, "MyPCards")
 
     root.mainloop()
 

@@ -6,7 +6,7 @@ import urllib.request
 from io import BytesIO
 from datetime import datetime
 from scraping.scraping_cartas import buscar_produto_liga
-from DAO.database import buscar_produto_por_id, deletar, inserir_produto
+from DAO.database import atualizar_produto, buscar_produto_por_id, deletar
 from tkcalendar import Calendar
 from decimal import Decimal
 import threading
@@ -160,11 +160,12 @@ def criar_tela_editar_produto(app, id_produto):
                 "imagem": campos["imagem"].get() or IMAGEM_PADRAO,
                 "preco_compra": to_decimal(campos["preco_compra"].get()),
                 "preco_atual": to_decimal(campos["preco_atual"].get()),
-                "data_scraping": campos["data_compra"].get(),
+                "data_compra": campos["data_compra"].get(),
                 "quantidade": int(campos["quantidade"].get()),
-                "origem": campos["origem"].get() or "Liga Yugioh"
+                "origem": campos["origem"].get() or "Liga Yugioh",
+                "data_scraping": datetime.today().strftime("%Y-%m-%d")
             }
-            inserir_produto(produto)
+            atualizar_produto(produto)
             messagebox.showinfo("Sucesso", "Produto atualizado com sucesso!", parent=root)
             ao_fechar()
         except Exception as e:
@@ -193,7 +194,7 @@ def criar_tela_editar_produto(app, id_produto):
     campos["imagem"].insert(0, produto["imagem"] or IMAGEM_PADRAO)
     campos["preco_compra"].insert(0, str(produto["preco_compra"] or ""))
     campos["preco_atual"].insert(0, str(produto["preco_atual"] or ""))
-    campos["data_compra"].insert(0, produto["data_scraping"] or datetime.today().strftime("%Y-%m-%d"))
+    campos["data_compra"].insert(0, produto["data_compra"] or "")
     campos["quantidade"].insert(0, str(produto["quantidade"] or "1"))
     campos["origem"].insert(0, produto["origem"] or "Liga Yugioh")
 

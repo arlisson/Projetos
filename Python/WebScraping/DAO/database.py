@@ -63,7 +63,27 @@ def inserir_carta(dados):
         conn.rollback()
         conn.close()
 
+def buscar_raridade_qualidade_id(id, tabela):
+    '''
+    Busca o nome da raridade ou qualidade pelo ID.
+    args:
+        id (int): O ID a ser buscado.
+        tabela (str): "raridade" ou "qualidade".
 
+    returns:
+        str: O nome correspondente ao ID, ou None se não encontrado.
+    '''
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT nome FROM {tabela} WHERE id_{tabela} = ?", (id,))
+        resultado = cursor.fetchone()
+        conn.close()
+        return resultado[0] if resultado else None
+    except Exception as e:
+        messagebox.showerror("Erro", f"Erro ao buscar {tabela} por ID: {e}")
+        conn.close()
+        return None
 
 def buscar_valores_tabela(tabela):
     '''
@@ -308,7 +328,7 @@ def inserir_produto(produto):
             - link
             - imagem
             - preco_compra
-            - data_scraping
+            - data_compra
             - origem
             - preco_atual
             - quantidade
@@ -324,7 +344,7 @@ def inserir_produto(produto):
         query = """
             INSERT INTO produto (
                 nome_produto, link, imagem, preco_compra,
-                data_scraping, origem, preco_atual, quantidade,
+                data_compra, origem, preco_atual, quantidade,
                 data_scraping
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """
@@ -333,7 +353,7 @@ def inserir_produto(produto):
             produto["link"],
             produto["imagem"],
             produto["preco_compra"],
-            produto["data_scraping"],
+            produto["data_compra"],
             produto.get("origem", "Liga Yugioh"),  # padrão se não vier
             produto["preco_atual"],
             produto["quantidade"],
@@ -584,9 +604,10 @@ def criar_banco_inicial():
             ('Muito Jogada',), ('Danificada',)
         ]
         cursor.executemany("INSERT INTO qualidade (nome) VALUES (?)", qualidades)
-
+        
         conn.commit()
         conn.close()
+        messagebox.showinfo("Sucesso", "Banco inicial criado com sucesso.")
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao criar banco inicial: {e}")
         conn.rollback()
@@ -678,7 +699,7 @@ def atualizar_produto(produto):
     query = """
         UPDATE produto
         SET nome_produto = ?, link = ?, imagem = ?, preco_compra = ?,
-            data_scraping = ?, origem = ?, preco_atual = ?, quantidade = ?
+            data_scraping = ?, origem = ?, preco_atual = ?, data_compra = ?, quantidade = ?
         WHERE id_produto = ?;
     """
     try:
@@ -688,7 +709,8 @@ def atualizar_produto(produto):
             produto["nome_produto"], produto["link"], produto["imagem"],
             produto["preco_compra"], produto["data_scraping"],
             produto["origem"], produto["preco_atual"],
-            produto["quantidade"], produto["id_produto"]
+            produto["data_compra"], produto["quantidade"],
+            produto["id_produto"]
         ))
         conn.commit()
     except Exception as e:
@@ -724,3 +746,4 @@ def calcula_quantidade(tabela):
         return 0
     finally:
         conn.close()
+
