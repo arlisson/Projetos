@@ -2,6 +2,8 @@ import sqlite3
 from datetime import datetime
 from tkinter import messagebox
 
+from Utils.log import registrar_erro
+
 DB_PATH = "yugioh.db"
 DATA_SCRAPING = datetime.today().strftime('%Y-%m-%d')
 def conectar():
@@ -58,10 +60,15 @@ def inserir_carta(dados):
 
         conn.commit()
         conn.close()
+        messagebox.showinfo("Sucesso", "Carta inserida com sucesso.")
+        novo_id = cursor.lastrowid
+        conn.close()
+        return novo_id
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao inserir carta: {e}")
         conn.rollback()
         conn.close()
+        registrar_erro("Erro ao inserir carta", e)
 
 def buscar_raridade_qualidade_id(id, tabela):
     '''
@@ -83,6 +90,7 @@ def buscar_raridade_qualidade_id(id, tabela):
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao buscar {tabela} por ID: {e}")
         conn.close()
+        registrar_erro(f"Erro ao buscar {tabela} por ID", e)
         return None
 
 def buscar_valores_tabela(tabela):
@@ -104,6 +112,8 @@ def buscar_valores_tabela(tabela):
         return resultados
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao buscar valores da tabela {tabela}: {e}")
+        conn.close()
+        registrar_erro(f"Erro ao buscar valores da tabela {tabela}", e)
         return []
 
 def buscar_colecao_por_nome(nome):
@@ -125,6 +135,7 @@ def buscar_colecao_por_nome(nome):
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao buscar coleção por nome: {e}")
         conn.close()
+        registrar_erro("Erro ao buscar coleção por nome", e)
         return None
 
 def inserir_colecao(nome, codigo=""):
@@ -150,6 +161,7 @@ def inserir_colecao(nome, codigo=""):
         conn.rollback()
         conn.close()
         messagebox.showerror("Erro", f"Erro ao inserir coleção: {e}")
+        registrar_erro("Erro ao inserir coleção", e)
         return None
 
 def buscar_todas_cartas():
@@ -185,6 +197,7 @@ def buscar_todas_cartas():
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao buscar todas as cartas: {e}")
         conn.close()
+        registrar_erro("Erro ao buscar todas as cartas", e)
         return []
 
 def buscar_carta_por_texto(texto):
@@ -219,6 +232,7 @@ def buscar_carta_por_texto(texto):
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao buscar carta por texto: {e}")
         conn.close()
+        registrar_erro("Erro ao buscar carta por texto", e)
         return []
 
 def calcular_lucro_total_cartas_em_posse():
@@ -237,10 +251,12 @@ def calcular_lucro_total_cartas_em_posse():
         cursor = conn.cursor()
         cursor.execute(query)
         resultado = cursor.fetchone()
+        conn.close()
         return resultado[0] if resultado[0] is not None else 0.0
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao calcular lucro de cartas em posse: {e}")
         conn.close()
+        registrar_erro("Erro ao calcular lucro de cartas em posse", e)
         return None
     finally:
         conn.close()
@@ -261,10 +277,12 @@ def calcular_lucro_total_cartas_vendidas():
         cursor = conn.cursor()
         cursor.execute(query)
         resultado = cursor.fetchone()
+        conn.close()
         return resultado[0] if resultado[0] is not None else 0.0
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao calcular lucro de cartas vendidas: {e}")
         conn.close()
+        registrar_erro("Erro ao calcular lucro de cartas vendidas", e)
         return None
     finally:
         conn.close()
@@ -285,10 +303,12 @@ def calcular_total_gasto_cartas():
         cursor = conn.cursor()
         cursor.execute(query)
         resultado = cursor.fetchone()
+        conn.close()
         return resultado[0] if resultado[0] is not None else 0.0
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao calcular valor total de cartas em posse: {e}")
         conn.close()
+        registrar_erro("Erro ao calcular valor total de cartas em posse", e)
         return None
     finally:
         conn.close()
@@ -309,10 +329,12 @@ def calcular_total_vendido_cartas():
         cursor = conn.cursor()
         cursor.execute(query)
         resultado = cursor.fetchone()
+        conn.close()
         return resultado[0] if resultado[0] is not None else 0.0
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao calcular total vendido em cartas: {e}")
         conn.close()
+        registrar_erro("Erro ao calcular total vendido em cartas", e)
         return None
     finally:
         conn.close()
@@ -362,12 +384,15 @@ def inserir_produto(produto):
 
         cursor.execute(query, valores)
         conn.commit()
-        return cursor.lastrowid
+        novo_id = cursor.lastrowid
+        conn.close()
+        return novo_id
 
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao inserir produto: {e}")
         conn.rollback()
         conn.close()
+        registrar_erro("Erro ao inserir produto", e)
         return None
 
     finally:
@@ -407,11 +432,13 @@ def listar_todos_produtos(filtro=""):
 
         colunas = [desc[0] for desc in cursor.description]
         resultados = [dict(zip(colunas, linha)) for linha in cursor.fetchall()]
+        conn.close()
         return resultados
 
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao listar produtos: {e}")
         conn.close()
+        registrar_erro("Erro ao listar produtos", e)
         return []
     finally:
         conn.close()
@@ -433,11 +460,12 @@ def calcular_lucro_total_produtos_em_posse():
         cursor = conn.cursor()
         cursor.execute(query)
         resultado = cursor.fetchone()
-        
+        conn.close()
         return resultado[0] if resultado[0] is not None else 0.0
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao calcular lucro de produtos em posse: {e}")
         conn.close()
+        registrar_erro("Erro ao calcular lucro de produtos em posse", e)
         return None
     finally:
         conn.close()
@@ -459,10 +487,12 @@ def calcular_lucro_total_produtos_vendidos():
         cursor = conn.cursor()
         cursor.execute(query)
         resultado = cursor.fetchone()
+        conn.close()
         return resultado[0] if resultado[0] is not None else 0.0
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao calcular lucro de produtos vendidos: {e}")
         conn.close()
+        registrar_erro("Erro ao calcular lucro de produtos vendidos", e)
         return 0.0
     finally:
         conn.close()
@@ -487,6 +517,7 @@ def calcular_total_gasto_produtos():
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao calcular valor total de produtos: {e}")
         conn.close()
+        registrar_erro("Erro ao calcular valor total de produtos", e)
         return None
     finally:
         conn.close()
@@ -512,6 +543,7 @@ def calcular_total_vendido_produtos():
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao calcular total vendido em produtos: {e}")
         conn.close()
+        registrar_erro("Erro ao calcular total vendido em produtos", e)
         return 0.0
     finally:
         conn.close()
@@ -538,6 +570,7 @@ def calcular_total_valor_produtos():
         messagebox.showerror("Erro", f"Erro ao calcular valor total atual de produtos: {e}")
         conn.rollback()
         conn.close()
+        registrar_erro("Erro ao calcular valor total atual de produtos", e)
         return 0.0
     finally:
         conn.close()
@@ -577,6 +610,7 @@ def apagar_todos_os_dados():
         messagebox.showerror("Erro", f"Erro ao apagar dados: {e}")
         conn.rollback()
         conn.close()
+        registrar_erro("Erro ao apagar dados", e)
 
 
 def criar_banco_inicial():
@@ -612,6 +646,7 @@ def criar_banco_inicial():
         messagebox.showerror("Erro", f"Erro ao criar banco inicial: {e}")
         conn.rollback()
         conn.close()
+        registrar_erro("Erro ao criar banco inicial", e)
 
 
 def buscar_carta_por_id(id):
@@ -637,6 +672,7 @@ def buscar_carta_por_id(id):
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao buscar carta por ID: {e}")
         conn.close()
+        registrar_erro("Erro ao buscar carta por ID", e)
         return None
     finally:
         conn.close()
@@ -665,6 +701,7 @@ def atualizar_carta(carta):
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao atualizar carta: {e}")
         conn.rollback()
+        registrar_erro("Erro ao atualizar carta", e)
     finally:
         conn.close()
 
@@ -691,6 +728,7 @@ def buscar_produto_por_id(id):
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao buscar produto por ID: {e}")
         conn.close()
+        registrar_erro("Erro ao buscar produto por ID", e)
         return None
     finally:
         conn.close()
@@ -716,6 +754,7 @@ def atualizar_produto(produto):
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao atualizar produto: {e}")
         conn.rollback()
+        registrar_erro("Erro ao atualizar produto", e)
     finally:
         conn.close()
 
@@ -729,6 +768,8 @@ def deletar(id, tabela):
         return True
     except Exception as e:        
         conn.rollback()
+        messagebox.showerror("Erro", f"Erro ao apagar dados: {e}")
+        registrar_erro("Erro ao apagar dados", e)
         return False
     finally:
         conn.close()
@@ -743,6 +784,8 @@ def calcula_quantidade(tabela):
         return resultado[0] if resultado else 0
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao calcular quantidade: {e}")
+        conn.close()
+        registrar_erro("Erro ao calcular quantidade", e)
         return 0
     finally:
         conn.close()
