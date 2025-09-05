@@ -47,7 +47,7 @@ def inserir_carta(dados):
             dados.get("nome"),
             dados.get("colecao"),
             dados.get("codigo"),
-            float(dados.get("preco")),             # preco pago
+            float(dados.get("preco_da_compra")),             # preco pago
             dados.get("data_da_compra"),
             dados.get("raridade"),
             dados.get("qualidade"),
@@ -59,16 +59,38 @@ def inserir_carta(dados):
         ))
 
         conn.commit()
-        conn.close()
-        messagebox.showinfo("Sucesso", "Carta inserida com sucesso.")
+        conn.close()        
         novo_id = cursor.lastrowid
         conn.close()
         return novo_id
     except Exception as e:
-        messagebox.showerror("Erro", f"Erro ao inserir carta: {e}")
+        
         conn.rollback()
         conn.close()
         registrar_erro("Erro ao inserir carta", e)
+
+def buscar_raridade_qualidade_nome(nome, tabela):
+    '''
+    Busca o ID da raridade ou qualidade pelo nome.
+    args:
+        nome (str): O nome a ser buscado.
+        tabela (str): "raridade" ou "qualidade".
+
+    returns:
+        int: O ID correspondente ao nome, ou None se não encontrado.
+    '''
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT id_{tabela} FROM {tabela} WHERE nome = ?", (nome,))
+        resultado = cursor.fetchone()
+        conn.close()
+        return resultado[0] if resultado else None
+    except Exception as e:
+        messagebox.showerror("Erro", f"Erro ao buscar {tabela} por nome: {e}")
+        conn.close()
+        registrar_erro(f"Erro ao buscar {tabela} por nome", e)
+        return None
 
 def buscar_raridade_qualidade_id(id, tabela):
     '''
@@ -132,8 +154,7 @@ def buscar_colecao_por_nome(nome):
         resultado = cursor.fetchone()
         conn.close()
         return resultado[0] if resultado else None
-    except Exception as e:
-        messagebox.showerror("Erro", f"Erro ao buscar coleção por nome: {e}")
+    except Exception as e:        
         conn.close()
         registrar_erro("Erro ao buscar coleção por nome", e)
         return None

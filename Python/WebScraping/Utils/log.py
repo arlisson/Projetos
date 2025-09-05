@@ -15,6 +15,14 @@ def registrar_erro(mensagem: str, exception: Exception = None):
         logging.error(f"{mensagem} | Exceção: {str(exception)}")
     else:
         logging.error(mensagem)
+        
+
+def log_info(mensagem: str):
+    """
+    Registra uma mensagem informativa no log (substituto para print).
+    """
+    logging.info(mensagem)
+
 
 # Cria a pasta "logs" se não existir
 os.makedirs(LOG_DIR, exist_ok=True)

@@ -1,0 +1,16 @@
+2025-09-05 10:24:51,854 [ERROR] - Erro ao fazer a requisição: | Exceção: enumerate() takes at most 2 arguments (3 given)
+2025-09-05 10:40:05,628 [ERROR] - Erro ao fazer a requisição: | Exceção: 'NoneType' object has no attribute 'group'
+2025-09-05 11:00:06,269 [ERROR] - Erro ao fazer a requisição: | Exceção: 'NoneType' object has no attribute 'text'
+2025-09-05 11:00:19,039 [ERROR] - Erro ao fazer a requisição: | Exceção: 'NoneType' object has no attribute 'get_text'
+2025-09-05 11:00:55,369 [ERROR] - Erro ao fazer a requisição: | Exceção: invalid literal for int() with base 10: ''
+2025-09-05 11:03:23,443 [ERROR] - Erro ao fazer a requisição: | Exceção: 'href'
+2025-09-05 11:09:56,420 [ERROR] - Erro ao fazer a requisição em buscar_cartas_colecao | Exceção: name 'urljoin' is not defined
+2025-09-05 11:10:35,396 [ERROR] - Erro ao fazer a requisição em buscar_cartas_colecao | Exceção: 'NoneType' object has no attribute 'get_text'
+2025-09-05 11:13:40,323 [ERROR] - Erro ao fazer a requisição em buscar_cartas_colecao | Exceção: 'NoneType' object has no attribute 'get_text'
+2025-09-05 11:22:24,205 [ERROR] - Erro ao fazer a requisição em buscar_cartas_colecao | Exceção: 'NoneType' object has no attribute 'get_text'
+2025-09-05 11:25:04,480 [ERROR] - Erro ao fazer a requisição em buscar_cartas_colecao | Exceção: 'NoneType' object has no attribute 'get_text'
+2025-09-05 11:28:02,714 [ERROR] - Erro ao fazer a requisição em buscar_cartas_colecao | Exceção: 'NoneType' object has no attribute 'get_text'
+2025-09-05 11:46:07,122 [ERROR] - Erro em limpar_preco: | Exceção: expected string or bytes-like object, got 'function'
+2025-09-05 11:46:07,122 [ERROR] - Erro em limpar_preco: | Exceção: expected string or bytes-like object, got 'function'
+2025-09-05 11:49:27,802 [ERROR] - Erro em limpar_preco: | Exceção: expected string or bytes-like object, got 'function'
+2025-09-05 11:49:27,802 [ERROR] - Erro em limpar_preco: | Exceção: expected string or bytes-like object, got 'function'

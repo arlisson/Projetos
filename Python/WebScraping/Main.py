@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from View.cadastrar_cartas import criar_tela_cadastro
+from View.cadastrar_cartas_colecao import criar_tela_cadastro_colecao
 from View.listar_cartas import abrir_tela_listagem  
 from View.cadastrar_produtos import criar_tela_cadastro_produto
 from View.listar_produtos import abrir_tela_listagem_produtos  
@@ -29,6 +30,7 @@ def criar_tela_principal():
     menu_cartas = tk.Menu(menu_bar, tearoff=0)
     menu_cartas.add_command(label="Cadastrar Carta", command= lambda: criar_tela_cadastro(root))
     menu_cartas.add_command(label="Listar Cartas", command=lambda: abrir_tela_listagem(root))
+    menu_cartas.add_command(label="Cadastrar Coleção", command=lambda: criar_tela_cadastro_colecao(root))
     menu_bar.add_cascade(label="Cartas", menu=menu_cartas)
 
     # --- Produtos ---

@@ -4,6 +4,7 @@ from PIL import ImageTk, Image
 import urllib.request
 from io import BytesIO
 from datetime import datetime
+from Utils.limpar_preco import limpar_preco
 from scraping.scraping_cartas import *
 from DAO.database import *
 import re
@@ -43,7 +44,7 @@ def criar_tela_cadastro(app):
     campos["link"] = criar_entrada_padrao(form_frame, "Link da carta:", 0)
     campos["nome"] = criar_entrada_padrao(form_frame, "Nome:", 1)
     campos["codigo"] = criar_entrada_padrao(form_frame, "Código:", 2)
-    campos["preco"] = criar_entrada_padrao(form_frame, "Preço pago:", 3)
+    campos["preco_da_compra"] = criar_entrada_padrao(form_frame, "Preço pago:", 3)
     campos["preco_atual"] = criar_entrada_padrao(form_frame, "Preço atual:", 4)
     campos["data"] = criar_entrada_data_com_calendario(form_frame, root, 5, "Data da compra:", CALENDAR_ICON)
     campos["quantidade"] = criar_entrada_padrao(form_frame, "Quantidade:", 6)
@@ -92,22 +93,8 @@ def criar_tela_cadastro(app):
 
     
 
-    def limpar_preco(preco_str):
-        try:
-            
-            # Encontra todos os valores no formato "R$ x,xx"
-            valores = re.findall(r'R\$ ?\d+,\d+', preco_str)
-            
-            if valores:
-                # Tenta pegar o segundo valor, senão o primeiro
-                valor = valores[1] if len(valores) > 1 else valores[0]
-                valor = valor.replace("R$", "").replace(",", ".").strip()
-                return float(valor)
-            else:
-                return 0.0
-        except Exception as e:
-            
-            return 0.0
+    
+
 
 
     def preencher_com_scraping():
@@ -151,7 +138,7 @@ def criar_tela_cadastro(app):
                 ("link", "Link da carta"),
                 ("nome", "Nome"),
                 ("codigo", "Código"),
-                ("preco", "Preço pago"),
+                ("preco_da_compra", "Preço pago"),
                 ("preco_atual", "Preço atual"),
                 ("data", "Data da compra"),
                 ("quantidade", "Quantidade"),
@@ -172,7 +159,7 @@ def criar_tela_cadastro(app):
                 "link_site": campos["link"].get(),
                 "nome": campos["nome"].get(),
                 "codigo": campos["codigo"].get(),
-                "preco": limpar_preco(campos["preco"].get()),
+                "preco_da_compra": limpar_preco(campos["preco_da_compra"].get()),
                 "preco_atual": limpar_preco(campos["preco_atual"].get()),
                 "data_da_compra": campos["data"].get(),
                 "quantidade": int(campos["quantidade"].get()),
@@ -183,6 +170,7 @@ def criar_tela_cadastro(app):
                 "colecao": int(campos["colecao"].get().split(" - ")[0]),
             }
 
+            print(carta)
             inserir_carta(carta)
             messagebox.showinfo("Sucesso", "Carta cadastrada com sucesso!", parent=root)
         except Exception as e:
