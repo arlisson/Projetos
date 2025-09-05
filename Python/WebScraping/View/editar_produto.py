@@ -5,6 +5,7 @@ from PIL import ImageTk, Image
 import urllib.request
 from io import BytesIO
 from datetime import datetime
+from Components.thread_com_modal import executar_em_thread
 from scraping.scraping_cartas import buscar_produto_liga
 from DAO.database import atualizar_produto, buscar_produto_por_id, deletar
 from tkcalendar import Calendar
@@ -129,27 +130,44 @@ def criar_tela_editar_produto(app, id_produto):
             return 0.0
 
     def buscar_info_scraping():
-        url = campos["link"].get().strip()
-        if not url:
-            messagebox.showwarning("Aviso", "Informe o link do produto.", parent=root)
-            return
-
         def _buscar():
-            dados = buscar_produto_liga(url)
-            if not dados:
-                return messagebox.showwarning("Aviso", "Nenhum dado retornado do scraping.", parent=root)
-            campos["nome"].delete(0, tk.END)
-            campos["nome"].insert(0, dados.get("nome", ""))
-            campos["imagem"].delete(0, tk.END)
-            campos["imagem"].insert(0, dados.get("imagem", ""))
-            preco = dados.get("preco_atual", "").replace("R$", "").replace(",", ".").strip()
-            campos["preco_atual"].delete(0, tk.END)
-            campos["preco_atual"].insert(0, preco)
-            campos["data_compra"].delete(0, tk.END)
-            campos["data_compra"].insert(0, datetime.today().strftime("%Y-%m-%d"))
-            atualizar_imagem(campos["imagem"].get())
+            url = campos["link"].get().strip()
+            if not url:
+                return root.after(0, lambda: messagebox.showwarning("Aviso", "Informe o link do produto.", parent=root))
 
-        threading.Thread(target=_buscar, daemon=True).start()
+            try:
+                dados = buscar_produto_liga(url)
+                if not dados:
+                    return root.after(0, lambda: messagebox.showwarning("Aviso", "Nenhum dado retornado do scraping.", parent=root))
+
+                def preencher():
+                    campos["nome"].delete(0, tk.END)
+                    campos["nome"].insert(0, dados.get("nome", ""))
+
+                    campos["imagem"].delete(0, tk.END)
+                    campos["imagem"].insert(0, dados.get("imagem", ""))
+
+                    preco = dados.get("preco_atual", "").replace("R$", "").replace(",", ".").strip()
+                    campos["preco_atual"].delete(0, tk.END)
+                    campos["preco_atual"].insert(0, preco)
+
+                    campos["data_compra"].delete(0, tk.END)
+                    campos["data_compra"].insert(0, datetime.today().strftime("%Y-%m-%d"))
+
+                    atualizar_imagem(campos["imagem"].get())
+
+                root.after(0, preencher)
+
+            except Exception as e:
+                root.after(0, lambda: messagebox.showerror("Erro", f"Erro no scraping: {e}", parent=root))
+
+        executar_em_thread(
+            root,
+            _buscar,
+            titulo="Buscando Produto",
+            mensagem="Coletando informações do produto via scraping..."
+        )
+
 
     def salvar():
         try:
@@ -165,11 +183,27 @@ def criar_tela_editar_produto(app, id_produto):
                 "origem": campos["origem"].get() or "Liga Yugioh",
                 "data_scraping": datetime.today().strftime("%Y-%m-%d")
             }
-            atualizar_produto(produto)
-            messagebox.showinfo("Sucesso", "Produto atualizado com sucesso!", parent=root)
-            ao_fechar()
+
+            def _salvar():
+                try:
+                    atualizar_produto(produto)
+                    root.after(0, lambda: (
+                        messagebox.showinfo("Sucesso", "Produto atualizado com sucesso!", parent=root),
+                        ao_fechar()
+                    ))
+                except Exception as e:
+                    root.after(0, lambda: messagebox.showerror("Erro", f"Erro ao salvar: {e}", parent=root))
+
+            executar_em_thread(
+                root,
+                _salvar,
+                titulo="Salvando Produto",
+                mensagem="Atualizando dados no banco de dados..."
+            )
+
         except Exception as e:
-            messagebox.showerror("Erro", f"Erro ao salvar: {e}", parent=root)
+            messagebox.showerror("Erro", f"Erro inesperado: {e}", parent=root)
+
 
     def apagar_produto():
         if messagebox.askokcancel("Confirmar", "Tem certeza que deseja deletar este produto?", parent=root):

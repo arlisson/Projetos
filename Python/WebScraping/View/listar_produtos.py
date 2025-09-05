@@ -153,9 +153,12 @@ def abrir_tela_listagem_produtos(app):
                 widget.bind("<Enter>", on_enter)
                 widget.bind("<Leave>", on_leave)
 
-
-    entrada_busca.bind("<KeyRelease>", lambda e: carregar_produtos(entrada_busca.get()))
-    carregar_produtos()
+    def  iniciar_carregamento():
+        entrada_busca.bind("<KeyRelease>", lambda e: carregar_produtos(entrada_busca.get()))
+        carregar_produtos()
+    
+    from Components.thread_com_modal import executar_em_thread
+    executar_em_thread(root, iniciar_carregamento, titulo="Listando Produtos", mensagem="Carregando produtos do banco...")
 
 if __name__ == "__main__":
     app = tk.Tk()

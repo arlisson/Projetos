@@ -9,6 +9,7 @@ from scraping.scraping_cartas import *
 from DAO.database import *
 import re
 from Components.entrada_padrao import criar_entrada_padrao, criar_entrada_data_com_calendario
+from Components.thread_com_modal import executar_em_thread
 
 IMAGEM_PADRAO = "https://i.pinimg.com/736x/71/1e/da/711eda25308c65a7756751088866e181.jpg"
 
@@ -16,7 +17,6 @@ def criar_tela_cadastro(app):
     root = tk.Toplevel(app)
     root.grab_set()
     root.focus_force()
-
     root.title("Cadastro de Carta")
     root.resizable(True, True)
 
@@ -27,7 +27,6 @@ def criar_tela_cadastro(app):
 
     main_frame = ttk.Frame(root, padding=10)
     main_frame.pack(fill="both", expand=True)
-
     main_frame.columnconfigure(0, weight=1)
     main_frame.columnconfigure(1, weight=0)
     main_frame.rowconfigure(0, weight=1)
@@ -91,46 +90,46 @@ def criar_tela_cadastro(app):
             imagem_label.configure(image='')
             imagem_label.image = None
 
-    
-
-    
-
-
-
-    def preencher_com_scraping():
+    def executar_scraping():
         try:
             raridade_nome = campos["raridade"].get().split(" - ")[1]
             resultados = buscar_carta_myp(url=campos["link"].get(), chave=raridade_nome)
             if not resultados:
-                messagebox.showwarning("Aviso", "Nenhum resultado encontrado.", parent=root)
+                root.after(0, lambda: messagebox.showwarning("Aviso", "Nenhum resultado encontrado.", parent=root))
                 return
+
             dados = resultados[0]
 
-            campos["nome"].delete(0, tk.END)
-            campos["nome"].insert(0, dados["nome"])
-            campos["codigo"].delete(0, tk.END)
-            campos["codigo"].insert(0, dados["codigo"])
-            campos["preco_atual"].delete(0, tk.END)
-            campos["preco_atual"].insert(0, limpar_preco(dados["preco_atual"]))
-            campos["imagem"].delete(0, tk.END)
-            campos["imagem"].insert(0, dados["imagem"])
-            atualizar_imagem(dados["imagem"])
-            campos["origem"].delete(0, tk.END)
-            campos["origem"].insert(0, dados["origem"])
+            def preencher():
+                campos["nome"].delete(0, tk.END)
+                campos["nome"].insert(0, dados["nome"])
+                campos["codigo"].delete(0, tk.END)
+                campos["codigo"].insert(0, dados["codigo"])
+                campos["preco_atual"].delete(0, tk.END)
+                campos["preco_atual"].insert(0, limpar_preco(dados["preco_atual"]))
+                campos["imagem"].delete(0, tk.END)
+                campos["imagem"].insert(0, dados["imagem"])
+                atualizar_imagem(dados["imagem"])
+                campos["origem"].delete(0, tk.END)
+                campos["origem"].insert(0, dados["origem"])
 
-            colecao_nome = dados["colecao"]
-            colecao_id = buscar_colecao_por_nome(colecao_nome)
-            if not colecao_id:
-                colecao_id = inserir_colecao(colecao_nome)
-            popular_dropdown(campos["colecao"], buscar_valores_tabela("colecao"))
-            for i, val in enumerate(campos["colecao"].cget("values")):
-                if val.startswith(f"{colecao_id} -"):
-                    campos["colecao"].current(i)
-                    break
+                colecao_nome = dados["colecao"]
+                colecao_id = buscar_colecao_por_nome(colecao_nome)
+                if not colecao_id:
+                    colecao_id = inserir_colecao(colecao_nome)
 
-            messagebox.showinfo("Sucesso", "Dados preenchidos com sucesso!", parent=root)
+                popular_dropdown(campos["colecao"], buscar_valores_tabela("colecao"))
+                for i, val in enumerate(campos["colecao"].cget("values")):
+                    if val.startswith(f"{colecao_id} -"):
+                        campos["colecao"].current(i)
+                        break
+
+                messagebox.showinfo("Sucesso", "Dados preenchidos com sucesso!", parent=root)
+
+            root.after(0, preencher)
+
         except Exception as e:
-            messagebox.showerror("Erro", f"Erro ao buscar: {e}", parent=root)
+            root.after(0, lambda: messagebox.showerror("Erro", f"Erro ao buscar: {e}", parent=root))
 
     def salvar():
         try:
@@ -170,7 +169,6 @@ def criar_tela_cadastro(app):
                 "colecao": int(campos["colecao"].get().split(" - ")[0]),
             }
 
-            print(carta)
             inserir_carta(carta)
             messagebox.showinfo("Sucesso", "Carta cadastrada com sucesso!", parent=root)
         except Exception as e:
@@ -178,10 +176,9 @@ def criar_tela_cadastro(app):
 
     botoes_frame = ttk.Frame(main_frame)
     botoes_frame.grid(row=2, column=0, pady=10)
-    ttk.Button(botoes_frame, text="Buscar via scraping", command=preencher_com_scraping).grid(row=0, column=0, padx=10)
+    ttk.Button(botoes_frame, text="Buscar via scraping", command=lambda: executar_em_thread(root, executar_scraping, titulo="Scraping", mensagem="Buscando dados da carta...")).grid(row=0, column=0, padx=10)
     ttk.Button(botoes_frame, text="Salvar Carta", command=salvar).grid(row=0, column=1, padx=10)
 
-    
     campos["quantidade"].insert(0, "1")
     campos["imagem"].insert(0, IMAGEM_PADRAO)
     atualizar_imagem(IMAGEM_PADRAO)

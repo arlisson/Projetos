@@ -8,6 +8,7 @@ from scraping.scraping_cartas import buscar_produto_liga
 from DAO.database import inserir_produto
 from decimal import Decimal
 import threading
+from Components.thread_com_modal import executar_em_thread
 
 from Components.entrada_padrao import criar_entrada_padrao, criar_entrada_data_com_calendario
 
@@ -88,24 +89,47 @@ def criar_tela_cadastro_produto(app):
             return
 
         def _buscar():
-            dados = buscar_produto_liga(url)
-            if not dados:
-                return messagebox.showwarning("Aviso", "Nenhum dado retornado do scraping.", parent=root)
-            campos["nome"].delete(0, tk.END)
-            campos["nome"].insert(0, dados.get("nome", ""))
-            campos["imagem"].delete(0, tk.END)
-            campos["imagem"].insert(0, dados.get("imagem", ""))
-            preco = dados.get("preco_atual", "").replace("R$", "").replace(",", ".").strip()
-            campos["preco_atual"].delete(0, tk.END)
-            campos["preco_atual"].insert(0, preco)
-            campos["data_compra"].delete(0, tk.END)
-            campos["data_compra"].insert(0, "")
-            atualizar_imagem(campos["imagem"].get())
+            try:
+                dados = buscar_produto_liga(url)
+                if not dados:
+                    # qualquer interação com UI precisa voltar pra main thread
+                    return root.after(0, lambda: messagebox.showwarning(
+                        "Aviso", "Nenhum dado retornado do scraping.", parent=root))
 
-        threading.Thread(target=_buscar, daemon=True).start()
+                # Atualize a UI sempre via main thread
+                def preencher():
+                    campos["nome"].delete(0, tk.END)
+                    campos["nome"].insert(0, dados.get("nome", ""))
+
+                    campos["imagem"].delete(0, tk.END)
+                    campos["imagem"].insert(0, dados.get("imagem", ""))
+
+                    preco = dados.get("preco_atual", "").replace("R$", "").replace(",", ".").strip()
+                    campos["preco_atual"].delete(0, tk.END)
+                    campos["preco_atual"].insert(0, preco)
+
+                    campos["data_compra"].delete(0, tk.END)
+                    campos["data_compra"].insert(0, "")
+
+                    atualizar_imagem(campos["imagem"].get())
+
+                root.after(0, preencher)
+
+            except Exception as e:
+                root.after(0, lambda: messagebox.showerror("Erro", f"Erro no scraping: {e}", parent=root))
+
+        # Aqui entra o seu modal com thread 👇
+        executar_em_thread(
+            root,
+            _buscar,
+            titulo="Buscando dados",
+            mensagem="Coletando informações do produto..."
+        )
+
 
     def salvar():
         try:
+            # Validações na thread principal (importante!)
             campos_obrigatorios = [
                 ("link", "Link"),
                 ("nome", "Nome"),
@@ -132,14 +156,27 @@ def criar_tela_cadastro_produto(app):
                 "data_compra": campos["data_compra"].get(),
                 "quantidade": int(campos["quantidade"].get()),
                 "origem": campos["origem"].get() or "Liga Yugioh",
-                
             }
 
-            inserir_produto(produto)
-            messagebox.showinfo("Sucesso", "Produto cadastrado com sucesso!", parent=root)
+            # Função que será executada na thread
+            def _salvar():
+                try:
+                    inserir_produto(produto)
+                    root.after(0, lambda: messagebox.showinfo("Sucesso", "Produto cadastrado com sucesso!", parent=root))
+                except Exception as e:
+                    root.after(0, lambda: messagebox.showerror("Erro", f"Erro ao salvar: {e}", parent=root))
+
+            # Executa com modal de progresso
+            executar_em_thread(
+                root,
+                _salvar,
+                titulo="Salvando Produto",
+                mensagem="Gravando dados no banco..."
+            )
 
         except Exception as e:
-            messagebox.showerror("Erro", f"Erro ao salvar: {e}", parent=root)
+            messagebox.showerror("Erro", f"Erro inesperado: {e}", parent=root)
+
 
     botoes_frame = ttk.Frame(main_frame)
     botoes_frame.grid(row=1, column=0, columnspan=2, pady=10)

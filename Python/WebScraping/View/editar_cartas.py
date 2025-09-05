@@ -10,6 +10,9 @@ from datetime import datetime
 from scraping.scraping_cartas import buscar_carta_myp
 from DAO.database import *
 from tkcalendar import Calendar
+from Components.thread_com_modal import executar_em_thread
+
+
 
 IMAGEM_PADRAO = "https://i.pinimg.com/736x/71/1e/da/711eda25308c65a7756751088866e181.jpg"
 
@@ -158,40 +161,68 @@ def criar_tela_editar_carta(app, id_carta):
             return 0.0
 
     def preencher_com_scraping():
-        try:
-            raridade_nome = campos["raridade"].get().split(" - ")[1]
-            resultados = buscar_carta_myp(url=campos["link"].get(), chave=raridade_nome)
-            if not resultados:
-                messagebox.showwarning("Aviso", "Nenhum resultado encontrado.", parent=root)
-                return
-            dados = resultados[0]
+        def _buscar():
+            try:
+                url = campos["link"].get().strip()
+                if not url:
+                    return root.after(0, lambda: messagebox.showwarning("Aviso", "Informe o link da carta.", parent=root))
 
-            campos["nome"].delete(0, tk.END)
-            campos["nome"].insert(0, dados["nome"])
-            campos["codigo"].delete(0, tk.END)
-            campos["codigo"].insert(0, dados["codigo"])
-            campos["preco_atual"].delete(0, tk.END)
-            campos["preco_atual"].insert(0, limpar_preco(dados["preco_atual"]))
-            campos["imagem"].delete(0, tk.END)
-            campos["imagem"].insert(0, dados["imagem"])
-            atualizar_imagem(dados["imagem"])
-            campos["origem"].delete(0, tk.END)
-            campos["origem"].insert(0, dados["origem"])
+                raridade_texto = campos["raridade"].get()
+                if not raridade_texto:
+                    return root.after(0, lambda: messagebox.showwarning("Aviso", "Selecione a raridade antes de buscar.", parent=root))
 
-            # Atualiza dropdown de coleção
-            colecao_nome = dados["colecao"]
-            colecao_id = buscar_colecao_por_nome(colecao_nome)
-            if not colecao_id:
-                colecao_id = inserir_colecao(colecao_nome)
-            popular_dropdown(campos["colecao"], buscar_valores_tabela("colecao"))
-            for i, val in enumerate(campos["colecao"].cget("values")):
-                if val.startswith(f"{colecao_id} -"):
-                    campos["colecao"].current(i)
-                    break
+                raridade_nome = raridade_texto.split(" - ")[1]
+                resultados = buscar_carta_myp(url=url, chave=raridade_nome)
 
-            messagebox.showinfo("Sucesso", "Dados preenchidos com sucesso!", parent=root)
-        except Exception as e:
-            messagebox.showerror("Erro", f"Erro ao buscar via scraping: {e}", parent=root)
+                if not resultados:
+                    return root.after(0, lambda: messagebox.showwarning("Aviso", "Nenhum resultado encontrado.", parent=root))
+
+                dados = resultados[0]
+
+                def preencher():
+                    campos["nome"].delete(0, tk.END)
+                    campos["nome"].insert(0, dados["nome"])
+
+                    campos["codigo"].delete(0, tk.END)
+                    campos["codigo"].insert(0, dados["codigo"])
+
+                    campos["preco_atual"].delete(0, tk.END)
+                    campos["preco_atual"].insert(0, limpar_preco(dados["preco_atual"]))
+
+                    campos["imagem"].delete(0, tk.END)
+                    campos["imagem"].insert(0, dados["imagem"])
+                    atualizar_imagem(dados["imagem"])
+
+                    campos["origem"].delete(0, tk.END)
+                    campos["origem"].insert(0, dados["origem"])
+
+                    # Atualiza dropdown de coleção
+                    colecao_nome = dados["colecao"]
+                    colecao_id = buscar_colecao_por_nome(colecao_nome)
+                    if not colecao_id:
+                        colecao_id = inserir_colecao(colecao_nome)
+
+                    popular_dropdown(campos["colecao"], buscar_valores_tabela("colecao"))
+                    for i, val in enumerate(campos["colecao"].cget("values")):
+                        if val.startswith(f"{colecao_id} -"):
+                            campos["colecao"].current(i)
+                            break
+
+                    messagebox.showinfo("Sucesso", "Dados preenchidos com sucesso!", parent=root)
+
+                root.after(0, preencher)
+
+            except Exception as e:
+                root.after(0, lambda: messagebox.showerror("Erro", f"Erro ao buscar via scraping: {e}", parent=root))
+
+        # Executa com modal de progresso
+        executar_em_thread(
+            root,
+            _buscar,
+            titulo="Buscando Dados da Carta",
+            mensagem="Realizando scraping da carta selecionada..."
+        )
+
 
     # Preenche os campos com os dados da carta
     campos["link"].insert(0, carta["link_site"])
@@ -220,6 +251,7 @@ def criar_tela_editar_carta(app, id_carta):
 
     def salvar():
         try:
+            # Validação e montagem do dicionário
             carta_atualizada = {
                 "id_carta": id_carta,
                 "link_site": campos["link"].get(),
@@ -236,11 +268,27 @@ def criar_tela_editar_carta(app, id_carta):
                 "colecao": int(campos["colecao"].get().split(" - ")[0]),
                 "data_scraping": datetime.today().strftime("%Y-%m-%d")
             }
-            atualizar_carta(carta_atualizada)
-            messagebox.showinfo("Sucesso", "Carta atualizada com sucesso!", parent=root)
-            ao_fechar() 
+
+            def _salvar():
+                try:
+                    atualizar_carta(carta_atualizada)
+                    root.after(0, lambda: (
+                        messagebox.showinfo("Sucesso", "Carta atualizada com sucesso!", parent=root),
+                        ao_fechar()
+                    ))
+                except Exception as e:
+                    root.after(0, lambda: messagebox.showerror("Erro", f"Erro ao atualizar carta: {e}", parent=root))
+
+            executar_em_thread(
+                root,
+                _salvar,
+                titulo="Salvando Alterações",
+                mensagem="Atualizando os dados da carta..."
+            )
+
         except Exception as e:
-            messagebox.showerror("Erro", f"Erro ao atualizar carta: {e}", parent=root)
+            messagebox.showerror("Erro", f"Erro inesperado: {e}", parent=root)
+
 
     def apagar():
         if messagebox.askokcancel("Confirmar", "Tem certeza que deseja deletar esta carta?", parent=root):

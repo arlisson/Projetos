@@ -271,9 +271,12 @@ def abrir_tela_listagem(app):
 
 
     # Carregamento inicial
-    carregar_cartas()
+    def iniciar_carregamento():
+        carregar_cartas()
 
-
+    from Components.thread_com_modal import executar_em_thread
+    executar_em_thread(root, iniciar_carregamento, titulo="Listando Cartas", mensagem="Carregando cartas do banco...")
+    
 if __name__ == "__main__":
     app = tk.Tk()
     app.withdraw()
