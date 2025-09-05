@@ -110,6 +110,95 @@ CREATE TABLE IF NOT EXISTS historico_precos (
 CREATE INDEX IF NOT EXISTS idx_historico_carta ON historico_precos(id_carta);
 CREATE INDEX IF NOT EXISTS idx_historico_produto ON historico_precos(id_produto);
 
+CREATE VIEW IF NOT EXISTS vw_cartas_detalhadas AS
+SELECT
+  c.id_carta,
+  c.link_site,
+  c.nome,
+  c.codigo,
+  c.preco_da_compra,
+  c.data_da_compra,
+  c.preco_atual,
+  c.quantidade,
+  c.imagem,
+  c.origem,
+  c.data_scraping,
+  co.nome AS colecao_nome,
+  co.codigo AS colecao_codigo,
+  r.nome AS raridade_nome,
+  q.nome AS qualidade_nome
+FROM carta c
+LEFT JOIN colecao co ON c.colecao = co.id_colecao
+LEFT JOIN raridade r ON c.raridade = r.id_raridade
+LEFT JOIN qualidade q ON c.qualidade = q.id_qualidade;
+
+CREATE VIEW IF NOT EXISTS vw_vendas_detalhadas AS
+SELECT
+  v.id_carta,
+  v.link_site,
+  v.nome,
+  v.codigo,
+  v.preco_da_compra,
+  v.data_da_compra,
+  v.preco_da_venda,
+  v.data_da_venda,
+  v.preco_atual,
+  v.quantidade,
+  v.imagem,
+  v.origem,
+  v.data_scraping,
+  co.nome AS colecao_nome,
+  co.codigo AS colecao_codigo,
+  r.nome AS raridade_nome,
+  q.nome AS qualidade_nome
+FROM venda v
+LEFT JOIN colecao co ON v.colecao = co.id_colecao
+LEFT JOIN raridade r ON v.raridade = r.id_raridade
+LEFT JOIN qualidade q ON v.qualidade = q.id_qualidade;
+
+CREATE VIEW IF NOT EXISTS vw_produtos_detalhados AS
+SELECT
+  p.id_produto,
+  p.nome_produto,
+  p.link,
+  p.imagem,
+  p.preco_compra,
+  p.data_compra,
+  p.preco_atual,
+  p.quantidade,
+  p.origem,
+  p.data_scraping
+FROM produto p;
+
+CREATE VIEW IF NOT EXISTS vw_venda_produto_detalhado AS
+SELECT
+  vp.id_produto,
+  vp.nome_produto,
+  vp.link,
+  vp.imagem,
+  vp.preco_compra,
+  vp.data_compra,
+  vp.preco_venda,
+  vp.data_venda,
+  vp.preco_atual,
+  vp.quantidade,
+  vp.origem,
+  vp.data_scraping
+FROM venda_produto vp;
+
+CREATE VIEW IF NOT EXISTS vw_historico_precos_detalhado AS
+SELECT
+  h.id_historico_precos,
+  h.id_carta,
+  c.nome AS nome_carta,
+  h.id_produto,
+  p.nome_produto,
+  h.data,
+  h.preco,
+  h.origem
+FROM historico_precos h
+LEFT JOIN carta c ON h.id_carta = c.id_carta
+LEFT JOIN produto p ON h.id_produto = p.id_produto;
 
 
 -- Inserir Raridades

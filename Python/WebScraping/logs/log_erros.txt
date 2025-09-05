@@ -14,3 +14,4 @@
 2025-09-05 11:46:07,122 [ERROR] - Erro em limpar_preco: | Exceção: expected string or bytes-like object, got 'function'
 2025-09-05 11:49:27,802 [ERROR] - Erro em limpar_preco: | Exceção: expected string or bytes-like object, got 'function'
 2025-09-05 11:49:27,802 [ERROR] - Erro em limpar_preco: | Exceção: expected string or bytes-like object, got 'function'
+2025-09-05 19:28:24,236 [ERROR] - Erro ao buscar carta por ID | Exceção: no such table: cartas

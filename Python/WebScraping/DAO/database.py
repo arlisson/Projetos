@@ -200,7 +200,7 @@ def buscar_todas_cartas():
         query = """
             SELECT
                 *
-            FROM carta
+            FROM vw_cartas_detalhadas
         """
 
         cursor.execute(query)
@@ -237,7 +237,7 @@ def buscar_carta_por_texto(texto):
         query = """
             SELECT
             *
-            FROM carta
+            FROM vw_cartas_detalhadas
             WHERE nome LIKE ? OR codigo LIKE ?
         """
 
@@ -439,7 +439,7 @@ def listar_todos_produtos(filtro=""):
             cursor.execute("""
                 SELECT
                    *
-                FROM produto
+                FROM vw_produtos_detalhados
                 WHERE nome_produto LIKE ?
                 ORDER BY id_produto DESC
             """, (f"%{filtro}%",))
@@ -735,7 +735,7 @@ def buscar_produto_por_id(id):
         dict: Os dados do produto, ou None se não encontrado.
     """
     query = """
-        SELECT * FROM produto WHERE id_produto = ?;
+        SELECT * FROM vw_produtos_detalhados WHERE id_produto = ?;
     """
     try:
         conn = conectar()

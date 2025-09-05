@@ -4,11 +4,9 @@ from PIL import Image, ImageTk
 import urllib.request
 from io import BytesIO
 
-from DAO.database import (
-    buscar_raridade_qualidade_id,
+from DAO.database import (    
     buscar_todas_cartas,
-    buscar_carta_por_texto,
-    buscar_valores_tabela,
+    buscar_carta_por_texto,    
     calcula_quantidade,
     calcular_lucro_total_cartas_em_posse,    
     calcular_total_gasto_cartas,
@@ -187,7 +185,7 @@ def abrir_tela_listagem(app):
             # Raridade abaixo da imagem
             lbl_raridade = ttk.Label(
                 frame_img,
-                text=buscar_raridade_qualidade_id(carta['raridade'], "raridade"),
+                text=carta.get('raridade_nome', 'N/A'),
                 font=("Segoe UI", 8),
                 anchor="center",
                 justify="center",
