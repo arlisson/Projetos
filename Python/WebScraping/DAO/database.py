@@ -185,41 +185,28 @@ def inserir_colecao(nome, codigo=""):
         registrar_erro("Erro ao inserir coleção", e)
         return None
 
-def buscar_todas_cartas():
-    '''
-    Busca todas as cartas no banco de dados.
-    returns:
-        list: Uma lista de dicionários contendo as informações das cartas.
 
-    '''
+def buscar_todas_cartas():
+    """
+    Retorna todas as cartas da view vw_cartas_detalhadas, sem cache interno.
+    O cache é controlado externamente pela interface.
+    """
     try:
-            
         conn = conectar()
         cursor = conn.cursor()
-
-        query = """
-            SELECT
-                *
-            FROM vw_cartas_detalhadas
-        """
-
-        cursor.execute(query)
+        cursor.execute("SELECT * FROM vw_cartas_detalhadas")
         resultados = cursor.fetchall()
-
         colunas = [desc[0] for desc in cursor.description]
-
-        cartas = []
-        for linha in resultados:
-            carta = dict(zip(colunas, linha))
-            cartas.append(carta)
-
+        cartas = [dict(zip(colunas, linha)) for linha in resultados]
         conn.close()
         return cartas
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao buscar todas as cartas: {e}")
-        conn.close()
         registrar_erro("Erro ao buscar todas as cartas", e)
         return []
+
+
+
 
 def buscar_carta_por_texto(texto):
     '''
@@ -236,13 +223,31 @@ def buscar_carta_por_texto(texto):
 
         query = """
             SELECT
-            *
+                id_carta,
+                nome,
+                codigo,
+                qualidade_nome,
+                raridade_nome,
+                preco_da_compra,
+                preco_atual,
+                data_da_compra,
+                quantidade,
+                data_scraping,
+                imagem,
+                origem,
+                colecao_nome
             FROM vw_cartas_detalhadas
-            WHERE nome LIKE ? OR codigo LIKE ?
+            WHERE (
+                nome COLLATE NOCASE LIKE ? OR
+                codigo COLLATE NOCASE LIKE ? OR
+                qualidade_nome COLLATE NOCASE LIKE ? OR
+                raridade_nome COLLATE NOCASE LIKE ?
+            )
+            ORDER BY id_carta DESC
         """
 
-        texto_param = f"%{texto}%"
-        cursor.execute(query, (texto_param, texto_param))
+        texto_param = f"%{texto.strip()}%"
+        cursor.execute(query, (texto_param,) * 4)
         resultados = cursor.fetchall()
 
         colunas = [desc[0] for desc in cursor.description]
@@ -250,6 +255,7 @@ def buscar_carta_por_texto(texto):
 
         conn.close()
         return cartas
+
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao buscar carta por texto: {e}")
         conn.close()

@@ -7,6 +7,7 @@ import urllib.request
 from io import BytesIO
 from datetime import datetime
 
+from Utils.limpar_preco import limpar_preco
 from scraping.scraping_cartas import buscar_carta_myp
 from DAO.database import *
 from tkcalendar import Calendar
@@ -143,23 +144,7 @@ def criar_tela_editar_carta(app, id_carta):
             imagem_label.configure(image='')
             imagem_label.image = None
 
-    def limpar_preco(preco_str):
-        try:
-            
-            # Encontra todos os valores no formato "R$ x,xx"
-            valores = re.findall(r'R\$ ?\d+,\d+', preco_str)
-            
-            if valores:
-                # Tenta pegar o segundo valor, senão o primeiro
-                valor = valores[1] if len(valores) > 1 else valores[0]
-                valor = valor.replace("R$", "").replace(",", ".").strip()
-                return float(valor)
-            else:
-                return 0.0
-        except Exception as e:
-            
-            return 0.0
-
+    
     def preencher_com_scraping():
         def _buscar():
             try:
@@ -178,7 +163,7 @@ def criar_tela_editar_carta(app, id_carta):
                     return root.after(0, lambda: messagebox.showwarning("Aviso", "Nenhum resultado encontrado.", parent=root))
 
                 dados = resultados[0]
-
+                
                 def preencher():
                     campos["nome"].delete(0, tk.END)
                     campos["nome"].insert(0, dados["nome"])
@@ -268,7 +253,7 @@ def criar_tela_editar_carta(app, id_carta):
                 "colecao": int(campos["colecao"].get().split(" - ")[0]),
                 "data_scraping": datetime.today().strftime("%Y-%m-%d")
             }
-
+           
             def _salvar():
                 try:
                     atualizar_carta(carta_atualizada)

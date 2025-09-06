@@ -14,14 +14,14 @@ from DAO.database import (
     calcular_lucro_total_cartas_vendidas
 )
 
+from Components.thread_com_modal import executar_em_thread
 
 def abrir_tela_listagem(app):
     from View.editar_cartas import criar_tela_editar_carta
+
     root = tk.Toplevel(app)
     root.title("Listagem de Cartas")
-    #root.protocol("WM_DELETE_WINDOW", app.destroy)  # Comentar esta linha depois
 
-    # Centraliza a janela
     largura, altura = 1200, 600
     x = (root.winfo_screenwidth() // 2) - (largura // 2)
     y = (root.winfo_screenheight() // 2) - (altura // 2)
@@ -31,7 +31,6 @@ def abrir_tela_listagem(app):
     root.columnconfigure(0, weight=1)
     root.rowconfigure(2, weight=1)
 
-    # Frame com lucros
     lucro_frame = ttk.Frame(root, padding=(10, 5))
     lucro_frame.grid(row=0, column=0, sticky="ew")
     lucro_frame.columnconfigure(0, weight=1)
@@ -42,35 +41,11 @@ def abrir_tela_listagem(app):
     total_gasto = calcular_total_gasto_cartas()
     total_vendido = calcular_total_vendido_cartas()
 
-    lbl_lucro_posse = ttk.Label(
-        lucro_frame,
-        text=f"💰 Lucro em posse: R$ {lucro_posse:.2f}",
-        font=("Segoe UI", 10, "bold")
-    )
-    lbl_lucro_posse.grid(row=0, column=0, sticky="w", padx=5, pady=2)
+    ttk.Label(lucro_frame, text=f"💰 Lucro em posse: R$ {lucro_posse:.2f}", font=("Segoe UI", 10, "bold")).grid(row=0, column=0, sticky="w", padx=5, pady=2)
+    ttk.Label(lucro_frame, text=f"💸 Lucro com vendas: R$ {lucro_venda:.2f}", font=("Segoe UI", 10, "bold")).grid(row=0, column=1, sticky="e", padx=5, pady=2)
+    ttk.Label(lucro_frame, text=f"💹 Total gasto: R$ {total_gasto:.2f}", font=("Segoe UI", 10, "bold")).grid(row=1, column=0, sticky="w", padx=5, pady=2)
+    ttk.Label(lucro_frame, text=f"💵 Total vendido: R$ {total_vendido:.2f}", font=("Segoe UI", 10, "bold")).grid(row=1, column=1, sticky="e", padx=5, pady=2)
 
-    lbl_lucro_venda = ttk.Label(
-        lucro_frame,
-        text=f"💸 Lucro com vendas: R$ {lucro_venda:.2f}",
-        font=("Segoe UI", 10, "bold")
-    )
-    lbl_lucro_venda.grid(row=0, column=1, sticky="e", padx=5, pady=2)
-
-    lbl_total_gasto = ttk.Label(
-        lucro_frame,
-        text=f"📉 Total gasto: R$ {total_gasto:.2f}",
-        font=("Segoe UI", 10, "bold")
-    )
-    lbl_total_gasto.grid(row=1, column=0, sticky="w", padx=5, pady=2)
-
-    lbl_total_vendido = ttk.Label(
-        lucro_frame,
-        text=f"💵 Total vendido: R$ {total_vendido:.2f}",
-        font=("Segoe UI", 10, "bold")
-    )
-    lbl_total_vendido.grid(row=1, column=1, sticky="e", padx=5, pady=2)
-
-    # Campo de busca
     busca_frame = ttk.Frame(root, padding=5)
     busca_frame.grid(row=1, column=0, sticky="ew")
     busca_frame.columnconfigure(1, weight=1)
@@ -79,7 +54,6 @@ def abrir_tela_listagem(app):
     entrada_busca = ttk.Entry(busca_frame)
     entrada_busca.grid(row=0, column=1, padx=5, sticky="ew")
 
-    # Frame com Canvas e Scroll
     main_frame = ttk.Frame(root)
     main_frame.grid(row=2, column=0, sticky="nsew")
     main_frame.columnconfigure(0, weight=1)
@@ -87,25 +61,19 @@ def abrir_tela_listagem(app):
 
     canvas = tk.Canvas(main_frame)
     canvas.grid(row=0, column=0, sticky="nsew")
-
     scrollbar = ttk.Scrollbar(main_frame, orient="vertical", command=canvas.yview)
     scrollbar.grid(row=0, column=1, sticky="ns")
-
     scrollable_frame = ttk.Frame(canvas)
     canvas_window = canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-
     canvas.configure(yscrollcommand=scrollbar.set)
+
     def on_mousewheel(event):
         canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
-    # Para Windows e Linux
     canvas.bind_all("<MouseWheel>", on_mousewheel)
-
-    # Para MacOS (caso deseje compatibilidade)
     canvas.bind_all("<Button-4>", lambda e: canvas.yview_scroll(-1, "units"))
     canvas.bind_all("<Button-5>", lambda e: canvas.yview_scroll(1, "units"))
 
-    # Ajusta largura do frame interno com o canvas
     def ajustar_largura(event):
         canvas.itemconfig(canvas_window, width=event.width)
 
@@ -116,7 +84,6 @@ def abrir_tela_listagem(app):
         lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
     )
 
-    # Cabeçalhos da tabela
     headers = [
         "Imagem", "Nome", "Código", "Preço Pago", "Preço Atual",
         "Total Pago", "Total Atual",
@@ -125,48 +92,41 @@ def abrir_tela_listagem(app):
     ]
 
     for col, header in enumerate(headers):
-        lbl = ttk.Label(
+        ttk.Label(
             scrollable_frame,
             text=header,
             font=("Segoe UI", 10, "bold"),
             borderwidth=1,
             relief="solid",
             padding=5
-        )
-        lbl.grid(row=0, column=col, sticky="nsew", padx=1, pady=1)
+        ).grid(row=0, column=col, sticky="nsew", padx=1, pady=1)
 
     for col in range(len(headers)):
         scrollable_frame.columnconfigure(col, weight=1)
 
-    # Função para carregar as cartas
     def carregar_cartas(filtro=""):
         for widget in scrollable_frame.winfo_children():
             if int(widget.grid_info()["row"]) > 0:
                 widget.destroy()
 
-        if filtro:
-            cartas = buscar_carta_por_texto(filtro)
-        else:
-            cartas = buscar_todas_cartas()
+        cartas = buscar_carta_por_texto(filtro) if filtro else buscar_todas_cartas()
 
         ttk.Label(lucro_frame, text=f"# Total Cartas unidade: {len(cartas)}", font=("Segoe UI", 10, "bold")).grid(row=2, column=0, sticky="w")
         ttk.Label(lucro_frame, text=f"# Total Cartas quantidade: {calcula_quantidade('carta')}", font=("Segoe UI", 10, "bold")).grid(row=2, column=1, sticky="e")
 
         if not cartas:
-            lbl_vazio = ttk.Label(
+            ttk.Label(
                 scrollable_frame,
                 text="Nenhuma carta encontrada",
                 font=("Segoe UI", 10, "italic"),
                 foreground="gray"
-            )
-            lbl_vazio.grid(row=1, column=0, columnspan=len(headers), pady=20)
+            ).grid(row=1, column=0, columnspan=len(headers), pady=20)
             return
 
         for row, carta in enumerate(cartas, start=1):
             id_carta = carta['id_carta']
             widgets_linha = []
 
-            # Frame para imagem + raridade
             frame_img = ttk.Frame(scrollable_frame, relief="solid", borderwidth=1)
             frame_img.grid(row=row, column=0, padx=1, pady=1, sticky="nsew")
 
@@ -182,7 +142,6 @@ def abrir_tela_listagem(app):
 
             lbl_img.pack()
 
-            # Raridade abaixo da imagem
             lbl_raridade = ttk.Label(
                 frame_img,
                 text=carta.get('raridade_nome', 'N/A'),
@@ -193,15 +152,11 @@ def abrir_tela_listagem(app):
             )
             lbl_raridade.pack(fill="x", padx=2, pady=(2, 4))
 
-            # Bind clique
-            frame_img.bind("<Button-1>", lambda evt, id=id_carta: abrir_edicao(evt, id))
-            lbl_img.bind("<Button-1>", lambda evt, id=id_carta: abrir_edicao(evt, id))
-            lbl_raridade.bind("<Button-1>", lambda evt, id=id_carta: abrir_edicao(evt, id))
+            for w in [frame_img, lbl_img, lbl_raridade]:
+                w.bind("<Button-1>", lambda evt, id=id_carta: abrir_edicao(evt, id))
 
-            # Só adicionar lbl_img (tk.Label) para hover (evita erro em ttk)
             widgets_linha.append(lbl_img)
 
-            # Cálculos
             preco_pago = carta['preco_da_compra']
             preco_atual = carta['preco_atual']
             quantidade = carta['quantidade']
@@ -230,51 +185,33 @@ def abrir_tela_listagem(app):
                 lbl.bind("<Button-1>", lambda evt, id=id_carta: abrir_edicao(evt, id))
                 widgets_linha.append(lbl)
 
-            # Hover highlight SOMENTE nos widgets que aceitam `bg`
             def on_enter(event, widgets=widgets_linha):
                 for w in widgets:
-                    try:
-                        w.configure(bg="#e0e0e0")
-                    except tk.TclError:
-                        pass  # Ignora widgets que não suportam bg
+                    try: w.configure(bg="#e0e0e0")
+                    except: pass
 
             def on_leave(event, widgets=widgets_linha):
                 for w in widgets:
-                    try:
-                        w.configure(bg="white")
-                    except tk.TclError:
-                        pass  # Ignora widgets que não suportam bg
+                    try: w.configure(bg="white")
+                    except: pass
 
             for widget in widgets_linha:
                 widget.bind("<Enter>", on_enter)
                 widget.bind("<Leave>", on_leave)
 
-
-
-
     def abrir_edicao(evt, id_carta):
-        # print(f"[Clique] Editar carta ID: {id_carta}")
-        # Exemplo:   
-        root.destroy()     
+        root.destroy()
         criar_tela_editar_carta(app, id_carta)
-       
 
+    entrada_busca.bind("<KeyRelease>", lambda e: carregar_cartas(entrada_busca.get()))
 
-    # Atualizar ao digitar
-    def ao_digitar(event):
-        texto = entrada_busca.get()
-        carregar_cartas(texto)
+    executar_em_thread(
+        root,
+        lambda: carregar_cartas(),
+        titulo="Listando Cartas",
+        mensagem="Carregando cartas do banco..."
+    )
 
-    entrada_busca.bind("<KeyRelease>", ao_digitar)    
-
-
-    # Carregamento inicial
-    def iniciar_carregamento():
-        carregar_cartas()
-
-    from Components.thread_com_modal import executar_em_thread
-    executar_em_thread(root, iniciar_carregamento, titulo="Listando Cartas", mensagem="Carregando cartas do banco...")
-    
 if __name__ == "__main__":
     app = tk.Tk()
     app.withdraw()
