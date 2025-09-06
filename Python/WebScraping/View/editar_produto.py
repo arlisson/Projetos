@@ -5,9 +5,12 @@ from PIL import ImageTk, Image
 import urllib.request
 from io import BytesIO
 from datetime import datetime
+
+from numpy import vander
+from Components.pop_up_venda import abrir_popup_venda
 from Components.thread_com_modal import executar_em_thread
 from scraping.scraping_cartas import buscar_produto_liga
-from DAO.database import atualizar_produto, buscar_produto_por_id, deletar
+from DAO.database import atualizar_produto, buscar_produto_por_id, deletar, inserir_venda_generica
 from tkcalendar import Calendar
 from decimal import Decimal
 import threading
@@ -213,6 +216,70 @@ def criar_tela_editar_produto(app, id_produto):
             else:
                 messagebox.showerror("Erro", f"Erro ao deletar o produto: {campos['nome'].get()}.", parent=root)
 
+    def vender():
+        """
+        Abre o popup de venda, valida quantidade/preço, registra a venda via DAO
+        e ajusta a quantidade disponível na UI (e no banco, via DAO).
+        """
+        def ao_confirmar(preco_venda, quantidade_vendida):
+            try:
+                # conversões básicas
+                preco_venda = float(preco_venda)
+                quantidade_vendida = int(quantidade_vendida)
+                quantidade_disponivel = int(campos["quantidade"].get() or 0)
+
+                if quantidade_vendida <= 0:
+                    raise ValueError("Informe uma quantidade maior que zero.")
+                if preco_venda < 0:
+                    raise ValueError("Informe um preço de venda válido (>= 0).")
+                if quantidade_vendida > quantidade_disponivel:
+                    raise ValueError("Quantidade vendida excede a disponível.")
+
+                # monta um payload só para eventual logging/uso futuro
+                dados_venda = {
+                    "id_item": id_produto,
+                    "tipo": "produto",
+                    "nome": campos["nome"].get(),
+                    "link": campos["link"].get(),
+                    "imagem": campos["imagem"].get() or IMAGEM_PADRAO,
+                    "preco_compra": to_decimal(campos["preco_compra"].get()),
+                    "preco_atual": to_decimal(campos["preco_atual"].get()),
+                    "data_compra": campos["data_compra"].get(),
+                    "quantidade_vendida": quantidade_vendida,
+                    "data_da_venda": datetime.today().strftime("%Y-%m-%d"),
+                    "preco_da_venda": preco_venda,
+                    "origem": campos["origem"].get() or "Liga Yugioh",
+                }
+
+                # registra a venda genérica (o DAO deve decrementar o estoque do item)
+                inserir_venda_generica(
+                    id_item=id_produto,
+                    quantidade_vendida=quantidade_vendida,
+                    preco_venda=preco_venda,
+                    tipo="produto"
+                )
+
+                # atualiza a quantidade visível
+                nova_qtd = quantidade_disponivel - quantidade_vendida
+                campos["quantidade"].delete(0, tk.END)
+                campos["quantidade"].insert(0, str(nova_qtd))
+
+                messagebox.showinfo("Sucesso", "Venda registrada com sucesso!", parent=root)
+                ao_fechar()
+
+            except Exception as e:
+                messagebox.showerror("Erro", f"Erro ao registrar venda: {e}", parent=root)
+
+        # abre o popup usando o mesmo componente já usado em cartas
+        nome_item = campos["nome"].get() or "Produto"
+        try:
+            quantidade_disponivel = int(campos["quantidade"].get() or 0)
+        except:
+            quantidade_disponivel = 0
+
+        abrir_popup_venda(root, nome_item, quantidade_disponivel, ao_confirmar)
+
+
     # Criar frame dos botões corretamente
     botoes_frame = ttk.Frame(main_frame)
     botoes_frame.grid(row=1, column=0, columnspan=2, pady=10)
@@ -221,6 +288,7 @@ def criar_tela_editar_produto(app, id_produto):
     ttk.Button(botoes_frame, text="Buscar via Scraping", command=buscar_info_scraping).pack(side="left", padx=20, pady=5)
     ttk.Button(botoes_frame, text="Salvar Produto", command=salvar).pack(side="left", padx=20, pady=5)
     ttk.Button(botoes_frame, text="Deletar Produto", command=apagar_produto).pack(side="left", padx=20, pady=5)
+    ttk.Button(botoes_frame, text="Vender Produto", command=vender).pack(side="left", padx=20, pady=5)  # <-- novo
 
     # Preencher campos com os dados do produto existente
     campos["link"].insert(0, produto["link"] or "")

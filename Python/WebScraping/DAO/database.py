@@ -1106,7 +1106,7 @@ def atualizar_venda_generica(venda, tipo="carta"):
                 venda["preco_atual"],
                 venda["quantidade"],
                 venda["data_scraping"],
-                venda["id_venda_produto"]
+                venda["id_produto"]
             ))
 
         else:
@@ -1124,3 +1124,4 @@ def atualizar_venda_generica(venda, tipo="carta"):
 
     finally:
         conn.close()
+

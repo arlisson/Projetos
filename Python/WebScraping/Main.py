@@ -11,6 +11,7 @@ from DAO.database import (
     criar_banco_inicial
 )
 from View.listar_venda_cartas import abrir_tela_listagem_venda
+from View.listar_venda_produtos import abrir_tela_listagem_venda_produtos
 
 def criar_tela_principal():
     root = tk.Tk()
@@ -43,7 +44,7 @@ def criar_tela_principal():
     # --- Vendas ---
     menu_vendas = tk.Menu(menu_bar, tearoff=0)    
     menu_vendas.add_command(label="Listar Vendas de Cartas", command=lambda: abrir_tela_listagem_venda(root))
-    # menu_vendas.add_command(label="Listar Vendas de Produtos")
+    menu_vendas.add_command(label="Listar Vendas de Produtos", command=lambda: abrir_tela_listagem_venda_produtos(root))
     menu_bar.add_cascade(label="Vendas", menu=menu_vendas)
 
     # --- Opções ---

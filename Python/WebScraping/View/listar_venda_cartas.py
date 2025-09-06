@@ -118,8 +118,8 @@ def abrir_tela_listagem_venda(app):
 
         cartas = listar_venda_filtro('carta', filtro) if filtro else listar_vendas('carta')
 
-        ttk.Label(lucro_frame, text=f"# Total Cartas unidade: {len(cartas)}", font=("Segoe UI", 10, "bold")).grid(row=2, column=0, sticky="w")
-        ttk.Label(lucro_frame, text=f"# Total Cartas quantidade: {calcular_quantidade_vendida('venda')}", font=("Segoe UI", 10, "bold")).grid(row=2, column=1, sticky="e")
+        ttk.Label(lucro_frame, text=f"# Total Vendas unidade: {len(cartas)}", font=("Segoe UI", 10, "bold")).grid(row=2, column=0, sticky="w")
+        ttk.Label(lucro_frame, text=f"# Total Vendas quantidade: {calcular_quantidade_vendida('venda')}", font=("Segoe UI", 10, "bold")).grid(row=2, column=1, sticky="e")
 
         if not cartas:
             ttk.Label(
