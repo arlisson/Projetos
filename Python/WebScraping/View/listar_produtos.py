@@ -59,15 +59,34 @@ def abrir_tela_listagem_produtos(app):
 
     canvas = tk.Canvas(main_frame)
     canvas.grid(row=0, column=0, sticky="nsew")
-    scrollbar = ttk.Scrollbar(main_frame, orient="vertical", command=canvas.yview)
-    scrollbar.grid(row=0, column=1, sticky="ns")
+
+    scrollbar_y = ttk.Scrollbar(main_frame, orient="vertical", command=canvas.yview)
+    scrollbar_y.grid(row=0, column=1, sticky="ns")
+
+    scrollbar_x = ttk.Scrollbar(main_frame, orient="horizontal", command=canvas.xview)
+    scrollbar_x.grid(row=1, column=0, sticky="ew")
+
+    canvas.configure(yscrollcommand=scrollbar_y.set, xscrollcommand=scrollbar_x.set)
+
     scrollable_frame = ttk.Frame(canvas)
     canvas_window = canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-    canvas.configure(yscrollcommand=scrollbar.set)
 
-    canvas.bind("<Configure>", lambda event: canvas.itemconfig(canvas_window, width=event.width))
-    scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-    canvas.bind_all("<MouseWheel>", lambda e: canvas.yview_scroll(int(-1 * (e.delta / 120)), "units"))
+    def ajustar_canvas(event):
+        canvas.configure(scrollregion=canvas.bbox("all"))
+
+    scrollable_frame.bind("<Configure>", ajustar_canvas)
+
+    def ajustar_largura_canvas(event):
+        canvas.itemconfig(canvas_window, width=max(event.width, scrollable_frame.winfo_reqwidth()))
+
+    canvas.bind("<Configure>", ajustar_largura_canvas)
+
+    def on_mousewheel(event):
+        canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+
+    canvas.bind_all("<MouseWheel>", on_mousewheel)
+    canvas.bind_all("<Button-4>", lambda e: canvas.yview_scroll(-1, "units"))
+    canvas.bind_all("<Button-5>", lambda e: canvas.yview_scroll(1, "units"))
 
     headers = [
         "Imagem", "Nome", "Preço Compra", "Preço Atual",

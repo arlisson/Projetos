@@ -15,3 +15,8 @@
 2025-09-05 11:49:27,802 [ERROR] - Erro em limpar_preco: | Exceção: expected string or bytes-like object, got 'function'
 2025-09-05 11:49:27,802 [ERROR] - Erro em limpar_preco: | Exceção: expected string or bytes-like object, got 'function'
 2025-09-05 19:28:24,236 [ERROR] - Erro ao buscar carta por ID | Exceção: no such table: cartas
+2025-09-06 11:59:03,746 [ERROR] - Erro ao registrar venda: | Exceção: inserir_venda_generica() got multiple values for argument 'id_item'
+2025-09-06 13:03:36,984 [ERROR] - Erro ao listar venda por ID (carta): | Exceção: no such column: id_venda
+2025-09-06 13:09:39,196 [ERROR] - Erro ao atualizar venda: | Exceção: 'data_da_venda'
+2025-09-06 13:28:35,766 [ERROR] - Erro ao atualizar venda: | Exceção: 'data_da_venda'
+2025-09-06 13:36:03,367 [ERROR] - Erro ao atualizar venda: | Exceção: no such column: id_venda

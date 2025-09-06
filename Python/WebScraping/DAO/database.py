@@ -817,3 +817,310 @@ def calcula_quantidade(tabela):
     finally:
         conn.close()
 
+
+
+def inserir_venda_generica(id_item, quantidade_vendida, preco_venda, tipo="carta"):
+    conn = conectar()
+    cursor = conn.cursor()
+    
+    try:
+        data_hoje = datetime.today().strftime("%Y-%m-%d")
+
+        if tipo == "carta":
+            cursor.execute("SELECT * FROM carta WHERE id_carta = ?", (id_item,))
+            dados = cursor.fetchone()
+            if not dados:
+                registrar_erro("Carta não encontrada para venda:", id_item)
+                raise Exception("Carta não encontrada.")
+            colunas = [desc[0] for desc in cursor.description]
+            carta = dict(zip(colunas, dados))
+
+            if quantidade_vendida > carta["quantidade"]:
+                registrar_erro("Quantidade vendida maior do que o estoque para carta:", id_item)
+                raise Exception("Quantidade vendida maior do que o estoque.")
+
+            # Inserir na tabela de vendas
+            cursor.execute("""
+                INSERT INTO venda (
+                    link_site, nome, colecao, codigo, preco_da_compra, data_da_compra,
+                    raridade, qualidade, quantidade, data_da_venda, preco_da_venda,
+                    imagem, origem, preco_atual, data_scraping
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                carta["link_site"],
+                carta["nome"],
+                carta["colecao"],
+                carta["codigo"],
+                carta["preco_da_compra"],
+                carta["data_da_compra"],
+                carta["raridade"],
+                carta["qualidade"],
+                quantidade_vendida,
+                data_hoje,
+                preco_venda,
+                carta["imagem"],
+                carta["origem"],
+                carta["preco_atual"],
+                carta["data_scraping"]
+            ))
+
+            # Atualizar estoque
+            nova_quantidade = carta["quantidade"] - quantidade_vendida
+            if nova_quantidade > 0:
+                cursor.execute("UPDATE carta SET quantidade = ? WHERE id_carta = ?", (nova_quantidade, id_item))
+            else:
+                cursor.execute("DELETE FROM carta WHERE id_carta = ?", (id_item,))
+
+        elif tipo == "produto":
+            cursor.execute("SELECT * FROM produto WHERE id_produto = ?", (id_item,))
+            dados = cursor.fetchone()
+            if not dados:
+                registrar_erro("Produto não encontrado para venda:", id_item)
+                raise Exception("Produto não encontrado.")
+            colunas = [desc[0] for desc in cursor.description]
+            produto = dict(zip(colunas, dados))
+
+            if quantidade_vendida > produto["quantidade"]:
+                registrar_erro("Quantidade vendida maior do que o estoque para produto:", id_item)
+                raise Exception("Quantidade vendida maior do que o estoque.")
+
+            # Inserir na tabela de vendas de produto
+            cursor.execute("""
+                INSERT INTO venda_produto (
+                    nome_produto, link, imagem, preco_compra, data_compra,
+                    preco_venda, data_venda, origem, preco_atual, quantidade, data_scraping
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                produto["nome_produto"],
+                produto["link"],
+                produto["imagem"],
+                produto["preco_compra"],
+                produto["data_compra"],
+                preco_venda,
+                data_hoje,
+                produto["origem"],
+                produto["preco_atual"],
+                quantidade_vendida,
+                produto["data_scraping"]
+            ))
+
+            # Atualizar estoque
+            nova_quantidade = produto["quantidade"] - quantidade_vendida
+            if nova_quantidade > 0:
+                cursor.execute("UPDATE produto SET quantidade = ? WHERE id_produto = ?", (nova_quantidade, id_item))
+            else:
+                cursor.execute("DELETE FROM produto WHERE id_produto = ?", (id_item,))
+
+        else:
+            registrar_erro("Tipo inválido para venda:", tipo)
+            raise Exception("Tipo inválido. Use 'carta' ou 'produto'.")
+
+        conn.commit()
+        return True
+
+    except Exception as e:
+        conn.rollback()
+        registrar_erro("Erro ao inserir venda:", e)
+        raise
+
+    finally:
+        conn.close()
+
+def calcular_quantidade_vendida(tabela):
+    query = f"SELECT SUM(quantidade) FROM {tabela};"
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute(query)
+        resultado = cursor.fetchone()
+        return resultado[0] if resultado else 0
+    except Exception as e:
+        messagebox.showerror("Erro", f"Erro ao calcular quantidade vendida: {e}")
+        conn.close()
+        registrar_erro("Erro ao calcular quantidade vendida", e)
+        return 0
+    finally:
+        conn.close()
+
+
+def listar_vendas(tipo='carta'):
+    """
+    Retorna a lista de vendas de cartas ou produtos, baseada nas views detalhadas.
+    
+    :param tipo: 'carta' ou 'produto'
+    :return: Lista de dicionários com os dados das vendas
+    """
+    conn = conectar()
+    cursor = conn.cursor()
+
+    try:
+        if tipo == 'carta':
+            cursor.execute("SELECT * FROM vw_vendas_detalhadas ORDER BY data_da_venda DESC")
+        elif tipo == 'produto':
+            cursor.execute("SELECT * FROM vw_venda_produto_detalhado ORDER BY data_venda DESC")
+        else:
+            registrar_erro("Tipo inválido para listar vendas:", tipo)
+            raise ValueError("Tipo inválido. Use 'carta' ou 'produto'.")
+
+        resultados = cursor.fetchall()
+        colunas = [desc[0] for desc in cursor.description]
+        vendas = [dict(zip(colunas, linha)) for linha in resultados]
+
+        return vendas
+
+    except Exception as e:
+        registrar_erro(f"Erro ao listar vendas ({tipo}):", e)
+        return []
+
+    finally:
+        conn.close()
+
+def listar_venda_por_id(id, tipo='carta'):
+    """
+    Retorna os detalhes de uma venda específica de carta ou produto pelo ID.
+    
+    :param id: ID da venda
+    :param tipo: 'carta' ou 'produto'
+    :return: Dicionário com os dados da venda ou None se não encontrada
+    """
+    conn = conectar()
+    cursor = conn.cursor()
+
+    try:
+        if tipo == 'carta':
+            cursor.execute("SELECT * FROM vw_vendas_detalhadas WHERE id_carta = ?", (id,))
+        elif tipo == 'produto':
+            cursor.execute("SELECT * FROM vw_venda_produto_detalhado WHERE id_produto = ?", (id,))
+        else:
+            registrar_erro("Tipo inválido para listar venda por ID:", tipo)
+            raise ValueError("Tipo inválido. Use 'carta' ou 'produto'.")
+
+        resultado = cursor.fetchone()
+        if resultado:
+            colunas = [desc[0] for desc in cursor.description]
+            return dict(zip(colunas, resultado))
+        return None
+
+    except Exception as e:
+        registrar_erro(f"Erro ao listar venda por ID ({tipo}):", e)
+        return None
+
+    finally:
+        conn.close()
+
+def listar_venda_filtro(tipo='carta', filtro=""):
+    """
+    Retorna a lista de vendas de cartas ou produtos, baseada nas views detalhadas, com filtro opcional.
+    
+    :param tipo: 'carta' ou 'produto'
+    :param filtro: Texto para filtrar pelo nome do item vendido
+    :return: Lista de dicionários com os dados das vendas
+    """
+    conn = conectar()
+    cursor = conn.cursor()
+
+    try:
+        if tipo == 'carta':
+            if filtro:
+                cursor.execute("""
+                    SELECT * FROM vw_vendas_detalhadas 
+                    WHERE nome LIKE ? 
+                    ORDER BY data_da_venda DESC
+                """, (f"%{filtro}%",))
+            else:
+                cursor.execute("SELECT * FROM vw_vendas_detalhadas ORDER BY data_da_venda DESC")
+        elif tipo == 'produto':
+            if filtro:
+                cursor.execute("""
+                    SELECT * FROM vw_venda_produto_detalhado 
+                    WHERE nome_produto LIKE ? 
+                    ORDER BY data_venda DESC
+                """, (f"%{filtro}%",))
+            else:
+                cursor.execute("SELECT * FROM vw_venda_produto_detalhado ORDER BY data_venda DESC")
+        else:
+            registrar_erro("Tipo inválido para listar vendas com filtro:", tipo)
+            raise ValueError("Tipo inválido. Use 'carta' ou 'produto'.")
+
+        resultados = cursor.fetchall()
+        colunas = [desc[0] for desc in cursor.description]
+        vendas = [dict(zip(colunas, linha)) for linha in resultados]
+
+        return vendas
+
+    except Exception as e:
+        registrar_erro(f"Erro ao listar vendas com filtro ({tipo}):", e)
+        return []
+
+    finally:
+        conn.close()
+
+def atualizar_venda_generica(venda, tipo="carta"):
+    conn = conectar()
+    cursor = conn.cursor()
+    
+    try:
+        if tipo == "carta":
+            cursor.execute("""
+                UPDATE venda
+                SET link_site = ?, nome = ?, colecao = ?, codigo = ?, preco_da_compra = ?, data_da_compra = ?,
+                    raridade = ?, qualidade = ?, quantidade = ?, data_da_venda = ?, preco_da_venda = ?,
+                    imagem = ?, origem = ?, preco_atual = ?, data_scraping = ?
+                WHERE id_carta = ?
+            """, (
+                venda["link_site"],
+                venda["nome"],
+                venda["colecao"],
+                venda["codigo"],
+                venda["preco_da_compra"],
+                venda["data_da_compra"],
+                venda["raridade"],
+                venda["qualidade"],
+                venda["quantidade"],
+                venda["data_da_venda"],
+                venda["preco_da_venda"],
+                venda["imagem"],
+                venda["origem"],
+                venda["preco_atual"],
+                venda["data_scraping"],
+                venda["id_venda"]
+            ))
+
+        elif tipo == "produto":
+            cursor.execute("""
+                UPDATE venda_produto
+                SET nome_produto = ?, link = ?, imagem = ?, preco_compra = ?, data_compra = ?,
+                    preco_venda = ?, data_venda = ?, origem = ?, preco_atual = ?, quantidade = ?, data_scraping = ?
+                WHERE id_produto = ?
+            """, (
+                venda["nome_produto"],
+                venda["link"],
+                venda["imagem"],
+                venda["preco_compra"],
+                venda["data_compra"],
+                venda["preco_venda"],
+                venda["data_venda"],
+                venda["origem"],
+                venda["preco_atual"],
+                venda["quantidade"],
+                venda["data_scraping"],
+                venda["id_venda_produto"]
+            ))
+
+        else:
+            registrar_erro("Tipo inválido para atualizar venda:", tipo)
+            raise Exception("Tipo inválido. Use 'carta' ou 'produto'.")
+
+        conn.commit()
+        return True
+
+    except Exception as e:
+        conn.rollback()
+        registrar_erro("Erro ao atualizar venda:", e)
+        messagebox.showerror("Erro", f"Erro ao atualizar venda: {e}")
+        return False
+
+    finally:
+        conn.close()

@@ -5,22 +5,22 @@ import urllib.request
 from io import BytesIO
 
 from DAO.database import (    
-    buscar_todas_cartas,
-    buscar_carta_por_texto,    
-    calcula_quantidade,
-    calcular_lucro_total_cartas_em_posse,    
+    calcular_lucro_total_cartas_em_posse,
+    calcular_quantidade_vendida,    
     calcular_total_gasto_cartas,
     calcular_total_vendido_cartas,
-    calcular_lucro_total_cartas_vendidas
+    calcular_lucro_total_cartas_vendidas,
+    listar_venda_filtro,
+    listar_vendas
 )
 
 from Components.thread_com_modal import executar_em_thread
 
-def abrir_tela_listagem(app):
-    from View.editar_cartas import criar_tela_editar_carta
+def abrir_tela_listagem_venda(app):
+    from View.editar_venda_cartas import criar_tela_editar_venda_carta
 
     root = tk.Toplevel(app)
-    root.title("Listagem de Cartas")
+    root.title("Listagem de Cartas Vendidas")
 
     largura, altura = 1200, 600
     x = (root.winfo_screenwidth() // 2) - (largura // 2)
@@ -43,7 +43,7 @@ def abrir_tela_listagem(app):
 
     ttk.Label(lucro_frame, text=f"💰 Lucro em posse: R$ {lucro_posse:.2f}", font=("Segoe UI", 10, "bold")).grid(row=0, column=0, sticky="w", padx=5, pady=2)
     ttk.Label(lucro_frame, text=f"💸 Lucro com vendas: R$ {lucro_venda:.2f}", font=("Segoe UI", 10, "bold")).grid(row=0, column=1, sticky="e", padx=5, pady=2)
-    ttk.Label(lucro_frame, text=f"💹 Total gasto: R$ {total_gasto:.2f}", font=("Segoe UI", 10, "bold")).grid(row=1, column=0, sticky="w", padx=5, pady=2)
+    ttk.Label(lucro_frame, text=f"📉 Total gasto: R$ {total_gasto:.2f}", font=("Segoe UI", 10, "bold")).grid(row=1, column=0, sticky="w", padx=5, pady=2)
     ttk.Label(lucro_frame, text=f"💵 Total vendido: R$ {total_vendido:.2f}", font=("Segoe UI", 10, "bold")).grid(row=1, column=1, sticky="e", padx=5, pady=2)
 
     busca_frame = ttk.Frame(root, padding=5)
@@ -94,7 +94,8 @@ def abrir_tela_listagem(app):
         "Imagem", "Nome", "Código", "Preço Pago", "Preço Atual",
         "Total Pago", "Total Atual",
         "Lucro Unit.", "Lucro Total",
-        "Data Compra", "Quantidade", "Data Scraping"
+        "Data Compra", "Quantidade", "Data da Venda",
+        "Preço da Venda", "Data Scraping"
     ]
 
     for col, header in enumerate(headers):
@@ -115,10 +116,10 @@ def abrir_tela_listagem(app):
             if int(widget.grid_info()["row"]) > 0:
                 widget.destroy()
 
-        cartas = buscar_carta_por_texto(filtro) if filtro else buscar_todas_cartas()
+        cartas = listar_venda_filtro('carta', filtro) if filtro else listar_vendas('carta')
 
         ttk.Label(lucro_frame, text=f"# Total Cartas unidade: {len(cartas)}", font=("Segoe UI", 10, "bold")).grid(row=2, column=0, sticky="w")
-        ttk.Label(lucro_frame, text=f"# Total Cartas quantidade: {calcula_quantidade('carta')}", font=("Segoe UI", 10, "bold")).grid(row=2, column=1, sticky="e")
+        ttk.Label(lucro_frame, text=f"# Total Cartas quantidade: {calcular_quantidade_vendida('venda')}", font=("Segoe UI", 10, "bold")).grid(row=2, column=1, sticky="e")
 
         if not cartas:
             ttk.Label(
@@ -182,6 +183,8 @@ def abrir_tela_listagem(app):
                 f"R$ {lucro_total:.2f}",
                 carta['data_da_compra'],
                 str(quantidade),
+                carta['data_da_venda'],
+                f"R$ {carta['preco_da_venda']:.2f}",
                 carta['data_scraping']
             ]
 
@@ -207,7 +210,7 @@ def abrir_tela_listagem(app):
 
     def abrir_edicao(evt, id_carta):
         root.destroy()
-        criar_tela_editar_carta(app, id_carta)
+        criar_tela_editar_venda_carta(app, id_carta)
 
     entrada_busca.bind("<KeyRelease>", lambda e: carregar_cartas(entrada_busca.get()))
 
@@ -221,5 +224,5 @@ def abrir_tela_listagem(app):
 if __name__ == "__main__":
     app = tk.Tk()
     app.withdraw()
-    abrir_tela_listagem(app)
+    abrir_tela_listagem_venda(app)
     app.mainloop()

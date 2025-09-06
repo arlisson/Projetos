@@ -7,8 +7,8 @@ import urllib.request
 from io import BytesIO
 from datetime import datetime
 
-from Components.pop_up_venda import abrir_popup_venda
 from Utils.limpar_preco import limpar_preco
+
 from scraping.scraping_cartas import buscar_carta_myp
 from DAO.database import *
 from tkcalendar import Calendar
@@ -18,24 +18,24 @@ from Components.thread_com_modal import executar_em_thread
 
 IMAGEM_PADRAO = "https://i.pinimg.com/736x/71/1e/da/711eda25308c65a7756751088866e181.jpg"
 
-def criar_tela_editar_carta(app, id_carta):
-    from View.listar_cartas import abrir_tela_listagem
-    carta = buscar_carta_por_id(id_carta)
-    if not carta:
-        messagebox.showerror("Erro", "Carta não encontrada.")
+def criar_tela_editar_venda_carta(app, id_venda):
+    from View.listar_venda_cartas import abrir_tela_listagem_venda
+    venda = listar_venda_por_id(id_venda)
+    if not venda:
+        messagebox.showerror("Erro", "Venda não encontrada.")
         return
 
     root = tk.Toplevel(app)
 
     def ao_fechar():
-        abrir_tela_listagem(app)
+        abrir_tela_listagem_venda(app)
         root.destroy()
 
     root.protocol("WM_DELETE_WINDOW", ao_fechar)
 
     root.grab_set()
     root.focus_force()
-    root.title("Editar Carta")
+    root.title("Editar Venda de Carta")
     root.resizable(True, True)
 
     largura, altura = 960, 640
@@ -70,6 +70,24 @@ def criar_tela_editar_carta(app, id_carta):
             top.destroy()
 
         ttk.Button(top, text="Selecionar", command=selecionar_data).pack(pady=5)
+    
+
+    def abrir_calendario_para(campo_nome):
+        top = tk.Toplevel(root)
+        top.title("Selecionar Data")
+        top.grab_set()
+        top.resizable(False, False)
+        top.geometry(f"+{root.winfo_rootx() + 200}+{root.winfo_rooty() + 150}")
+        cal = Calendar(top, selectmode='day', date_pattern='yyyy-mm-dd')
+        cal.pack(padx=10, pady=10)
+
+        def selecionar_data():
+            campos[campo_nome].delete(0, tk.END)
+            campos[campo_nome].insert(0, cal.get_date())
+            top.destroy()
+
+        ttk.Button(top, text="Selecionar", command=selecionar_data).pack(pady=5)
+
 
     def criar_rotulo_entrada(frame, texto, linha, largura=50, somente_leitura=False):
         ttk.Label(frame, text=texto).grid(row=linha, column=0, sticky="w", padx=5, pady=3)
@@ -102,6 +120,21 @@ def criar_tela_editar_carta(app, id_carta):
     btn.grid(row=0, column=1)
 
     campos["quantidade"] = criar_rotulo_entrada(form_frame, "Quantidade:", 6)
+    campos["preco_venda"] = criar_rotulo_entrada(form_frame, "Preço da venda:", 11)
+
+    ttk.Label(form_frame, text="Data da venda:").grid(row=12, column=0, sticky="w", padx=5, pady=3)
+    data_venda_frame = ttk.Frame(form_frame)
+    data_venda_frame.grid(row=12, column=1, columnspan=2, padx=5, pady=3, sticky="we")
+    data_venda_frame.columnconfigure(0, weight=1)
+
+    campos["data_venda"] = ttk.Entry(data_venda_frame)
+    campos["data_venda"].grid(row=0, column=0, sticky="we", padx=(0, 5))
+
+    btn_data_venda = ttk.Button(data_venda_frame, image=CALENDAR_ICON, command=lambda: abrir_calendario_para("data_venda"))
+    btn_data_venda.image = CALENDAR_ICON
+    btn_data_venda.grid(row=0, column=1)
+
+
     campos["imagem"] = criar_rotulo_entrada(form_frame, "Imagem URL:", 7)
     campos["origem"] = criar_rotulo_entrada(form_frame, "Origem:", 13)
 
@@ -210,41 +243,44 @@ def criar_tela_editar_carta(app, id_carta):
         )
 
 
-    # Preenche os campos com os dados da carta
-    campos["link"].insert(0, carta["link_site"])
-    campos["nome"].insert(0, carta["nome"])
-    campos["codigo"].insert(0, carta["codigo"])
-    campos["preco"].insert(0, str(carta["preco_da_compra"]))
-    campos["preco_atual"].insert(0, str(carta["preco_atual"]))
-    campos["data"].insert(0, carta["data_da_compra"])
-    campos["quantidade"].insert(0, str(carta["quantidade"]))
-    campos["imagem"].insert(0, carta["imagem"])
-    campos["origem"].insert(0, carta["origem"])
-    atualizar_imagem(carta["imagem"])
+    # Preenche os campos com os dados da venda
+    campos["link"].insert(0, venda["link_site"])
+    campos["nome"].insert(0, venda["nome"])
+    campos["codigo"].insert(0, venda["codigo"])
+    campos["preco"].insert(0, str(venda["preco_da_compra"]))
+    campos["preco_atual"].insert(0, str(venda["preco_atual"]))
+    campos["data"].insert(0, venda["data_da_compra"])
+    campos["quantidade"].insert(0, str(venda["quantidade"]))
+    campos["preco_venda"].insert(0, str(venda["preco_da_venda"]))
+    campos["imagem"].insert(0, venda["imagem"])
+    campos["origem"].insert(0, venda["origem"])
+    campos["data_venda"].insert(0, venda["data_da_venda"])
+    atualizar_imagem(venda["imagem"])
 
     for i, val in enumerate(campos["raridade"].cget("values")):
-        if val.startswith(f"{carta['raridade']} -"):
+        if val.startswith(f"{venda['raridade_nome']} -"):
             campos["raridade"].current(i)
             break
     for i, val in enumerate(campos["qualidade"].cget("values")):
-        if val.startswith(f"{carta['qualidade']} -"):
+        if val.startswith(f"{venda['qualidade_nome']} -"):
             campos["qualidade"].current(i)
             break
     for i, val in enumerate(campos["colecao"].cget("values")):
-        if val.startswith(f"{carta['colecao']} -"):
+        if val.startswith(f"{venda['colecao_nome']} -"):
             campos["colecao"].current(i)
             break
 
     def salvar():
         try:
             # Validação e montagem do dicionário
-            carta_atualizada = {
-                "id_carta": id_carta,
+            venda_atualizada = {
+                "id_venda": id_venda,
                 "link_site": campos["link"].get(),
                 "nome": campos["nome"].get(),
                 "codigo": campos["codigo"].get(),
                 "preco_da_compra": limpar_preco(campos["preco"].get()),
                 "preco_atual": limpar_preco(campos["preco_atual"].get()),
+                "preco_da_venda": limpar_preco(campos["preco_venda"].get()), 
                 "data_da_compra": campos["data"].get(),
                 "quantidade": int(campos["quantidade"].get()),
                 "imagem": campos["imagem"].get() or IMAGEM_PADRAO,
@@ -252,18 +288,19 @@ def criar_tela_editar_carta(app, id_carta):
                 "raridade": int(campos["raridade"].get().split(" - ")[0]),
                 "qualidade": int(campos["qualidade"].get().split(" - ")[0]),
                 "colecao": int(campos["colecao"].get().split(" - ")[0]),
-                "data_scraping": datetime.today().strftime("%Y-%m-%d")
-            }
+                "data_scraping": datetime.today().strftime("%Y-%m-%d"),
+                "data_da_venda": campos["data_venda"].get()
+                }
            
             def _salvar():
                 try:
-                    atualizar_carta(carta_atualizada)
+                    atualizar_venda_generica(venda_atualizada,"carta")
                     root.after(0, lambda: (
-                        messagebox.showinfo("Sucesso", "Carta atualizada com sucesso!", parent=root),
+                        messagebox.showinfo("Sucesso", "Venda atualizada com sucesso!", parent=root),
                         ao_fechar()
                     ))
                 except Exception as e:
-                    root.after(0, lambda: messagebox.showerror("Erro", f"Erro ao atualizar carta: {e}", parent=root))
+                    root.after(0, lambda: messagebox.showerror("Erro", f"Erro ao atualizar venda: {e}", parent=root))
 
             executar_em_thread(
                 root,
@@ -277,71 +314,20 @@ def criar_tela_editar_carta(app, id_carta):
 
 
     def apagar():
-        if messagebox.askokcancel("Confirmar", "Tem certeza que deseja deletar esta carta?", parent=root):
-            if deletar(id=id_carta, tabela="carta"):
-                messagebox.showinfo("Sucesso", f"Carta: {campos['nome'].get()} deletada com sucesso!", parent=root)
+        if messagebox.askokcancel("Confirmar", "Tem certeza que deseja deletar esta venda?", parent=root):
+            if deletar(id=id_venda, tabela="venda"):
+                messagebox.showinfo("Sucesso", f"Venda: {campos['nome'].get()} deletada com sucesso!", parent=root)
                 ao_fechar()
             else:
-                messagebox.showerror("Erro", f"Erro ao deletar a carta: {campos['nome'].get()}.", parent=root)
+                messagebox.showerror("Erro", f"Erro ao deletar a venda: {campos['nome'].get()}.", parent=root)
+
     
-    def vender():
-        def ao_confirmar(preco_venda, quantidade_vendida):
-            try:
-                preco_venda = float(preco_venda)
-                quantidade_vendida = int(quantidade_vendida)
-                quantidade_disponivel = int(campos["quantidade"].get())
-
-                if quantidade_vendida > quantidade_disponivel:
-                    raise ValueError("Quantidade vendida excede a disponível")
-
-                dados_venda = {
-                    "link_site": campos["link"].get(),
-                    "nome": campos["nome"].get(),
-                    "codigo": campos["codigo"].get(),
-                    "preco_da_compra": limpar_preco(campos["preco"].get()),
-                    "data_da_compra": campos["data"].get(),
-                    "raridade": int(campos["raridade"].get().split(" - ")[0]),
-                    "qualidade": int(campos["qualidade"].get().split(" - ")[0]),
-                    "colecao": int(campos["colecao"].get().split(" - ")[0]),
-                    "quantidade": quantidade_vendida,
-                    "data_da_venda": datetime.today().strftime("%Y-%m-%d"),
-                    "preco_da_venda": preco_venda,
-                    "imagem": campos["imagem"].get(),
-                    "origem": campos["origem"].get(),
-                    "preco_atual": limpar_preco(campos["preco_atual"].get()),
-                    "data_scraping": datetime.today().strftime("%Y-%m-%d")
-                }
-
-                inserir_venda_generica(
-                    id_item=id_carta,
-                    quantidade_vendida=quantidade_vendida,
-                    preco_venda=preco_venda,
-                    tipo="carta"
-                )
-
-
-                nova_qtd = quantidade_disponivel - quantidade_vendida
-                campos["quantidade"].delete(0, tk.END)
-                campos["quantidade"].insert(0, str(nova_qtd))
-
-                messagebox.showinfo("Sucesso", "Venda registrada com sucesso!", parent=root)
-                ao_fechar()
-
-            except Exception as e:
-                registrar_erro("Erro ao registrar venda:", e)
-                messagebox.showerror("Erro", f"Erro ao registrar venda: {e}", parent=root)
-
-        nome_item = campos["nome"].get()
-        quantidade_disponivel = int(campos["quantidade"].get())
-        abrir_popup_venda(root, nome_item, quantidade_disponivel, ao_confirmar)
-
-
     botoes_frame = ttk.Frame(main_frame)
     botoes_frame.grid(row=2, column=0, pady=10)
     ttk.Button(botoes_frame, text="Buscar via scraping", command=preencher_com_scraping).grid(row=0, column=0, padx=10)
     ttk.Button(botoes_frame, text="Salvar Alterações", command=salvar).grid(row=0, column=1, padx=10)
     ttk.Button(botoes_frame, text="Deletar", command=apagar).grid(row=0, column=2, padx=10)
-    ttk.Button(botoes_frame, text="Vender Carta", command=vender).grid(row=0, column=3, padx=10)
+   
 
     root.mainloop()
 
@@ -349,5 +335,5 @@ def criar_tela_editar_carta(app, id_carta):
 if __name__ == "__main__":
     app = tk.Tk()
     app.withdraw()
-    criar_tela_editar_carta(app)
+    criar_tela_editar_venda_carta(app)
     app.mainloop()
