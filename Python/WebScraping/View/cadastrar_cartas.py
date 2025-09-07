@@ -7,11 +7,13 @@ from datetime import datetime
 from Utils.limpar_preco import limpar_preco
 from scraping.scraping_cartas import *
 from DAO.database import *
-import re
+
+from Utils.baixar_carta import salvar_imagem_local
+from tkinter import filedialog
 from Components.entrada_padrao import criar_entrada_padrao, criar_entrada_data_com_calendario
 from Components.thread_com_modal import executar_em_thread
 
-IMAGEM_PADRAO = "https://i.pinimg.com/736x/71/1e/da/711eda25308c65a7756751088866e181.jpg"
+IMAGEM_PADRAO = "imagens/imagens_cartas/imagem_padrao.jpg"
 
 def criar_tela_cadastro(app):
     root = tk.Toplevel(app)
@@ -48,7 +50,32 @@ def criar_tela_cadastro(app):
     campos["data"] = criar_entrada_data_com_calendario(form_frame, root, 5, "Data da compra:", CALENDAR_ICON)
     campos["quantidade"] = criar_entrada_padrao(form_frame, "Quantidade:", 6)
     campos["imagem"] = criar_entrada_padrao(form_frame, "Imagem URL:", 7)
-    campos["origem"] = criar_entrada_padrao(form_frame, "Origem:", 13)
+    
+    # Agora linha 8 — abaixo do campo de URL
+    ttk.Label(form_frame, text="Imagem:").grid(row=8, column=0, sticky="w", padx=5, pady=3)
+    campos["imagem_salva"] = ttk.Entry(form_frame)
+    campos["imagem_salva"].grid(row=8, column=1, padx=(5, 0), pady=3, sticky="we")
+    
+    
+    
+    def escolher_imagem_local():
+        caminho = filedialog.askopenfilename(
+            title="Selecionar Imagem",
+            filetypes=[("Imagens", "*.jpg *.jpeg *.png *.webp")]
+        )
+        if caminho:
+            campos["imagem_salva"].delete(0, tk.END)
+            campos["imagem_salva"].insert(0, caminho.replace("\\", "/"))
+            atualizar_imagem(caminho)
+
+    # Botão ao lado direito da entrada
+    btn_escolher = ttk.Button(form_frame, text="📁", width=3, command=escolher_imagem_local)
+    btn_escolher.grid(row=8, column=2, padx=(5, 10), pady=3, sticky="w")
+
+
+
+    # Atualiza os campos seguintes para as próximas linhas
+    campos["origem"] = criar_entrada_padrao(form_frame, "Origem:", 9)
 
     def popular_dropdown(combo, dados):
         valores = [f"{item[0]} - {item[1]}" for item in dados]
@@ -56,19 +83,19 @@ def criar_tela_cadastro(app):
         if valores:
             combo.current(0)
 
-    ttk.Label(form_frame, text="Raridade:").grid(row=8, column=0, sticky="w", padx=5, pady=3)
+    ttk.Label(form_frame, text="Raridade:").grid(row=10, column=0, sticky="w", padx=5, pady=3)
     campos["raridade"] = ttk.Combobox(form_frame, state="readonly")
-    campos["raridade"].grid(row=8, column=1, padx=5, pady=3, sticky="we")
+    campos["raridade"].grid(row=10, column=1, columnspan=2, padx=5, pady=3, sticky="we")
     popular_dropdown(campos["raridade"], buscar_valores_tabela("raridade"))
 
-    ttk.Label(form_frame, text="Qualidade:").grid(row=9, column=0, sticky="w", padx=5, pady=3)
+    ttk.Label(form_frame, text="Qualidade:").grid(row=11, column=0, sticky="w", padx=5, pady=3)
     campos["qualidade"] = ttk.Combobox(form_frame, state="readonly")
-    campos["qualidade"].grid(row=9, column=1, padx=5, pady=3, sticky="we")
+    campos["qualidade"].grid(row=11, column=1, columnspan=2, padx=5, pady=3, sticky="we")
     popular_dropdown(campos["qualidade"], buscar_valores_tabela("qualidade"))
 
-    ttk.Label(form_frame, text="Coleção:").grid(row=10, column=0, sticky="w", padx=5, pady=3)
+    ttk.Label(form_frame, text="Coleção:").grid(row=12, column=0, sticky="w", padx=5, pady=3)
     campos["colecao"] = ttk.Combobox(form_frame, state="readonly")
-    campos["colecao"].grid(row=10, column=1, padx=5, pady=3, sticky="we")
+    campos["colecao"].grid(row=12, column=1, columnspan=2, padx=5, pady=3, sticky="we")
     popular_dropdown(campos["colecao"], buscar_valores_tabela("colecao"))
 
     imagem_frame = ttk.LabelFrame(main_frame, text="Imagem", padding=10)
@@ -77,18 +104,24 @@ def criar_tela_cadastro(app):
     imagem_label = ttk.Label(imagem_frame)
     imagem_label.pack()
 
-    def atualizar_imagem(url):
+    def atualizar_imagem(caminho):
         try:
-            with urllib.request.urlopen(url) as u:
-                raw_data = u.read()
-            im = Image.open(BytesIO(raw_data))
+            if caminho.startswith("http://") or caminho.startswith("https://"):
+                with urllib.request.urlopen(caminho) as u:
+                    raw_data = u.read()
+                im = Image.open(BytesIO(raw_data))
+            else:
+                im = Image.open(caminho)
+
             im.thumbnail((300, 420))
             photo = ImageTk.PhotoImage(im)
             imagem_label.configure(image=photo)
             imagem_label.image = photo
-        except:
+        except Exception as e:
+            print(f"[Erro] Falha ao carregar imagem: {e}")
             imagem_label.configure(image='')
             imagem_label.image = None
+
 
     def executar_scraping():
         try:
@@ -107,9 +140,21 @@ def criar_tela_cadastro(app):
                 campos["codigo"].insert(0, dados["codigo"])
                 campos["preco_atual"].delete(0, tk.END)
                 campos["preco_atual"].insert(0, limpar_preco(dados["preco_atual"]))
+                # Preenche URL da imagem
                 campos["imagem"].delete(0, tk.END)
                 campos["imagem"].insert(0, dados["imagem"])
-                atualizar_imagem(dados["imagem"])
+
+                # Baixa e preenche caminho salvo
+                nome_arquivo = f"{dados['codigo']}.jpg"
+                caminho_local = salvar_imagem_local(dados["imagem"], nome_arquivo)
+
+                if caminho_local:
+                    campos["imagem_salva"].delete(0, tk.END)
+                    campos["imagem_salva"].insert(0, caminho_local)
+                    atualizar_imagem(caminho_local)
+                else:
+                    atualizar_imagem(dados["imagem"])  # fallback
+
                 campos["origem"].delete(0, tk.END)
                 campos["origem"].insert(0, dados["origem"])
 
@@ -167,6 +212,8 @@ def criar_tela_cadastro(app):
                 "raridade": int(campos["raridade"].get().split(" - ")[0]),
                 "qualidade": int(campos["qualidade"].get().split(" - ")[0]),
                 "colecao": int(campos["colecao"].get().split(" - ")[0]),
+                "imagem_salva": campos["imagem_salva"].get(),
+
             }
 
             inserir_carta(carta)

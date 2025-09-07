@@ -1,4 +1,5 @@
 from tkinter import messagebox
+from Utils.baixar_carta import salvar_imagem_local
 from scraping.scraping_cartas import *
 
 # cartas = buscar_carta_myp("https://mypcards.com/yugioh/produto/263986/donzela-de-branco?estoque-page=2&dp-1-per-page=40")
@@ -12,3 +13,5 @@ from scraping.scraping_cartas import *
 
 # for carta in cartas:
 #      print(carta)
+
+#salvar_imagem_local("https://i.pinimg.com/736x/71/1e/da/711eda25308c65a7756751088866e181.jpg", "imagem_padrao.jpg")

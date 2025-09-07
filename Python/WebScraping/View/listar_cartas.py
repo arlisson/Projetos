@@ -140,14 +140,23 @@ def abrir_tela_listagem(app):
             frame_img.grid(row=row, column=0, padx=1, pady=1, sticky="nsew")
 
             try:
-                with urllib.request.urlopen(carta['imagem']) as u:
-                    raw_data = u.read()
-                im = Image.open(BytesIO(raw_data)).resize((80, 112))
+                caminho_imagem = carta.get('imagem_salva') or carta.get('imagem')
+
+                if caminho_imagem.startswith("http://") or caminho_imagem.startswith("https://"):
+                    with urllib.request.urlopen(caminho_imagem) as u:
+                        raw_data = u.read()
+                    im = Image.open(BytesIO(raw_data))
+                else:
+                    im = Image.open(caminho_imagem)
+
+                im = im.resize((80, 112))
                 photo = ImageTk.PhotoImage(im)
                 lbl_img = tk.Label(frame_img, image=photo, bg="white")
                 lbl_img.image = photo
-            except:
+            except Exception as e:
+                print(f"[Erro imagem] {e}")
                 lbl_img = tk.Label(frame_img, text="Erro img", bg="white")
+
 
             lbl_img.pack()
 

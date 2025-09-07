@@ -5,11 +5,11 @@ from Utils.limpar_preco import limpar_preco
 from scraping.scraping_cartas import buscar_cartas_colecao
 from DAO.database import buscar_raridade_qualidade_nome, inserir_carta, inserir_colecao, buscar_colecao_por_nome
 from PIL import Image, ImageTk
-import re
+from Utils.baixar_carta import salvar_imagem_local
 import threading
 from Components.modal_progresso import ModalProgresso
 
-IMAGEM_PADRAO = "https://i.pinimg.com/736x/71/1e/da/711eda25308c65a7756751088866e181.jpg"
+IMAGEM_PADRAO = "imagens/imagens_cartas/imagem_padrao.jpg"
 
 
 def criar_tela_cadastro_colecao(app):
@@ -71,7 +71,7 @@ def criar_tela_cadastro_colecao(app):
                 nome = carta.get("nome")
                 codigo = carta.get("codigo", "")
                 preco_atual = limpar_preco(carta.get("preco_atual", 0.0))
-                imagem = carta.get("imagem") or IMAGEM_PADRAO
+                imagem_url = carta.get("imagem") or IMAGEM_PADRAO
                 raridade = carta.get("raridade") or "Common"
                 qualidade = carta.get("qualidade") or "Nova"
                 colecao_nome = carta.get("colecao") or "Desconhecida"
@@ -83,6 +83,10 @@ def criar_tela_cadastro_colecao(app):
                 id_raridade = buscar_raridade_qualidade_nome(raridade, "raridade") or 1
                 id_qualidade = buscar_raridade_qualidade_nome(qualidade, "qualidade") or 1
 
+                # 🔽 NOVO: Salva a imagem no disco
+                nome_arquivo = f"{codigo}.jpg" if codigo else re.sub(r'\W+', '_', nome.lower()) + ".jpg"
+                caminho_imagem_local = salvar_imagem_local(imagem_url, nome_arquivo)
+
                 dados_carta = {
                     "link_site": link_carta,
                     "nome": nome,
@@ -93,7 +97,8 @@ def criar_tela_cadastro_colecao(app):
                     "raridade": id_raridade,
                     "qualidade": id_qualidade,
                     "quantidade": quantidade,
-                    "imagem": imagem,
+                    "imagem": imagem_url,
+                    "imagem_salva": caminho_imagem_local.replace("\\", "/") or "",  # ✅ novo campo
                     "origem": "MyPCards",
                     "preco_atual": preco_atual
                 }

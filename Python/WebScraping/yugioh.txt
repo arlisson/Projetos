@@ -1,5 +1,3 @@
--- SQLite schema convertido de MySQL
-
 PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS colecao (
@@ -30,6 +28,7 @@ CREATE TABLE IF NOT EXISTS carta (
   qualidade INTEGER,
   quantidade INTEGER,
   imagem VARCHAR(10000),
+  imagem_salva VARCHAR(1000), -- NOVA COLUNA
   origem VARCHAR(50) DEFAULT 'MypCards',
   preco_atual DOUBLE,
   data_scraping VARCHAR(45),
@@ -56,6 +55,7 @@ CREATE TABLE IF NOT EXISTS venda (
   data_da_venda VARCHAR(45),
   preco_da_venda FLOAT,
   imagem VARCHAR(1000),
+  imagem_salva VARCHAR(1000), -- NOVA COLUNA
   origem VARCHAR(50) DEFAULT 'MypCards',
   preco_atual DOUBLE,
   data_scraping VARCHAR(45),
@@ -73,6 +73,7 @@ CREATE TABLE IF NOT EXISTS produto (
   nome_produto VARCHAR(500),
   link VARCHAR(1000),
   imagem VARCHAR(1000),
+  imagem_salva VARCHAR(1000), -- NOVA COLUNA
   preco_compra DOUBLE,
   data_compra VARCHAR(45),
   origem VARCHAR(45) DEFAULT 'Liga Yugioh',
@@ -86,6 +87,7 @@ CREATE TABLE IF NOT EXISTS venda_produto (
   nome_produto VARCHAR(500),
   link VARCHAR(1000),
   imagem VARCHAR(1000),
+  imagem_salva VARCHAR(1000), -- NOVA COLUNA
   preco_compra DOUBLE,
   data_compra VARCHAR(45),
   preco_venda DOUBLE,
@@ -121,6 +123,7 @@ SELECT
   c.preco_atual,
   c.quantidade,
   c.imagem,
+  c.imagem_salva,
   c.origem,
   c.data_scraping,
   co.nome AS colecao_nome,
@@ -145,6 +148,7 @@ SELECT
   v.preco_atual,
   v.quantidade,
   v.imagem,
+  v.imagem_salva,
   v.origem,
   v.data_scraping,
   co.nome AS colecao_nome,
@@ -162,6 +166,7 @@ SELECT
   p.nome_produto,
   p.link,
   p.imagem,
+  p.imagem_salva,
   p.preco_compra,
   p.data_compra,
   p.preco_atual,
@@ -176,6 +181,7 @@ SELECT
   vp.nome_produto,
   vp.link,
   vp.imagem,
+  vp.imagem_salva,
   vp.preco_compra,
   vp.data_compra,
   vp.preco_venda,
@@ -185,20 +191,6 @@ SELECT
   vp.origem,
   vp.data_scraping
 FROM venda_produto vp;
-
-CREATE VIEW IF NOT EXISTS vw_historico_precos_detalhado AS
-SELECT
-  h.id_historico_precos,
-  h.id_carta,
-  c.nome AS nome_carta,
-  h.id_produto,
-  p.nome_produto,
-  h.data,
-  h.preco,
-  h.origem
-FROM historico_precos h
-LEFT JOIN carta c ON h.id_carta = c.id_carta
-LEFT JOIN produto p ON h.id_produto = p.id_produto;
 
 
 -- Inserir Raridades

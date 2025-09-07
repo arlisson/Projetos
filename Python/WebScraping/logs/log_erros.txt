@@ -20,3 +20,5 @@
 2025-09-06 13:09:39,196 [ERROR] - Erro ao atualizar venda: | Exceção: 'data_da_venda'
 2025-09-06 13:28:35,766 [ERROR] - Erro ao atualizar venda: | Exceção: 'data_da_venda'
 2025-09-06 13:36:03,367 [ERROR] - Erro ao atualizar venda: | Exceção: no such column: id_venda
+2025-09-07 17:42:37,321 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-07 19:02:08,076 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: unknown url type: '/img/svg/arrow-double-left.svg'

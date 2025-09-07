@@ -40,8 +40,9 @@ def inserir_carta(dados):
                 imagem,
                 origem,
                 preco_atual,
+                imagem_salva,
                 data_scraping
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             dados.get("link_site"),
             dados.get("nome"),
@@ -55,6 +56,7 @@ def inserir_carta(dados):
             dados.get("imagem"),
             dados.get("origem", "MypCards"),
             float(dados.get("preco_atual")),       # preco atual
+            dados.get("imagem_salva", ""),  # caminho da imagem salva localmente
             DATA_SCRAPING                          # NOVO campo
         ))
 
@@ -222,20 +224,8 @@ def buscar_carta_por_texto(texto):
         cursor = conn.cursor()
 
         query = """
-            SELECT
-                id_carta,
-                nome,
-                codigo,
-                qualidade_nome,
-                raridade_nome,
-                preco_da_compra,
-                preco_atual,
-                data_da_compra,
-                quantidade,
-                data_scraping,
-                imagem,
-                origem,
-                colecao_nome
+            SELECT            
+                *
             FROM vw_cartas_detalhadas
             WHERE (
                 nome COLLATE NOCASE LIKE ? OR
@@ -381,6 +371,7 @@ def inserir_produto(produto):
             - origem
             - preco_atual
             - quantidade
+            - imagem_salva
             - data_scraping
 
     Returns:
@@ -393,9 +384,9 @@ def inserir_produto(produto):
         query = """
             INSERT INTO produto (
                 nome_produto, link, imagem, preco_compra,
-                data_compra, origem, preco_atual, quantidade,
+                data_compra, origem, preco_atual, quantidade, imagem_salva,
                 data_scraping
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """
         valores = (
             produto["nome_produto"],
@@ -406,6 +397,7 @@ def inserir_produto(produto):
             produto.get("origem", "Liga Yugioh"),  # padrão se não vier
             produto["preco_atual"],
             produto["quantidade"],
+            produto.get("imagem_salva", ""),  # caminho da imagem salva localmente
             DATA_SCRAPING
         )
 
@@ -709,7 +701,7 @@ def atualizar_carta(carta):
         UPDATE carta
         SET link_site = ?, nome = ?, codigo = ?, preco_da_compra = ?, preco_atual = ?,
             data_da_compra = ?, quantidade = ?, imagem = ?, origem = ?,
-            raridade = ?, qualidade = ?, colecao = ?, data_scraping = ?
+            raridade = ?, qualidade = ?, colecao = ?, data_scraping = ?, imagem_salva = ?
         WHERE id_carta = ?;
     """
     try:
@@ -721,7 +713,8 @@ def atualizar_carta(carta):
             carta["data_da_compra"], carta["quantidade"],
             carta["imagem"], carta["origem"],
             carta["raridade"], carta["qualidade"],
-            carta["colecao"],carta["data_scraping"],
+            carta["colecao"], carta["data_scraping"],
+            carta["imagem_salva"],
             carta["id_carta"]
         ))
         conn.commit()
@@ -764,7 +757,8 @@ def atualizar_produto(produto):
     query = """
         UPDATE produto
         SET nome_produto = ?, link = ?, imagem = ?, preco_compra = ?,
-            data_scraping = ?, origem = ?, preco_atual = ?, data_compra = ?, quantidade = ?
+            data_scraping = ?, origem = ?, preco_atual = ?, data_compra = ?, quantidade = ?,
+            imagem_salva = ?
         WHERE id_produto = ?;
     """
     try:
@@ -775,6 +769,7 @@ def atualizar_produto(produto):
             produto["preco_compra"], produto["data_scraping"],
             produto["origem"], produto["preco_atual"],
             produto["data_compra"], produto["quantidade"],
+            produto["imagem_salva"],
             produto["id_produto"]
         ))
         conn.commit()
@@ -844,9 +839,9 @@ def inserir_venda_generica(id_item, quantidade_vendida, preco_venda, tipo="carta
                 INSERT INTO venda (
                     link_site, nome, colecao, codigo, preco_da_compra, data_da_compra,
                     raridade, qualidade, quantidade, data_da_venda, preco_da_venda,
-                    imagem, origem, preco_atual, data_scraping
+                    imagem, origem, preco_atual, data_scraping, imagem_salva
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 carta["link_site"],
                 carta["nome"],
@@ -862,7 +857,8 @@ def inserir_venda_generica(id_item, quantidade_vendida, preco_venda, tipo="carta
                 carta["imagem"],
                 carta["origem"],
                 carta["preco_atual"],
-                carta["data_scraping"]
+                carta["data_scraping"],
+                carta["imagem_salva"]
             ))
 
             # Atualizar estoque
@@ -889,9 +885,9 @@ def inserir_venda_generica(id_item, quantidade_vendida, preco_venda, tipo="carta
             cursor.execute("""
                 INSERT INTO venda_produto (
                     nome_produto, link, imagem, preco_compra, data_compra,
-                    preco_venda, data_venda, origem, preco_atual, quantidade, data_scraping
+                    preco_venda, data_venda, origem, preco_atual, quantidade, data_scraping, imagem_salva
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 produto["nome_produto"],
                 produto["link"],
@@ -903,7 +899,8 @@ def inserir_venda_generica(id_item, quantidade_vendida, preco_venda, tipo="carta
                 produto["origem"],
                 produto["preco_atual"],
                 quantidade_vendida,
-                produto["data_scraping"]
+                produto["data_scraping"],
+                produto["imagem_salva"]
             ))
 
             # Atualizar estoque
@@ -1067,7 +1064,7 @@ def atualizar_venda_generica(venda, tipo="carta"):
                 UPDATE venda
                 SET link_site = ?, nome = ?, colecao = ?, codigo = ?, preco_da_compra = ?, data_da_compra = ?,
                     raridade = ?, qualidade = ?, quantidade = ?, data_da_venda = ?, preco_da_venda = ?,
-                    imagem = ?, origem = ?, preco_atual = ?, data_scraping = ?
+                    imagem = ?, origem = ?, preco_atual = ?, data_scraping = ?, imagem_salva = ?
                 WHERE id_carta = ?
             """, (
                 venda["link_site"],
@@ -1085,6 +1082,7 @@ def atualizar_venda_generica(venda, tipo="carta"):
                 venda["origem"],
                 venda["preco_atual"],
                 venda["data_scraping"],
+                venda["imagem_salva"],
                 venda["id_venda"]
             ))
 
@@ -1092,7 +1090,7 @@ def atualizar_venda_generica(venda, tipo="carta"):
             cursor.execute("""
                 UPDATE venda_produto
                 SET nome_produto = ?, link = ?, imagem = ?, preco_compra = ?, data_compra = ?,
-                    preco_venda = ?, data_venda = ?, origem = ?, preco_atual = ?, quantidade = ?, data_scraping = ?
+                    preco_venda = ?, data_venda = ?, origem = ?, preco_atual = ?, quantidade = ?, data_scraping = ?, imagem_salva = ?
                 WHERE id_produto = ?
             """, (
                 venda["nome_produto"],
@@ -1106,6 +1104,7 @@ def atualizar_venda_generica(venda, tipo="carta"):
                 venda["preco_atual"],
                 venda["quantidade"],
                 venda["data_scraping"],
+                venda["imagem_salva"],
                 venda["id_produto"]
             ))
 
