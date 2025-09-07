@@ -19,6 +19,9 @@ from Components.thread_com_modal import executar_em_thread
 def abrir_tela_listagem(app):
     from View.editar_cartas import criar_tela_editar_carta
 
+    busca_timeout = None
+
+    
     root = tk.Toplevel(app)
     root.title("Listagem de Cartas")
 
@@ -208,8 +211,16 @@ def abrir_tela_listagem(app):
     def abrir_edicao(evt, id_carta):
         root.destroy()
         criar_tela_editar_carta(app, id_carta)
+    
 
-    entrada_busca.bind("<KeyRelease>", lambda e: carregar_cartas(entrada_busca.get()))
+    # DEBOUNCE DA BUSCA
+    def on_busca_keyrelease(event):
+        nonlocal busca_timeout
+        if busca_timeout:
+            root.after_cancel(busca_timeout)
+        busca_timeout = root.after(300, lambda: carregar_cartas(entrada_busca.get()))
+
+    entrada_busca.bind("<KeyRelease>", on_busca_keyrelease)
 
     executar_em_thread(
         root,

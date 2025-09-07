@@ -208,11 +208,18 @@ def abrir_tela_listagem_venda(app):
                 widget.bind("<Enter>", on_enter)
                 widget.bind("<Leave>", on_leave)
 
+    busca_timeout = None
+    def on_busca_keyrelease(event):
+        nonlocal busca_timeout
+        if busca_timeout:
+            root.after_cancel(busca_timeout)
+        busca_timeout = root.after(300, lambda: carregar_cartas(entrada_busca.get()))
+
     def abrir_edicao(evt, id_carta):
         root.destroy()
         criar_tela_editar_venda_carta(app, id_carta)
 
-    entrada_busca.bind("<KeyRelease>", lambda e: carregar_cartas(entrada_busca.get()))
+    entrada_busca.bind("<KeyRelease>", on_busca_keyrelease)
 
     executar_em_thread(
         root,

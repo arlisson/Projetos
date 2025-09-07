@@ -20,6 +20,8 @@ def abrir_tela_listagem_produtos(app):
     root = tk.Toplevel(app)
     root.title("Listagem de Produtos")
 
+    busca_timeout = None
+
     largura, altura = 1200, 600
     x = (root.winfo_screenwidth() // 2) - (largura // 2)
     y = (root.winfo_screenheight() // 2) - (altura // 2)
@@ -111,6 +113,14 @@ def abrir_tela_listagem_produtos(app):
         ttk.Label(lucro_frame, text=f"# Total Produtos unidade: {len(produtos)}", font=("Segoe UI", 10, "bold")).grid(row=2, column=0, sticky="w")
         ttk.Label(lucro_frame, text=f"# Total Produtos quantidade: {calcula_quantidade('produto')}", font=("Segoe UI", 10, "bold")).grid(row=2, column=1, sticky="e")
 
+        if not produtos:
+            ttk.Label(
+                scrollable_frame,
+                text="Nenhum produto encontrado",
+                font=("Segoe UI", 10, "italic"),
+                foreground="gray"
+            ).grid(row=1, column=0, columnspan=len(headers), pady=20)
+            return
 
         for row, produto in enumerate(produtos, start=1):
             id_produto = produto["id_produto"]
@@ -172,8 +182,14 @@ def abrir_tela_listagem_produtos(app):
                 widget.bind("<Enter>", on_enter)
                 widget.bind("<Leave>", on_leave)
 
+    def on_busca_keyrelease(event):
+        nonlocal busca_timeout
+        if busca_timeout:
+            root.after_cancel(busca_timeout)
+        busca_timeout = root.after(300, lambda: carregar_produtos(entrada_busca.get()))
+
     def  iniciar_carregamento():
-        entrada_busca.bind("<KeyRelease>", lambda e: carregar_produtos(entrada_busca.get()))
+        entrada_busca.bind("<KeyRelease>", on_busca_keyrelease)
         carregar_produtos()
     
     from Components.thread_com_modal import executar_em_thread

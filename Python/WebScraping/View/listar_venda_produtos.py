@@ -115,6 +115,14 @@ def abrir_tela_listagem_venda_produtos(app):
         ttk.Label(lucro_frame, text=f"# Total Vendas unidade: {len(produtos)}", font=("Segoe UI", 10, "bold")).grid(row=2, column=0, sticky="w")
         ttk.Label(lucro_frame, text=f"# Total Vendas quantidade: {calcular_quantidade_vendida('venda_produto')}", font=("Segoe UI", 10, "bold")).grid(row=2, column=1, sticky="e")
 
+        if not produtos:
+            ttk.Label(
+                scrollable_frame,
+                text="Nenhum produto encontrado",
+                font=("Segoe UI", 10, "italic"),
+                foreground="gray"
+            ).grid(row=1, column=0, columnspan=len(headers), pady=20)
+            return
 
         for row, produto in enumerate(produtos, start=1):
             id_produto = produto["id_produto"]
@@ -178,8 +186,16 @@ def abrir_tela_listagem_venda_produtos(app):
                 widget.bind("<Enter>", on_enter)
                 widget.bind("<Leave>", on_leave)
 
-    def  iniciar_carregamento():
-        entrada_busca.bind("<KeyRelease>", lambda e: carregar_produtos(entrada_busca.get()))
+    busca_timeout = None
+
+    def on_busca_keyrelease(event):
+        nonlocal busca_timeout
+        if busca_timeout:
+            root.after_cancel(busca_timeout)
+        busca_timeout = root.after(300, lambda: carregar_produtos(entrada_busca.get()))
+
+    def iniciar_carregamento():
+        entrada_busca.bind("<KeyRelease>", on_busca_keyrelease)
         carregar_produtos()
     
     from Components.thread_com_modal import executar_em_thread

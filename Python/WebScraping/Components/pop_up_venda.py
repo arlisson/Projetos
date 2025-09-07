@@ -10,8 +10,8 @@ def abrir_popup_venda(parent, nome_item, quantidade_disponivel, callback):
     popup.resizable(False, False)
 
     largura, altura = 320, 200
-    x = parent.winfo_rootx() + 100
-    y = parent.winfo_rooty() + 100
+    x = parent.winfo_rootx() + (parent.winfo_width() // 2) - (largura // 2)
+    y = parent.winfo_rooty() + (parent.winfo_height() // 2) - (altura // 2)
     popup.geometry(f"{largura}x{altura}+{x}+{y}")
 
     frame = ttk.Frame(popup, padding=15)
