@@ -12,6 +12,7 @@ from DAO.database import (
     calcular_total_vendido_produtos,
 )
 from Utils.log import registrar_erro
+from Components.sumario import criar_summary_frame as sumario
 
 def abrir_tela_editar_produto(app, id_produto):
     from View.editar_produto import criar_tela_editar_produto
@@ -20,7 +21,8 @@ def abrir_tela_editar_produto(app, id_produto):
 def abrir_tela_listagem_produtos(app):
     root = tk.Toplevel(app)
     root.title("Listagem de Produtos")
-
+    root.grab_set()
+    root.focus_force()
     busca_timeout = None
 
     largura, altura = 1200, 600
@@ -32,21 +34,26 @@ def abrir_tela_listagem_produtos(app):
     root.columnconfigure(0, weight=1)
     root.rowconfigure(2, weight=1)
 
-    lucro_frame = ttk.Frame(root, padding=(10, 5))
-    lucro_frame.grid(row=0, column=0, sticky="ew")
-    lucro_frame.columnconfigure(0, weight=1)
-    lucro_frame.columnconfigure(1, weight=1)
+    
 
     lucro_posse = calcular_lucro_total_produtos_em_posse()
     lucro_venda = calcular_lucro_total_produtos_vendidos()
     total_gasto = calcular_total_gasto_produtos()
     total_vendido = calcular_total_vendido_produtos()
+    total_quantidade = calcula_quantidade('produto')
+    total_quantidade_unidade = len(listar_todos_produtos()) or 0
 
-    ttk.Label(lucro_frame, text=f"💰 Lucro em posse: R$ {lucro_posse:.2f}", font=("Segoe UI", 10, "bold")).grid(row=0, column=0, sticky="w")
-    ttk.Label(lucro_frame, text=f"💵 Lucro com vendas: R$ {lucro_venda:.2f}", font=("Segoe UI", 10, "bold")).grid(row=0, column=1, sticky="e")
-    ttk.Label(lucro_frame, text=f"📉 Total gasto: R$ {total_gasto:.2f}", font=("Segoe UI", 10, "bold")).grid(row=1, column=0, sticky="w")
-    ttk.Label(lucro_frame, text=f"💸 Total vendido: R$ {total_vendido:.2f}", font=("Segoe UI", 10, "bold")).grid(row=1, column=1, sticky="e")
-
+    dados_resumo = [
+        {"emoji": "💰", "texto": "Lucro em posse", "valor": lucro_posse, "row": 0, "column": 0, "anchor": "w"},
+        {"emoji": "💸", "texto": "Lucro com vendas", "valor": lucro_venda, "row": 0, "column": 1, "anchor": "e"},
+        {"emoji": "💹", "texto": "Total gasto", "valor": total_gasto, "row": 1, "column": 0, "anchor": "w"},
+        {"emoji": "💵", "texto": "Total vendido", "valor": total_vendido, "row": 1, "column": 1, "anchor": "e"},
+        {"emoji": "📦", "texto": "Total Produtos Unidade", "valor": total_quantidade_unidade, "row": 2, "column": 0, "anchor": "w"},
+        {"emoji": "📦", "texto": "Total Produtos Quantidade", "valor": total_quantidade, "row": 2, "column": 1, "anchor": "e"},
+    ]
+   
+    frame_resumo = sumario(root, "Resumo Financeiro", dados_resumo)
+    frame_resumo.grid(row=0, column=0, columnspan=2, sticky="ew")
 
     busca_frame = ttk.Frame(root, padding=5)
     busca_frame.grid(row=1, column=0, sticky="ew")
@@ -111,9 +118,7 @@ def abrir_tela_listagem_produtos(app):
                 widget.destroy()
 
         produtos = listar_todos_produtos(filtro)
-        ttk.Label(lucro_frame, text=f"# Total Produtos unidade: {len(produtos)}", font=("Segoe UI", 10, "bold")).grid(row=2, column=0, sticky="w")
-        ttk.Label(lucro_frame, text=f"# Total Produtos quantidade: {calcula_quantidade('produto')}", font=("Segoe UI", 10, "bold")).grid(row=2, column=1, sticky="e")
-
+        
         if not produtos:
             ttk.Label(
                 scrollable_frame,

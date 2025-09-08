@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 import urllib.request
 from io import BytesIO
 
+from Components.sumario import criar_summary_frame as sumario
 from DAO.database import (    
     buscar_todas_cartas,
     buscar_carta_por_texto,    
@@ -25,6 +26,8 @@ def abrir_tela_listagem(app):
     
     root = tk.Toplevel(app)
     root.title("Listagem de Cartas")
+    root.grab_set()
+    root.focus_force()
 
     largura, altura = 1200, 600
     x = (root.winfo_screenwidth() // 2) - (largura // 2)
@@ -35,20 +38,28 @@ def abrir_tela_listagem(app):
     root.columnconfigure(0, weight=1)
     root.rowconfigure(2, weight=1)
 
-    lucro_frame = ttk.Frame(root, padding=(10, 5))
-    lucro_frame.grid(row=0, column=0, sticky="ew")
-    lucro_frame.columnconfigure(0, weight=1)
-    lucro_frame.columnconfigure(1, weight=1)
-
+    # Chamar os cálculos normalmente
     lucro_posse = calcular_lucro_total_cartas_em_posse()
     lucro_venda = calcular_lucro_total_cartas_vendidas()
     total_gasto = calcular_total_gasto_cartas()
     total_vendido = calcular_total_vendido_cartas()
+    total_cartas_quantidade = calcula_quantidade('carta')
+    total_cartas_unidade = len(buscar_todas_cartas()) or 0
 
-    ttk.Label(lucro_frame, text=f"💰 Lucro em posse: R$ {lucro_posse:.2f}", font=("Segoe UI", 10, "bold")).grid(row=0, column=0, sticky="w", padx=5, pady=2)
-    ttk.Label(lucro_frame, text=f"💸 Lucro com vendas: R$ {lucro_venda:.2f}", font=("Segoe UI", 10, "bold")).grid(row=0, column=1, sticky="e", padx=5, pady=2)
-    ttk.Label(lucro_frame, text=f"💹 Total gasto: R$ {total_gasto:.2f}", font=("Segoe UI", 10, "bold")).grid(row=1, column=0, sticky="w", padx=5, pady=2)
-    ttk.Label(lucro_frame, text=f"💵 Total vendido: R$ {total_vendido:.2f}", font=("Segoe UI", 10, "bold")).grid(row=1, column=1, sticky="e", padx=5, pady=2)
+    # Dados a exibir
+    dados_resumo = [
+        {"emoji": "💰", "texto": "Lucro em posse", "valor": lucro_posse, "row": 0, "column": 0, "anchor": "w"},
+        {"emoji": "💸", "texto": "Lucro com vendas", "valor": lucro_venda, "row": 0, "column": 1, "anchor": "e"},
+        {"emoji": "💹", "texto": "Total gasto", "valor": total_gasto, "row": 1, "column": 0, "anchor": "w"},
+        {"emoji": "💵", "texto": "Total vendido", "valor": total_vendido, "row": 1, "column": 1, "anchor": "e"},
+        {"emoji": "📦", "texto": "Total Cartas Unidade", "valor": total_cartas_unidade, "row": 2, "column": 0, "anchor": "w"},
+        {"emoji": "📦", "texto": "Total Cartas Quantidade", "valor": total_cartas_quantidade, "row": 2, "column": 1, "anchor": "e"},
+    ]
+
+    # Criação do frame
+    frame_resumo = sumario(root, "Resumo Financeiro", dados_resumo)
+    
+    frame_resumo.grid(row=0, column=0, columnspan=2, sticky="ew")
 
     busca_frame = ttk.Frame(root, padding=5)
     busca_frame.grid(row=1, column=0, sticky="ew")
@@ -121,9 +132,7 @@ def abrir_tela_listagem(app):
 
         cartas = buscar_carta_por_texto(filtro) if filtro else buscar_todas_cartas()
 
-        ttk.Label(lucro_frame, text=f"# Total Cartas unidade: {len(cartas)}", font=("Segoe UI", 10, "bold")).grid(row=2, column=0, sticky="w")
-        ttk.Label(lucro_frame, text=f"# Total Cartas quantidade: {calcula_quantidade('carta')}", font=("Segoe UI", 10, "bold")).grid(row=2, column=1, sticky="e")
-
+        
         if not cartas:
             ttk.Label(
                 scrollable_frame,

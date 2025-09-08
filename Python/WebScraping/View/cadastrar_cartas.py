@@ -3,13 +3,11 @@ from tkinter import ttk, messagebox
 from PIL import ImageTk, Image
 import urllib.request
 from io import BytesIO
-from datetime import datetime
 from Utils.limpar_preco import limpar_preco
 from scraping.scraping_cartas import *
 from DAO.database import *
-
+from Utils.combo_utils import popular_dropdown
 from Utils.baixar_carta import salvar_imagem_local
-from tkinter import filedialog
 from Components.entrada_padrao import criar_entrada_com_botao_imagem, criar_entrada_padrao, criar_entrada_data_com_calendario
 from Components.thread_com_modal import executar_em_thread
 
@@ -98,13 +96,8 @@ def criar_tela_cadastro(app):
 
 
     # Atualiza os campos seguintes para as próximas linhas
-    campos["origem"] = criar_entrada_padrao(form_frame, "Origem:", 9)
+    campos["origem"] = criar_entrada_padrao(form_frame, "Origem:", 9)    
 
-    def popular_dropdown(combo, dados):
-        valores = [f"{item[0]} - {item[1]}" for item in dados]
-        combo["values"] = valores
-        if valores:
-            combo.current(0)
 
     ttk.Label(form_frame, text="Raridade:").grid(row=10, column=0, sticky="w", padx=5, pady=3)
     campos["raridade"] = ttk.Combobox(form_frame, state="readonly")

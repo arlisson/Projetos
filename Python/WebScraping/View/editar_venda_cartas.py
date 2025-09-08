@@ -9,6 +9,7 @@ from datetime import datetime
 
 from Components.entrada_padrao import criar_entrada_com_botao_imagem, criar_entrada_data_com_calendario
 from Utils.baixar_carta import salvar_imagem_local
+from Utils.combo_utils import popular_dropdown
 from Utils.limpar_preco import limpar_preco
 
 from scraping.scraping_cartas import buscar_carta_myp
@@ -141,12 +142,7 @@ def criar_tela_editar_venda_carta(app, id_venda):
 
     campos["origem"] = criar_rotulo_entrada(form_frame, "Origem:", 14)
 
-    def popular_dropdown(combo, dados):
-        valores = [f"{item[0]} - {item[1]}" for item in dados]
-        combo["values"] = valores
-        if valores:
-            combo.current(0)
-
+    
     ttk.Label(form_frame, text="Raridade:").grid(row=9, column=0, sticky="w", padx=5, pady=3)
     campos["raridade"] = ttk.Combobox(form_frame, state="readonly")
     campos["raridade"].grid(row=9, column=1, padx=5, pady=3, sticky="we")
