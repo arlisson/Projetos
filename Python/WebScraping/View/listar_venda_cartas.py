@@ -40,8 +40,8 @@ def abrir_tela_listagem_venda(app):
     lucro_venda = calcular_lucro_total_cartas_vendidas()
     total_gasto = calcular_total_gasto_cartas()
     total_vendido = calcular_total_vendido_cartas()
-    total_cartas_vendidas_unidade = len(listar_vendas('venda')) or 0
-    total_cartas_vendidas_quantidade = calcular_quantidade_vendida('venda')
+    total_cartas_vendidas_unidade = len(listar_vendas(tipo='carta')) or 0
+    total_cartas_vendidas_quantidade = calcular_quantidade_vendida(tabela='venda')
 
     dados_resumo = [
 

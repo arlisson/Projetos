@@ -64,12 +64,7 @@ def criar_tela_editar_venda_carta(app, id_venda):
         registrar_erro(f"Erro ao carregar ícone do calendário: {e}")
 
     campos = {}
-
     
-    
-
-    
-
     def criar_rotulo_entrada(frame, texto, linha, largura=50, somente_leitura=False):
         ttk.Label(frame, text=texto).grid(row=linha, column=0, sticky="w", padx=5, pady=3)
         entrada = ttk.Entry(frame, width=largura)
@@ -158,6 +153,14 @@ def criar_tela_editar_venda_carta(app, id_venda):
     campos["colecao"].grid(row=11, column=1, padx=5, pady=3, sticky="we")
     popular_dropdown(campos["colecao"], buscar_valores_tabela("colecao"))
 
+    campos["data_scraping"] = criar_entrada_data_com_calendario(
+        frame=form_frame,
+        root=root,
+        linha=15,
+        texto_label="Data do Scraping:",
+        icone=CALENDAR_ICON  # ou None para usar 📅
+   )
+
     imagem_frame = ttk.LabelFrame(main_frame, text="Imagem", padding=10)
     imagem_frame.grid(row=0, column=1, padx=10, pady=10, sticky="ne")
 
@@ -218,6 +221,9 @@ def criar_tela_editar_venda_carta(app, id_venda):
                     campos["origem"].delete(0, tk.END)
                     campos["origem"].insert(0, dados["origem"])
 
+                    campos["data_scraping"].delete(0, tk.END)
+                    campos["data_scraping"].insert(0, datetime.today().strftime("%Y-%m-%d"))
+
                     # Atualiza dropdown de coleção
                     colecao_nome = dados["colecao"]
                     colecao_id = buscar_colecao_por_nome(colecao_nome)
@@ -260,6 +266,7 @@ def criar_tela_editar_venda_carta(app, id_venda):
     campos["origem"].insert(0, venda["origem"])
     campos["data_venda"].insert(0, venda["data_da_venda"])
     atualizar_imagem(venda.get("imagem_salva") or venda["imagem"])
+    campos["data_scraping"].insert(0, venda.get("data_scraping", ""))
 
     for i, val in enumerate(campos["raridade"].cget("values")):
         if val.startswith(f"{venda['raridade_nome']} -"):
@@ -293,7 +300,7 @@ def criar_tela_editar_venda_carta(app, id_venda):
                 "raridade": int(campos["raridade"].get().split(" - ")[0]),
                 "qualidade": int(campos["qualidade"].get().split(" - ")[0]),
                 "colecao": int(campos["colecao"].get().split(" - ")[0]),
-                "data_scraping": datetime.today().strftime("%Y-%m-%d"),
+                "data_scraping": campos["data_scraping"].get() or datetime.today().strftime("%Y-%m-%d"),
                 "data_da_venda": campos["data_venda"].get()
                 }
            
@@ -320,7 +327,7 @@ def criar_tela_editar_venda_carta(app, id_venda):
 
     def apagar():
         if messagebox.askokcancel("Confirmar", "Tem certeza que deseja deletar esta venda?", parent=root):
-            if deletar(id=id_venda, tabela="venda"):
+            if deletar(id=id_venda, tabela="venda", tipo="carta"):
                 messagebox.showinfo("Sucesso", f"Venda: {campos['nome'].get()} deletada com sucesso!", parent=root)
                 ao_fechar()
             else:

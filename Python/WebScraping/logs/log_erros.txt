@@ -31,3 +31,45 @@
 2025-09-08 13:51:46,884 [ERROR] - Erro ao carregar imagem do calendário: [Errno 2] No such file or directory: 'imagens/calendario.jpg'
 2025-09-08 13:52:53,630 [ERROR] - Erro ao carregar imagem do calendário: [Errno 2] No such file or directory: 'imagens/calendario.jpg'
 2025-09-08 14:15:50,506 [ERROR] - [Erro] Falha ao carregar imagem: cannot identify image file 'D:/Repositorios/Projetos/Python/WebScraping/imagens/imagens_produtos/Edição de Colecionador - Coleção Lendária.jpg'
+2025-09-08 18:50:01,671 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
+2025-09-08 18:50:01,672 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
+2025-09-08 18:53:14,925 [ERROR] - Erro ao calcular lucro total de cartas | Exceção: no such column: quantidade_vendida
+2025-09-08 18:54:14,590 [ERROR] - Erro ao calcular lucro total de cartas | Exceção: no such column: tipo
+2025-09-08 18:55:21,959 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
+2025-09-08 18:55:21,959 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
+2025-09-08 18:55:28,743 [ERROR] - Erro ao apagar dados | Exceção: no such column: id_venda
+2025-09-08 18:57:43,440 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
+2025-09-08 18:57:43,440 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
+2025-09-08 18:57:52,011 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
+2025-09-08 18:57:52,011 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
+2025-09-08 19:05:04,406 [ERROR] - Erro ao calcular valor total de cartas | Exceção: no such column: quantidade_vendida
+2025-09-08 19:08:17,378 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
+2025-09-08 19:08:17,378 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
+2025-09-08 19:14:58,969 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
+2025-09-08 19:14:58,969 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
+2025-09-08 19:15:08,848 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
+2025-09-08 19:15:08,848 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
+2025-09-08 19:15:27,586 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
+2025-09-08 19:15:27,586 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
+2025-09-08 19:15:32,257 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
+2025-09-08 19:15:32,257 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
+2025-09-08 19:15:42,507 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
+2025-09-08 19:15:42,507 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
+2025-09-08 19:15:47,081 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
+2025-09-08 19:15:47,081 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
+2025-09-08 19:15:56,363 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
+2025-09-08 19:15:56,363 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
+2025-09-08 19:17:24,315 [ERROR] - [Erro] Falha ao carregar imagem: cannot identify image file 'D:/Repositorios/Projetos/Python/WebScraping/imagens/imagens_produtos/Edição de Colecionador - Coleção Lendária.jpg'
+2025-09-08 19:18:24,174 [ERROR] - Erro ao apagar dados | Exceção: no such column: id_carta
+2025-09-08 19:19:30,860 [ERROR] - Tipo inválido para listar vendas com filtro: | Exceção: venda_produto
+2025-09-08 19:19:30,860 [ERROR] - Erro ao listar vendas com filtro (venda_produto): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
+2025-09-08 19:19:49,867 [ERROR] - Tipo inválido para listar vendas com filtro: | Exceção: venda_produto
+2025-09-08 19:19:49,867 [ERROR] - Erro ao listar vendas com filtro (venda_produto): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
+2025-09-08 19:22:22,372 [ERROR] - Tipo inválido para listar vendas com filtro: | Exceção: venda_produto
+2025-09-08 19:22:22,373 [ERROR] - Erro ao listar vendas com filtro (venda_produto): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
+2025-09-08 19:31:58,797 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
+2025-09-08 19:31:58,798 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
+2025-09-08 19:32:05,441 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
+2025-09-08 19:32:05,441 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
+2025-09-08 19:33:14,047 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
+2025-09-08 19:33:14,047 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.

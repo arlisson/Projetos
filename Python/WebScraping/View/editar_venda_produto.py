@@ -14,6 +14,7 @@ from Utils.baixar_carta import salvar_imagem_local
 from Utils.log import registrar_erro
 from scraping.scraping_cartas import buscar_produto_liga  # reutilizado para produto
 from DAO.database import (
+    deletar,
     listar_venda_por_id,
     atualizar_venda_generica,
 )
@@ -266,12 +267,21 @@ def criar_tela_editar_venda_produto(app, id_venda_produto):
             messagebox.showerror("Erro", f"Erro ao salvar: {e}", parent=root)
             registrar_erro(f"Erro ao salvar venda de produto: {e}")
 
+    def apagar():
+        if messagebox.askokcancel("Confirmar", "Tem certeza que deseja deletar esta venda?", parent=root):
+            if deletar(id=id_venda_produto, tabela="venda_produto", tipo="produto"):
+                messagebox.showinfo("Sucesso", f"Venda: {campos['nome_produto'].get()} deletada com sucesso!", parent=root)
+                ao_fechar()
+            else:
+                messagebox.showerror("Erro", f"Erro ao deletar a venda: {campos['nome_produto'].get()}.", parent=root)
+
+
     # ---------- Botões ----------
     botoes_frame = ttk.Frame(main_frame)
     botoes_frame.grid(row=1, column=0, columnspan=2, pady=10)
 
     ttk.Button(botoes_frame, text="Atualizar via Scraping", command=preencher_via_scraping).pack(side="left", padx=20, pady=5)
     ttk.Button(botoes_frame, text="Salvar Alterações", command=salvar).pack(side="left", padx=20, pady=5)
-    ttk.Button(botoes_frame, text="Fechar", command=ao_fechar).pack(side="left", padx=20, pady=5)
+    ttk.Button(botoes_frame, text="Deletar", command=apagar).pack(side="left", padx=20, pady=5)
 
     root.mainloop()

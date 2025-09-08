@@ -254,29 +254,46 @@ def buscar_carta_por_texto(texto):
 
 def calcular_lucro_total_cartas_em_posse():
     '''
-    Calcula o lucro total das cartas em posse.
-    returns:
-        float: O lucro total das cartas em posse, ou 0.0 se não houver cartas.
+    Calcula o lucro total das cartas (em posse + vendidas).
+    Returns:
+        float: O lucro total combinado, ou 0.0 se não houver dados.
     '''
-    query = """
-        SELECT SUM((preco_atual - preco_da_compra) * quantidade) AS lucro_total
-        FROM carta
-        WHERE preco_atual IS NOT NULL AND preco_da_compra IS NOT NULL;
-    """
     try:
         conn = conectar()
         cursor = conn.cursor()
-        cursor.execute(query)
-        resultado = cursor.fetchone()
-        conn.close()
-        return resultado[0] if resultado[0] is not None else 0.0
+
+        # Lucro das cartas em posse
+        query_posse = """
+            SELECT SUM((preco_atual - preco_da_compra) * quantidade) AS lucro_posse
+            FROM carta
+            WHERE preco_atual IS NOT NULL AND preco_da_compra IS NOT NULL;
+        """
+        cursor.execute(query_posse)
+        resultado_posse = cursor.fetchone()
+        lucro_posse = resultado_posse[0] if resultado_posse[0] is not None else 0.0
+
+        # Lucro das cartas vendidas
+        query_vendas = """
+            SELECT SUM((preco_da_venda - preco_da_compra) * quantidade) AS lucro_vendas
+            FROM venda
+            WHERE preco_da_venda IS NOT NULL
+              AND preco_da_compra IS NOT NULL;
+        """
+        cursor.execute(query_vendas)
+        resultado_vendas = cursor.fetchone()
+        lucro_vendas = resultado_vendas[0] if resultado_vendas[0] is not None else 0.0
+
+        return lucro_posse + lucro_vendas
+
     except Exception as e:
-        messagebox.showerror("Erro", f"Erro ao calcular lucro de cartas em posse: {e}")
-        conn.close()
-        registrar_erro("Erro ao calcular lucro de cartas em posse", e)
-        return None
+        messagebox.showerror("Erro", f"Erro ao calcular lucro total de cartas: {e}")
+        registrar_erro("Erro ao calcular lucro total de cartas", e)
+        return 0.0
+
     finally:
-        conn.close()
+        if conn:
+            conn.close()
+
     
 def calcular_lucro_total_cartas_vendidas():
     '''
@@ -306,29 +323,45 @@ def calcular_lucro_total_cartas_vendidas():
 
 def calcular_total_gasto_cartas():
     '''
-    Calcula o total gasto em cartas.
-    returns:
-        float: O total gasto em cartas, ou 0.0 se não houver cartas.
+    Calcula o total gasto em cartas (em posse + vendidas).
+    Returns:
+        float: O total gasto em cartas, ou 0.0 se não houver dados.
     '''
-    query = """
-        SELECT SUM(preco_da_compra * quantidade) AS valor_total
-        FROM carta
-        WHERE preco_da_compra IS NOT NULL;
-    """
     try:
         conn = conectar()
         cursor = conn.cursor()
-        cursor.execute(query)
-        resultado = cursor.fetchone()
-        conn.close()
-        return resultado[0] if resultado[0] is not None else 0.0
+
+        # Total gasto em cartas em posse
+        query_posse = """
+            SELECT SUM(preco_da_compra * quantidade) AS valor_posse
+            FROM carta
+            WHERE preco_da_compra IS NOT NULL;
+        """
+        cursor.execute(query_posse)
+        resultado_posse = cursor.fetchone()
+        total_posse = resultado_posse[0] if resultado_posse[0] is not None else 0.0
+
+        # Total gasto em cartas vendidas
+        query_vendas = """
+            SELECT SUM(preco_da_compra * quantidade) AS valor_vendas
+            FROM venda
+            WHERE preco_da_compra IS NOT NULL;
+        """
+        cursor.execute(query_vendas)
+        resultado_vendas = cursor.fetchone()
+        total_vendas = resultado_vendas[0] if resultado_vendas[0] is not None else 0.0
+
+        return total_posse + total_vendas
+
     except Exception as e:
-        messagebox.showerror("Erro", f"Erro ao calcular valor total de cartas em posse: {e}")
-        conn.close()
-        registrar_erro("Erro ao calcular valor total de cartas em posse", e)
-        return None
+        messagebox.showerror("Erro", f"Erro ao calcular valor total de cartas: {e}")
+        registrar_erro("Erro ao calcular valor total de cartas", e)
+        return 0.0
+
     finally:
-        conn.close()
+        if conn:
+            conn.close()
+
 
 def calcular_total_vendido_cartas():
     '''
@@ -780,8 +813,8 @@ def atualizar_produto(produto):
     finally:
         conn.close()
 
-def deletar(id, tabela):
-    query = f"DELETE FROM {tabela} WHERE id_{tabela} = ?;"
+def deletar(id, tabela, tipo="carta"):
+    query = f"DELETE FROM {tabela} WHERE id_{tipo} = ?;"
     try:
         conn = conectar()
         cursor = conn.cursor()

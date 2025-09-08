@@ -41,7 +41,7 @@ def abrir_tela_listagem_venda_produtos(app):
     lucro_venda = calcular_lucro_total_produtos_vendidos()  
     total_gasto = calcular_total_gasto_produtos()
     total_vendido = calcular_total_vendido_produtos()
-    total_produtos_vendidos_unidade = len(listar_venda_filtro('venda_produto')) or 0
+    total_produtos_vendidos_unidade = len(listar_venda_filtro('produto')) or 0
     total_produtos_vendidos_quantidade = calcular_quantidade_vendida('venda_produto')
 
     dados_resumo = [

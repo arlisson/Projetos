@@ -146,6 +146,15 @@ def criar_tela_editar_carta(app, id_carta):
     campos["colecao"].grid(row=12, column=1, columnspan=2, padx=5, pady=3, sticky="we")
     popular_dropdown(campos["colecao"], buscar_valores_tabela("colecao"))
 
+
+    campos["data_scraping"] = criar_entrada_data_com_calendario(
+        frame=form_frame,
+        root=root,
+        linha=13,
+        texto_label="Data do Scraping:",
+        icone=CALENDAR_ICON  # ou None para usar 📅
+    )
+
     imagem_frame = ttk.LabelFrame(main_frame, text="Imagem", padding=10)
     imagem_frame.grid(row=0, column=1, padx=10, pady=10, sticky="ne")
 
@@ -216,6 +225,8 @@ def criar_tela_editar_carta(app, id_carta):
 
                     campos["origem"].delete(0, tk.END)
                     campos["origem"].insert(0, dados["origem"])
+                    campos["data_scraping"].delete(0, tk.END)
+                    campos["data_scraping"].insert(0, datetime.today().strftime("%Y-%m-%d"))
 
                     # Atualiza dropdown de coleção
                     colecao_nome = dados["colecao"]
@@ -257,6 +268,7 @@ def criar_tela_editar_carta(app, id_carta):
     campos["imagem"].insert(0, carta["imagem"])
     campos["imagem_salva"].insert(0, carta.get("imagem_salva", ""))
     atualizar_imagem(carta.get("imagem_salva") or carta["imagem"])
+    campos["data_scraping"].insert(0, carta.get("data_scraping", ""))
 
 
     for i, val in enumerate(campos["raridade"].cget("values")):
@@ -289,7 +301,7 @@ def criar_tela_editar_carta(app, id_carta):
                 "raridade": int(campos["raridade"].get().split(" - ")[0]),
                 "qualidade": int(campos["qualidade"].get().split(" - ")[0]),
                 "colecao": int(campos["colecao"].get().split(" - ")[0]),
-                "data_scraping": datetime.today().strftime("%Y-%m-%d"),
+                "data_scraping": campos["data_scraping"].get() or datetime.today().strftime("%Y-%m-%d"),
                 "imagem_salva": campos["imagem_salva"].get().replace("\\", "/") or ""
             }
            

@@ -52,13 +52,13 @@ def abrir_tela_listagem(app):
         {"emoji": "💸", "texto": "Lucro com vendas", "valor": lucro_venda, "row": 0, "column": 1, "anchor": "e"},
         {"emoji": "💹", "texto": "Total gasto", "valor": total_gasto, "row": 1, "column": 0, "anchor": "w"},
         {"emoji": "💵", "texto": "Total vendido", "valor": total_vendido, "row": 1, "column": 1, "anchor": "e"},
-        {"emoji": "📦", "texto": "Total Cartas Unidade", "valor": total_cartas_unidade, "row": 2, "column": 0, "anchor": "w"},
-        {"emoji": "📦", "texto": "Total Cartas Quantidade", "valor": total_cartas_quantidade, "row": 2, "column": 1, "anchor": "e"},
+        {"emoji": "📦", "texto": "Total Cartas Unidade", "valor": str(total_cartas_unidade), "row": 2, "column": 0, "anchor": "w"},
+        {"emoji": "📦", "texto": "Total Cartas Quantidade", "valor": str(total_cartas_quantidade), "row": 2, "column": 1, "anchor": "e"},
     ]
 
     # Criação do frame
     frame_resumo = sumario(root, "Resumo Financeiro", dados_resumo)
-    
+
     frame_resumo.grid(row=0, column=0, columnspan=2, sticky="ew")
 
     busca_frame = ttk.Frame(root, padding=5)

@@ -123,6 +123,14 @@ def criar_tela_editar_produto(app, id_produto):
     campos["quantidade"] = criar_entrada(form_frame, "Quantidade:", 7)
     campos["origem"] = criar_entrada(form_frame, "Origem:", 8)
 
+    campos["data_scraping"] = criar_entrada_data_com_calendario(
+        frame=form_frame,
+        root=root,
+        linha=9,
+        texto_label="Data do Scraping:",
+        icone=CALENDAR_ICON
+    )
+
     imagem_frame = ttk.LabelFrame(main_frame, text="Imagem", padding=10, width=320)
     imagem_frame.grid(row=0, column=1, padx=5, pady=5, sticky="ns")
     imagem_label = ttk.Label(imagem_frame)
@@ -177,7 +185,10 @@ def criar_tela_editar_produto(app, id_produto):
 
                     preco = dados.get("preco_atual", "").replace("R$", "").replace(",", ".").strip()
                     campos["preco_atual"].delete(0, tk.END)
-                    campos["preco_atual"].insert(0, preco)                   
+                    campos["preco_atual"].insert(0, preco)     
+
+                    campos["data_scraping"].delete(0, tk.END)
+                    campos["data_scraping"].insert(0, datetime.today().strftime("%Y-%m-%d"))
 
                    # Baixa e preenche caminho salvo
                     nome_arquivo = f"{dados['nome']}.jpg"
@@ -216,7 +227,7 @@ def criar_tela_editar_produto(app, id_produto):
                 "data_compra": campos["data_compra"].get(),
                 "quantidade": int(campos["quantidade"].get()),
                 "origem": campos["origem"].get() or "Liga Yugioh",
-                "data_scraping": datetime.today().strftime("%Y-%m-%d"),
+                "data_scraping": campos["data_scraping"].get() or datetime.today().strftime("%Y-%m-%d"),
                 "imagem_salva": campos["imagem_salva"].get() or "",
             }
 
@@ -243,7 +254,7 @@ def criar_tela_editar_produto(app, id_produto):
 
     def apagar_produto():
         if messagebox.askokcancel("Confirmar", "Tem certeza que deseja deletar este produto?", parent=root):
-            if deletar(id=id_produto, tabela="produto"):
+            if deletar(id=id_produto, tabela="produto", tipo="produto"):
                 messagebox.showinfo("Sucesso", f"Produto: {campos['nome'].get()} deletado com sucesso!", parent=root)
                 ao_fechar()
             else:
@@ -283,6 +294,7 @@ def criar_tela_editar_produto(app, id_produto):
                     "preco_da_venda": preco_venda,
                     "origem": campos["origem"].get() or "Liga Yugioh",
                     "imagem_salva": campos["imagem_salva"].get() or "",
+                    "data_scraping": campos["data_scraping"].get() or datetime.today().strftime("%Y-%m-%d"),
                 }
 
                 # registra a venda genérica (o DAO deve decrementar o estoque do item)
@@ -334,6 +346,7 @@ def criar_tela_editar_produto(app, id_produto):
     campos["quantidade"].insert(0, str(produto["quantidade"] or "1"))
     campos["origem"].insert(0, produto["origem"] or "Liga Yugioh")
     campos["imagem_salva"].insert(0, produto["imagem_salva"] or "")
+    campos["data_scraping"].insert(0, produto.get("data_scraping", ""))
 
     # Tenta exibir imagem salva local, senão usa a da URL, senão usa a padrão
     caminho_imagem = produto["imagem_salva"] or produto["imagem"] or IMAGEM_PADRAO
