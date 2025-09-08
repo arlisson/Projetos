@@ -7,6 +7,8 @@ import urllib.request
 from io import BytesIO
 from datetime import datetime
 
+from Components.entrada_padrao import criar_entrada_com_botao_imagem, criar_entrada_data_com_calendario
+from Utils.baixar_carta import salvar_imagem_local
 from Utils.limpar_preco import limpar_preco
 
 from scraping.scraping_cartas import buscar_carta_myp
@@ -16,7 +18,7 @@ from Components.thread_com_modal import executar_em_thread
 
 
 
-IMAGEM_PADRAO = "https://i.pinimg.com/736x/71/1e/da/711eda25308c65a7756751088866e181.jpg"
+IMAGEM_PADRAO = "imagens/imagens_cartas/imagem_padrao.png"
 
 def criar_tela_editar_venda_carta(app, id_venda):
     from View.listar_venda_cartas import abrir_tela_listagem_venda
@@ -50,44 +52,22 @@ def criar_tela_editar_venda_carta(app, id_venda):
     main_frame.columnconfigure(1, weight=0)
     main_frame.rowconfigure(0, weight=1)
 
-    calendar_img = Image.open("imagens/calendario.png").resize((20, 20))
-    CALENDAR_ICON = ImageTk.PhotoImage(calendar_img)
+    try:
+        calendar_img = Image.open("imagens/calendario.png").resize((20, 20))
+        file_img = Image.open("imagens/pasta-aberta.png").resize((20, 20))
+        FILE_ICON = ImageTk.PhotoImage(file_img)
+        CALENDAR_ICON = ImageTk.PhotoImage(calendar_img)
+    except Exception as e:
+        CALENDAR_ICON = None
+        FILE_ICON = None
+        registrar_erro(f"Erro ao carregar ícone do calendário: {e}")
 
     campos = {}
 
-    def abrir_calendario():
-        top = tk.Toplevel(root)
-        top.title("Selecionar Data")
-        top.grab_set()
-        top.resizable(False, False)
-        top.geometry(f"+{root.winfo_rootx() + 200}+{root.winfo_rooty() + 150}")
-        cal = Calendar(top, selectmode='day', date_pattern='yyyy-mm-dd')
-        cal.pack(padx=10, pady=10)
-
-        def selecionar_data():
-            campos["data"].delete(0, tk.END)
-            campos["data"].insert(0, cal.get_date())
-            top.destroy()
-
-        ttk.Button(top, text="Selecionar", command=selecionar_data).pack(pady=5)
+    
     
 
-    def abrir_calendario_para(campo_nome):
-        top = tk.Toplevel(root)
-        top.title("Selecionar Data")
-        top.grab_set()
-        top.resizable(False, False)
-        top.geometry(f"+{root.winfo_rootx() + 200}+{root.winfo_rooty() + 150}")
-        cal = Calendar(top, selectmode='day', date_pattern='yyyy-mm-dd')
-        cal.pack(padx=10, pady=10)
-
-        def selecionar_data():
-            campos[campo_nome].delete(0, tk.END)
-            campos[campo_nome].insert(0, cal.get_date())
-            top.destroy()
-
-        ttk.Button(top, text="Selecionar", command=selecionar_data).pack(pady=5)
-
+    
 
     def criar_rotulo_entrada(frame, texto, linha, largura=50, somente_leitura=False):
         ttk.Label(frame, text=texto).grid(row=linha, column=0, sticky="w", padx=5, pady=3)
@@ -107,36 +87,59 @@ def criar_tela_editar_venda_carta(app, id_venda):
     campos["preco"] = criar_rotulo_entrada(form_frame, "Preço pago:", 3)
     campos["preco_atual"] = criar_rotulo_entrada(form_frame, "Preço atual:", 4)
 
-    ttk.Label(form_frame, text="Data da compra:").grid(row=5, column=0, sticky="w", padx=5, pady=3)
-    data_frame = ttk.Frame(form_frame)
-    data_frame.grid(row=5, column=1, columnspan=2, padx=5, pady=3, sticky="we")
-    data_frame.columnconfigure(0, weight=1)
+    campos["data"] = criar_entrada_data_com_calendario(
+        frame=form_frame,
+        root=root,
+        linha=5,
+        texto_label="Data da Compra:",
+        icone=CALENDAR_ICON  # ou None para usar 📅
+   )
 
-    campos["data"] = ttk.Entry(data_frame)
-    campos["data"].grid(row=0, column=0, sticky="we", padx=(0, 5))
-
-    btn = ttk.Button(data_frame, image=CALENDAR_ICON, command=abrir_calendario)
-    btn.image = CALENDAR_ICON
-    btn.grid(row=0, column=1)
 
     campos["quantidade"] = criar_rotulo_entrada(form_frame, "Quantidade:", 6)
     campos["preco_venda"] = criar_rotulo_entrada(form_frame, "Preço da venda:", 11)
 
-    ttk.Label(form_frame, text="Data da venda:").grid(row=12, column=0, sticky="w", padx=5, pady=3)
-    data_venda_frame = ttk.Frame(form_frame)
-    data_venda_frame.grid(row=12, column=1, columnspan=2, padx=5, pady=3, sticky="we")
-    data_venda_frame.columnconfigure(0, weight=1)
+    campos["data_venda"] = criar_entrada_data_com_calendario(
+        frame=form_frame,
+        root=root,
+        linha=12,
+        texto_label="Data da Venda:",
+        icone=CALENDAR_ICON  # ou None para usar 📅
+   )
 
-    campos["data_venda"] = ttk.Entry(data_venda_frame)
-    campos["data_venda"].grid(row=0, column=0, sticky="we", padx=(0, 5))
-
-    btn_data_venda = ttk.Button(data_venda_frame, image=CALENDAR_ICON, command=lambda: abrir_calendario_para("data_venda"))
-    btn_data_venda.image = CALENDAR_ICON
-    btn_data_venda.grid(row=0, column=1)
 
 
     campos["imagem"] = criar_rotulo_entrada(form_frame, "Imagem URL:", 7)
-    campos["origem"] = criar_rotulo_entrada(form_frame, "Origem:", 13)
+
+    def atualizar_imagem(caminho):
+        try:
+            if caminho.startswith("http://") or caminho.startswith("https://"):
+                with urllib.request.urlopen(caminho) as u:
+                    raw_data = u.read()
+                im = Image.open(BytesIO(raw_data))
+            else:
+                im = Image.open(caminho)
+
+            im.thumbnail((300, 420))
+            photo = ImageTk.PhotoImage(im)
+            imagem_label.configure(image=photo)
+            imagem_label.image = photo
+        except Exception as e:
+            messagebox.showerror("Erro", f"Falha ao carregar imagem: {e}", parent=root)
+            registrar_erro(f"[Erro] Falha ao carregar imagem: {e}")
+            imagem_label.configure(image='')
+            imagem_label.image = None
+
+    campos["imagem_salva"] = criar_entrada_com_botao_imagem(
+        frame=form_frame,
+        texto="Imagem:",
+        linha=8,
+        ao_selecionar=atualizar_imagem,
+        path="imagens/imagens_cartas",
+        icone=FILE_ICON  # ou None para usar "📁"
+    )
+
+    campos["origem"] = criar_rotulo_entrada(form_frame, "Origem:", 14)
 
     def popular_dropdown(combo, dados):
         valores = [f"{item[0]} - {item[1]}" for item in dados]
@@ -144,19 +147,19 @@ def criar_tela_editar_venda_carta(app, id_venda):
         if valores:
             combo.current(0)
 
-    ttk.Label(form_frame, text="Raridade:").grid(row=8, column=0, sticky="w", padx=5, pady=3)
+    ttk.Label(form_frame, text="Raridade:").grid(row=9, column=0, sticky="w", padx=5, pady=3)
     campos["raridade"] = ttk.Combobox(form_frame, state="readonly")
-    campos["raridade"].grid(row=8, column=1, padx=5, pady=3, sticky="we")
+    campos["raridade"].grid(row=9, column=1, padx=5, pady=3, sticky="we")
     popular_dropdown(campos["raridade"], buscar_valores_tabela("raridade"))
 
-    ttk.Label(form_frame, text="Qualidade:").grid(row=9, column=0, sticky="w", padx=5, pady=3)
+    ttk.Label(form_frame, text="Qualidade:").grid(row=10, column=0, sticky="w", padx=5, pady=3)
     campos["qualidade"] = ttk.Combobox(form_frame, state="readonly")
-    campos["qualidade"].grid(row=9, column=1, padx=5, pady=3, sticky="we")
+    campos["qualidade"].grid(row=10, column=1, padx=5, pady=3, sticky="we")
     popular_dropdown(campos["qualidade"], buscar_valores_tabela("qualidade"))
 
-    ttk.Label(form_frame, text="Coleção:").grid(row=10, column=0, sticky="w", padx=5, pady=3)
+    ttk.Label(form_frame, text="Coleção:").grid(row=11, column=0, sticky="w", padx=5, pady=3)
     campos["colecao"] = ttk.Combobox(form_frame, state="readonly")
-    campos["colecao"].grid(row=10, column=1, padx=5, pady=3, sticky="we")
+    campos["colecao"].grid(row=11, column=1, padx=5, pady=3, sticky="we")
     popular_dropdown(campos["colecao"], buscar_valores_tabela("colecao"))
 
     imagem_frame = ttk.LabelFrame(main_frame, text="Imagem", padding=10)
@@ -165,18 +168,8 @@ def criar_tela_editar_venda_carta(app, id_venda):
     imagem_label = ttk.Label(imagem_frame)
     imagem_label.pack()
 
-    def atualizar_imagem(url):
-        try:
-            with urllib.request.urlopen(url) as u:
-                raw_data = u.read()
-            im = Image.open(BytesIO(raw_data))
-            im.thumbnail((300, 420))
-            photo = ImageTk.PhotoImage(im)
-            imagem_label.configure(image=photo)
-            imagem_label.image = photo
-        except:
-            imagem_label.configure(image='')
-            imagem_label.image = None
+    
+
 
     
     def preencher_com_scraping():
@@ -208,9 +201,23 @@ def criar_tela_editar_venda_carta(app, id_venda):
                     campos["preco_atual"].delete(0, tk.END)
                     campos["preco_atual"].insert(0, limpar_preco(dados["preco_atual"]))
 
+                    imagem_url = dados["imagem"]
+                    codigo = dados["codigo"] or re.sub(r'\W+', '_', dados["nome"].lower())
+                    nome_arquivo = f"{codigo}.jpg"
+                    caminho_local = salvar_imagem_local(imagem_url, nome_arquivo)
+
+                    campos["imagem"].delete(0, tk.END)
+                    campos["imagem"].insert(0, imagem_url)
+
+                    campos["imagem_salva"].delete(0, tk.END)
+                    campos["imagem_salva"].insert(0, caminho_local or "")
+
                     campos["imagem"].delete(0, tk.END)
                     campos["imagem"].insert(0, dados["imagem"])
-                    atualizar_imagem(dados["imagem"])
+                    campos["imagem_salva"].delete(0, tk.END)
+                    campos["imagem_salva"].insert(0, caminho_local or "")
+
+                    atualizar_imagem(caminho_local or imagem_url)
 
                     campos["origem"].delete(0, tk.END)
                     campos["origem"].insert(0, dados["origem"])
@@ -253,9 +260,10 @@ def criar_tela_editar_venda_carta(app, id_venda):
     campos["quantidade"].insert(0, str(venda["quantidade"]))
     campos["preco_venda"].insert(0, str(venda["preco_da_venda"]))
     campos["imagem"].insert(0, venda["imagem"])
+    campos["imagem_salva"].insert(0, venda["imagem_salva"])
     campos["origem"].insert(0, venda["origem"])
     campos["data_venda"].insert(0, venda["data_da_venda"])
-    atualizar_imagem(venda["imagem"])
+    atualizar_imagem(venda.get("imagem_salva") or venda["imagem"])
 
     for i, val in enumerate(campos["raridade"].cget("values")):
         if val.startswith(f"{venda['raridade_nome']} -"):
@@ -284,6 +292,7 @@ def criar_tela_editar_venda_carta(app, id_venda):
                 "data_da_compra": campos["data"].get(),
                 "quantidade": int(campos["quantidade"].get()),
                 "imagem": campos["imagem"].get() or IMAGEM_PADRAO,
+                "imagem_salva": campos["imagem_salva"].get() or IMAGEM_PADRAO,
                 "origem": campos["origem"].get(),
                 "raridade": int(campos["raridade"].get().split(" - ")[0]),
                 "qualidade": int(campos["qualidade"].get().split(" - ")[0]),

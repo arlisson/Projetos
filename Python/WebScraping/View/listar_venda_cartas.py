@@ -15,6 +15,7 @@ from DAO.database import (
 )
 
 from Components.thread_com_modal import executar_em_thread
+from Utils.log import registrar_erro
 
 def abrir_tela_listagem_venda(app):
     from View.editar_venda_cartas import criar_tela_editar_venda_carta
@@ -138,13 +139,21 @@ def abrir_tela_listagem_venda(app):
             frame_img.grid(row=row, column=0, padx=1, pady=1, sticky="nsew")
 
             try:
-                with urllib.request.urlopen(carta['imagem']) as u:
-                    raw_data = u.read()
-                im = Image.open(BytesIO(raw_data)).resize((80, 112))
+                caminho_imagem = carta.get('imagem_salva') or carta.get('imagem')
+
+                if caminho_imagem.startswith("http://") or caminho_imagem.startswith("https://"):
+                    with urllib.request.urlopen(caminho_imagem) as u:
+                        raw_data = u.read()
+                    im = Image.open(BytesIO(raw_data))
+                else:
+                    im = Image.open(caminho_imagem)
+
+                im = im.resize((80, 112))
                 photo = ImageTk.PhotoImage(im)
                 lbl_img = tk.Label(frame_img, image=photo, bg="white")
                 lbl_img.image = photo
-            except:
+            except Exception as e:
+                registrar_erro(f"[Erro imagem] {e}")
                 lbl_img = tk.Label(frame_img, text="Erro img", bg="white")
 
             lbl_img.pack()
@@ -184,7 +193,7 @@ def abrir_tela_listagem_venda(app):
                 carta['data_da_compra'],
                 str(quantidade),
                 carta['data_da_venda'],
-                f"R$ {carta['preco_da_venda']:.2f}",
+                f"R$ {carta['preco_da_venda']:.2f}",       
                 carta['data_scraping']
             ]
 

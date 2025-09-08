@@ -8,6 +8,7 @@ import urllib.request
 from io import BytesIO
 from datetime import datetime
 
+from Components.entrada_padrao import criar_entrada_com_botao_imagem, criar_entrada_data_com_calendario
 from Components.pop_up_venda import abrir_popup_venda
 from Utils.limpar_preco import limpar_preco
 from scraping.scraping_cartas import buscar_carta_myp
@@ -52,26 +53,19 @@ def criar_tela_editar_carta(app, id_carta):
     main_frame.columnconfigure(1, weight=0)
     main_frame.rowconfigure(0, weight=1)
 
-    calendar_img = Image.open("imagens/calendario.png").resize((20, 20))
-    CALENDAR_ICON = ImageTk.PhotoImage(calendar_img)
+    try:
+        calendar_img = Image.open("imagens/calendario.png").resize((20, 20))
+        file_img = Image.open("imagens/pasta-aberta.png").resize((20, 20))
+        FILE_ICON = ImageTk.PhotoImage(file_img)
+        CALENDAR_ICON = ImageTk.PhotoImage(calendar_img)
+    except Exception as e:
+        CALENDAR_ICON = None
+        FILE_ICON = None
+        registrar_erro(f"Erro ao carregar ícone do calendário: {e}")
 
     campos = {}
 
-    def abrir_calendario():
-        top = tk.Toplevel(root)
-        top.title("Selecionar Data")
-        top.grab_set()
-        top.resizable(False, False)
-        top.geometry(f"+{root.winfo_rootx() + 200}+{root.winfo_rooty() + 150}")
-        cal = Calendar(top, selectmode='day', date_pattern='yyyy-mm-dd')
-        cal.pack(padx=10, pady=10)
-
-        def selecionar_data():
-            campos["data"].delete(0, tk.END)
-            campos["data"].insert(0, cal.get_date())
-            top.destroy()
-
-        ttk.Button(top, text="Selecionar", command=selecionar_data).pack(pady=5)
+    
 
     def criar_rotulo_entrada(frame, texto, linha, largura=50, somente_leitura=False):
         ttk.Label(frame, text=texto).grid(row=linha, column=0, sticky="w", padx=5, pady=3)
@@ -91,39 +85,46 @@ def criar_tela_editar_carta(app, id_carta):
     campos["preco"] = criar_rotulo_entrada(form_frame, "Preço pago:", 3)
     campos["preco_atual"] = criar_rotulo_entrada(form_frame, "Preço atual:", 4)
 
-    ttk.Label(form_frame, text="Data da compra:").grid(row=5, column=0, sticky="w", padx=5, pady=3)
-    data_frame = ttk.Frame(form_frame)
-    data_frame.grid(row=5, column=1, columnspan=2, padx=5, pady=3, sticky="we")
-    data_frame.columnconfigure(0, weight=1)
-
-    campos["data"] = ttk.Entry(data_frame)
-    campos["data"].grid(row=0, column=0, sticky="we", padx=(0, 5))
-
-    btn = ttk.Button(data_frame, image=CALENDAR_ICON, command=abrir_calendario)
-    btn.image = CALENDAR_ICON
-    btn.grid(row=0, column=1)
+    campos["data"] = criar_entrada_data_com_calendario(
+        frame=form_frame,
+        root=root,
+        linha=5,
+        texto_label="Data da Compra:",
+        icone=CALENDAR_ICON  # ou None para usar 📅
+    )
 
     campos["quantidade"] = criar_rotulo_entrada(form_frame, "Quantidade:", 6)
     campos["imagem"] = criar_rotulo_entrada(form_frame, "Imagem URL:", 7)
 
-    # Agora linha 8 — abaixo do campo de URL
-    ttk.Label(form_frame, text="Imagem:").grid(row=8, column=0, sticky="w", padx=5, pady=3)
-    campos["imagem_salva"] = ttk.Entry(form_frame)
-    campos["imagem_salva"].grid(row=8, column=1, padx=(5, 0), pady=3, sticky="we")
+    def atualizar_imagem(caminho):
+        try:
+            if caminho.startswith("http://") or caminho.startswith("https://"):
+                with urllib.request.urlopen(caminho) as u:
+                    raw_data = u.read()
+                im = Image.open(BytesIO(raw_data))
+            else:
+                im = Image.open(caminho)
 
-    def escolher_imagem_local():
-        caminho = filedialog.askopenfilename(
-            title="Selecionar Imagem",
-            filetypes=[("Imagens", "*.jpg *.jpeg *.png *.webp")]
-        )
-        if caminho:
-            campos["imagem_salva"].delete(0, tk.END)
-            campos["imagem_salva"].insert(0, caminho)
-            atualizar_imagem(caminho)
+            im.thumbnail((300, 420))
+            photo = ImageTk.PhotoImage(im)
+            imagem_label.configure(image=photo)
+            imagem_label.image = photo
+        except Exception as e:
+            messagebox.showerror("Erro", f"Falha ao carregar imagem: {e}", parent=root)
+            registrar_erro(f"[Erro] Falha ao carregar imagem: {e}")
+            imagem_label.configure(image='')
+            imagem_label.image = None
 
-    # Botão ao lado direito da entrada
-    btn_escolher = ttk.Button(form_frame, text="📁", width=3, command=escolher_imagem_local)
-    btn_escolher.grid(row=8, column=2, padx=(5, 10), pady=3, sticky="w")
+
+    # Criar campo
+    campos["imagem_salva"] = criar_entrada_com_botao_imagem(
+        frame=form_frame,
+        texto="Imagem:",
+        linha=8,
+        ao_selecionar=atualizar_imagem,
+        path="imagens/imagens_cartas",
+        icone=FILE_ICON  # ou None para usar "📁"
+    )
 
     campos["origem"] = criar_rotulo_entrada(form_frame, "Origem:", 13)
 

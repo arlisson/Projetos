@@ -1,18 +1,21 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+from tkinter import filedialog
 from PIL import ImageTk, Image
 import urllib.request
 from io import BytesIO
 from datetime import datetime
+from Utils.baixar_carta import salvar_imagem_local
+from Utils.log import registrar_erro
 from scraping.scraping_cartas import buscar_produto_liga
 from DAO.database import inserir_produto
 from decimal import Decimal
 import threading
 from Components.thread_com_modal import executar_em_thread
 
-from Components.entrada_padrao import criar_entrada_padrao, criar_entrada_data_com_calendario
+from Components.entrada_padrao import criar_entrada_com_botao_imagem, criar_entrada_padrao, criar_entrada_data_com_calendario
 
-IMAGEM_PADRAO = "https://i.pinimg.com/736x/71/1e/da/711eda25308c65a7756751088866e181.jpg"
+IMAGEM_PADRAO = "imagens/imagens_produtos/imagem_padrao.jpg"
 
 def criar_tela_cadastro_produto(app):
     root = tk.Toplevel(app)
@@ -38,9 +41,13 @@ def criar_tela_cadastro_produto(app):
 
     try:
         calendar_img = Image.open("imagens/calendario.png").resize((20, 20))
+        file_img = Image.open("imagens/pasta-aberta.png").resize((20, 20))
+        FILE_ICON = ImageTk.PhotoImage(file_img)
         CALENDAR_ICON = ImageTk.PhotoImage(calendar_img)
-    except:
+    except Exception as e:
         CALENDAR_ICON = None
+        FILE_ICON = None
+        registrar_erro(f"Erro ao carregar ícone do calendário: {e}")
 
     campos = {}
 
@@ -50,12 +57,50 @@ def criar_tela_cadastro_produto(app):
 
     campos["link"] = criar_entrada_padrao(form_frame, "Link:", 0)
     campos["nome"] = criar_entrada_padrao(form_frame, "Nome:", 1)
-    campos["imagem"] = criar_entrada_padrao(form_frame, "URL da Imagem:", 2)
-    campos["preco_compra"] = criar_entrada_padrao(form_frame, "Preço Compra:", 3)
-    campos["preco_atual"] = criar_entrada_padrao(form_frame, "Preço Atual:", 4)
-    campos["data_compra"] = criar_entrada_data_com_calendario(form_frame, root, 5, "Data da Compra:", CALENDAR_ICON)
-    campos["quantidade"] = criar_entrada_padrao(form_frame, "Quantidade:", 6)
-    campos["origem"] = criar_entrada_padrao(form_frame, "Origem:", 7)
+    campos["imagem"] = criar_entrada_padrao(form_frame, "URL da Imagem:", 2)   
+
+    def atualizar_imagem(caminho):
+        try:
+            if caminho.startswith("http://") or caminho.startswith("https://"):
+                with urllib.request.urlopen(caminho) as u:
+                    raw_data = u.read()
+                im = Image.open(BytesIO(raw_data))
+            else:
+                im = Image.open(caminho)
+
+            im.thumbnail((300, 420))
+            photo = ImageTk.PhotoImage(im)
+            imagem_label.configure(image=photo)
+            imagem_label.image = photo
+        except Exception as e:
+            messagebox.showerror("Erro", f"Falha ao carregar imagem: {e}", parent=root)
+            registrar_erro(f"[Erro] Falha ao carregar imagem: {e}")
+            imagem_label.configure(image='')
+            imagem_label.image = None            
+    
+    campos["imagem_salva"] = criar_entrada_com_botao_imagem(
+        frame=form_frame,
+        texto="Imagem:",
+        linha=3,
+        ao_selecionar=atualizar_imagem,  # <- callback automático
+        path="imagens/imagens_produtos",
+        icone=FILE_ICON
+    )
+
+    
+    campos["preco_compra"] = criar_entrada_padrao(form_frame, "Preço Compra:",  4)
+    campos["preco_atual"] = criar_entrada_padrao(form_frame, "Preço Atual:", 5)
+
+    campos["data_compra"] = criar_entrada_data_com_calendario(
+        frame=form_frame,
+        root=root,
+        linha=6,
+        texto_label="Data da Compra:",
+        icone=CALENDAR_ICON
+    )
+
+    campos["quantidade"] = criar_entrada_padrao(form_frame, "Quantidade:", 7)
+    campos["origem"] = criar_entrada_padrao(form_frame, "Origem:", 8)
 
     imagem_frame = ttk.LabelFrame(main_frame, text="Imagem", padding=10, width=320)
     imagem_frame.grid(row=0, column=1, padx=5, pady=5, sticky="ns")
@@ -63,19 +108,7 @@ def criar_tela_cadastro_produto(app):
     imagem_label = ttk.Label(imagem_frame)
     imagem_label.pack()
 
-    def atualizar_imagem(url):
-        def _baixar():
-            try:
-                with urllib.request.urlopen(url) as u:
-                    raw_data = u.read()
-                im = Image.open(BytesIO(raw_data))
-                im.thumbnail((300, 420))
-                photo = ImageTk.PhotoImage(im)
-                root.after(0, lambda: (imagem_label.configure(image=photo), setattr(imagem_label, 'image', photo)))
-            except:
-                root.after(0, lambda: (imagem_label.configure(image=''), setattr(imagem_label, 'image', None)))
-        threading.Thread(target=_baixar, daemon=True).start()
-
+    
     def to_decimal(valor):
         try:
             return float(str(valor).replace("R$", "").replace(",", ".").strip())
@@ -107,12 +140,18 @@ def criar_tela_cadastro_produto(app):
                     preco = dados.get("preco_atual", "").replace("R$", "").replace(",", ".").strip()
                     campos["preco_atual"].delete(0, tk.END)
                     campos["preco_atual"].insert(0, preco)
+                   
+                   # Baixa e preenche caminho salvo
+                    nome_arquivo = f"{dados['nome']}.jpg"
+                    caminho_local = salvar_imagem_local(url_imagem=dados["imagem"], nome_arquivo=nome_arquivo, pasta="imagens/imagens_produtos")
 
-                    campos["data_compra"].delete(0, tk.END)
-                    campos["data_compra"].insert(0, "")
-
-                    atualizar_imagem(campos["imagem"].get())
-
+                    if caminho_local:
+                        campos["imagem_salva"].delete(0, tk.END)
+                        campos["imagem_salva"].insert(0, caminho_local.replace("\\", "/"))
+                        atualizar_imagem(caminho_local)
+                    else:
+                        atualizar_imagem(dados["imagem"])  # fallback
+                    
                 root.after(0, preencher)
 
             except Exception as e:
@@ -151,12 +190,14 @@ def criar_tela_cadastro_produto(app):
                 "nome_produto": campos["nome"].get(),
                 "link": campos["link"].get(),
                 "imagem": campos["imagem"].get() or IMAGEM_PADRAO,
+                "imagem_salva": campos["imagem_salva"].get().strip() or IMAGEM_PADRAO,
                 "preco_compra": to_decimal(campos["preco_compra"].get()),
                 "preco_atual": to_decimal(campos["preco_atual"].get()),
                 "data_compra": campos["data_compra"].get(),
                 "quantidade": int(campos["quantidade"].get()),
                 "origem": campos["origem"].get() or "Liga Yugioh",
             }
+
 
             # Função que será executada na thread
             def _salvar():

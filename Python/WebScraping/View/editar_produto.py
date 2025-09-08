@@ -1,4 +1,4 @@
-from logging import root
+import re
 import tkinter as tk
 from tkinter import ttk, messagebox
 from PIL import ImageTk, Image
@@ -6,16 +6,18 @@ import urllib.request
 from io import BytesIO
 from datetime import datetime
 
-from numpy import vander
+
+from Components.entrada_padrao import criar_entrada_com_botao_imagem, criar_entrada_data_com_calendario
 from Components.pop_up_venda import abrir_popup_venda
 from Components.thread_com_modal import executar_em_thread
+from Utils.baixar_carta import salvar_imagem_local
+from Utils.log import registrar_erro
 from scraping.scraping_cartas import buscar_produto_liga
 from DAO.database import atualizar_produto, buscar_produto_por_id, deletar, inserir_venda_generica
-from tkcalendar import Calendar
-from decimal import Decimal
+
 import threading
 
-IMAGEM_PADRAO = "https://i.pinimg.com/736x/71/1e/da/711eda25308c65a7756751088866e181.jpg"
+IMAGEM_PADRAO = "imagens/imagens_produtos/imagem_padrao.jpg"
 
 def criar_tela_editar_produto(app, id_produto):
     from View.listar_produtos import abrir_tela_listagem_produtos
@@ -53,29 +55,17 @@ def criar_tela_editar_produto(app, id_produto):
 
     try:
         calendar_img = Image.open("imagens/calendario.png").resize((20, 20))
+        file_img = Image.open("imagens/pasta-aberta.png").resize((20, 20))
+        FILE_ICON = ImageTk.PhotoImage(file_img)
         CALENDAR_ICON = ImageTk.PhotoImage(calendar_img)
-        icon_ok = True
-    except:
+    except Exception as e:
         CALENDAR_ICON = None
-        icon_ok = False
+        FILE_ICON = None
+        registrar_erro(f"Erro ao carregar ícone do calendário: {e}")
 
     campos = {}
 
-    def abrir_calendario():
-        top = tk.Toplevel(root)
-        top.title("Selecionar Data")
-        top.grab_set()
-        top.resizable(False, False)
-        top.geometry(f"+{root.winfo_rootx() + 200}+{root.winfo_rooty() + 150}")
-        cal = Calendar(top, selectmode='day', date_pattern='yyyy-mm-dd')
-        cal.pack(padx=10, pady=10)
-
-        def selecionar_data():
-            campos["data_compra"].delete(0, tk.END)
-            campos["data_compra"].insert(0, cal.get_date())
-            top.destroy()
-
-        ttk.Button(top, text="Selecionar", command=selecionar_data).pack(pady=5)
+    
 
     def criar_entrada(frame, label, row):
         ttk.Label(frame, text=label).grid(row=row, column=0, sticky="w", padx=5, pady=3)
@@ -90,41 +80,72 @@ def criar_tela_editar_produto(app, id_produto):
     campos["link"] = criar_entrada(form_frame, "Link:", 0)
     campos["nome"] = criar_entrada(form_frame, "Nome:", 1)
     campos["imagem"] = criar_entrada(form_frame, "URL da Imagem:", 2)
-    campos["preco_compra"] = criar_entrada(form_frame, "Preço Compra:", 3)
-    campos["preco_atual"] = criar_entrada(form_frame, "Preço Atual:", 4)
 
-    ttk.Label(form_frame, text="Data da Compra:").grid(row=5, column=0, sticky="w", padx=5, pady=3)
-    data_frame = ttk.Frame(form_frame)
-    data_frame.grid(row=5, column=1, padx=5, pady=3, sticky="ew")
-    data_frame.columnconfigure(0, weight=1)
+    def atualizar_imagem(caminho):
+        try:
+            if caminho.startswith("http://") or caminho.startswith("https://"):
+                with urllib.request.urlopen(caminho) as u:
+                    raw_data = u.read()
+                im = Image.open(BytesIO(raw_data))
+            else:
+                im = Image.open(caminho)
 
-    campos["data_compra"] = ttk.Entry(data_frame)
-    campos["data_compra"].grid(row=0, column=0, sticky="ew", padx=(0, 5))
+            im.thumbnail((300, 420))
+            photo = ImageTk.PhotoImage(im)
+            imagem_label.configure(image=photo)
+            imagem_label.image = photo
+        except Exception as e:
+            messagebox.showerror("Erro", f"Falha ao carregar imagem: {e}", parent=root)
+            registrar_erro(f"[Erro] Falha ao carregar imagem: {e}")
+            imagem_label.configure(image='')
+            imagem_label.image = None            
+    
+    campos["imagem_salva"] = criar_entrada_com_botao_imagem(
+        frame=form_frame,
+        texto="Imagem:",
+        linha=3,
+        ao_selecionar=atualizar_imagem,  # <- callback automático
+        path="imagens/imagens_produtos",
+        icone=FILE_ICON
+    )
 
-    btn = ttk.Button(data_frame, image=CALENDAR_ICON if icon_ok else None,
-                     text="🗕" if not icon_ok else "", command=abrir_calendario)
-    btn.grid(row=0, column=1)
+    campos["preco_compra"] = criar_entrada(form_frame, "Preço Compra:", 4)
+    campos["preco_atual"] = criar_entrada(form_frame, "Preço Atual:", 5)
 
-    campos["quantidade"] = criar_entrada(form_frame, "Quantidade:", 6)
-    campos["origem"] = criar_entrada(form_frame, "Origem:", 7)
+    campos["data_compra"] = criar_entrada_data_com_calendario(
+        frame=form_frame,
+        root=root,
+        linha=6,
+        texto_label="Data da Compra:",
+        icone=CALENDAR_ICON
+    )
+
+    campos["quantidade"] = criar_entrada(form_frame, "Quantidade:", 7)
+    campos["origem"] = criar_entrada(form_frame, "Origem:", 8)
 
     imagem_frame = ttk.LabelFrame(main_frame, text="Imagem", padding=10, width=320)
     imagem_frame.grid(row=0, column=1, padx=5, pady=5, sticky="ns")
     imagem_label = ttk.Label(imagem_frame)
     imagem_label.pack()
 
-    def atualizar_imagem(url):
-        def _baixar():
-            try:
-                with urllib.request.urlopen(url) as u:
+    def atualizar_imagem(caminho):
+        try:
+            if caminho.startswith("http://") or caminho.startswith("https://"):
+                with urllib.request.urlopen(caminho) as u:
                     raw_data = u.read()
                 im = Image.open(BytesIO(raw_data))
-                im.thumbnail((300, 420))
-                photo = ImageTk.PhotoImage(im)
-                root.after(0, lambda: (imagem_label.configure(image=photo), setattr(imagem_label, 'image', photo)))
-            except:
-                root.after(0, lambda: (imagem_label.configure(image=''), setattr(imagem_label, 'image', None)))
-        threading.Thread(target=_baixar, daemon=True).start()
+            else:
+                im = Image.open(caminho)
+
+            im.thumbnail((300, 420))
+            photo = ImageTk.PhotoImage(im)
+            imagem_label.configure(image=photo)
+            imagem_label.image = photo
+        except Exception as e:
+            messagebox.showerror("Erro", f"Falha ao carregar imagem: {e}", parent=root)
+            registrar_erro(f"[Erro] Falha ao carregar imagem: {e}")
+            imagem_label.configure(image='')
+            imagem_label.image = None
 
     def to_decimal(valor):
         try:
@@ -133,16 +154,20 @@ def criar_tela_editar_produto(app, id_produto):
             return 0.0
 
     def buscar_info_scraping():
-        def _buscar():
-            url = campos["link"].get().strip()
-            if not url:
-                return root.after(0, lambda: messagebox.showwarning("Aviso", "Informe o link do produto.", parent=root))
+        url = campos["link"].get().strip()
+        if not url:
+            messagebox.showwarning("Aviso", "Informe o link do produto.", parent=root)
+            return
 
+        def _buscar():
             try:
                 dados = buscar_produto_liga(url)
                 if not dados:
-                    return root.after(0, lambda: messagebox.showwarning("Aviso", "Nenhum dado retornado do scraping.", parent=root))
+                    # qualquer interação com UI precisa voltar pra main thread
+                    return root.after(0, lambda: messagebox.showwarning(
+                        "Aviso", "Nenhum dado retornado do scraping.", parent=root))
 
+                # Atualize a UI sempre via main thread
                 def preencher():
                     campos["nome"].delete(0, tk.END)
                     campos["nome"].insert(0, dados.get("nome", ""))
@@ -152,23 +177,30 @@ def criar_tela_editar_produto(app, id_produto):
 
                     preco = dados.get("preco_atual", "").replace("R$", "").replace(",", ".").strip()
                     campos["preco_atual"].delete(0, tk.END)
-                    campos["preco_atual"].insert(0, preco)
+                    campos["preco_atual"].insert(0, preco)                   
 
-                    campos["data_compra"].delete(0, tk.END)
-                    campos["data_compra"].insert(0, datetime.today().strftime("%Y-%m-%d"))
+                   # Baixa e preenche caminho salvo
+                    nome_arquivo = f"{dados['nome']}.jpg"
+                    caminho_local = salvar_imagem_local(url_imagem=dados["imagem"], nome_arquivo=nome_arquivo, pasta="imagens/imagens_produtos")
 
-                    atualizar_imagem(campos["imagem"].get())
-
+                    if caminho_local:
+                        campos["imagem_salva"].delete(0, tk.END)
+                        campos["imagem_salva"].insert(0, caminho_local.replace("\\", "/"))
+                        atualizar_imagem(caminho_local)
+                    else:
+                        atualizar_imagem(dados["imagem"])  # fallback
+                    
                 root.after(0, preencher)
 
             except Exception as e:
                 root.after(0, lambda: messagebox.showerror("Erro", f"Erro no scraping: {e}", parent=root))
 
+        # Aqui entra o seu modal com thread 👇
         executar_em_thread(
             root,
             _buscar,
-            titulo="Buscando Produto",
-            mensagem="Coletando informações do produto via scraping..."
+            titulo="Buscando dados",
+            mensagem="Coletando informações do produto..."
         )
 
 
@@ -184,7 +216,8 @@ def criar_tela_editar_produto(app, id_produto):
                 "data_compra": campos["data_compra"].get(),
                 "quantidade": int(campos["quantidade"].get()),
                 "origem": campos["origem"].get() or "Liga Yugioh",
-                "data_scraping": datetime.today().strftime("%Y-%m-%d")
+                "data_scraping": datetime.today().strftime("%Y-%m-%d"),
+                "imagem_salva": campos["imagem_salva"].get() or "",
             }
 
             def _salvar():
@@ -249,6 +282,7 @@ def criar_tela_editar_produto(app, id_produto):
                     "data_da_venda": datetime.today().strftime("%Y-%m-%d"),
                     "preco_da_venda": preco_venda,
                     "origem": campos["origem"].get() or "Liga Yugioh",
+                    "imagem_salva": campos["imagem_salva"].get() or "",
                 }
 
                 # registra a venda genérica (o DAO deve decrementar o estoque do item)
@@ -299,8 +333,12 @@ def criar_tela_editar_produto(app, id_produto):
     campos["data_compra"].insert(0, produto["data_compra"] or "")
     campos["quantidade"].insert(0, str(produto["quantidade"] or "1"))
     campos["origem"].insert(0, produto["origem"] or "Liga Yugioh")
+    campos["imagem_salva"].insert(0, produto["imagem_salva"] or "")
 
-    atualizar_imagem(produto["imagem"] or IMAGEM_PADRAO)
+    # Tenta exibir imagem salva local, senão usa a da URL, senão usa a padrão
+    caminho_imagem = produto["imagem_salva"] or produto["imagem"] or IMAGEM_PADRAO
+    atualizar_imagem(caminho_imagem)
+
 
     root.mainloop()
 

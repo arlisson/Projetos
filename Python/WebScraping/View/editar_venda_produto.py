@@ -8,7 +8,9 @@ import threading
 
 from tkcalendar import Calendar
 
+from Components.entrada_padrao import criar_entrada_com_botao_imagem, criar_entrada_com_botao_imagem, criar_entrada_data_com_calendario, criar_entrada_padrao
 from Components.thread_com_modal import executar_em_thread
+from Utils.baixar_carta import salvar_imagem_local
 from Utils.log import registrar_erro
 from scraping.scraping_cartas import buscar_produto_liga  # reutilizado para produto
 from DAO.database import (
@@ -61,82 +63,85 @@ def criar_tela_editar_venda_produto(app, id_venda_produto):
     try:
         calendar_img = Image.open("imagens/calendario.png").resize((20, 20))
         CALENDAR_ICON = ImageTk.PhotoImage(calendar_img)
-        icon_ok = True
-    except Exception:
+        file_icon_img = Image.open("imagens/pasta-aberta.png").resize((20, 20))
+        FILE_ICON = ImageTk.PhotoImage(file_icon_img)
+    except Exception as e:
         CALENDAR_ICON = None
-        icon_ok = False
+        FILE_ICON = None
+        registrar_erro(f"Erro ao carregar ícone do calendário: {e}")
 
     campos = {}
 
-    def abrir_calendario(campo_destino_key: str, titulo: str):
-        top = tk.Toplevel(root)
-        top.title(titulo)
-        top.grab_set()
-        top.resizable(False, False)
-        top.geometry(f"+{root.winfo_rootx() + 200}+{root.winfo_rooty() + 150}")
-        cal = Calendar(top, selectmode='day', date_pattern='yyyy-mm-dd')
-        cal.pack(padx=10, pady=10)
-
-        def selecionar_data():
-            campos[campo_destino_key].delete(0, tk.END)
-            campos[campo_destino_key].insert(0, cal.get_date())
-            top.destroy()
-
-        ttk.Button(top, text="Selecionar", command=selecionar_data).pack(pady=5)
-
-    def criar_entrada(frame, label, row, width=None):
-        ttk.Label(frame, text=label).grid(row=row, column=0, sticky="w", padx=5, pady=3)
-        entry = ttk.Entry(frame, width=width)
-        entry.grid(row=row, column=1, sticky="ew", padx=5, pady=3)
-        return entry
-
+    
+    
     form_frame = ttk.LabelFrame(main_frame, text="Dados da Venda (Produto)", padding=10)
     form_frame.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
     form_frame.columnconfigure(1, weight=1)
 
-    campos["link"] = criar_entrada(form_frame, "Link:", 0)
-    campos["nome_produto"] = criar_entrada(form_frame, "Nome do Produto:", 1)
-    campos["imagem"] = criar_entrada(form_frame, "URL da Imagem:", 2)
-    campos["preco_compra"] = criar_entrada(form_frame, "Preço Compra (unit):", 3)
-    campos["preco_atual"] = criar_entrada(form_frame, "Preço Atual (unit):", 4)
+    campos["link"] = criar_entrada_padrao(form_frame, "Link:", 0)
+    campos["nome_produto"] = criar_entrada_padrao(form_frame, "Nome do Produto:", 1)
+    campos["imagem"] = criar_entrada_padrao(form_frame, "URL da Imagem:", 2)
 
-    # Data da compra
-    ttk.Label(form_frame, text="Data da Compra:").grid(row=5, column=0, sticky="w", padx=5, pady=3)
-    data_compra_frame = ttk.Frame(form_frame)
-    data_compra_frame.grid(row=5, column=1, padx=5, pady=3, sticky="ew")
-    data_compra_frame.columnconfigure(0, weight=1)
-    campos["data_compra"] = ttk.Entry(data_compra_frame)
-    campos["data_compra"].grid(row=0, column=0, sticky="ew", padx=(0, 5))
-    ttk.Button(
-        data_compra_frame,
-        image=CALENDAR_ICON if icon_ok else None,
-        text="📅" if not icon_ok else "",
-        command=lambda: abrir_calendario("data_compra", "Selecionar Data de Compra")
-    ).grid(row=0, column=1)
+    def atualizar_imagem(caminho):
+        try:
+            if caminho.startswith("http://") or caminho.startswith("https://"):
+                with urllib.request.urlopen(caminho) as u:
+                    raw_data = u.read()
+                im = Image.open(BytesIO(raw_data))
+            else:
+                im = Image.open(caminho)
 
-    campos["quantidade"] = criar_entrada(form_frame, "Quantidade vendida:", 6)
-    campos["origem"] = criar_entrada(form_frame, "Origem:", 7)
+            im.thumbnail((300, 420))
+            photo = ImageTk.PhotoImage(im)
+            imagem_label.configure(image=photo)
+            imagem_label.image = photo
+        except Exception as e:
+            messagebox.showerror("Erro", f"Falha ao carregar imagem: {e}", parent=root)
+            registrar_erro(f"[Erro] Falha ao carregar imagem: {e}")
+            imagem_label.configure(image='')
+            imagem_label.image = None
 
-    # Data da venda
-    ttk.Label(form_frame, text="Data da Venda:").grid(row=8, column=0, sticky="w", padx=5, pady=3)
-    data_venda_frame = ttk.Frame(form_frame)
-    data_venda_frame.grid(row=8, column=1, padx=5, pady=3, sticky="ew")
-    data_venda_frame.columnconfigure(0, weight=1)
-    campos["data_venda"] = ttk.Entry(data_venda_frame)
-    campos["data_venda"].grid(row=0, column=0, sticky="ew", padx=(0, 5))
-    ttk.Button(
-        data_venda_frame,
-        image=CALENDAR_ICON if icon_ok else None,
-        text="📅" if not icon_ok else "",
-        command=lambda: abrir_calendario("data_venda", "Selecionar Data de Venda")
-    ).grid(row=0, column=1)
+    campos["imagem_salva"] = criar_entrada_com_botao_imagem(
+        frame=form_frame,
+        texto="Imagem:",
+        linha=3,
+        ao_selecionar=atualizar_imagem,
+        path="imagens/imagens_produtos",
+        icone=FILE_ICON  # ou None para usar "📁"
+    )
 
-    campos["preco_venda"] = criar_entrada(form_frame, "Preço da Venda (unit):", 9)
+    campos["preco_compra"] = criar_entrada_padrao(form_frame, "Preço Compra (unit):", 4)
+    campos["preco_atual"] = criar_entrada_padrao(form_frame, "Preço Atual (unit):", 5)
 
-    # Somente leitura (auto): data_scraping
-    ttk.Label(form_frame, text="Data Scraping:").grid(row=10, column=0, sticky="w", padx=5, pady=3)
-    campos["data_scraping"] = ttk.Entry(form_frame)
-    campos["data_scraping"].grid(row=10, column=1, sticky="ew", padx=5, pady=3)
+    campos["data_compra"] = criar_entrada_data_com_calendario(
+            frame=form_frame,
+            root=root,
+            linha=6,
+            texto_label="Data da Compra:",
+            icone=CALENDAR_ICON  # ou None para usar 📅
+    )
+    
+
+    campos["quantidade"] = criar_entrada_padrao(form_frame, "Quantidade vendida:", 7)
+    campos["origem"] = criar_entrada_padrao(form_frame, "Origem:", 8)
+
+    campos["data_venda"] = criar_entrada_data_com_calendario(
+            frame=form_frame,
+            root=root,
+            linha=9,
+            texto_label="Data da Venda:",
+            icone=CALENDAR_ICON  # ou None para usar 📅
+    )
+
+    campos["preco_venda"] = criar_entrada_padrao(form_frame, "Preço da Venda (unit):", 10)
+
+    campos["data_scraping"] = criar_entrada_data_com_calendario(
+            frame=form_frame,
+            root=root,
+            linha=11,
+            texto_label="Data do Scraping:",
+            icone=CALENDAR_ICON  # ou None para usar 📅
+    )
 
     # ------- Imagem -------
     imagem_frame = ttk.LabelFrame(main_frame, text="Imagem", padding=10, width=320)
@@ -144,18 +149,7 @@ def criar_tela_editar_venda_produto(app, id_venda_produto):
     imagem_label = ttk.Label(imagem_frame)
     imagem_label.pack()
 
-    def atualizar_imagem(url):
-        def _baixar():
-            try:
-                with urllib.request.urlopen(url) as u:
-                    raw_data = u.read()
-                im = Image.open(BytesIO(raw_data))
-                im.thumbnail((300, 420))
-                photo = ImageTk.PhotoImage(im)
-                root.after(0, lambda: (imagem_label.configure(image=photo), setattr(imagem_label, 'image', photo)))
-            except Exception:
-                root.after(0, lambda: (imagem_label.configure(image=''), setattr(imagem_label, 'image', None)))
-        threading.Thread(target=_baixar, daemon=True).start()
+    
 
     def to_decimal(valor: str) -> float:
         try:
@@ -174,9 +168,10 @@ def criar_tela_editar_venda_produto(app, id_venda_produto):
     campos["origem"].insert(0, venda.get("origem", "") or "Liga Yugioh")
     campos["data_venda"].insert(0, venda.get("data_venda", "") or datetime.today().strftime("%Y-%m-%d"))
     campos["preco_venda"].insert(0, str(venda.get("preco_venda", "") or ""))
+    campos["imagem_salva"].insert(0, venda.get("imagem_salva", "") or IMAGEM_PADRAO)
     campos["data_scraping"].insert(0, venda.get("data_scraping", "") or datetime.today().strftime("%Y-%m-%d"))
 
-    atualizar_imagem(campos["imagem"].get() or IMAGEM_PADRAO)
+    atualizar_imagem(campos["imagem_salva"].get() or campos["imagem"].get() or IMAGEM_PADRAO)
 
     # ---------- Scraping (atualiza preco_atual/imagem/nome) ----------
     def preencher_via_scraping():
@@ -212,6 +207,16 @@ def criar_tela_editar_venda_produto(app, id_venda_produto):
                     campos["data_scraping"].delete(0, tk.END)
                     campos["data_scraping"].insert(0, datetime.today().strftime("%Y-%m-%d"))
 
+                    nome_arquivo = f"{dados['nome']}.jpg"
+                    caminho_local = salvar_imagem_local(url_imagem=dados["imagem"], nome_arquivo=nome_arquivo, pasta="imagens/imagens_produtos")
+
+                    if caminho_local:
+                        campos["imagem_salva"].delete(0, tk.END)
+                        campos["imagem_salva"].insert(0, caminho_local.replace("\\", "/"))
+                        atualizar_imagem(caminho_local)
+                    else:
+                        atualizar_imagem(dados["imagem"])  # fallback
+
                     messagebox.showinfo("Sucesso", "Dados atualizados via scraping!", parent=root)
 
                 root.after(0, preencher)
@@ -241,6 +246,7 @@ def criar_tela_editar_venda_produto(app, id_venda_produto):
                 "origem": campos["origem"].get() or "Liga Yugioh",
                 "preco_atual": to_decimal(campos["preco_atual"].get()),
                 "quantidade": int(campos["quantidade"].get() or 0),
+                "imagem_salva": campos["imagem_salva"].get() or "",
                 "data_scraping": campos["data_scraping"].get() or datetime.today().strftime("%Y-%m-%d"),
             }
 

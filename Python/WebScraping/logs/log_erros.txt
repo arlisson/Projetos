@@ -22,3 +22,12 @@
 2025-09-06 13:36:03,367 [ERROR] - Erro ao atualizar venda: | Exceção: no such column: id_venda
 2025-09-07 17:42:37,321 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
 2025-09-07 19:02:08,076 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: unknown url type: '/img/svg/arrow-double-left.svg'
+2025-09-08 13:19:22,252 [ERROR] - Erro ao atualizar produto | Exceção: 'imagem_salva'
+2025-09-08 13:37:34,543 [ERROR] - Erro ao carregar ícone do calendário: [Errno 2] No such file or directory: 'imagens/file_icon.png'
+2025-09-08 13:39:19,866 [ERROR] - Erro ao carregar ícone do calendário: [Errno 2] No such file or directory: 'imagens/file_icon.png'
+2025-09-08 13:39:53,068 [ERROR] - Erro ao carregar ícone do calendário: [Errno 2] No such file or directory: 'imagens/file_icon.png'
+2025-09-08 13:41:09,630 [ERROR] - Erro ao carregar ícone do calendário: [Errno 2] No such file or directory: 'imagens/file_icon.png'
+2025-09-08 13:43:20,274 [ERROR] - Erro ao carregar ícone do calendário: [Errno 2] No such file or directory: 'imagens/file_icon.png'
+2025-09-08 13:51:46,884 [ERROR] - Erro ao carregar imagem do calendário: [Errno 2] No such file or directory: 'imagens/calendario.jpg'
+2025-09-08 13:52:53,630 [ERROR] - Erro ao carregar imagem do calendário: [Errno 2] No such file or directory: 'imagens/calendario.jpg'
+2025-09-08 14:15:50,506 [ERROR] - [Erro] Falha ao carregar imagem: cannot identify image file 'D:/Repositorios/Projetos/Python/WebScraping/imagens/imagens_produtos/Edição de Colecionador - Coleção Lendária.jpg'

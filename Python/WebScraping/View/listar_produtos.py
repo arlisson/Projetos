@@ -11,6 +11,7 @@ from DAO.database import (
     calcular_total_gasto_produtos,
     calcular_total_vendido_produtos,
 )
+from Utils.log import registrar_erro
 
 def abrir_tela_editar_produto(app, id_produto):
     from View.editar_produto import criar_tela_editar_produto
@@ -126,20 +127,34 @@ def abrir_tela_listagem_produtos(app):
             id_produto = produto["id_produto"]
             widgets_linha = []
 
+            frame_img = ttk.Frame(scrollable_frame, relief="solid", borderwidth=1)
+            frame_img.grid(row=row, column=0, padx=1, pady=1, sticky="nsew")
+
             # Imagem
             try:
-                with urllib.request.urlopen(produto["imagem"]) as u:
-                    raw_data = u.read()
-                im = Image.open(BytesIO(raw_data)).resize((80, 112))
-                photo = ImageTk.PhotoImage(im)
-                img_label = tk.Label(scrollable_frame, image=photo, borderwidth=1, relief="solid", bg="white")
-                img_label.image = photo
-            except:
-                img_label = tk.Label(scrollable_frame, text="Erro img", borderwidth=1, relief="solid", bg="white")
+                caminho_imagem = produto.get('imagem_salva') or produto.get('imagem')
 
-            img_label.grid(row=row, column=0, padx=1, pady=1, sticky="nsew")
-            img_label.bind("<Button-1>", lambda e, id=id_produto: abrir_edicao(e, id))
-            widgets_linha.append(img_label)
+                if caminho_imagem.startswith("http://") or caminho_imagem.startswith("https://"):
+                    with urllib.request.urlopen(caminho_imagem) as u:
+                        raw_data = u.read()
+                    im = Image.open(BytesIO(raw_data))
+                else:
+                    im = Image.open(caminho_imagem)
+
+                im = im.resize((80, 112))
+                photo = ImageTk.PhotoImage(im)
+                lbl_img = tk.Label(frame_img, image=photo, bg="white")
+                lbl_img.image = photo
+            except Exception as e:
+                registrar_erro(f"[Erro imagem] {e}")
+                lbl_img = tk.Label(frame_img, text="Erro img", bg="white")
+
+            lbl_img.pack()
+
+
+            for w in [frame_img, lbl_img]:
+                w.bind("<Button-1>", lambda evt, id=id_produto: abrir_edicao(evt, id))
+            widgets_linha.append(lbl_img)
 
             preco_compra = produto['preco_compra'] or 0.0
             preco_atual = produto['preco_atual'] or 0.0
@@ -159,7 +174,7 @@ def abrir_tela_listagem_produtos(app):
                 f"R$ {lucro_total:.2f}",
                 str(quantidade),
                 produto["data_compra"],
-                produto["origem"],
+                produto["origem"],           
                 produto["data_scraping"]
             ]
 

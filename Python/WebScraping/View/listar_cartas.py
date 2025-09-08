@@ -15,6 +15,7 @@ from DAO.database import (
 )
 
 from Components.thread_com_modal import executar_em_thread
+from Utils.log import registrar_erro
 
 def abrir_tela_listagem(app):
     from View.editar_cartas import criar_tela_editar_carta
@@ -136,7 +137,7 @@ def abrir_tela_listagem(app):
             id_carta = carta['id_carta']
             widgets_linha = []
 
-            frame_img = ttk.Frame(scrollable_frame, relief="solid", borderwidth=1)
+            frame_img = ttk.Frame(scrollable_frame, relief="solid", borderwidth=2)
             frame_img.grid(row=row, column=0, padx=1, pady=1, sticky="nsew")
 
             try:
@@ -154,7 +155,7 @@ def abrir_tela_listagem(app):
                 lbl_img = tk.Label(frame_img, image=photo, bg="white")
                 lbl_img.image = photo
             except Exception as e:
-                print(f"[Erro imagem] {e}")
+                registrar_erro(f"[Erro imagem] {e}")
                 lbl_img = tk.Label(frame_img, text="Erro img", bg="white")
 
 

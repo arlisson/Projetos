@@ -10,7 +10,7 @@ from DAO.database import *
 
 from Utils.baixar_carta import salvar_imagem_local
 from tkinter import filedialog
-from Components.entrada_padrao import criar_entrada_padrao, criar_entrada_data_com_calendario
+from Components.entrada_padrao import criar_entrada_com_botao_imagem, criar_entrada_padrao, criar_entrada_data_com_calendario
 from Components.thread_com_modal import executar_em_thread
 
 IMAGEM_PADRAO = "imagens/imagens_cartas/imagem_padrao.jpg"
@@ -33,8 +33,15 @@ def criar_tela_cadastro(app):
     main_frame.columnconfigure(1, weight=0)
     main_frame.rowconfigure(0, weight=1)
 
-    calendar_img = Image.open("imagens/calendario.png").resize((20, 20))
-    CALENDAR_ICON = ImageTk.PhotoImage(calendar_img)
+    try:
+        calendar_img = Image.open("imagens/calendario.png").resize((20, 20))
+        file_img = Image.open("imagens/pasta-aberta.png").resize((20, 20))
+        FILE_ICON = ImageTk.PhotoImage(file_img)
+        CALENDAR_ICON = ImageTk.PhotoImage(calendar_img)
+    except Exception as e:
+        CALENDAR_ICON = None
+        FILE_ICON = None
+        registrar_erro(f"Erro ao carregar ícone do calendário: {e}")
 
     campos = {}
 
@@ -47,31 +54,47 @@ def criar_tela_cadastro(app):
     campos["codigo"] = criar_entrada_padrao(form_frame, "Código:", 2)
     campos["preco_da_compra"] = criar_entrada_padrao(form_frame, "Preço pago:", 3)
     campos["preco_atual"] = criar_entrada_padrao(form_frame, "Preço atual:", 4)
-    campos["data"] = criar_entrada_data_com_calendario(form_frame, root, 5, "Data da compra:", CALENDAR_ICON)
+    
+    campos["data"] = criar_entrada_data_com_calendario(
+        frame=form_frame,
+        root=root,
+        linha=5,
+        texto_label="Data da Compra:",
+        icone=CALENDAR_ICON  # ou None para usar 📅
+   )
+
     campos["quantidade"] = criar_entrada_padrao(form_frame, "Quantidade:", 6)
     campos["imagem"] = criar_entrada_padrao(form_frame, "Imagem URL:", 7)
-    
-    # Agora linha 8 — abaixo do campo de URL
-    ttk.Label(form_frame, text="Imagem:").grid(row=8, column=0, sticky="w", padx=5, pady=3)
-    campos["imagem_salva"] = ttk.Entry(form_frame)
-    campos["imagem_salva"].grid(row=8, column=1, padx=(5, 0), pady=3, sticky="we")
-    
-    
-    
-    def escolher_imagem_local():
-        caminho = filedialog.askopenfilename(
-            title="Selecionar Imagem",
-            filetypes=[("Imagens", "*.jpg *.jpeg *.png *.webp")]
-        )
-        if caminho:
-            campos["imagem_salva"].delete(0, tk.END)
-            campos["imagem_salva"].insert(0, caminho.replace("\\", "/"))
-            atualizar_imagem(caminho)
 
-    # Botão ao lado direito da entrada
-    btn_escolher = ttk.Button(form_frame, text="📁", width=3, command=escolher_imagem_local)
-    btn_escolher.grid(row=8, column=2, padx=(5, 10), pady=3, sticky="w")
+    def atualizar_imagem(caminho):
+        try:
+            if caminho.startswith("http://") or caminho.startswith("https://"):
+                with urllib.request.urlopen(caminho) as u:
+                    raw_data = u.read()
+                im = Image.open(BytesIO(raw_data))
+            else:
+                im = Image.open(caminho)
 
+            im.thumbnail((300, 420))
+            photo = ImageTk.PhotoImage(im)
+            imagem_label.configure(image=photo)
+            imagem_label.image = photo
+        except Exception as e:
+            messagebox.showerror("Erro", f"Falha ao carregar imagem: {e}", parent=root)
+            registrar_erro(f"[Erro] Falha ao carregar imagem: {e}")
+            imagem_label.configure(image='')
+            imagem_label.image = None
+
+
+    # Criar campo
+    campos["imagem_salva"] = criar_entrada_com_botao_imagem(
+        frame=form_frame,
+        texto="Imagem:",
+        linha=8,
+        ao_selecionar=atualizar_imagem,
+        path="imagens/imagens_cartas",
+        icone=FILE_ICON  # ou None para usar "📁"
+    )
 
 
     # Atualiza os campos seguintes para as próximas linhas
@@ -104,23 +127,7 @@ def criar_tela_cadastro(app):
     imagem_label = ttk.Label(imagem_frame)
     imagem_label.pack()
 
-    def atualizar_imagem(caminho):
-        try:
-            if caminho.startswith("http://") or caminho.startswith("https://"):
-                with urllib.request.urlopen(caminho) as u:
-                    raw_data = u.read()
-                im = Image.open(BytesIO(raw_data))
-            else:
-                im = Image.open(caminho)
-
-            im.thumbnail((300, 420))
-            photo = ImageTk.PhotoImage(im)
-            imagem_label.configure(image=photo)
-            imagem_label.image = photo
-        except Exception as e:
-            print(f"[Erro] Falha ao carregar imagem: {e}")
-            imagem_label.configure(image='')
-            imagem_label.image = None
+    
 
 
     def executar_scraping():

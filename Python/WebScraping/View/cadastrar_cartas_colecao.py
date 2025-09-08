@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from Components.entrada_padrao import criar_entrada_padrao, criar_entrada_data_com_calendario
 from Utils.limpar_preco import limpar_preco
+from Utils.log import registrar_erro
 from scraping.scraping_cartas import buscar_cartas_colecao
 from DAO.database import buscar_raridade_qualidade_nome, inserir_carta, inserir_colecao, buscar_colecao_por_nome
 from PIL import Image, ImageTk
@@ -29,19 +30,31 @@ def criar_tela_cadastro_colecao(app):
     root.grab_set()
     root.focus_force()
 
+
+    try:
+        calendar_img = Image.open("imagens/calendario.png").resize((20, 20))
+        root.CALENDAR_ICON = ImageTk.PhotoImage(calendar_img)
+    except Exception as e:
+        root.CALENDAR_ICON = None
+        registrar_erro(f"Erro ao carregar ícone do calendário: {e}")
+
     campos = {}
 
     frame = ttk.LabelFrame(root, text="Informações da Coleção", padding=20)
-    frame.pack(fill="both", expand=True, padx=10, pady=10)
+    frame.pack(fill="both", expand=True, padx=10, pady=10)    
 
-    calendar_img = Image.open("imagens/calendario.png").resize((20, 20))
-    CALENDAR_ICON = ImageTk.PhotoImage(calendar_img)
+    campos["link"] = criar_entrada_padrao(frame=frame, texto="Link da 1ª página:", linha=0)
+    campos["preco_unitario"] = criar_entrada_padrao(frame=frame, texto="Preço unitário por carta:", linha=1)
+    campos["quantidade_unitaria"] = criar_entrada_padrao(frame=frame, texto="Quantidade por carta:", linha=2)
 
-    campos["link"] = criar_entrada_padrao(frame, "Link da 1ª página:", 0)
-    campos["preco_unitario"] = criar_entrada_padrao(frame, "Preço unitário por carta:", 1)
-    campos["quantidade_unitaria"] = criar_entrada_padrao(frame, "Quantidade por carta:", 2)
-    campos["data"] = criar_entrada_data_com_calendario(frame, root, 3, "Data da compra:", CALENDAR_ICON)
-    campos["data"].icon_ref = CALENDAR_ICON
+    campos["data"] = criar_entrada_data_com_calendario(
+            frame=frame,
+            root=root,
+            linha=3,
+            texto_label="Data da Compra:",
+            icone=root.CALENDAR_ICON  # ou None para usar 📅
+    )
+
     campos["quantidade_unitaria"].insert(0, "1")
 
     def salvar_colecao_thread(modal):
