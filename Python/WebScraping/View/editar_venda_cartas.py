@@ -153,6 +153,11 @@ def criar_tela_editar_venda_carta(app, id_venda):
     campos["colecao"].grid(row=11, column=1, padx=5, pady=3, sticky="we")
     popular_dropdown(campos["colecao"], buscar_valores_tabela("colecao"))
 
+    mapa_raridades = popular_dropdown(campos["raridade"], buscar_valores_tabela("raridade"))
+    mapa_qualidades = popular_dropdown(campos["qualidade"], buscar_valores_tabela("qualidade"))
+    mapa_colecoes = popular_dropdown(campos["colecao"], buscar_valores_tabela("colecao"))
+
+
     campos["data_scraping"] = criar_entrada_data_com_calendario(
         frame=form_frame,
         root=root,
@@ -182,7 +187,7 @@ def criar_tela_editar_venda_carta(app, id_venda):
                 if not raridade_texto:
                     return root.after(0, lambda: messagebox.showwarning("Aviso", "Selecione a raridade antes de buscar.", parent=root))
 
-                raridade_nome = raridade_texto.split(" - ")[1]
+                raridade_nome = raridade_texto
                 resultados = buscar_carta_myp(url=url, chave=raridade_nome)
 
                 if not resultados:
@@ -232,7 +237,7 @@ def criar_tela_editar_venda_carta(app, id_venda):
 
                     popular_dropdown(campos["colecao"], buscar_valores_tabela("colecao"))
                     for i, val in enumerate(campos["colecao"].cget("values")):
-                        if val.startswith(f"{colecao_id} -"):
+                        if val.startswith(f"{colecao_nome}"):
                             campos["colecao"].current(i)
                             break
 
@@ -267,23 +272,17 @@ def criar_tela_editar_venda_carta(app, id_venda):
     campos["data_venda"].insert(0, venda["data_da_venda"])
     atualizar_imagem(venda.get("imagem_salva") or venda["imagem"])
     campos["data_scraping"].insert(0, venda.get("data_scraping", ""))
-    # campos["raridade"].bind("<<ComboboxSelected>>", lambda: venda.__setitem__("raridade", campos["raridade"].get().split(" - ")[0]))  # Placeholder para possível ação futura
-    # campos["qualidade"].bind("<<ComboboxSelected>>", lambda: venda.__setitem__("qualidade", campos["qualidade"].get().split(" - ")[0]))  # Placeholder para possível ação futura
-    # campos["colecao"].bind("<<ComboboxSelected>>", lambda: venda.__setitem__("colecao", campos["colecao"].get().split(" - ")[0]))  # Placeholder para possível ação futura
 
+    # Inverte os dicionários para buscar nome pelo ID
+    id_para_nome_raridade = {v: k for k, v in mapa_raridades.items()}
+    id_para_nome_qualidade = {v: k for k, v in mapa_qualidades.items()}
+    id_para_nome_colecao = {v: k for k, v in mapa_colecoes.items()}
 
-    for i, val in enumerate(campos["raridade"].cget("values")):
-        if val.startswith(f"{venda['raridade']} -"):
-            campos["raridade"].current(i)
-            break
-    for i, val in enumerate(campos["qualidade"].cget("values")):
-        if val.startswith(f"{venda['qualidade']} -"):
-            campos["qualidade"].current(i)
-            break
-    for i, val in enumerate(campos["colecao"].cget("values")):
-        if val.startswith(f"{venda['colecao']} -"):
-            campos["colecao"].current(i)
-            break
+    # Define os valores nos dropdowns
+    campos["raridade"].set(id_para_nome_raridade.get(venda["raridade"], ""))
+    campos["qualidade"].set(id_para_nome_qualidade.get(venda["qualidade"], ""))
+    campos["colecao"].set(id_para_nome_colecao.get(venda["colecao"], ""))
+
 
     def salvar():
         try:
@@ -301,9 +300,10 @@ def criar_tela_editar_venda_carta(app, id_venda):
                 "imagem": campos["imagem"].get() or IMAGEM_PADRAO,
                 "imagem_salva": campos["imagem_salva"].get() or IMAGEM_PADRAO,
                 "origem": campos["origem"].get(),
-                "raridade": int(campos["raridade"].get().split(" - ")[0]),
-                "qualidade": int(campos["qualidade"].get().split(" - ")[0]),
-                "colecao": int(campos["colecao"].get().split(" - ")[0]),
+                "raridade": mapa_raridades.get(campos["raridade"].get(), 1),
+                "qualidade": mapa_qualidades.get(campos["qualidade"].get(), 1),
+                "colecao": mapa_colecoes.get(campos["colecao"].get(), 1),
+
                 "data_scraping": campos["data_scraping"].get() or datetime.today().strftime("%Y-%m-%d"),
                 "data_da_venda": campos["data_venda"].get()
                 }

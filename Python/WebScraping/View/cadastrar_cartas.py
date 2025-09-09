@@ -114,6 +114,11 @@ def criar_tela_cadastro(app):
     campos["colecao"].grid(row=12, column=1, columnspan=2, padx=5, pady=3, sticky="we")
     popular_dropdown(campos["colecao"], buscar_valores_tabela("colecao"))
 
+    mapa_raridades = popular_dropdown(campos["raridade"], buscar_valores_tabela("raridade"))
+    mapa_qualidades = popular_dropdown(campos["qualidade"], buscar_valores_tabela("qualidade"))
+    mapa_colecoes = popular_dropdown(campos["colecao"], buscar_valores_tabela("colecao"))
+
+
     imagem_frame = ttk.LabelFrame(main_frame, text="Imagem", padding=10)
     imagem_frame.grid(row=0, column=1, padx=10, pady=10, sticky="ne")
 
@@ -125,7 +130,7 @@ def criar_tela_cadastro(app):
 
     def executar_scraping():
         try:
-            raridade_nome = campos["raridade"].get().split(" - ")[1]
+            raridade_nome = campos["raridade"].get()
             resultados = buscar_carta_myp(url=campos["link"].get(), chave=raridade_nome)
             if not resultados:
                 root.after(0, lambda: messagebox.showwarning("Aviso", "Nenhum resultado encontrado.", parent=root))
@@ -165,7 +170,7 @@ def criar_tela_cadastro(app):
 
                 popular_dropdown(campos["colecao"], buscar_valores_tabela("colecao"))
                 for i, val in enumerate(campos["colecao"].cget("values")):
-                    if val.startswith(f"{colecao_id} -"):
+                    if val.startswith(f"{colecao_nome}"):
                         campos["colecao"].current(i)
                         break
 
@@ -209,9 +214,9 @@ def criar_tela_cadastro(app):
                 "quantidade": int(campos["quantidade"].get()),
                 "imagem": campos["imagem"].get() or IMAGEM_PADRAO,
                 "origem": campos["origem"].get(),
-                "raridade": int(campos["raridade"].get().split(" - ")[0]),
-                "qualidade": int(campos["qualidade"].get().split(" - ")[0]),
-                "colecao": int(campos["colecao"].get().split(" - ")[0]),
+                "raridade": mapa_raridades.get(campos["raridade"].get(), 1),
+                "qualidade": mapa_qualidades.get(campos["qualidade"].get(), 1),
+                "colecao": mapa_colecoes.get(campos["colecao"].get(), 1),
                 "imagem_salva": campos["imagem_salva"].get(),
 
             }

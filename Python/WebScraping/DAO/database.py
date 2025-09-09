@@ -94,6 +94,56 @@ def buscar_raridade_qualidade_nome(nome, tabela):
         registrar_erro(f"Erro ao buscar {tabela} por nome", e)
         return None
 
+def inserir_raridade_qualidade(nome, tabela):
+    '''
+    Insere uma nova raridade ou qualidade no banco de dados.
+    args:
+        nome (str): O nome a ser inserido.
+        tabela (str): "raridade" ou "qualidade".
+
+    returns:
+        int: O ID da nova raridade ou qualidade inserida.
+    '''
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute(f"INSERT INTO {tabela} (nome) VALUES (?)", (nome,))
+        conn.commit()
+        novo_id = cursor.lastrowid
+        conn.close()
+        return novo_id
+    except Exception as e:
+        messagebox.showerror("Erro", f"Erro ao inserir {tabela}: {e}")
+        conn.rollback()
+        conn.close()
+        registrar_erro(f"Erro ao inserir {tabela}", e)
+        return None
+    
+def atualizar_raridade_qualidade(id, nome, tabela):
+    '''
+    Atualiza o nome de uma raridade ou qualidade existente.
+    args:
+        id (int): O ID a ser atualizado.
+        nome (str): O novo nome.
+        tabela (str): "raridade" ou "qualidade".
+
+    returns:
+        bool: True se a atualização foi bem-sucedida, False caso contrário.
+    '''
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+        cursor.execute(f"UPDATE {tabela} SET nome = ? WHERE id_{tabela} = ?", (nome, id))
+        conn.commit()
+        conn.close()
+        return cursor.rowcount > 0
+    except Exception as e:
+        messagebox.showerror("Erro", f"Erro ao atualizar {tabela}: {e}")
+        conn.rollback()
+        conn.close()
+        registrar_erro(f"Erro ao atualizar {tabela}", e)
+        return False
+
 def buscar_raridade_qualidade_id(id, tabela):
     '''
     Busca o nome da raridade ou qualidade pelo ID.

@@ -94,7 +94,12 @@ def abrir_tela_listagem_venda(app):
     canvas.bind("<Configure>", ajustar_largura_canvas)
 
     def on_mousewheel(event):
-        canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+        try:
+            if canvas.winfo_exists():
+                canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+        except Exception as e:
+            registrar_erro(f"[Scroll ignorado] Erro ao scrollar: {e}")
+
 
     canvas.bind_all("<MouseWheel>", on_mousewheel)
     canvas.bind_all("<Button-4>", lambda e: canvas.yview_scroll(-1, "units"))

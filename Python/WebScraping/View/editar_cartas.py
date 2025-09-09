@@ -33,6 +33,11 @@ def criar_tela_editar_carta(app, id_carta):
 
     def ao_fechar():
         abrir_tela_listagem(app)
+        try:
+            root.unbind_all("<MouseWheel>")
+        except Exception as e:
+            registrar_erro(f"[Erro ao desregistrar scroll global] {e}")
+
         root.destroy()
 
     root.protocol("WM_DELETE_WINDOW", ao_fechar)
@@ -147,6 +152,9 @@ def criar_tela_editar_carta(app, id_carta):
     campos["colecao"].grid(row=12, column=1, columnspan=2, padx=5, pady=3, sticky="we")
     popular_dropdown(campos["colecao"], buscar_valores_tabela("colecao"))
 
+    mapa_raridades = popular_dropdown(campos["raridade"], buscar_valores_tabela("raridade"))
+    mapa_qualidades = popular_dropdown(campos["qualidade"], buscar_valores_tabela("qualidade"))
+    mapa_colecoes = popular_dropdown(campos["colecao"], buscar_valores_tabela("colecao"))
 
     campos["data_scraping"] = criar_entrada_data_com_calendario(
         frame=form_frame,
@@ -192,7 +200,7 @@ def criar_tela_editar_carta(app, id_carta):
                 if not raridade_texto:
                     return root.after(0, lambda: messagebox.showwarning("Aviso", "Selecione a raridade antes de buscar.", parent=root))
 
-                raridade_nome = raridade_texto.split(" - ")[1]
+                raridade_nome = raridade_texto
                 resultados = buscar_carta_myp(url=url, chave=raridade_nome)
 
                 if not resultados:
@@ -237,7 +245,7 @@ def criar_tela_editar_carta(app, id_carta):
 
                     popular_dropdown(campos["colecao"], buscar_valores_tabela("colecao"))
                     for i, val in enumerate(campos["colecao"].cget("values")):
-                        if val.startswith(f"{colecao_id} -"):
+                        if val.startswith(f"{colecao_nome}"):
                             campos["colecao"].current(i)
                             break
 
@@ -270,22 +278,17 @@ def criar_tela_editar_carta(app, id_carta):
     campos["imagem_salva"].insert(0, carta.get("imagem_salva", ""))
     atualizar_imagem(carta.get("imagem_salva") or carta["imagem"])
     campos["data_scraping"].insert(0, carta.get("data_scraping", ""))
-    # campos["raridade"].bind("<<ComboboxSelected>>", lambda: carta.__setitem__("raridade", campos["raridade"].get().split(" - ")[0]))  # Placeholder para possível ação futura
-    # campos["qualidade"].bind("<<ComboboxSelected>>", lambda: carta.__setitem__("qualidade", campos["qualidade"].get().split(" - ")[0]))  # Placeholder para possível ação futura
-    # campos["colecao"].bind("<<ComboboxSelected>>", lambda: carta.__setitem__("colecao", campos["colecao"].get().split(" - ")[0]))  # Placeholder para possível ação futura
+   
+   # Inverte os dicionários para buscar nome pelo ID
+    id_para_nome_raridade = {v: k for k, v in mapa_raridades.items()}
+    id_para_nome_qualidade = {v: k for k, v in mapa_qualidades.items()}
+    id_para_nome_colecao = {v: k for k, v in mapa_colecoes.items()}
 
-    for i, val in enumerate(campos["raridade"].cget("values")):
-        if val.startswith(f"{carta['raridade']} -"):
-            campos["raridade"].current(i)
-            break
-    for i, val in enumerate(campos["qualidade"].cget("values")):
-        if val.startswith(f"{carta['qualidade']} -"):
-            campos["qualidade"].current(i)
-            break
-    for i, val in enumerate(campos["colecao"].cget("values")):
-        if val.startswith(f"{carta['colecao']} -"):
-            campos["colecao"].current(i)
-            break
+    # Define os valores nos dropdowns
+    campos["raridade"].set(id_para_nome_raridade.get(carta["raridade"], ""))
+    campos["qualidade"].set(id_para_nome_qualidade.get(carta["qualidade"], ""))
+    campos["colecao"].set(id_para_nome_colecao.get(carta["colecao"], ""))
+
 
     def salvar():
         try:
@@ -301,9 +304,9 @@ def criar_tela_editar_carta(app, id_carta):
                 "quantidade": int(campos["quantidade"].get()),
                 "imagem": campos["imagem"].get() or IMAGEM_PADRAO,
                 "origem": campos["origem"].get(),
-                "raridade": int(campos["raridade"].get().split(" - ")[0]),
-                "qualidade": int(campos["qualidade"].get().split(" - ")[0]),
-                "colecao": int(campos["colecao"].get().split(" - ")[0]),
+                "raridade": mapa_raridades.get(campos["raridade"].get(), 1),
+                "qualidade": mapa_qualidades.get(campos["qualidade"].get(), 1),
+                "colecao": mapa_colecoes.get(campos["colecao"].get(), 1),
                 "data_scraping": campos["data_scraping"].get() or datetime.today().strftime("%Y-%m-%d"),
                 "imagem_salva": campos["imagem_salva"].get().replace("\\", "/") or ""
             }
@@ -353,9 +356,9 @@ def criar_tela_editar_carta(app, id_carta):
                     "codigo": campos["codigo"].get(),
                     "preco_da_compra": limpar_preco(campos["preco"].get()),
                     "data_da_compra": campos["data"].get(),
-                    "raridade": int(campos["raridade"].get().split(" - ")[0]),
-                    "qualidade": int(campos["qualidade"].get().split(" - ")[0]),
-                    "colecao": int(campos["colecao"].get().split(" - ")[0]),
+                    "raridade": mapa_raridades.get(campos["raridade"].get(), 1),
+                    "qualidade": mapa_qualidades.get(campos["qualidade"].get(), 1),
+                    "colecao": mapa_colecoes.get(campos["colecao"].get(), 1),
                     "quantidade": quantidade_vendida,
                     "data_da_venda": datetime.today().strftime("%Y-%m-%d"),
                     "preco_da_venda": preco_venda,
