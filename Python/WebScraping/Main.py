@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from View.cadastrar_cartas import criar_tela_cadastro
 from View.cadastrar_cartas_colecao import criar_tela_cadastro_colecao
+from View.cadastrar_colecao import abrir_tela_gerenciar_colecoes
 from View.cadastrar_raridade_qualidade import abrir_tela_gerenciar_raridade_qualidade
 from View.listar_cartas import abrir_tela_listagem  
 from View.cadastrar_produtos import criar_tela_cadastro_produto
@@ -47,6 +48,11 @@ def criar_tela_principal():
     menu_vendas.add_command(label="Listar Vendas de Cartas", command=lambda: abrir_tela_listagem_venda(root))
     menu_vendas.add_command(label="Listar Vendas de Produtos", command=lambda: abrir_tela_listagem_venda_produtos(root))
     menu_bar.add_cascade(label="Vendas", menu=menu_vendas)
+
+    # --- Coleções ---
+    menu_colecoes = tk.Menu(menu_bar, tearoff=0)
+    menu_colecoes.add_command(label="Gerenciar Coleções", command=abrir_tela_gerenciar_colecoes)
+    menu_bar.add_cascade(label="Coleções", menu=menu_colecoes)
 
     # --- Raridades e Qualidades ---
     menu_raridades = tk.Menu(menu_bar, tearoff=0)

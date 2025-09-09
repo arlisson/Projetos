@@ -7,9 +7,10 @@ from Utils.log import registrar_erro
 DB_PATH = "yugioh.db"
 DATA_SCRAPING = datetime.today().strftime('%Y-%m-%d')
 def conectar():
-    return sqlite3.connect(DB_PATH)
+    conn = sqlite3.connect(DB_PATH)
+    conn.execute("PRAGMA foreign_keys = ON;")  # Habilita as constraints de chave estrangeira
+    return conn
 
-from datetime import datetime
 
 def inserir_carta(dados):
     '''
@@ -84,10 +85,10 @@ def buscar_raridade_qualidade_nome(nome, tabela):
     try:
         conn = conectar()
         cursor = conn.cursor()
-        cursor.execute(f"SELECT id_{tabela} FROM {tabela} WHERE nome = ?", (nome,))
+        cursor.execute(f"SELECT id_{tabela} FROM {tabela} WHERE nome = ?", (nome.upper(),))
         resultado = cursor.fetchone()
         conn.close()
-        return resultado[0].upper() if resultado else None
+        return resultado[0] if resultado else None
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao buscar {tabela} por nome: {e}")
         conn.close()
@@ -1104,7 +1105,7 @@ def listar_venda_filtro(tipo='carta', filtro=""):
             if filtro:
                 cursor.execute("""
                     SELECT * FROM vw_vendas_detalhadas 
-                    WHERE nome LIKE ? 
+                    WHERE nome OR raridade_nome OR codigo OR qualidade_nome LIKE ? 
                     ORDER BY data_da_venda DESC
                 """, (f"%{filtro.upper()}%",))
             else:
@@ -1151,7 +1152,7 @@ def atualizar_venda_generica(venda, tipo="carta"):
                 venda["link_site"],
                 venda["nome"].upper(),
                 venda["colecao"],
-                venda["codigo"],
+                venda["codigo"].upper(),
                 venda["preco_da_compra"],
                 venda["data_da_compra"],
                 venda["raridade"],
@@ -1205,3 +1206,51 @@ def atualizar_venda_generica(venda, tipo="carta"):
     finally:
         conn.close()
 
+def desativar_se_vinculado_ou_deletar(id_item, tabela, tipo="raridade"):
+    """
+    Em vez de deletar diretamente, verifica se há vínculos com cartas/vendas.
+    Se houver, atualiza o nome para indicar desativado. Se não houver, deleta.
+
+    Args:
+        id_item (int): ID do item na tabela.
+        tabela (str): Nome da tabela (ex: "raridade", "colecao", "qualidade").
+        tipo (str): Tipo usado para mensagens/logs. Geralmente igual ao nome da tabela.
+    """
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+
+        # Verificar vínculo em carta e venda
+        vinculado_carta = cursor.execute(
+            f"SELECT COUNT(*) FROM carta WHERE {tabela} = ?", (id_item,)
+        ).fetchone()[0]
+
+        vinculado_venda = cursor.execute(
+            f"SELECT COUNT(*) FROM venda WHERE {tabela} = ?", (id_item,)
+        ).fetchone()[0]
+
+        if vinculado_carta > 0 or vinculado_venda > 0:
+            # Está vinculado: atualizar nome para marcar como desativado
+            cursor.execute(f"SELECT nome FROM {tabela} WHERE id_{tabela} = ?", (id_item,))
+            nome_atual = cursor.fetchone()[0]
+            novo_nome = nome_atual + " (DESATIVADO)"
+
+            cursor.execute(
+                f"UPDATE {tabela} SET nome = ? WHERE id_{tabela} = ?",
+                (novo_nome, id_item)
+            )
+            conn.commit()
+            return "desativado"
+
+        else:
+            # Sem vínculos, pode excluir
+            cursor.execute(f"DELETE FROM {tabela} WHERE id_{tabela} = ?", (id_item,))
+            conn.commit()
+            return "excluido"
+
+    except Exception as e:
+        registrar_erro(f"[Erro ao excluir/desativar {tipo}] {e}")
+        return None
+
+    finally:
+        conn.close()

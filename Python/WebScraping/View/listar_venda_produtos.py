@@ -50,8 +50,8 @@ def abrir_tela_listagem_venda_produtos(app):
         {"emoji": "💸", "texto": "Lucro com vendas", "valor": lucro_venda, "row": 0, "column": 1, "anchor": "e"},
         {"emoji": "💹", "texto": "Total gasto", "valor": total_gasto, "row": 1, "column": 0, "anchor": "w"},
         {"emoji": "💵", "texto": "Total vendido", "valor": total_vendido, "row": 1, "column": 1, "anchor": "e"},
-        {"emoji": "📦", "texto": "Total Vendas Unidade", "valor": total_produtos_vendidos_unidade, "row": 2, "column": 0, "anchor": "w"},
-        {"emoji": "📦", "texto": "Total Vendas Quantidade", "valor": total_produtos_vendidos_quantidade, "row": 2, "column": 1, "anchor": "e"},
+        {"emoji": "📦", "texto": "Total Vendas Unidade", "valor": str(total_produtos_vendidos_unidade), "row": 2, "column": 0, "anchor": "w"},
+        {"emoji": "📦", "texto": "Total Vendas Quantidade", "valor": str(total_produtos_vendidos_quantidade), "row": 2, "column": 1, "anchor": "e"},
     ]
 
     frame_resumo = sumario(root, "Resumo Financeiro", dados_resumo)

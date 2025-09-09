@@ -28,13 +28,13 @@ CREATE TABLE IF NOT EXISTS carta (
   qualidade INTEGER,
   quantidade INTEGER,
   imagem VARCHAR(10000),
-  imagem_salva VARCHAR(1000), -- NOVA COLUNA
+  imagem_salva VARCHAR(1000),
   origem VARCHAR(50) DEFAULT 'MYPCards',
   preco_atual DOUBLE,
   data_scraping VARCHAR(45),
-  FOREIGN KEY (colecao) REFERENCES colecao(id_colecao),
-  FOREIGN KEY (qualidade) REFERENCES qualidade(id_qualidade),
-  FOREIGN KEY (raridade) REFERENCES raridade(id_raridade)
+  FOREIGN KEY (colecao) REFERENCES colecao(id_colecao) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (qualidade) REFERENCES qualidade(id_qualidade) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (raridade) REFERENCES raridade(id_raridade) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE INDEX IF NOT EXISTS idx_carta_colecao ON carta(colecao);
@@ -55,13 +55,13 @@ CREATE TABLE IF NOT EXISTS venda (
   data_da_venda VARCHAR(45),
   preco_da_venda FLOAT,
   imagem VARCHAR(1000),
-  imagem_salva VARCHAR(1000), -- NOVA COLUNA
+  imagem_salva VARCHAR(1000),
   origem VARCHAR(50) DEFAULT 'MYPCards',
   preco_atual DOUBLE,
   data_scraping VARCHAR(45),
-  FOREIGN KEY (colecao) REFERENCES colecao(id_colecao),
-  FOREIGN KEY (qualidade) REFERENCES qualidade(id_qualidade),
-  FOREIGN KEY (raridade) REFERENCES raridade(id_raridade)
+  FOREIGN KEY (colecao) REFERENCES colecao(id_colecao) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (qualidade) REFERENCES qualidade(id_qualidade) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (raridade) REFERENCES raridade(id_raridade) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE INDEX IF NOT EXISTS idx_venda_colecao ON venda(colecao);
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS produto (
   nome_produto VARCHAR(500),
   link VARCHAR(1000),
   imagem VARCHAR(1000),
-  imagem_salva VARCHAR(1000), -- NOVA COLUNA
+  imagem_salva VARCHAR(1000),
   preco_compra DOUBLE,
   data_compra VARCHAR(45),
   origem VARCHAR(45) DEFAULT 'Liga Yugioh',
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS venda_produto (
   nome_produto VARCHAR(500),
   link VARCHAR(1000),
   imagem VARCHAR(1000),
-  imagem_salva VARCHAR(1000), -- NOVA COLUNA
+  imagem_salva VARCHAR(1000),
   preco_compra DOUBLE,
   data_compra VARCHAR(45),
   preco_venda DOUBLE,
@@ -105,12 +105,13 @@ CREATE TABLE IF NOT EXISTS historico_precos (
   data VARCHAR(45),
   preco DOUBLE,
   origem VARCHAR(45),
-  FOREIGN KEY (id_carta) REFERENCES carta(id_carta),
-  FOREIGN KEY (id_produto) REFERENCES produto(id_produto)
+  FOREIGN KEY (id_carta) REFERENCES carta(id_carta) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (id_produto) REFERENCES produto(id_produto) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE INDEX IF NOT EXISTS idx_historico_carta ON historico_precos(id_carta);
 CREATE INDEX IF NOT EXISTS idx_historico_produto ON historico_precos(id_produto);
+
 
 CREATE VIEW IF NOT EXISTS vw_cartas_detalhadas AS
 SELECT

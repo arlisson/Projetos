@@ -133,7 +133,7 @@ def criar_tela_cadastro(app):
             raridade_nome = campos["raridade"].get()
             resultados = buscar_carta_myp(url=campos["link"].get(), chave=raridade_nome)
             if not resultados:
-                root.after(0, lambda: messagebox.showwarning("Aviso", "Nenhum resultado encontrado.", parent=root))
+                root.after(0, lambda: messagebox.showwarning("Aviso", f"Nenhum resultado encontrado para {raridade_nome}.", parent=root))
                 return
 
             dados = resultados[0]

@@ -116,3 +116,8 @@
 2025-09-09 13:54:21,932 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
 2025-09-09 13:54:22,540 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
 2025-09-09 13:54:23,032 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
+2025-09-09 18:53:10,023 [ERROR] - Erro ao buscar colecao por nome | Exceção: 'int' object has no attribute 'upper'
+2025-09-09 18:56:21,375 [ERROR] - Erro ao buscar raridade por nome | Exceção: 'int' object has no attribute 'upper'
+2025-09-09 19:08:52,429 [ERROR] - Erro ao listar vendas com filtro (carta): | Exceção: no such column: raridade
+2025-09-09 19:33:26,537 [ERROR] - Erro ao apagar dados | Exceção: FOREIGN KEY constraint failed
+2025-09-09 19:36:01,988 [ERROR] - Erro ao apagar dados | Exceção: FOREIGN KEY constraint failed
