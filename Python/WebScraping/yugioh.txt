@@ -195,17 +195,17 @@ FROM venda_produto vp;
 
 -- Inserir Raridades
 INSERT INTO raridade (nome) VALUES
-('Common'),
-('Rare'),
-('Super Rare'),
-('Ultra Rare'),
-('Secret Rare'),
-('Quarter Century');
+('COMMON'),
+('RARE'),
+('SUPER RARE'),
+('ULTRA RARE'),
+('SECRET RARE'),
+('QUARTER CENTURY');
 
 -- Inserir Qualidades
 INSERT INTO qualidade (nome) VALUES
-('Nova'),
-('Quase Nova'),
-('Pouco Jogada'),
-('Muito Jogada'),
-('Danificada');
+('NOVA'),
+('QUASE NOVA'),
+('POUCO JOGADA'),
+('MUITO JOGADA'),
+('DANIFICADA');

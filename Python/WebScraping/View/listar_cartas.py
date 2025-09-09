@@ -17,6 +17,7 @@ from DAO.database import (
 
 from Components.thread_com_modal import executar_em_thread
 from Utils.log import registrar_erro
+from Utils.scroll_bind import bind_scroll_mousewheel
 
 def abrir_tela_listagem(app):
     from View.editar_cartas import criar_tela_editar_carta
@@ -98,17 +99,9 @@ def abrir_tela_listagem(app):
 
     canvas.bind("<Configure>", ajustar_largura_canvas)
 
-    def on_mousewheel(event):
-        try:
-            if canvas.winfo_exists():
-                canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
-        except Exception as e:
-            registrar_erro(f"[Scroll ignorado] Erro ao scrollar: {e}")
+    bind_scroll_mousewheel(canvas, scrollable_frame)
 
-
-    canvas.bind_all("<MouseWheel>", on_mousewheel)
-    canvas.bind_all("<Button-4>", lambda e: canvas.yview_scroll(-1, "units"))
-    canvas.bind_all("<Button-5>", lambda e: canvas.yview_scroll(1, "units"))
+    
 
     headers = [
         "Imagem", "Nome", "Código", "Preço Pago", "Preço Atual",
@@ -252,6 +245,8 @@ def abrir_tela_listagem(app):
         titulo="Listando Cartas",
         mensagem="Carregando cartas do banco..."
     )
+
+    
 
 if __name__ == "__main__":
     app = tk.Tk()

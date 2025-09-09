@@ -32,11 +32,7 @@ def criar_tela_editar_carta(app, id_carta):
     root = tk.Toplevel(app)
 
     def ao_fechar():
-        abrir_tela_listagem(app)
-        try:
-            root.unbind_all("<MouseWheel>")
-        except Exception as e:
-            registrar_erro(f"[Erro ao desregistrar scroll global] {e}")
+        abrir_tela_listagem(app)       
 
         root.destroy()
 

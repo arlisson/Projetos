@@ -45,9 +45,9 @@ def inserir_carta(dados):
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             dados.get("link_site"),
-            dados.get("nome"),
+            dados.get("nome").upper(),
             dados.get("colecao"),
-            dados.get("codigo"),
+            dados.get("codigo").upper(),
             float(dados.get("preco_da_compra")),             # preco pago
             dados.get("data_da_compra"),
             dados.get("raridade"),
@@ -87,7 +87,7 @@ def buscar_raridade_qualidade_nome(nome, tabela):
         cursor.execute(f"SELECT id_{tabela} FROM {tabela} WHERE nome = ?", (nome,))
         resultado = cursor.fetchone()
         conn.close()
-        return resultado[0] if resultado else None
+        return resultado[0].upper() if resultado else None
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao buscar {tabela} por nome: {e}")
         conn.close()
@@ -107,7 +107,7 @@ def inserir_raridade_qualidade(nome, tabela):
     try:
         conn = conectar()
         cursor = conn.cursor()
-        cursor.execute(f"INSERT INTO {tabela} (nome) VALUES (?)", (nome,))
+        cursor.execute(f"INSERT INTO {tabela} (nome) VALUES (?)", (nome.upper(),))
         conn.commit()
         novo_id = cursor.lastrowid
         conn.close()
@@ -133,7 +133,7 @@ def atualizar_raridade_qualidade(id, nome, tabela):
     try:
         conn = conectar()
         cursor = conn.cursor()
-        cursor.execute(f"UPDATE {tabela} SET nome = ? WHERE id_{tabela} = ?", (nome, id))
+        cursor.execute(f"UPDATE {tabela} SET nome = ? WHERE id_{tabela} = ?", (nome.upper(), id))
         conn.commit()
         conn.close()
         return cursor.rowcount > 0
@@ -202,7 +202,7 @@ def buscar_colecao_por_nome(nome):
     try:
         conn = conectar()
         cursor = conn.cursor()
-        cursor.execute("SELECT id_colecao FROM colecao WHERE nome = ?", (nome,))
+        cursor.execute("SELECT id_colecao FROM colecao WHERE nome = ?", (nome.upper(),))
         resultado = cursor.fetchone()
         conn.close()
         return resultado[0] if resultado else None
@@ -225,7 +225,7 @@ def inserir_colecao(nome, codigo=""):
     try:
         conn = conectar()
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO colecao (nome, codigo) VALUES (?, ?)", (nome, codigo))
+        cursor.execute("INSERT INTO colecao (nome, codigo) VALUES (?, ?)", (nome.upper(), codigo.upper()))
         conn.commit()
         novo_id = cursor.lastrowid
         conn.close()
@@ -287,7 +287,7 @@ def buscar_carta_por_texto(texto):
         """
 
         texto_param = f"%{texto.strip()}%"
-        cursor.execute(query, (texto_param,) * 4)
+        cursor.execute(query, (texto_param.upper(),) * 4)
         resultados = cursor.fetchall()
 
         colunas = [desc[0] for desc in cursor.description]
@@ -472,12 +472,12 @@ def inserir_produto(produto):
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """
         valores = (
-            produto["nome_produto"],
+            produto["nome_produto"].upper(),
             produto["link"],
             produto["imagem"],
             produto["preco_compra"],
             produto["data_compra"],
-            produto.get("origem", "Liga Yugioh"),  # padrão se não vier
+            produto.get("origem", "LIGA YUGIOH").upper(),  # padrão se não vier
             produto["preco_atual"],
             produto["quantidade"],
             produto.get("imagem_salva", ""),  # caminho da imagem salva localmente
@@ -501,8 +501,6 @@ def inserir_produto(produto):
         conn.close()
 
 
-
-
 def listar_todos_produtos(filtro=""):
     """
     Lista todos os produtos cadastrados no banco de dados.
@@ -523,7 +521,7 @@ def listar_todos_produtos(filtro=""):
                 FROM vw_produtos_detalhados
                 WHERE nome_produto LIKE ?
                 ORDER BY id_produto DESC
-            """, (f"%{filtro}%",))
+            """, (f"%{filtro.upper()}%",))
         else:
             cursor.execute("""
                 SELECT
@@ -729,15 +727,15 @@ def criar_banco_inicial():
 
         # Raridades
         raridades = [
-            ('Common',), ('Rare',), ('Super Rare',),
-            ('Ultra Rare',), ('Secret Rare',), ('Quarter Century',)
+            ('COMMON',), ('RARE',), ('SUPER RARE',),
+            ('ULTRA RARE',), ('SECRET RARE',), ('QUARTER CENTURY',)
         ]
         cursor.executemany("INSERT INTO raridade (nome) VALUES (?)", raridades)
 
         # Qualidades
         qualidades = [
-            ('Nova',), ('Quase Nova',), ('Pouco Jogada',),
-            ('Muito Jogada',), ('Danificada',)
+            ('NOVA',), ('QUASE NOVA',), ('POUCO JOGADA',),
+            ('MUITO JOGADA',), ('DANIFICADA',)
         ]
         cursor.executemany("INSERT INTO qualidade (nome) VALUES (?)", qualidades)
         
@@ -791,7 +789,7 @@ def atualizar_carta(carta):
         conn = conectar()
         cursor = conn.cursor()
         cursor.execute(query, (
-            carta["link_site"], carta["nome"], carta["codigo"],
+            carta["link_site"], carta["nome"].upper(), carta["codigo"].upper(),
             carta["preco_da_compra"], carta["preco_atual"],
             carta["data_da_compra"], carta["quantidade"],
             carta["imagem"], carta["origem"],
@@ -848,7 +846,7 @@ def atualizar_produto(produto):
         conn = conectar()
         cursor = conn.cursor()
         cursor.execute(query, (
-            produto["nome_produto"], produto["link"], produto["imagem"],
+            produto["nome_produto"].upper(), produto["link"], produto["imagem"],
             produto["preco_compra"], produto["data_scraping"],
             produto["origem"], produto["preco_atual"],
             produto["data_compra"], produto["quantidade"],
@@ -927,7 +925,7 @@ def inserir_venda_generica(id_item, quantidade_vendida, preco_venda, tipo="carta
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 carta["link_site"],
-                carta["nome"],
+                carta["nome"].upper(),
                 carta["colecao"],
                 carta["codigo"],
                 carta["preco_da_compra"],
@@ -972,7 +970,7 @@ def inserir_venda_generica(id_item, quantidade_vendida, preco_venda, tipo="carta
                 )
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
-                produto["nome_produto"],
+                produto["nome_produto"].upper(),
                 produto["link"],
                 produto["imagem"],
                 produto["preco_compra"],
@@ -1108,7 +1106,7 @@ def listar_venda_filtro(tipo='carta', filtro=""):
                     SELECT * FROM vw_vendas_detalhadas 
                     WHERE nome LIKE ? 
                     ORDER BY data_da_venda DESC
-                """, (f"%{filtro}%",))
+                """, (f"%{filtro.upper()}%",))
             else:
                 cursor.execute("SELECT * FROM vw_vendas_detalhadas ORDER BY data_da_venda DESC")
         elif tipo == 'produto':
@@ -1117,7 +1115,7 @@ def listar_venda_filtro(tipo='carta', filtro=""):
                     SELECT * FROM vw_venda_produto_detalhado 
                     WHERE nome_produto LIKE ? 
                     ORDER BY data_venda DESC
-                """, (f"%{filtro}%",))
+                """, (f"%{filtro.upper()}%",))
             else:
                 cursor.execute("SELECT * FROM vw_venda_produto_detalhado ORDER BY data_venda DESC")
         else:
@@ -1151,7 +1149,7 @@ def atualizar_venda_generica(venda, tipo="carta"):
                 WHERE id_carta = ?
             """, (
                 venda["link_site"],
-                venda["nome"],
+                venda["nome"].upper(),
                 venda["colecao"],
                 venda["codigo"],
                 venda["preco_da_compra"],
@@ -1176,7 +1174,7 @@ def atualizar_venda_generica(venda, tipo="carta"):
                     preco_venda = ?, data_venda = ?, origem = ?, preco_atual = ?, quantidade = ?, data_scraping = ?, imagem_salva = ?
                 WHERE id_produto = ?
             """, (
-                venda["nome_produto"],
+                venda["nome_produto"].upper(),
                 venda["link"],
                 venda["imagem"],
                 venda["preco_compra"],

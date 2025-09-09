@@ -15,6 +15,7 @@ from DAO.database import (
     
 )
 from Utils.log import registrar_erro
+from Utils.scroll_bind import bind_scroll_mousewheel
 from View.editar_venda_produto import criar_tela_editar_venda_produto
 from Components.sumario import criar_summary_frame as sumario
 
@@ -92,17 +93,7 @@ def abrir_tela_listagem_venda_produtos(app):
 
     canvas.bind("<Configure>", ajustar_largura_canvas)
 
-    def on_mousewheel(event):
-        try:
-            if canvas.winfo_exists():
-                canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
-        except Exception as e:
-            print(f"[Scroll ignorado] Erro ao scrollar: {e}")
-
-
-    canvas.bind_all("<MouseWheel>", on_mousewheel)
-    canvas.bind_all("<Button-4>", lambda e: canvas.yview_scroll(-1, "units"))
-    canvas.bind_all("<Button-5>", lambda e: canvas.yview_scroll(1, "units"))
+    bind_scroll_mousewheel(canvas, scrollable_frame)
 
     headers = [
         "Imagem", "Nome", "Preço Compra", "Preço Atual",
