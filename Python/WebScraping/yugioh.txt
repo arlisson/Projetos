@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS carta (
   quantidade INTEGER,
   imagem VARCHAR(10000),
   imagem_salva VARCHAR(1000), -- NOVA COLUNA
-  origem VARCHAR(50) DEFAULT 'MypCards',
+  origem VARCHAR(50) DEFAULT 'MYPCards',
   preco_atual DOUBLE,
   data_scraping VARCHAR(45),
   FOREIGN KEY (colecao) REFERENCES colecao(id_colecao),
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS venda (
   preco_da_venda FLOAT,
   imagem VARCHAR(1000),
   imagem_salva VARCHAR(1000), -- NOVA COLUNA
-  origem VARCHAR(50) DEFAULT 'MypCards',
+  origem VARCHAR(50) DEFAULT 'MYPCards',
   preco_atual DOUBLE,
   data_scraping VARCHAR(45),
   FOREIGN KEY (colecao) REFERENCES colecao(id_colecao),

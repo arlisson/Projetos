@@ -135,6 +135,7 @@ def criar_tela_editar_carta(app, id_carta):
     campos["raridade"] = ttk.Combobox(form_frame, state="readonly")
     campos["raridade"].grid(row=10, column=1, columnspan=2, padx=5, pady=3, sticky="we")
     popular_dropdown(campos["raridade"], buscar_valores_tabela("raridade"))
+    
 
     ttk.Label(form_frame, text="Qualidade:").grid(row=11, column=0, sticky="w", padx=5, pady=3)
     campos["qualidade"] = ttk.Combobox(form_frame, state="readonly")
@@ -269,7 +270,9 @@ def criar_tela_editar_carta(app, id_carta):
     campos["imagem_salva"].insert(0, carta.get("imagem_salva", ""))
     atualizar_imagem(carta.get("imagem_salva") or carta["imagem"])
     campos["data_scraping"].insert(0, carta.get("data_scraping", ""))
-
+    # campos["raridade"].bind("<<ComboboxSelected>>", lambda: carta.__setitem__("raridade", campos["raridade"].get().split(" - ")[0]))  # Placeholder para possível ação futura
+    # campos["qualidade"].bind("<<ComboboxSelected>>", lambda: carta.__setitem__("qualidade", campos["qualidade"].get().split(" - ")[0]))  # Placeholder para possível ação futura
+    # campos["colecao"].bind("<<ComboboxSelected>>", lambda: carta.__setitem__("colecao", campos["colecao"].get().split(" - ")[0]))  # Placeholder para possível ação futura
 
     for i, val in enumerate(campos["raridade"].cget("values")):
         if val.startswith(f"{carta['raridade']} -"):

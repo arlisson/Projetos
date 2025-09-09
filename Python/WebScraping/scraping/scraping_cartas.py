@@ -84,7 +84,7 @@ def buscar_carta_myp(url, chave=None):
                 "preco_atual": preco_minimo,
                 "codigo": codigo_carta,
                 "colecao": colecao_carta,
-                "origem": "MyPCards",
+                "origem": "MYPCards",
                 "link_site": url
             })
 

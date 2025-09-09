@@ -54,7 +54,7 @@ def inserir_carta(dados):
             dados.get("qualidade"),
             int(dados.get("quantidade")),
             dados.get("imagem"),
-            dados.get("origem", "MypCards"),
+            dados.get("origem", "MYPCards"),
             float(dados.get("preco_atual")),       # preco atual
             dados.get("imagem_salva", ""),  # caminho da imagem salva localmente
             DATA_SCRAPING                          # NOVO campo
@@ -1020,7 +1020,7 @@ def listar_venda_por_id(id, tipo='carta'):
 
     try:
         if tipo == 'carta':
-            cursor.execute("SELECT * FROM vw_vendas_detalhadas WHERE id_carta = ?", (id,))
+            cursor.execute("SELECT * FROM venda WHERE id_carta = ?", (id,))
         elif tipo == 'produto':
             cursor.execute("SELECT * FROM vw_venda_produto_detalhado WHERE id_produto = ?", (id,))
         else:

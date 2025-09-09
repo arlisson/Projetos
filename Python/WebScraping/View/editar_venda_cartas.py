@@ -267,17 +267,21 @@ def criar_tela_editar_venda_carta(app, id_venda):
     campos["data_venda"].insert(0, venda["data_da_venda"])
     atualizar_imagem(venda.get("imagem_salva") or venda["imagem"])
     campos["data_scraping"].insert(0, venda.get("data_scraping", ""))
+    # campos["raridade"].bind("<<ComboboxSelected>>", lambda: venda.__setitem__("raridade", campos["raridade"].get().split(" - ")[0]))  # Placeholder para possível ação futura
+    # campos["qualidade"].bind("<<ComboboxSelected>>", lambda: venda.__setitem__("qualidade", campos["qualidade"].get().split(" - ")[0]))  # Placeholder para possível ação futura
+    # campos["colecao"].bind("<<ComboboxSelected>>", lambda: venda.__setitem__("colecao", campos["colecao"].get().split(" - ")[0]))  # Placeholder para possível ação futura
+
 
     for i, val in enumerate(campos["raridade"].cget("values")):
-        if val.startswith(f"{venda['raridade_nome']} -"):
+        if val.startswith(f"{venda['raridade']} -"):
             campos["raridade"].current(i)
             break
     for i, val in enumerate(campos["qualidade"].cget("values")):
-        if val.startswith(f"{venda['qualidade_nome']} -"):
+        if val.startswith(f"{venda['qualidade']} -"):
             campos["qualidade"].current(i)
             break
     for i, val in enumerate(campos["colecao"].cget("values")):
-        if val.startswith(f"{venda['colecao_nome']} -"):
+        if val.startswith(f"{venda['colecao']} -"):
             campos["colecao"].current(i)
             break
 
