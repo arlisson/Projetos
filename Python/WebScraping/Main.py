@@ -4,6 +4,8 @@ from View.cadastrar_cartas import criar_tela_cadastro
 from View.cadastrar_cartas_colecao import criar_tela_cadastro_colecao
 from View.cadastrar_colecao import abrir_tela_gerenciar_colecoes
 from View.cadastrar_raridade_qualidade import abrir_tela_gerenciar_raridade_qualidade
+from View.exportar import exportar_banco_completo
+from View.exportar import exportar_banco_completo
 from View.listar_cartas import abrir_tela_listagem  
 from View.cadastrar_produtos import criar_tela_cadastro_produto
 from View.listar_produtos import abrir_tela_listagem_produtos  
@@ -73,6 +75,7 @@ def criar_tela_principal():
     menu_opcoes = tk.Menu(menu_bar, tearoff=0)
     menu_opcoes.add_command(label="Apagar todos os dados", command=confirmar_e_apagar)
     menu_opcoes.add_command(label="Criar banco", command=confirmar_e_criar)
+    menu_opcoes.add_command(label="Exportar banco de dados", command=exportar_banco_completo)
     menu_bar.add_cascade(label="Opções", menu=menu_opcoes)
 
     # --- Sair ---
