@@ -1,22 +1,18 @@
-import tkinter as tk
+import platform
 
-def bind_scroll_mousewheel(canvas, scrollable_widget):
-    def _on_mousewheel(event):
-        try:
+def bind_scroll_mousewheel(canvas):
+    sistema = platform.system()
+
+    if sistema in ("Windows", "Darwin"):  # Windows ou macOS
+        def _on_mousewheel(event):
             canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
-        except tk.TclError:
-            # O canvas foi destruído
-            canvas.unbind_all("<MouseWheel>")
-
-    def _on_enter(event):
-        canvas.bind_all("<MouseWheel>", _on_mousewheel)
-
-    def _on_leave(event):
-        canvas.unbind_all("<MouseWheel>")
-
-    scrollable_widget.bind("<Enter>", _on_enter)
-    scrollable_widget.bind("<Leave>", _on_leave)
-
-    # Suporte a Linux
-    canvas.bind_all("<Button-4>", lambda e: canvas.yview_scroll(-1, "units"))
-    canvas.bind_all("<Button-5>", lambda e: canvas.yview_scroll(1, "units"))
+        canvas.bind("<Enter>", lambda e: canvas.bind("<MouseWheel>", _on_mousewheel))
+        canvas.bind("<Leave>", lambda e: canvas.unbind("<MouseWheel>"))
+    else:  # Linux
+        def _on_mousewheel_linux(event):
+            if event.num == 4:
+                canvas.yview_scroll(-1, "units")
+            elif event.num == 5:
+                canvas.yview_scroll(1, "units")
+        canvas.bind("<Button-4>", _on_mousewheel_linux)
+        canvas.bind("<Button-5>", _on_mousewheel_linux)

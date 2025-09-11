@@ -49,17 +49,14 @@ def criar_tela_principal():
     menu_vendas.add_command(label="Listar Vendas de Produtos", command=lambda: abrir_tela_listagem_venda_produtos(root))
     menu_bar.add_cascade(label="Vendas", menu=menu_vendas)
 
-    # --- Coleções ---
-    menu_colecoes = tk.Menu(menu_bar, tearoff=0)
-    menu_colecoes.add_command(label="Gerenciar Coleções", command=abrir_tela_gerenciar_colecoes)
-    menu_bar.add_cascade(label="Coleções", menu=menu_colecoes)
+    # --- Outras Gestões ---
+    menu_outros = tk.Menu(menu_bar, tearoff=0)
+    menu_outros.add_command(label="Gerenciar Coleções", command=abrir_tela_gerenciar_colecoes)
+    menu_outros.add_command(label="Gerenciar Raridades", command=lambda: abrir_tela_gerenciar_raridade_qualidade("raridade"))
+    menu_outros.add_command(label="Gerenciar Qualidades", command=lambda: abrir_tela_gerenciar_raridade_qualidade("qualidade"))
+    menu_bar.add_cascade(label="Outras Gestões", menu=menu_outros)
 
-    # --- Raridades e Qualidades ---
-    menu_raridades = tk.Menu(menu_bar, tearoff=0)
-    menu_raridades.add_command(label="Gerenciar Raridades", command=lambda: abrir_tela_gerenciar_raridade_qualidade("raridade"))
-    menu_raridades.add_command(label="Gerenciar Qualidades", command=lambda: abrir_tela_gerenciar_raridade_qualidade("qualidade"))
-    menu_bar.add_cascade(label="Raridades e Qualidades", menu=menu_raridades)
-
+   
 
     # --- Opções ---
     def confirmar_e_apagar():

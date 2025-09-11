@@ -17,14 +17,13 @@ from DAO.database import (
 
 from Components.thread_com_modal import executar_em_thread
 from Utils.log import registrar_erro
-from Utils.scroll_bind import bind_scroll_mousewheel
+from Components.scrollable_frame import ScrollableFrame  # NOVO IMPORT
 
 def abrir_tela_listagem(app):
     from View.editar_cartas import criar_tela_editar_carta
 
     busca_timeout = None
 
-    
     root = tk.Toplevel(app)
     root.title("Listagem de Cartas")
     root.grab_set()
@@ -39,7 +38,6 @@ def abrir_tela_listagem(app):
     root.columnconfigure(0, weight=1)
     root.rowconfigure(2, weight=1)
 
-    # Chamar os cálculos normalmente
     lucro_posse = calcular_lucro_total_cartas_em_posse()
     lucro_venda = calcular_lucro_total_cartas_vendidas()
     total_gasto = calcular_total_gasto_cartas()
@@ -47,19 +45,16 @@ def abrir_tela_listagem(app):
     total_cartas_quantidade = calcula_quantidade('carta')
     total_cartas_unidade = len(buscar_todas_cartas()) or 0
 
-    # Dados a exibir
     dados_resumo = [
         {"emoji": "💰", "texto": "Lucro em posse", "valor": lucro_posse, "row": 0, "column": 0, "anchor": "w"},
         {"emoji": "💸", "texto": "Lucro com vendas", "valor": lucro_venda, "row": 0, "column": 1, "anchor": "e"},
-        {"emoji": "💹", "texto": "Total gasto", "valor": total_gasto, "row": 1, "column": 0, "anchor": "w"},
+        {"emoji": "📉", "texto": "Total gasto", "valor": total_gasto, "row": 1, "column": 0, "anchor": "w"},
         {"emoji": "💵", "texto": "Total vendido", "valor": total_vendido, "row": 1, "column": 1, "anchor": "e"},
         {"emoji": "📦", "texto": "Total Cartas Unidade", "valor": str(total_cartas_unidade), "row": 2, "column": 0, "anchor": "w"},
         {"emoji": "📦", "texto": "Total Cartas Quantidade", "valor": str(total_cartas_quantidade), "row": 2, "column": 1, "anchor": "e"},
     ]
 
-    # Criação do frame
     frame_resumo = sumario(root, "Resumo Financeiro", dados_resumo)
-
     frame_resumo.grid(row=0, column=0, columnspan=2, sticky="ew")
 
     busca_frame = ttk.Frame(root, padding=5)
@@ -75,38 +70,14 @@ def abrir_tela_listagem(app):
     main_frame.columnconfigure(0, weight=1)
     main_frame.rowconfigure(0, weight=1)
 
-    canvas = tk.Canvas(main_frame)
-    canvas.grid(row=0, column=0, sticky="nsew")
-
-    scrollbar_y = ttk.Scrollbar(main_frame, orient="vertical", command=canvas.yview)
-    scrollbar_y.grid(row=0, column=1, sticky="ns")
-
-    scrollbar_x = ttk.Scrollbar(main_frame, orient="horizontal", command=canvas.xview)
-    scrollbar_x.grid(row=1, column=0, sticky="ew")
-
-    canvas.configure(yscrollcommand=scrollbar_y.set, xscrollcommand=scrollbar_x.set)
-
-    scrollable_frame = ttk.Frame(canvas)
-    canvas_window = canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-
-    def ajustar_canvas(event):
-        canvas.configure(scrollregion=canvas.bbox("all"))
-
-    scrollable_frame.bind("<Configure>", ajustar_canvas)
-
-    def ajustar_largura_canvas(event):
-        canvas.itemconfig(canvas_window, width=max(event.width, scrollable_frame.winfo_reqwidth()))
-
-    canvas.bind("<Configure>", ajustar_largura_canvas)
-
-    bind_scroll_mousewheel(canvas, scrollable_frame)
-
-    
+    # Substitui canvas + frame por ScrollableFrame
+    scrollable = ScrollableFrame(main_frame)
+    scrollable.grid(row=0, column=0, sticky="nsew")
+    scrollable_frame = scrollable.scrollable_frame
 
     headers = [
         "Imagem", "Nome", "Código", "Preço Pago", "Preço Atual",
-        "Total Pago", "Total Atual",
-        "Lucro Unit.", "Lucro Total",
+        "Total Pago", "Total Atual", "Lucro Unit.", "Lucro Total",
         "Data Compra", "Quantidade", "Data Scraping"
     ]
 
@@ -119,18 +90,28 @@ def abrir_tela_listagem(app):
             relief="solid",
             padding=5
         ).grid(row=0, column=col, sticky="nsew", padx=1, pady=1)
-
-    for col in range(len(headers)):
         scrollable_frame.columnconfigure(col, weight=1)
 
-    def carregar_cartas(filtro=""):
+    def carregar_cartas_com_filtro(filtro=""):
+        def tarefa():
+            cartas = buscar_carta_por_texto(filtro)
+            root.after(0, lambda: carregar_cartas(cartas))
+
+        executar_em_thread(
+            root,
+            tarefa,
+            titulo="Buscando Cartas",
+            mensagem="Buscando cartas do banco..."
+        )
+
+    def carregar_cartas(cartas=None):
         for widget in scrollable_frame.winfo_children():
             if int(widget.grid_info()["row"]) > 0:
                 widget.destroy()
 
-        cartas = buscar_carta_por_texto(filtro) if filtro else buscar_todas_cartas()
+        if cartas is None:
+            cartas = buscar_todas_cartas()
 
-        
         if not cartas:
             ttk.Label(
                 scrollable_frame,
@@ -164,7 +145,6 @@ def abrir_tela_listagem(app):
             except Exception as e:
                 registrar_erro(f"[Erro imagem] {e}")
                 lbl_img = tk.Label(frame_img, text="Erro img", bg="white")
-
 
             lbl_img.pack()
 
@@ -228,14 +208,17 @@ def abrir_tela_listagem(app):
     def abrir_edicao(evt, id_carta):
         root.destroy()
         criar_tela_editar_carta(app, id_carta)
-    
 
-    # DEBOUNCE DA BUSCA
     def on_busca_keyrelease(event):
         nonlocal busca_timeout
         if busca_timeout:
             root.after_cancel(busca_timeout)
-        busca_timeout = root.after(300, lambda: carregar_cartas(entrada_busca.get()))
+
+        texto = entrada_busca.get().strip()
+        if texto:
+            busca_timeout = root.after(300, lambda: carregar_cartas_com_filtro(texto))
+        else:
+            busca_timeout = root.after(300, lambda: carregar_cartas())
 
     entrada_busca.bind("<KeyRelease>", on_busca_keyrelease)
 
@@ -245,8 +228,6 @@ def abrir_tela_listagem(app):
         titulo="Listando Cartas",
         mensagem="Carregando cartas do banco..."
     )
-
-    
 
 if __name__ == "__main__":
     app = tk.Tk()

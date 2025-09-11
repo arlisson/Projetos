@@ -61,7 +61,7 @@ def criar_tela_cadastro(app):
         icone=CALENDAR_ICON  # ou None para usar 📅
    )
 
-    campos["quantidade"] = criar_entrada_padrao(form_frame, "Quantidade:", 6)
+    campos["quantidade"] = criar_entrada_padrao(form_frame, "Quantidade:", 6)    
     campos["imagem"] = criar_entrada_padrao(form_frame, "Imagem URL:", 7)
 
     def atualizar_imagem(caminho):
@@ -195,7 +195,9 @@ def criar_tela_cadastro(app):
                 ("origem", "Origem"),
                 ("raridade", "Raridade"),
                 ("qualidade", "Qualidade"),
-                ("colecao", "Coleção")
+                ("colecao", "Coleção"),
+                ("imagem_salva", "Imagem Salva")
+                
             ]
 
             for chave, nome in campos_obrigatorios:
@@ -223,6 +225,23 @@ def criar_tela_cadastro(app):
 
             inserir_carta(carta)
             messagebox.showinfo("Sucesso", "Carta cadastrada com sucesso!", parent=root)
+            campos["link"].delete(0, tk.END)
+            campos["nome"].delete(0, tk.END)   
+            campos["codigo"].delete(0, tk.END)
+            campos["preco_da_compra"].delete(0, tk.END)
+            campos["preco_atual"].delete(0, tk.END)
+            campos["data"].delete(0, tk.END)
+            campos["quantidade"].delete(0, tk.END)
+            campos["imagem"].delete(0, tk.END)
+            campos["imagem_salva"].delete(0, tk.END)
+            campos["imagem_salva"].insert(0, IMAGEM_PADRAO)
+            atualizar_imagem(IMAGEM_PADRAO)
+            campos["origem"].delete(0, tk.END)     
+            campos["quantidade"].insert(0, "1")            
+            campos["raridade"].current(0)
+            campos["qualidade"].current(0)
+            campos["colecao"].set("")
+
         except Exception as e:
             messagebox.showerror("Erro", f"Erro ao salvar no banco: {e}", parent=root)
 
@@ -232,7 +251,7 @@ def criar_tela_cadastro(app):
     ttk.Button(botoes_frame, text="Salvar Carta", command=salvar).grid(row=0, column=1, padx=10)
 
     campos["quantidade"].insert(0, "1")
-    campos["imagem"].insert(0, IMAGEM_PADRAO)
+    campos["imagem_salva"].insert(0, IMAGEM_PADRAO)
     atualizar_imagem(IMAGEM_PADRAO)
     campos["origem"].insert(0, "MyPCards")
 

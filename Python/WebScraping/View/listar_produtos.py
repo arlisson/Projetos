@@ -13,7 +13,7 @@ from DAO.database import (
 )
 from Utils.log import registrar_erro
 from Components.sumario import criar_summary_frame as sumario
-from Utils.scroll_bind import bind_scroll_mousewheel
+from Components.scrollable_frame import ScrollableFrame
 
 def abrir_tela_editar_produto(app, id_produto):
     from View.editar_produto import criar_tela_editar_produto
@@ -35,8 +35,6 @@ def abrir_tela_listagem_produtos(app):
     root.columnconfigure(0, weight=1)
     root.rowconfigure(2, weight=1)
 
-    
-
     lucro_posse = calcular_lucro_total_produtos_em_posse()
     lucro_venda = calcular_lucro_total_produtos_vendidos()
     total_gasto = calcular_total_gasto_produtos()
@@ -47,12 +45,12 @@ def abrir_tela_listagem_produtos(app):
     dados_resumo = [
         {"emoji": "💰", "texto": "Lucro em posse", "valor": lucro_posse, "row": 0, "column": 0, "anchor": "w"},
         {"emoji": "💸", "texto": "Lucro com vendas", "valor": lucro_venda, "row": 0, "column": 1, "anchor": "e"},
-        {"emoji": "💹", "texto": "Total gasto", "valor": total_gasto, "row": 1, "column": 0, "anchor": "w"},
+        {"emoji": "📉", "texto": "Total gasto", "valor": total_gasto, "row": 1, "column": 0, "anchor": "w"},
         {"emoji": "💵", "texto": "Total vendido", "valor": total_vendido, "row": 1, "column": 1, "anchor": "e"},
         {"emoji": "📦", "texto": "Total Produtos Unidade", "valor": str(total_quantidade_unidade), "row": 2, "column": 0, "anchor": "w"},
         {"emoji": "📦", "texto": "Total Produtos Quantidade", "valor": str(total_quantidade), "row": 2, "column": 1, "anchor": "e"},
     ]
-   
+
     frame_resumo = sumario(root, "Resumo Financeiro", dados_resumo)
     frame_resumo.grid(row=0, column=0, columnspan=2, sticky="ew")
 
@@ -68,33 +66,9 @@ def abrir_tela_listagem_produtos(app):
     main_frame.columnconfigure(0, weight=1)
     main_frame.rowconfigure(0, weight=1)
 
-    canvas = tk.Canvas(main_frame)
-    canvas.grid(row=0, column=0, sticky="nsew")
-
-    scrollbar_y = ttk.Scrollbar(main_frame, orient="vertical", command=canvas.yview)
-    scrollbar_y.grid(row=0, column=1, sticky="ns")
-
-    scrollbar_x = ttk.Scrollbar(main_frame, orient="horizontal", command=canvas.xview)
-    scrollbar_x.grid(row=1, column=0, sticky="ew")
-
-    canvas.configure(yscrollcommand=scrollbar_y.set, xscrollcommand=scrollbar_x.set)
-
-    scrollable_frame = ttk.Frame(canvas)
-    canvas_window = canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-
-    def ajustar_canvas(event):
-        canvas.configure(scrollregion=canvas.bbox("all"))
-
-    scrollable_frame.bind("<Configure>", ajustar_canvas)
-
-    def ajustar_largura_canvas(event):
-        canvas.itemconfig(canvas_window, width=max(event.width, scrollable_frame.winfo_reqwidth()))
-
-    canvas.bind("<Configure>", ajustar_largura_canvas)
-
-    bind_scroll_mousewheel(canvas, scrollable_frame)
-
-
+    scrollable = ScrollableFrame(main_frame)
+    scrollable.grid(row=0, column=0, sticky="nsew")
+    scrollable_frame = scrollable.scrollable_frame
 
     headers = [
         "Imagem", "Nome", "Preço Compra", "Preço Atual",
@@ -116,7 +90,7 @@ def abrir_tela_listagem_produtos(app):
                 widget.destroy()
 
         produtos = listar_todos_produtos(filtro)
-        
+
         if not produtos:
             ttk.Label(
                 scrollable_frame,
@@ -133,7 +107,6 @@ def abrir_tela_listagem_produtos(app):
             frame_img = ttk.Frame(scrollable_frame, relief="solid", borderwidth=1)
             frame_img.grid(row=row, column=0, padx=1, pady=1, sticky="nsew")
 
-            # Imagem
             try:
                 caminho_imagem = produto.get('imagem_salva') or produto.get('imagem')
 
@@ -153,7 +126,6 @@ def abrir_tela_listagem_produtos(app):
                 lbl_img = tk.Label(frame_img, text="Erro img", bg="white")
 
             lbl_img.pack()
-
 
             for w in [frame_img, lbl_img]:
                 w.bind("<Button-1>", lambda evt, id=id_produto: abrir_edicao(evt, id))
@@ -177,7 +149,7 @@ def abrir_tela_listagem_produtos(app):
                 f"R$ {lucro_total:.2f}",
                 str(quantidade),
                 produto["data_compra"],
-                produto["origem"],           
+                produto["origem"],
                 produto["data_scraping"]
             ]
 
@@ -187,7 +159,6 @@ def abrir_tela_listagem_produtos(app):
                 lbl.bind("<Button-1>", lambda e, id=id_produto: abrir_edicao(e, id))
                 widgets_linha.append(lbl)
 
-            # Hover visual
             def on_enter(event, widgets=widgets_linha):
                 for w in widgets:
                     w.configure(bg="#e0e0e0")
@@ -206,10 +177,10 @@ def abrir_tela_listagem_produtos(app):
             root.after_cancel(busca_timeout)
         busca_timeout = root.after(300, lambda: carregar_produtos(entrada_busca.get()))
 
-    def  iniciar_carregamento():
+    def iniciar_carregamento():
         entrada_busca.bind("<KeyRelease>", on_busca_keyrelease)
         carregar_produtos()
-    
+
     from Components.thread_com_modal import executar_em_thread
     executar_em_thread(root, iniciar_carregamento, titulo="Listando Produtos", mensagem="Carregando produtos do banco...")
 

@@ -1104,10 +1104,15 @@ def listar_venda_filtro(tipo='carta', filtro=""):
         if tipo == 'carta':
             if filtro:
                 cursor.execute("""
-                    SELECT * FROM vw_vendas_detalhadas 
-                    WHERE nome OR raridade_nome OR codigo OR qualidade_nome LIKE ? 
+                    SELECT * FROM vw_vendas_detalhadas
+                    WHERE 
+                        nome LIKE ?
+                    OR raridade_nome LIKE ?
+                    OR codigo LIKE ?
+                    OR qualidade_nome LIKE ?
                     ORDER BY data_da_venda DESC
-                """, (f"%{filtro.upper()}%",))
+
+                """, (f"%{filtro.upper()}%",)*4)
             else:
                 cursor.execute("SELECT * FROM vw_vendas_detalhadas ORDER BY data_da_venda DESC")
         elif tipo == 'produto':

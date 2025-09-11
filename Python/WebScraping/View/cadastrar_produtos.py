@@ -177,7 +177,8 @@ def criar_tela_cadastro_produto(app):
                 ("preco_atual", "Preço Atual"),
                 ("data_compra", "Data da Compra"),
                 ("quantidade", "Quantidade"),
-                ("origem", "Origem")
+                ("origem", "Origem"),
+                ("imagem_salva", "Imagem Salva")
             ]
 
             for chave, nome in campos_obrigatorios:
@@ -204,6 +205,20 @@ def criar_tela_cadastro_produto(app):
                 try:
                     inserir_produto(produto)
                     root.after(0, lambda: messagebox.showinfo("Sucesso", "Produto cadastrado com sucesso!", parent=root))
+                    # campos["link"].delete(0, tk.END)
+                    # campos["nome"].delete(0, tk.END)
+                    # campos["imagem"].delete(0, tk.END)
+                    # campos["imagem_salva"].delete(0, tk.END)
+                    # campos["imagem_salva"].insert(0, IMAGEM_PADRAO)
+                    # atualizar_imagem(IMAGEM_PADRAO)
+                    # campos["preco_compra"].delete(0, tk.END)
+                    # campos["preco_atual"].delete(0, tk.END)
+                    # campos["data_compra"].delete(0, tk.END)
+                    # campos["quantidade"].delete(0, tk.END)
+                    # campos["quantidade"].insert(0, "1")
+                    # campos["origem"].delete(0, tk.END)
+                    # campos["origem"].insert(0, "Liga Yugioh")
+                    
                 except Exception as e:
                     root.after(0, lambda: messagebox.showerror("Erro", f"Erro ao salvar: {e}", parent=root))
 
@@ -227,7 +242,7 @@ def criar_tela_cadastro_produto(app):
 
     
     campos["quantidade"].insert(0, "1")
-    campos["imagem"].insert(0, IMAGEM_PADRAO)
+    campos["imagem_salva"].insert(0, IMAGEM_PADRAO)
     campos["origem"].insert(0, "Liga Yugioh")
     atualizar_imagem(IMAGEM_PADRAO)
 
