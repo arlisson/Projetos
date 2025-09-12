@@ -223,7 +223,9 @@ def criar_tela_cadastro(app):
 
             }
 
-            inserir_carta(carta)
+            inserir_carta(carta)        
+
+            
             messagebox.showinfo("Sucesso", "Carta cadastrada com sucesso!", parent=root)
             campos["link"].delete(0, tk.END)
             campos["nome"].delete(0, tk.END)   

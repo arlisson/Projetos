@@ -7,44 +7,82 @@ class ScrollableFrame(ttk.Frame):
     def __init__(self, container, *args, **kwargs):
         super().__init__(container, *args, **kwargs)
 
-        self.canvas = tk.Canvas(self)
-        scrollbar_y = ttk.Scrollbar(self, orient="vertical", command=self.canvas.yview)
-        scrollbar_x = ttk.Scrollbar(self, orient="horizontal", command=self.canvas.xview)
-
+        self.canvas = tk.Canvas(self, highlightthickness=0)
+        self.scrollbar_y = ttk.Scrollbar(self, orient="vertical", command=self.canvas.yview)
         self.scrollable_frame = ttk.Frame(self.canvas)
 
-        self.scrollable_frame.bind(
-            "<Configure>",
-            lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all"))
-        )
+        self._scroll_ativo = False  # controle do estado do scroll
 
-        self.canvas_frame = self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
+        # Adiciona o frame interno no canvas
+        self.canvas_window = self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
 
-        self.canvas.configure(yscrollcommand=scrollbar_y.set, xscrollcommand=scrollbar_x.set)
+        # Scroll vinculado ao canvas
+        self.canvas.configure(yscrollcommand=self.scrollbar_y.set)
 
         self.canvas.grid(row=0, column=0, sticky="nsew")
-        scrollbar_y.grid(row=0, column=1, sticky="ns")
-        scrollbar_x.grid(row=1, column=0, sticky="ew")
+        self.scrollbar_y.grid(row=0, column=1, sticky="ns")
 
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
 
-        self._bind_mousewheel()
+        # Redimensiona o frame interno com o canvas
+        self.canvas.bind("<Configure>", self._on_canvas_configure)
+        self.scrollable_frame.bind("<Configure>", lambda e: self._ajustar_scroll())
 
-    def _bind_mousewheel(self):
-        os_name = platform.system()
+        # Prepara eventos de rolagem
+        self._preparar_scroll_eventos()
 
-        def _on_mousewheel(event):
-            self.canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+    def _on_canvas_configure(self, event):
+        """Mantém a largura do conteúdo igual à largura do canvas"""
+        self.canvas.itemconfig(self.canvas_window, width=event.width)
 
-        def _on_mousewheel_linux(event):
-            if event.num == 4:
-                self.canvas.yview_scroll(-1, "units")
-            elif event.num == 5:
-                self.canvas.yview_scroll(1, "units")
+    def _ajustar_scroll(self):
+        """Atualiza o scrollregion e visibilidade da barra/scroll do mouse"""
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+        self._atualizar_scroll_visivel()
 
-        if os_name == "Windows" or os_name == "Darwin":
-            self.canvas.bind_all("<MouseWheel>", _on_mousewheel)
+    def _atualizar_scroll_visivel(self):
+        """Exibe/oculta scrollbar e ativa/desativa scroll do mouse"""
+        bbox = self.canvas.bbox("all")
+        if not bbox:
+            return
+
+        canvas_height = self.canvas.winfo_height()
+        content_height = bbox[3]  # inferior da região
+
+        if content_height <= canvas_height:
+            self.scrollbar_y.grid_remove()
+            self._desativar_mousewheel()
         else:
-            self.canvas.bind_all("<Button-4>", _on_mousewheel_linux)
-            self.canvas.bind_all("<Button-5>", _on_mousewheel_linux)
+            self.scrollbar_y.grid()
+            self._ativar_mousewheel()
+
+    def _preparar_scroll_eventos(self):
+        """Define os métodos de scroll adequados para cada SO"""
+        self._os = platform.system()
+        if self._os in ("Windows", "Darwin"):
+            self._on_mousewheel = lambda e: self.canvas.yview_scroll(int(-1 * (e.delta / 120)), "units")
+        else:
+            self._on_mousewheel_linux = lambda e: self.canvas.yview_scroll(-1 if e.num == 4 else 1, "units")
+
+    def _ativar_mousewheel(self):
+        if self._scroll_ativo:
+            return
+        self._scroll_ativo = True
+
+        if self._os in ("Windows", "Darwin"):
+            self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
+        else:
+            self.canvas.bind_all("<Button-4>", self._on_mousewheel_linux)
+            self.canvas.bind_all("<Button-5>", self._on_mousewheel_linux)
+
+    def _desativar_mousewheel(self):
+        if not self._scroll_ativo:
+            return
+        self._scroll_ativo = False
+
+        if self._os in ("Windows", "Darwin"):
+            self.canvas.unbind_all("<MouseWheel>")
+        else:
+            self.canvas.unbind_all("<Button-4>")
+            self.canvas.unbind_all("<Button-5>")

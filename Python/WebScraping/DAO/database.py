@@ -6,10 +6,96 @@ from Utils.log import registrar_erro
 
 DB_PATH = "yugioh.db"
 DATA_SCRAPING = datetime.today().strftime('%Y-%m-%d')
+
 def conectar():
     conn = sqlite3.connect(DB_PATH)
     conn.execute("PRAGMA foreign_keys = ON;")  # Habilita as constraints de chave estrangeira
     return conn
+
+def registrar_historico_generico(tipo="carta", id=None, preco=None, data=None, origem="MYPCards"):
+    if tipo not in ["carta", "produto"]:
+        raise ValueError("Tipo inválido. Use 'carta' ou 'produto'.")
+
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+
+        if tipo == "carta":
+            cursor.execute("""
+                INSERT INTO historico_precos (id_carta, id_produto, data, preco, origem)
+                VALUES (?, NULL, ?, ?, ?)
+            """, (id, data, preco, origem))
+        else:  # tipo == "produto"
+            cursor.execute("""
+                INSERT INTO historico_precos (id_carta, id_produto, data, preco, origem)
+                VALUES (NULL, ?, ?, ?, ?)
+            """, (id, data, preco, origem))
+
+        conn.commit()
+        conn.close()
+
+    except Exception as e:
+        registrar_erro(f"Erro ao registrar histórico: {e}")
+        conn.close()
+        return
+
+def update_historico_generico(tipo="carta", id=None, preco=None, data=None, origem="MYPCards"):
+    if tipo not in ["carta", "produto"]:
+        raise ValueError("Tipo inválido. Use 'carta' ou 'produto'.")
+
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+
+        if tipo == "carta":
+            cursor.execute("""
+                UPDATE historico_precos
+                SET data = ?, preco = ?, origem = ?
+                WHERE id_carta = ? AND data = (SELECT MAX(data) FROM historico_precos WHERE id_carta = ?)
+            """, (data, preco, origem, id, id))
+        else:  # tipo == "produto"
+            cursor.execute("""
+                UPDATE historico_precos
+                SET data = ?, preco = ?, origem = ?
+                WHERE id_produto = ? AND data = (SELECT MAX(data) FROM historico_precos WHERE id_produto = ?)
+            """, (data, preco, origem, id, id))
+
+        conn.commit()
+        conn.close()
+
+    except Exception as e:
+        registrar_erro(f"Erro ao atualizar histórico: {e}")
+        conn.close()
+        return
+
+def registrar_historico_lucro():
+    conn = conectar()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("""
+            SELECT SUM((preco_atual - preco_da_compra) * quantidade) FROM carta
+        """)
+        lucro_cartas = cursor.fetchone()[0] or 0.0
+
+        cursor.execute("""
+            SELECT SUM((preco_atual - preco_compra) * quantidade) FROM produto
+        """)
+        lucro_produtos = cursor.fetchone()[0] or 0.0
+
+        total = lucro_cartas + lucro_produtos
+
+        cursor.execute("""
+            INSERT INTO historico_lucro (lucro_cartas, lucro_produtos, lucro_total)
+            VALUES (?, ?, ?)
+        """, (lucro_cartas, lucro_produtos, total))
+
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        conn.close()
+        registrar_erro(f"Erro ao registrar histórico de lucro: {e}")
+    finally:
+        conn.close()
 
 
 def inserir_carta(dados):
@@ -60,11 +146,16 @@ def inserir_carta(dados):
             dados.get("imagem_salva", ""),  # caminho da imagem salva localmente
             DATA_SCRAPING                          # NOVO campo
         ))
-
-        conn.commit()
-        conn.close()        
+        
+        conn.commit()              
         novo_id = cursor.lastrowid
         conn.close()
+        registrar_historico_lucro()
+        registrar_historico_generico(tipo="carta",
+                                       id=novo_id,
+                                       preco=dados.get("preco_atual"),
+                                       data=DATA_SCRAPING,
+                                       origem=dados.get("origem", "MYPCards"))
         return novo_id
     except Exception as e:
         
@@ -489,6 +580,13 @@ def inserir_produto(produto):
         conn.commit()
         novo_id = cursor.lastrowid
         conn.close()
+        registrar_historico_lucro()
+        registrar_historico_generico(tipo="produto",
+                                       id=novo_id,
+                                       preco=produto["preco_atual"],
+                                       data=DATA_SCRAPING,
+                                       origem=produto.get("origem", "LIGA YUGIOH").upper())
+
         return novo_id
 
     except Exception as e:
@@ -800,6 +898,14 @@ def atualizar_carta(carta):
             carta["id_carta"]
         ))
         conn.commit()
+        cursor.close()
+        conn.close()
+        registrar_historico_lucro()
+        registrar_historico_generico(tipo="carta",
+                                       id=carta["id_carta"],
+                                       data=carta["data_scraping"],
+                                       preco=carta["preco_atual"])
+        
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao atualizar carta: {e}")
         conn.rollback()
@@ -855,6 +961,13 @@ def atualizar_produto(produto):
             produto["id_produto"]
         ))
         conn.commit()
+        cursor.close()
+        conn.close()
+        registrar_historico_lucro()
+        registrar_historico_generico(tipo="produto",
+                                       id=produto["id_produto"],
+                                       data=produto["data_scraping"],
+                                       preco=produto["preco_atual"])
     except Exception as e:
         messagebox.showerror("Erro", f"Erro ao atualizar produto: {e}")
         conn.rollback()
@@ -1259,3 +1372,110 @@ def desativar_se_vinculado_ou_deletar(id_item, tabela, tipo="raridade"):
 
     finally:
         conn.close()
+
+
+def buscar_historico_precos(tipo=None, id=None, resumo=False):
+    conn = conectar()
+    cursor = conn.cursor()
+
+    def rows_como_dict(cursor, rows):
+        colunas = [col[0] for col in cursor.description]
+        return [dict(zip(colunas, row)) for row in rows]
+
+    try:
+        # Resumo: totais e lucros atuais
+        if resumo:
+            resultados = {}
+
+            if tipo in [None, "carta"]:
+                cursor.execute("SELECT SUM(preco) AS total_cartas FROM historico_precos WHERE id_carta IS NOT NULL")
+                resultados["total_cartas"] = cursor.fetchone()[0] or 0.0
+
+                cursor.execute("""
+                    SELECT SUM((preco_atual - preco_da_compra) * quantidade) AS lucro_cartas
+                    FROM carta
+                """)
+                resultados["lucro_cartas"] = cursor.fetchone()[0] or 0.0
+
+            if tipo in [None, "produto"]:
+                cursor.execute("SELECT SUM(preco) AS total_produtos FROM historico_precos WHERE id_produto IS NOT NULL")
+                resultados["total_produtos"] = cursor.fetchone()[0] or 0.0
+
+                cursor.execute("""
+                    SELECT SUM((preco_atual - preco_compra) * quantidade) AS lucro_produtos
+                    FROM produto
+                """)
+                resultados["lucro_produtos"] = cursor.fetchone()[0] or 0.0
+
+            # 🔁 Histórico de lucro consolidado (último valor)
+            if tipo in [None, "lucro"]:
+                cursor.execute("""
+                    SELECT lucro_cartas, lucro_produtos, lucro_total
+                    FROM historico_lucro
+                    ORDER BY data DESC
+                    LIMIT 1
+                """)
+                row = cursor.fetchone()
+                if row:
+                    resultados["lucro_cartas_historico"] = row[0] or 0.0
+                    resultados["lucro_produtos_historico"] = row[1] or 0.0
+                    resultados["lucro_total_historico"] = row[2] or 0.0
+
+            # Lucro total atual (não histórico)
+            lucro_cartas = resultados.get("lucro_cartas", 0)
+            lucro_produtos = resultados.get("lucro_produtos", 0)
+            resultados["lucro_total"] = lucro_cartas + lucro_produtos
+
+            conn.close()
+            return resultados
+
+        # Histórico por ID
+        if tipo and id is not None:
+            if tipo == "carta":
+                cursor.execute("""
+                    SELECT id_historico_precos, id_carta, data, preco, origem
+                    FROM historico_precos
+                    WHERE id_carta = ?
+                    ORDER BY data
+                """, (id,))
+            elif tipo == "produto":
+                cursor.execute("""
+                    SELECT id_historico_precos, id_produto, data, preco, origem
+                    FROM historico_precos
+                    WHERE id_produto = ?
+                    ORDER BY data
+                """, (id,))
+            else:
+                raise ValueError("Tipo inválido. Use 'carta', 'produto', 'lucro' ou None.")
+
+            rows = cursor.fetchall()
+            historico = rows_como_dict(cursor, rows)
+            conn.close()
+            return historico
+
+        # Histórico geral
+        if tipo == "lucro":
+            cursor.execute("""
+                SELECT id_lucro, data, lucro_cartas, lucro_produtos, lucro_total
+                FROM historico_lucro
+                ORDER BY data
+            """)
+        else:
+            cursor.execute("""
+                SELECT id_historico_precos, id_carta, id_produto, data, preco, origem
+                FROM historico_precos
+                ORDER BY data
+            """)
+
+        rows = cursor.fetchall()
+        historico_geral = rows_como_dict(cursor, rows)
+        conn.close()
+        return historico_geral
+
+    except Exception as e:
+        conn.close()
+        registrar_erro(f"Erro ao buscar histórico: {e}")
+        return []
+
+
+

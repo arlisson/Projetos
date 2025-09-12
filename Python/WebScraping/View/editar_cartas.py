@@ -8,7 +8,7 @@ import urllib.request
 from io import BytesIO
 from datetime import datetime
 
-from Components.entrada_padrao import criar_entrada_com_botao_imagem, criar_entrada_data_com_calendario
+from Components.entrada_padrao import criar_entrada_com_botao_imagem, criar_entrada_data_com_calendario, criar_entrada_padrao
 from Components.pop_up_venda import abrir_popup_venda
 from Utils.combo_utils import popular_dropdown
 from Utils.limpar_preco import limpar_preco
@@ -17,8 +17,9 @@ from DAO.database import *
 from tkcalendar import Calendar
 from Components.thread_com_modal import executar_em_thread
 from Utils.baixar_carta import salvar_imagem_local
-
-
+from Components.scrollable_frame import ScrollableFrame
+from Components.grafico_historico import GraficoHistorico  # topo do arquivo
+ 
 
 IMAGEM_PADRAO = "imagens/imagens_cartas/imagem_padrao.jpg"
 
@@ -67,25 +68,31 @@ def criar_tela_editar_carta(app, id_carta):
 
     campos = {}
 
-    
+ 
 
-    def criar_rotulo_entrada(frame, texto, linha, largura=50, somente_leitura=False):
-        ttk.Label(frame, text=texto).grid(row=linha, column=0, sticky="w", padx=5, pady=3)
-        entrada = ttk.Entry(frame, width=largura)
-        if somente_leitura:
-            entrada.configure(state="readonly")
-        entrada.grid(row=linha, column=1, columnspan=2, padx=5, pady=3, sticky="we")
-        return entrada
+    # Cria o scroll
+    scroll_frame = ScrollableFrame(main_frame)
+    scroll_frame.grid(row=0, column=0, sticky="nsew")
 
-    form_frame = ttk.LabelFrame(main_frame, text="Dados da Carta", padding=10)
-    form_frame.grid(row=0, column=0, sticky="nsew")
+    # EXPANDE o conteúdo lateralmente
+    scroll_frame.columnconfigure(0, weight=1)
+    scroll_frame.scrollable_frame.columnconfigure(0, weight=1)
+
+    # Cria o frame de formulário com título
+    form_frame = ttk.LabelFrame(scroll_frame.scrollable_frame, text="Dados da Carta", padding=10)
+    form_frame.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+    form_frame.columnconfigure(0, weight=0)
     form_frame.columnconfigure(1, weight=1)
+    form_frame.columnconfigure(2, weight=1)
 
-    campos["link"] = criar_rotulo_entrada(form_frame, "Link da carta:", 0)
-    campos["nome"] = criar_rotulo_entrada(form_frame, "Nome:", 1)
-    campos["codigo"] = criar_rotulo_entrada(form_frame, "Código:", 2)
-    campos["preco"] = criar_rotulo_entrada(form_frame, "Preço pago:", 3)
-    campos["preco_atual"] = criar_rotulo_entrada(form_frame, "Preço atual:", 4)
+
+
+
+    campos["link"] = criar_entrada_padrao(form_frame, "Link da carta:", 0)
+    campos["nome"] = criar_entrada_padrao(form_frame, "Nome:", 1)
+    campos["codigo"] = criar_entrada_padrao(form_frame, "Código:", 2)
+    campos["preco"] = criar_entrada_padrao(form_frame, "Preço pago:", 3)
+    campos["preco_atual"] = criar_entrada_padrao(form_frame, "Preço atual:", 4)
 
     campos["data"] = criar_entrada_data_com_calendario(
         frame=form_frame,
@@ -95,8 +102,8 @@ def criar_tela_editar_carta(app, id_carta):
         icone=CALENDAR_ICON  # ou None para usar 📅
     )
 
-    campos["quantidade"] = criar_rotulo_entrada(form_frame, "Quantidade:", 6)
-    campos["imagem"] = criar_rotulo_entrada(form_frame, "Imagem URL:", 7)
+    campos["quantidade"] = criar_entrada_padrao(form_frame, "Quantidade:", 6)
+    campos["imagem"] = criar_entrada_padrao(form_frame, "Imagem URL:", 7)
 
     def atualizar_imagem(caminho):
         try:
@@ -107,7 +114,19 @@ def criar_tela_editar_carta(app, id_carta):
             else:
                 im = Image.open(caminho)
 
-            im.thumbnail((300, 420))
+            max_width, max_height = 300, 420
+            im_ratio = im.width / im.height
+            target_ratio = max_width / max_height
+
+            if im_ratio > target_ratio:
+                new_width = max_width
+                new_height = int(max_width / im_ratio)
+            else:
+                new_height = max_height
+                new_width = int(max_height * im_ratio)
+
+            im = im.resize((new_width, new_height), Image.ANTIALIAS)
+
             photo = ImageTk.PhotoImage(im)
             imagem_label.configure(image=photo)
             imagem_label.image = photo
@@ -128,7 +147,7 @@ def criar_tela_editar_carta(app, id_carta):
         icone=FILE_ICON  # ou None para usar "📁"
     )
 
-    campos["origem"] = criar_rotulo_entrada(form_frame, "Origem:", 13)
+    campos["origem"] = criar_entrada_padrao(form_frame, "Origem:", 13)
 
    
     # raridade agora vai na linha 9
@@ -159,6 +178,20 @@ def criar_tela_editar_carta(app, id_carta):
         texto_label="Data do Scraping:",
         icone=CALENDAR_ICON  # ou None para usar 📅
     )
+
+
+    # dentro da função ou método da tela
+    historico = buscar_historico_precos(tipo="carta", id=id_carta)
+
+    frame_grafico = GraficoHistorico(
+        parent=main_frame,
+        dados=historico,
+        titulo="Histórico de Preço da Carta",
+        campos_numericos=["preco"]
+    )
+
+    frame_grafico.grid(row=1, column=0, columnspan=2, sticky="nsew", padx=10, pady=10)
+    main_frame.rowconfigure(1, weight=1)
 
     imagem_frame = ttk.LabelFrame(main_frame, text="Imagem", padding=10)
     imagem_frame.grid(row=0, column=1, padx=10, pady=10, sticky="ne")

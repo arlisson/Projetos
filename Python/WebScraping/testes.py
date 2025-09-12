@@ -1,4 +1,5 @@
 from tkinter import messagebox
+from DAO.database import buscar_historico_precos
 from Utils.baixar_carta import salvar_imagem_local
 from scraping.scraping_cartas import *
 
@@ -15,3 +16,8 @@ from scraping.scraping_cartas import *
 #      print(carta)
 
 #salvar_imagem_local("https://i.pinimg.com/736x/71/1e/da/711eda25308c65a7756751088866e181.jpg", "imagem_padrao.jpg")
+
+
+historico = buscar_historico_precos(resumo=True)
+
+print(historico)

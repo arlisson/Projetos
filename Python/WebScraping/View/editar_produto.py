@@ -7,13 +7,15 @@ from io import BytesIO
 from datetime import datetime
 
 
-from Components.entrada_padrao import criar_entrada_com_botao_imagem, criar_entrada_data_com_calendario
+from Components.entrada_padrao import criar_entrada_com_botao_imagem, criar_entrada_data_com_calendario, criar_entrada_padrao
+from Components.grafico_historico import GraficoHistorico
 from Components.pop_up_venda import abrir_popup_venda
+from Components.scrollable_frame import ScrollableFrame
 from Components.thread_com_modal import executar_em_thread
 from Utils.baixar_carta import salvar_imagem_local
 from Utils.log import registrar_erro
 from scraping.scraping_cartas import buscar_produto_liga
-from DAO.database import atualizar_produto, buscar_produto_por_id, deletar, inserir_venda_generica
+from DAO.database import atualizar_produto, buscar_historico_precos, buscar_produto_por_id, deletar, inserir_venda_generica
 
 import threading
 
@@ -63,23 +65,33 @@ def criar_tela_editar_produto(app, id_produto):
         FILE_ICON = None
         registrar_erro(f"Erro ao carregar ícone do calendário: {e}")
 
-    campos = {}
+    campos = {} 
 
+   
+
+    # Cria o scroll
+    scroll_frame = ScrollableFrame(main_frame)
+    scroll_frame.grid(row=0, column=0, sticky="nsew")
+
+   
+    # Cria o frame de formulário com título
+    form_frame = ttk.LabelFrame(scroll_frame.scrollable_frame, text="Dados do Produto", padding=10)
+    form_frame.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+    # Força expansão total horizontal
+    form_frame.grid(sticky="nsew")
     
+    scroll_frame.scrollable_frame.columnconfigure(0, weight=1)
 
-    def criar_entrada(frame, label, row):
-        ttk.Label(frame, text=label).grid(row=row, column=0, sticky="w", padx=5, pady=3)
-        entry = ttk.Entry(frame)
-        entry.grid(row=row, column=1, sticky="ew", padx=5, pady=3)
-        return entry
+    scroll_frame.scrollable_frame.rowconfigure(0, weight=1)
 
-    form_frame = ttk.LabelFrame(main_frame, text="Dados do Produto", padding=10)
-    form_frame.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
+    form_frame.columnconfigure(0, weight=1)
     form_frame.columnconfigure(1, weight=1)
+    form_frame.columnconfigure(2, weight=1)
 
-    campos["link"] = criar_entrada(form_frame, "Link:", 0)
-    campos["nome"] = criar_entrada(form_frame, "Nome:", 1)
-    campos["imagem"] = criar_entrada(form_frame, "URL da Imagem:", 2)
+
+    campos["link"] = criar_entrada_padrao(form_frame, "Link:", 0)
+    campos["nome"] = criar_entrada_padrao(form_frame, "Nome:", 1)
+    campos["imagem"] = criar_entrada_padrao(form_frame, "URL da Imagem:", 2)
 
     def atualizar_imagem(caminho):
         try:
@@ -109,8 +121,8 @@ def criar_tela_editar_produto(app, id_produto):
         icone=FILE_ICON
     )
 
-    campos["preco_compra"] = criar_entrada(form_frame, "Preço Compra:", 4)
-    campos["preco_atual"] = criar_entrada(form_frame, "Preço Atual:", 5)
+    campos["preco_compra"] = criar_entrada_padrao(form_frame, "Preço Compra:", 4)
+    campos["preco_atual"] = criar_entrada_padrao(form_frame, "Preço Atual:", 5)
 
     campos["data_compra"] = criar_entrada_data_com_calendario(
         frame=form_frame,
@@ -120,8 +132,8 @@ def criar_tela_editar_produto(app, id_produto):
         icone=CALENDAR_ICON
     )
 
-    campos["quantidade"] = criar_entrada(form_frame, "Quantidade:", 7)
-    campos["origem"] = criar_entrada(form_frame, "Origem:", 8)
+    campos["quantidade"] = criar_entrada_padrao(form_frame, "Quantidade:", 7)
+    campos["origem"] = criar_entrada_padrao(form_frame, "Origem:", 8)
 
     campos["data_scraping"] = criar_entrada_data_com_calendario(
         frame=form_frame,
@@ -130,6 +142,20 @@ def criar_tela_editar_produto(app, id_produto):
         texto_label="Data do Scraping:",
         icone=CALENDAR_ICON
     )
+
+
+    # dentro da função ou método da tela
+    historico = buscar_historico_precos(tipo="produto", id=id_produto)
+
+    frame_grafico = GraficoHistorico(
+        parent=main_frame,
+        dados=historico,
+        titulo="Histórico de Preço do Produto",
+        campos_numericos=["preco"]
+    )
+
+    frame_grafico.grid(row=1, column=0, columnspan=2, sticky="nsew", padx=10, pady=10)
+    main_frame.rowconfigure(1, weight=1)
 
     imagem_frame = ttk.LabelFrame(main_frame, text="Imagem", padding=10, width=320)
     imagem_frame.grid(row=0, column=1, padx=5, pady=5, sticky="ns")
@@ -328,13 +354,16 @@ def criar_tela_editar_produto(app, id_produto):
 
     # Criar frame dos botões corretamente
     botoes_frame = ttk.Frame(main_frame)
-    botoes_frame.grid(row=1, column=0, columnspan=2, pady=10)
+    botoes_frame.grid(row=2, column=0, columnspan=2, pady=10)
+    main_frame.rowconfigure(2, weight=0)
+
 
     # Botões dentro do frame
-    ttk.Button(botoes_frame, text="Buscar via Scraping", command=buscar_info_scraping).pack(side="left", padx=20, pady=5)
-    ttk.Button(botoes_frame, text="Salvar Produto", command=salvar).pack(side="left", padx=20, pady=5)
-    ttk.Button(botoes_frame, text="Deletar Produto", command=apagar_produto).pack(side="left", padx=20, pady=5)
-    ttk.Button(botoes_frame, text="Vender Produto", command=vender).pack(side="left", padx=20, pady=5)  # <-- novo
+    ttk.Button(botoes_frame, text="Buscar via Scraping", command=buscar_info_scraping).grid(row=0, column=0, padx=10)
+    ttk.Button(botoes_frame, text="Salvar Produto", command=salvar).grid(row=0, column=1, padx=10)
+    ttk.Button(botoes_frame, text="Deletar Produto", command=apagar_produto).grid(row=0, column=2, padx=10)
+    ttk.Button(botoes_frame, text="Vender Produto", command=vender).grid(row=0, column=3, padx=10)
+
 
     # Preencher campos com os dados do produto existente
     campos["link"].insert(0, produto["link"] or "")
