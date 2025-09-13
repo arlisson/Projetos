@@ -147,14 +147,18 @@ def criar_tela_editar_produto(app, id_produto):
     # dentro da função ou método da tela
     historico = buscar_historico_precos(tipo="produto", id=id_produto)
 
-    frame_grafico = GraficoHistorico(
-        parent=main_frame,
+    frame_grafico_container = ttk.LabelFrame(main_frame, text="Histórico", padding=10)
+    frame_grafico_container.grid(row=1, column=0, columnspan=2, sticky="nsew", padx=10, pady=10)
+
+    grafico = GraficoHistorico(
+        parent=frame_grafico_container,
         dados=historico,
-        titulo="Histórico de Preço do Produto",
+        titulo="Histórico de Preços do Produto",       
         campos_numericos=["preco"]
     )
+    grafico.pack(fill="both", expand=True)
 
-    frame_grafico.grid(row=1, column=0, columnspan=2, sticky="nsew", padx=10, pady=10)
+
     main_frame.rowconfigure(1, weight=1)
 
     imagem_frame = ttk.LabelFrame(main_frame, text="Imagem", padding=10, width=320)

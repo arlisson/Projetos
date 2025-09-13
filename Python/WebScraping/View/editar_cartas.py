@@ -125,7 +125,7 @@ def criar_tela_editar_carta(app, id_carta):
                 new_height = max_height
                 new_width = int(max_height * im_ratio)
 
-            im = im.resize((new_width, new_height), Image.ANTIALIAS)
+            im = im.resize((new_width, new_height))
 
             photo = ImageTk.PhotoImage(im)
             imagem_label.configure(image=photo)
@@ -151,18 +151,18 @@ def criar_tela_editar_carta(app, id_carta):
 
    
     # raridade agora vai na linha 9
-    ttk.Label(form_frame, text="Raridade:").grid(row=10, column=0, sticky="w", padx=5, pady=3)
+    ttk.Label(form_frame, text="Raridade:").grid(row=10, column=0, sticky="nsw", padx=5, pady=3)
     campos["raridade"] = ttk.Combobox(form_frame, state="readonly")
     campos["raridade"].grid(row=10, column=1, columnspan=2, padx=5, pady=3, sticky="we")
     popular_dropdown(campos["raridade"], buscar_valores_tabela("raridade"))
     
 
-    ttk.Label(form_frame, text="Qualidade:").grid(row=11, column=0, sticky="w", padx=5, pady=3)
+    ttk.Label(form_frame, text="Qualidade:").grid(row=11, column=0, sticky="nsw", padx=5, pady=3)
     campos["qualidade"] = ttk.Combobox(form_frame, state="readonly")
     campos["qualidade"].grid(row=11, column=1, columnspan=2, padx=5, pady=3, sticky="we")
     popular_dropdown(campos["qualidade"], buscar_valores_tabela("qualidade"))
 
-    ttk.Label(form_frame, text="Coleção:").grid(row=12, column=0, sticky="w", padx=5, pady=3)
+    ttk.Label(form_frame, text="Coleção:").grid(row=12, column=0, sticky="nsw", padx=5, pady=3)
     campos["colecao"] = ttk.Combobox(form_frame, state="readonly")
     campos["colecao"].grid(row=12, column=1, columnspan=2, padx=5, pady=3, sticky="we")
     popular_dropdown(campos["colecao"], buscar_valores_tabela("colecao"))
@@ -183,14 +183,18 @@ def criar_tela_editar_carta(app, id_carta):
     # dentro da função ou método da tela
     historico = buscar_historico_precos(tipo="carta", id=id_carta)
 
-    frame_grafico = GraficoHistorico(
-        parent=main_frame,
+    frame_grafico_container = ttk.LabelFrame(main_frame, text="Histórico", padding=10)
+    frame_grafico_container.grid(row=1, column=0, columnspan=2, sticky="nsew", padx=10, pady=10)
+
+    grafico = GraficoHistorico(
+        parent=frame_grafico_container,
         dados=historico,
-        titulo="Histórico de Preço da Carta",
         campos_numericos=["preco"]
     )
+    grafico.pack(fill="both", expand=True)
 
-    frame_grafico.grid(row=1, column=0, columnspan=2, sticky="nsew", padx=10, pady=10)
+
+    
     main_frame.rowconfigure(1, weight=1)
 
     imagem_frame = ttk.LabelFrame(main_frame, text="Imagem", padding=10)
@@ -198,26 +202,7 @@ def criar_tela_editar_carta(app, id_carta):
 
     imagem_label = ttk.Label(imagem_frame)
     imagem_label.pack()
-
-    def atualizar_imagem(caminho):
-        try:
-            if caminho.startswith("http://") or caminho.startswith("https://"):
-                with urllib.request.urlopen(caminho) as u:
-                    raw_data = u.read()
-                im = Image.open(BytesIO(raw_data))
-            else:
-                im = Image.open(caminho)
-
-            im.thumbnail((300, 420))
-            photo = ImageTk.PhotoImage(im)
-            imagem_label.configure(image=photo)
-            imagem_label.image = photo
-        except:
-            imagem_label.configure(image='')
-            imagem_label.image = None
-
-
-    
+       
     def preencher_com_scraping():
         def _buscar():
             try:

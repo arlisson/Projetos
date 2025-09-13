@@ -123,3 +123,5 @@
 2025-09-09 19:36:01,988 [ERROR] - Erro ao apagar dados | Exceção: FOREIGN KEY constraint failed
 2025-09-11 10:52:25,692 [ERROR] - Erro ao buscar carta por texto | Exceção: 'list' object has no attribute 'strip'
 2025-09-11 12:12:34,665 [ERROR] - Erro ao listar vendas com filtro (carta): | Exceção: Incorrect number of bindings supplied. The current statement uses 4, and there are 1 supplied.
+2025-09-13 12:51:44,973 [ERROR] - [Erro] Falha ao carregar imagem: module 'PIL.Image' has no attribute 'ANTIALIAS'
+2025-09-13 12:56:45,461 [ERROR] - [Erro] Falha ao carregar imagem: name 'imagem_label' is not defined
