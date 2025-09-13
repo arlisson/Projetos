@@ -792,7 +792,8 @@ def apagar_todos_os_dados():
             "produto",
             "raridade",
             "qualidade",
-            "colecao"
+            "colecao",
+            "historico_lucro"
         ]
 
         for tabela in tabelas:

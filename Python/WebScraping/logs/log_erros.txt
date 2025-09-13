@@ -125,3 +125,4 @@
 2025-09-11 12:12:34,665 [ERROR] - Erro ao listar vendas com filtro (carta): | Exceção: Incorrect number of bindings supplied. The current statement uses 4, and there are 1 supplied.
 2025-09-13 12:51:44,973 [ERROR] - [Erro] Falha ao carregar imagem: module 'PIL.Image' has no attribute 'ANTIALIAS'
 2025-09-13 12:56:45,461 [ERROR] - [Erro] Falha ao carregar imagem: name 'imagem_label' is not defined
+2025-09-13 14:40:36,452 [ERROR] - Erro ao construir gráfico: unconverted data remains:  16:49:32

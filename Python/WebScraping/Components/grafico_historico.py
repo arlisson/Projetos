@@ -5,6 +5,7 @@ from matplotlib.figure import Figure
 from datetime import datetime
 import matplotlib.dates as mdates
 from matplotlib.dates import date2num
+from tkinter import Scrollbar
 
 from Utils.log import registrar_erro
 
@@ -31,7 +32,15 @@ class GraficoHistorico(ttk.Frame):
     def _conv_data(self, v):
         if isinstance(v, datetime):
             return v
-        return datetime.strptime(str(v), "%Y-%m-%d")
+        v = str(v).strip()
+        for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
+            try:
+                return datetime.strptime(v, fmt)
+            except ValueError:
+                continue
+        registrar_erro(f"Formato de data inválido: {v}")
+        raise ValueError(f"Formato de data inválido: {v}")
+
 
     def _construir_grafico(self):
         if not self.dados:
