@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+import hashlib
 
+from Utils.atualizador import iniciar_atualizacao_diaria
 from View.cadastrar_cartas import criar_tela_cadastro
 from View.cadastrar_cartas_colecao import criar_tela_cadastro_colecao
 from View.cadastrar_colecao import abrir_tela_gerenciar_colecoes
@@ -11,7 +13,6 @@ from View.cadastrar_produtos import criar_tela_cadastro_produto
 from View.listar_produtos import abrir_tela_listagem_produtos
 from View.listar_venda_cartas import abrir_tela_listagem_venda
 from View.listar_venda_produtos import abrir_tela_listagem_venda_produtos
-import hashlib
 
 from DAO.database import (
     apagar_todos_os_dados,
@@ -19,9 +20,9 @@ from DAO.database import (
     buscar_historico_precos,
 )
 
-# novos imports
 from Components.carrossel import CarrosselLateral, carregar_itens_do_banco
 from Components.grafico_historico import GraficoHistorico
+from Components.scrollable_frame import ScrollableFrame  # <-- sua classe
 
 
 def criar_tela_principal():
@@ -36,11 +37,16 @@ def criar_tela_principal():
     y = (root.winfo_screenheight() // 2) - (altura // 2)
     root.geometry(f"{largura}x{altura}+{x}+{y}")
 
+    label_status = tk.Label(root, text="", font=("Arial", 10), fg="blue")
+    label_status.pack(pady=(5, 0))
 
-    itens = carregar_itens_do_banco()
+    # Chama atualização diária com feedback visual
+    iniciar_atualizacao_diaria(callback_status=lambda msg: label_status.config(text=msg))
     
 
-    # --- Funções de atualização dinâmica ---
+
+    # ======================== Funções Auxiliares ========================
+
     def gerar_hash_dados(itens):
         string_dados = "".join(f"{item['nome']}{item['preco']}" for item in itens)
         return hashlib.md5(string_dados.encode()).hexdigest()
@@ -52,11 +58,10 @@ def criar_tela_principal():
         novo_hash = gerar_hash_dados(novos_itens)
 
         if novo_hash != hash_atual:
-            # Atualizou! → refaz os widgets
-            for widget in frame_inicial.winfo_children():
+            for widget in frame_scroll.scrollable_frame.winfo_children():
                 widget.destroy()
 
-            carrossel = CarrosselLateral(frame_inicial, novos_itens, imagens_visiveis=10, intervalo=3000)
+            carrossel = CarrosselLateral(frame_scroll.scrollable_frame, novos_itens, imagens_visiveis=10, intervalo=3000)
             carrossel.pack(pady=10)
 
             dados_lucro = buscar_historico_precos(tipo="lucro")
@@ -66,7 +71,7 @@ def criar_tela_principal():
             ] if dados_lucro else []
 
             grafico = GraficoHistorico(
-                frame_inicial,
+                frame_scroll.scrollable_frame,
                 dados=dados_formatados,
                 titulo="Histórico de Lucros Totais",
                 campos_numericos=("lucro_total",),
@@ -76,40 +81,32 @@ def criar_tela_principal():
 
             hash_atual = novo_hash
 
-        root.after(5000, atualizar_tela)  # Verifica novamente após 5s
+    # ======================== Menu ========================
 
-    hash_atual = gerar_hash_dados(itens)
-
-    # ===== Menu bar =====
     menu_bar = tk.Menu(root)
 
-    # --- Cartas ---
     menu_cartas = tk.Menu(menu_bar, tearoff=0)
     menu_cartas.add_command(label="Cadastrar Carta", command=lambda: criar_tela_cadastro(root))
     menu_cartas.add_command(label="Listar Cartas", command=lambda: abrir_tela_listagem(root))
     menu_cartas.add_command(label="Cadastrar Coleção", command=lambda: criar_tela_cadastro_colecao(root))
     menu_bar.add_cascade(label="Cartas", menu=menu_cartas)
 
-    # --- Produtos ---
     menu_produtos = tk.Menu(menu_bar, tearoff=0)
     menu_produtos.add_command(label="Cadastrar Produto", command=lambda: criar_tela_cadastro_produto(root))
     menu_produtos.add_command(label="Listar Produtos", command=lambda: abrir_tela_listagem_produtos(root))
     menu_bar.add_cascade(label="Produtos", menu=menu_produtos)
 
-    # --- Vendas ---
     menu_vendas = tk.Menu(menu_bar, tearoff=0)
     menu_vendas.add_command(label="Listar Vendas de Cartas", command=lambda: abrir_tela_listagem_venda(root))
     menu_vendas.add_command(label="Listar Vendas de Produtos", command=lambda: abrir_tela_listagem_venda_produtos(root))
     menu_bar.add_cascade(label="Vendas", menu=menu_vendas)
 
-    # --- Outras Gestões ---
     menu_outros = tk.Menu(menu_bar, tearoff=0)
     menu_outros.add_command(label="Gerenciar Coleções", command=abrir_tela_gerenciar_colecoes)
     menu_outros.add_command(label="Gerenciar Raridades", command=lambda: abrir_tela_gerenciar_raridade_qualidade("raridade"))
     menu_outros.add_command(label="Gerenciar Qualidades", command=lambda: abrir_tela_gerenciar_raridade_qualidade("qualidade"))
     menu_bar.add_cascade(label="Outras Gestões", menu=menu_outros)
 
-    # --- Opções ---
     def confirmar_e_apagar():
         resp = messagebox.askyesno("Confirmar", "Tem certeza que deseja apagar todos os dados?\nEssa ação não pode ser desfeita.")
         if resp:
@@ -126,21 +123,19 @@ def criar_tela_principal():
     menu_opcoes.add_command(label="Exportar banco de dados", command=exportar_banco_completo)
     menu_bar.add_cascade(label="Opções", menu=menu_opcoes)
 
-    # --- Sair ---
     menu_bar.add_command(label="Sair", command=root.quit)
-
     root.config(menu=menu_bar)
 
-    # ===== Tela inicial =====
-    frame_inicial = ttk.Frame(root, padding=10)
-    frame_inicial.pack(fill="both", expand=True)
+    # ======================== Scrollable Frame Inicial ========================
+    frame_scroll = ScrollableFrame(root)
+    frame_scroll.pack(fill="both", expand=True)
 
-    # --- Carrossel ---
     itens = carregar_itens_do_banco()
-    carrossel = CarrosselLateral(frame_inicial, itens, imagens_visiveis=10, intervalo=3000)
+    hash_atual = gerar_hash_dados(itens)
+
+    carrossel = CarrosselLateral(frame_scroll.scrollable_frame, itens, imagens_visiveis=10, intervalo=3000)
     carrossel.pack(pady=10)
 
-    # --- Gráfico de lucros ---
     dados_lucro = buscar_historico_precos(tipo="lucro")
     dados_formatados = [
         {"data": row["data"], "lucro_total": row["lucro_total"]}
@@ -148,7 +143,7 @@ def criar_tela_principal():
     ] if dados_lucro else []
 
     grafico = GraficoHistorico(
-        frame_inicial,
+        frame_scroll.scrollable_frame,
         dados=dados_formatados,
         titulo="Histórico de Lucros Totais",
         campos_numericos=("lucro_total",),
@@ -156,11 +151,13 @@ def criar_tela_principal():
     )
     grafico.pack(fill="both", expand=True, pady=20)
 
-     # Inicia loop de verificação
-    root.after(10000, atualizar_tela)
+    # ======================== Botão de Atualizar ========================
+    btn_atualizar = ttk.Button(root, text="🔄 Atualizar Tela", command=atualizar_tela)
+    btn_atualizar.pack(pady=(0, 10))
+
     root.mainloop()
-   
 
 
 if __name__ == "__main__":
+    # iniciar_atualizacao_diaria()
     criar_tela_principal()

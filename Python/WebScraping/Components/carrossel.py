@@ -83,10 +83,20 @@ class CarrosselLateral(ttk.Frame):
             lbl_img = ttk.Label(frame_item)
             lbl_img.pack()
 
-            lbl_txt = ttk.Label(frame_item, text="", font=("Segoe UI", 9), justify="center", width=22)
-            lbl_txt.pack(pady=(6, 0))
+            frame_texto = ttk.Frame(frame_item)
+            frame_texto.pack(fill="x", pady=(6, 0))
+
+            lbl_txt = ttk.Label(
+                frame_texto,
+                text="",
+                font=("Segoe UI", 9),
+                justify="center",
+                anchor="center"
+            )
+            lbl_txt.pack(anchor="center")  # centraliza horizontalmente
 
             self._labels.append((lbl_img, lbl_txt))
+
 
         if self.itens:
             self._atualizar()        # carrega imagens e textos

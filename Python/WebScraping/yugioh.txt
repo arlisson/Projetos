@@ -112,6 +112,14 @@ CREATE TABLE IF NOT EXISTS historico_precos (
 CREATE INDEX IF NOT EXISTS idx_historico_carta ON historico_precos(id_carta);
 CREATE INDEX IF NOT EXISTS idx_historico_produto ON historico_precos(id_produto);
 
+CREATE TABLE IF NOT EXISTS historico_lucro (
+  id_lucro INTEGER PRIMARY KEY AUTOINCREMENT,
+  data TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  lucro_cartas DOUBLE,
+  lucro_produtos DOUBLE,
+  lucro_total DOUBLE
+);
+
 
 CREATE VIEW IF NOT EXISTS vw_cartas_detalhadas AS
 SELECT

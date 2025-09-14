@@ -3,6 +3,7 @@ from datetime import datetime
 from tkinter import messagebox
 
 from Utils.log import registrar_erro
+from Utils.thread_lock_safe import com_lock
 
 DB_PATH = "yugioh.db"
 DATA_SCRAPING = datetime.today().strftime('%Y-%m-%d')
@@ -12,6 +13,7 @@ def conectar():
     conn.execute("PRAGMA foreign_keys = ON;")  # Habilita as constraints de chave estrangeira
     return conn
 
+@com_lock
 def registrar_historico_generico(tipo="carta", id=None, preco=None, data=None, origem="MYPCards"):
     if tipo not in ["carta", "produto"]:
         raise ValueError("Tipo inválido. Use 'carta' ou 'produto'.")
@@ -39,6 +41,7 @@ def registrar_historico_generico(tipo="carta", id=None, preco=None, data=None, o
         conn.close()
         return
 
+@com_lock
 def update_historico_generico(tipo="carta", id=None, preco=None, data=None, origem="MYPCards"):
     if tipo not in ["carta", "produto"]:
         raise ValueError("Tipo inválido. Use 'carta' ou 'produto'.")
@@ -68,10 +71,13 @@ def update_historico_generico(tipo="carta", id=None, preco=None, data=None, orig
         conn.close()
         return
 
+
+@com_lock
 def registrar_historico_lucro():
     conn = conectar()
     cursor = conn.cursor()
     try:
+        # Calcula lucro total
         cursor.execute("""
             SELECT SUM((preco_atual - preco_da_compra) * quantidade) FROM carta
         """)
@@ -84,20 +90,38 @@ def registrar_historico_lucro():
 
         total = lucro_cartas + lucro_produtos
 
+        # Data atual sem hora
+        data_hoje = datetime.now().strftime("%Y-%m-%d")
+
+        # Verifica se já existe registro hoje
         cursor.execute("""
-            INSERT INTO historico_lucro (lucro_cartas, lucro_produtos, lucro_total)
-            VALUES (?, ?, ?)
-        """, (lucro_cartas, lucro_produtos, total))
+            SELECT id_lucro FROM historico_lucro
+            WHERE DATE(data) = ?
+        """, (data_hoje,))
+        existente = cursor.fetchone()
+
+        if existente:
+            # Atualiza registro existente
+            cursor.execute("""
+                UPDATE historico_lucro
+                SET lucro_cartas = ?, lucro_produtos = ?, lucro_total = ?
+                WHERE id_lucro = ?
+            """, (lucro_cartas, lucro_produtos, total, existente[0]))
+        else:
+            # Insere novo registro
+            cursor.execute("""
+                INSERT INTO historico_lucro (lucro_cartas, lucro_produtos, lucro_total)
+                VALUES (?, ?, ?)
+            """, (lucro_cartas, lucro_produtos, total))
 
         conn.commit()
-        conn.close()
     except Exception as e:
-        conn.close()
         registrar_erro(f"Erro ao registrar histórico de lucro: {e}")
     finally:
         conn.close()
 
 
+@com_lock
 def inserir_carta(dados):
     '''
     Insere uma nova carta no banco de dados, incluindo a data atual como data_scraping.
@@ -163,6 +187,8 @@ def inserir_carta(dados):
         conn.close()
         registrar_erro("Erro ao inserir carta", e)
 
+
+@com_lock
 def buscar_raridade_qualidade_nome(nome, tabela):
     '''
     Busca o ID da raridade ou qualidade pelo nome.
@@ -186,6 +212,8 @@ def buscar_raridade_qualidade_nome(nome, tabela):
         registrar_erro(f"Erro ao buscar {tabela} por nome", e)
         return None
 
+
+@com_lock
 def inserir_raridade_qualidade(nome, tabela):
     '''
     Insere uma nova raridade ou qualidade no banco de dados.
@@ -210,7 +238,9 @@ def inserir_raridade_qualidade(nome, tabela):
         conn.close()
         registrar_erro(f"Erro ao inserir {tabela}", e)
         return None
-    
+
+
+@com_lock
 def atualizar_raridade_qualidade(id, nome, tabela):
     '''
     Atualiza o nome de uma raridade ou qualidade existente.
@@ -236,6 +266,8 @@ def atualizar_raridade_qualidade(id, nome, tabela):
         registrar_erro(f"Erro ao atualizar {tabela}", e)
         return False
 
+
+@com_lock
 def buscar_raridade_qualidade_id(id, tabela):
     '''
     Busca o nome da raridade ou qualidade pelo ID.
@@ -259,6 +291,8 @@ def buscar_raridade_qualidade_id(id, tabela):
         registrar_erro(f"Erro ao buscar {tabela} por ID", e)
         return None
 
+
+@com_lock
 def buscar_valores_tabela(tabela):
     '''
     Busca os valores de uma tabela no banco de dados.
@@ -282,6 +316,7 @@ def buscar_valores_tabela(tabela):
         registrar_erro(f"Erro ao buscar valores da tabela {tabela}", e)
         return []
 
+@com_lock
 def buscar_colecao_por_nome(nome):
     '''
     Busca uma coleção pelo nome.
@@ -303,6 +338,8 @@ def buscar_colecao_por_nome(nome):
         registrar_erro("Erro ao buscar coleção por nome", e)
         return None
 
+
+@com_lock
 def inserir_colecao(nome, codigo=""):
     '''
     Insere uma nova coleção no banco de dados.
@@ -330,6 +367,7 @@ def inserir_colecao(nome, codigo=""):
         return None
 
 
+@com_lock
 def buscar_todas_cartas():
     """
     Retorna todas as cartas da view vw_cartas_detalhadas, sem cache interno.
@@ -350,8 +388,7 @@ def buscar_todas_cartas():
         return []
 
 
-
-
+@com_lock
 def buscar_carta_por_texto(texto):
     '''
     Busca uma carta pelo nome ou código.
@@ -394,6 +431,8 @@ def buscar_carta_por_texto(texto):
         registrar_erro("Erro ao buscar carta por texto", e)
         return []
 
+
+@com_lock
 def calcular_lucro_total_cartas_em_posse():
     '''
     Calcula o lucro total das cartas (em posse + vendidas).
@@ -436,7 +475,8 @@ def calcular_lucro_total_cartas_em_posse():
         if conn:
             conn.close()
 
-    
+
+@com_lock 
 def calcular_lucro_total_cartas_vendidas():
     '''
     Calcula o lucro total das cartas vendidas.
@@ -463,6 +503,8 @@ def calcular_lucro_total_cartas_vendidas():
     finally:
         conn.close()
 
+
+@com_lock
 def calcular_total_gasto_cartas():
     '''
     Calcula o total gasto em cartas (em posse + vendidas).
@@ -505,6 +547,7 @@ def calcular_total_gasto_cartas():
             conn.close()
 
 
+@com_lock
 def calcular_total_vendido_cartas():
     '''
     Calcula o total vendido em cartas.
@@ -532,6 +575,7 @@ def calcular_total_vendido_cartas():
         conn.close()
 
 
+@com_lock
 def inserir_produto(produto):
     """
     Insere um novo produto no banco de dados.
@@ -600,6 +644,7 @@ def inserir_produto(produto):
         conn.close()
 
 
+@com_lock
 def listar_todos_produtos(filtro=""):
     """
     Lista todos os produtos cadastrados no banco de dados.
@@ -643,6 +688,7 @@ def listar_todos_produtos(filtro=""):
         conn.close()
 
 
+@com_lock
 def calcular_lucro_total_produtos_em_posse():
     '''
     Calcula o lucro total dos produtos em posse.
@@ -670,6 +716,7 @@ def calcular_lucro_total_produtos_em_posse():
         conn.close()
 
 
+@com_lock
 def calcular_lucro_total_produtos_vendidos():
     '''
     Calcula o lucro total dos produtos vendidos.
@@ -696,6 +743,7 @@ def calcular_lucro_total_produtos_vendidos():
     finally:
         conn.close()
 
+@com_lock
 def calcular_total_gasto_produtos():
     '''
     Calcula o total gasto em produtos em posse.
@@ -721,7 +769,7 @@ def calcular_total_gasto_produtos():
     finally:
         conn.close()
 
-
+@com_lock
 def calcular_total_vendido_produtos():
     '''
     Calcula o total vendido em produtos.
@@ -748,6 +796,7 @@ def calcular_total_vendido_produtos():
         conn.close()
 
 
+@com_lock
 def calcular_total_valor_produtos():
     '''
     Calcula o valor atual total dos produtos em posse.
@@ -775,6 +824,7 @@ def calcular_total_valor_produtos():
         conn.close()
 
 
+@com_lock
 def apagar_todos_os_dados():
     try:
         conn = conectar()
@@ -813,6 +863,7 @@ def apagar_todos_os_dados():
         registrar_erro("Erro ao apagar dados", e)
 
 
+@com_lock
 def criar_banco_inicial():
     """
     Cria o banco de dados inicial com as tabelas e dados padrão.
@@ -849,6 +900,7 @@ def criar_banco_inicial():
         registrar_erro("Erro ao criar banco inicial", e)
 
 
+@com_lock
 def buscar_carta_por_id(id):
     """
     Busca uma carta pelo seu ID.
@@ -877,6 +929,8 @@ def buscar_carta_por_id(id):
     finally:
         conn.close()
 
+
+@com_lock
 def atualizar_carta(carta):
     query = """
         UPDATE carta
@@ -914,6 +968,8 @@ def atualizar_carta(carta):
     finally:
         conn.close()
 
+
+@com_lock
 def buscar_produto_por_id(id):
     """
     Busca um produto pelo seu ID.
@@ -942,6 +998,8 @@ def buscar_produto_por_id(id):
     finally:
         conn.close()
 
+
+@com_lock
 def atualizar_produto(produto):
     query = """
         UPDATE produto
@@ -976,6 +1034,8 @@ def atualizar_produto(produto):
     finally:
         conn.close()
 
+
+@com_lock
 def deletar(id, tabela, tipo="carta"):
     query = f"DELETE FROM {tabela} WHERE id_{tipo} = ?;"
     try:
@@ -992,6 +1052,8 @@ def deletar(id, tabela, tipo="carta"):
     finally:
         conn.close()
 
+
+@com_lock
 def calcula_quantidade(tabela):
     query = f"SELECT SUM(quantidade) FROM {tabela};"
     try:
@@ -1009,7 +1071,7 @@ def calcula_quantidade(tabela):
         conn.close()
 
 
-
+@com_lock
 def inserir_venda_generica(id_item, quantidade_vendida, preco_venda, tipo="carta"):
     conn = conectar()
     cursor = conn.cursor()
@@ -1121,6 +1183,8 @@ def inserir_venda_generica(id_item, quantidade_vendida, preco_venda, tipo="carta
     finally:
         conn.close()
 
+
+@com_lock
 def calcular_quantidade_vendida(tabela):
     query = f"SELECT SUM(quantidade) FROM {tabela};"
     try:
@@ -1138,6 +1202,7 @@ def calcular_quantidade_vendida(tabela):
         conn.close()
 
 
+@com_lock
 def listar_vendas(tipo='carta'):
     """
     Retorna a lista de vendas de cartas ou produtos, baseada nas views detalhadas.
@@ -1169,7 +1234,9 @@ def listar_vendas(tipo='carta'):
 
     finally:
         conn.close()
+        cursor.close()
 
+@com_lock
 def listar_venda_por_id(id, tipo='carta'):
     """
     Retorna os detalhes de uma venda específica de carta ou produto pelo ID.
@@ -1203,6 +1270,8 @@ def listar_venda_por_id(id, tipo='carta'):
     finally:
         conn.close()
 
+
+@com_lock
 def listar_venda_filtro(tipo='carta', filtro=""):
     """
     Retorna a lista de vendas de cartas ou produtos, baseada nas views detalhadas, com filtro opcional.
@@ -1255,6 +1324,8 @@ def listar_venda_filtro(tipo='carta', filtro=""):
     finally:
         conn.close()
 
+
+@com_lock
 def atualizar_venda_generica(venda, tipo="carta"):
     conn = conectar()
     cursor = conn.cursor()
@@ -1325,6 +1396,8 @@ def atualizar_venda_generica(venda, tipo="carta"):
     finally:
         conn.close()
 
+
+@com_lock
 def desativar_se_vinculado_ou_deletar(id_item, tabela, tipo="raridade"):
     """
     Em vez de deletar diretamente, verifica se há vínculos com cartas/vendas.
@@ -1375,6 +1448,7 @@ def desativar_se_vinculado_ou_deletar(id_item, tabela, tipo="raridade"):
         conn.close()
 
 
+@com_lock
 def buscar_historico_precos(tipo=None, id=None, resumo=False):
     conn = conectar()
     cursor = conn.cursor()

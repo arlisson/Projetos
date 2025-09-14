@@ -2,10 +2,9 @@ import tkinter as tk
 from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
-from datetime import datetime
+from datetime import datetime, timedelta
 import matplotlib.dates as mdates
 from matplotlib.dates import date2num
-from tkinter import Scrollbar
 
 from Utils.log import registrar_erro
 
@@ -22,12 +21,41 @@ class GraficoHistorico(ttk.Frame):
         *args, **kwargs
     ):
         super().__init__(parent, *args, **kwargs)
-        self.dados = dados or []
+        self.dados_brutos = dados or []
         self.titulo = titulo
         self.campos_numericos = list(campos_numericos)
         self.campo_data = campo_data
         self.formato_tick = formato_tick
+
+        self.filtro_dias = tk.IntVar(value=30)  # padrão: 30 dias
+
+        self._criar_filtros()
         self._construir_grafico()
+
+    def _criar_filtros(self):
+        frame_filtro = ttk.Frame(self)
+        frame_filtro.pack(pady=(0, 6))
+
+        ttk.Label(frame_filtro, text="Exibir últimos:").pack(side="left")
+
+        opcoes = [
+            ("7 dias", 7),
+            ("15 dias", 15),
+            ("1 mês", 30),
+            ("3 meses", 90),
+            ("6 meses", 180),
+            ("1 ano", 365),
+            ("Tudo", 0)
+        ]
+
+        for texto, dias in opcoes:
+            ttk.Radiobutton(
+                frame_filtro,
+                text=texto,
+                variable=self.filtro_dias,
+                value=dias,
+                command=self._construir_grafico
+            ).pack(side="left", padx=4)
 
     def _conv_data(self, v):
         if isinstance(v, datetime):
@@ -41,16 +69,32 @@ class GraficoHistorico(ttk.Frame):
         registrar_erro(f"Formato de data inválido: {v}")
         raise ValueError(f"Formato de data inválido: {v}")
 
+    def _filtrar_dados(self):
+        dados = []
+        try:
+            dias = self.filtro_dias.get()
+            data_limite = datetime.now() - timedelta(days=dias) if dias > 0 else None
+            for d in self.dados_brutos:
+                d = d.copy()
+                d[self.campo_data] = self._conv_data(d[self.campo_data])
+                if not data_limite or d[self.campo_data] >= data_limite:
+                    dados.append(d)
+        except Exception as e:
+            registrar_erro(f"Erro ao filtrar dados: {e}")
+        return dados
 
     def _construir_grafico(self):
-        if not self.dados:
+        # Remove todos os widgets filhos exceto o frame de filtro (índice 0)
+        for widget in self.winfo_children()[1:]:
+            widget.destroy()
+
+
+        dados = self._filtrar_dados()
+        if not dados:
             ttk.Label(self, text="Sem dados para exibir.", foreground="gray").pack(padx=10, pady=10)
             return
 
         try:
-            for d in self.dados:
-                d[self.campo_data] = self._conv_data(d[self.campo_data])
-
             fig = Figure(figsize=(6, 3), dpi=100)
             ax = fig.add_subplot(111)
             ax.set_title(self.titulo)
@@ -58,14 +102,16 @@ class GraficoHistorico(ttk.Frame):
 
             self._canvas = FigureCanvasTkAgg(fig, master=self)
             self._canvas.draw()
-            self._canvas.get_tk_widget().pack(fill="both", expand=True)
+            self._canvas.get_tk_widget().pack(fill="both", expand=True, padx=10, pady=10)
+            
+
 
             todas_as_datas_plotadas = set()
             self._pontos_plotados = []
 
             for campo in self.campos_numericos:
                 pontos_validos = []
-                for d in self.dados:
+                for d in dados:
                     v = d.get(campo)
                     if v in (None, "", 0):
                         continue
@@ -81,7 +127,7 @@ class GraficoHistorico(ttk.Frame):
                 pontos_validos.sort(key=lambda p: p[0])
                 datas, valores = zip(*pontos_validos)
                 ax.plot(datas, valores, label=campo.capitalize(), marker="o")
-                self._pontos_plotados.extend([(date2num(x), y, f"{campo.capitalize()}: {y:.2f}") for x, y in zip(datas, valores)])
+                self._pontos_plotados.extend([(date2num(x), y, f"{campo.capitalize()}: R$ {y:.2f}\n{x.strftime('%d/%m/%Y')}") for x, y in zip(datas, valores)])
                 todas_as_datas_plotadas.update(datas)
 
             if not todas_as_datas_plotadas:
@@ -97,7 +143,6 @@ class GraficoHistorico(ttk.Frame):
             ax.legend(loc="best")
             self._canvas.draw()
 
-            # Tooltip fora do gráfico (figura inteira)
             self._tooltip = fig.text(
                 0.5, 0.95, "", ha="center", va="bottom",
                 fontsize=9, color="black",
@@ -123,12 +168,10 @@ class GraficoHistorico(ttk.Frame):
 
             self._canvas.mpl_connect("motion_notify_event", on_hover)
 
-            # === PAN (clique + arrasto lateral) ===
             min_x = date2num(min(xticks))
             max_x = date2num(max(xticks))
             range_x = max_x - min_x
 
-            # Mostra inicialmente o final da linha do tempo
             span = range_x * 0.3 if range_x > 0 else 1
             ax.set_xlim(max_x - span, max_x)
 
@@ -152,7 +195,6 @@ class GraficoHistorico(ttk.Frame):
                     cur_xlim = ax.get_xlim()
                     new_xlim = cur_xlim[0] + dx, cur_xlim[1] + dx
 
-                    # limita aos extremos
                     span = new_xlim[1] - new_xlim[0]
                     if new_xlim[0] < min_x:
                         new_xlim = (min_x, min_x + span)
