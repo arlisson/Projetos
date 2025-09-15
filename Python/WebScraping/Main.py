@@ -133,7 +133,13 @@ def criar_tela_principal():
     itens = carregar_itens_do_banco()
     hash_atual = gerar_hash_dados(itens)
 
-    carrossel = CarrosselLateral(frame_scroll.scrollable_frame, itens, imagens_visiveis=10, intervalo=3000)
+    carrossel = CarrosselLateral(
+        frame_scroll.scrollable_frame,
+        itens,
+        imagens_visiveis=len(itens) if len(itens) < 10 else 10,
+        intervalo=3000)
+    
+    
     carrossel.pack(pady=10)
 
     dados_lucro = buscar_historico_precos(tipo="lucro")

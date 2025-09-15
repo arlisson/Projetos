@@ -34,7 +34,8 @@ def buscar_carta_myp(url, chave=None):
 
         # Nome
         nome_tag = soup.find("span", class_="subtitulo")
-        nome = nome_tag.get_text(strip=True) if nome_tag else "Desconhecido"
+        nome_sem_tag = soup.find("h1", id="produto-nome")
+        nome = nome_tag.get_text(strip=True) if nome_tag else nome_sem_tag.get_text(strip=True) if nome_sem_tag else "Desconhecido"
 
         # Imagem
         imagens = soup.find_all("img")
@@ -48,9 +49,10 @@ def buscar_carta_myp(url, chave=None):
         colecao = soup.find_all("a", href=lambda h: h and "/yugioh/" in h)
         colecao_carta = colecao[23].text if len(colecao) > 23 else "Coleção não identificada"
 
+        soup.find_all("div", class_="view-field")[3].text.strip()
         # Código
         try:
-            codigo_carta = "_".join(imagem.split("/")[-2].split("_")[1:])
+            codigo_carta = "_".join(imagem.split("/")[-2].split("_")[1:]) or soup.find_all("div", class_="view-field")[3].text.strip().split("Código")[-1].strip().split("yugioh_")[-1]
         except:
             codigo_carta = "Desconhecido"
 

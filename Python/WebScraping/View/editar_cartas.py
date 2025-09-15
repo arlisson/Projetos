@@ -84,6 +84,7 @@ def criar_tela_editar_carta(app, id_carta):
     form_frame.columnconfigure(0, weight=0)
     form_frame.columnconfigure(1, weight=1)
     form_frame.columnconfigure(2, weight=1)
+    form_frame.pack(expand=True, fill="both")
 
 
 
@@ -183,15 +184,28 @@ def criar_tela_editar_carta(app, id_carta):
     # dentro da função ou método da tela
     historico = buscar_historico_precos(tipo="carta", id=id_carta)
 
-    frame_grafico_container = ttk.LabelFrame(main_frame, text="Histórico", padding=10)
+    # Frame externo do gráfico com título
+    frame_grafico_container = ttk.LabelFrame(main_frame, text="Histórico de preços", padding=10)
     frame_grafico_container.grid(row=1, column=0, columnspan=2, sticky="nsew", padx=10, pady=10)
 
+    # Scroll exclusivo para o gráfico
+    grafico_scroll = ScrollableFrame(frame_grafico_container)
+    grafico_scroll.pack(fill="both", expand=True)
+
+    # Frame que se adapta ao espaço disponível
+    grafico_wrapper = ttk.Frame(grafico_scroll.scrollable_frame)
+    grafico_wrapper.pack(fill="both", expand=True)
+    grafico_wrapper.columnconfigure(0, weight=1)
+
+    # Gráfico dentro do frame
     grafico = GraficoHistorico(
-        parent=frame_grafico_container,
+        parent=grafico_wrapper,
         dados=historico,
-        campos_numericos=["preco"]
+        campos_numericos=["preco"],
+        titulo=f"Histórico de {carta['nome'] or 'Preço da Carta'}",
     )
     grafico.pack(fill="both", expand=True)
+
 
 
     

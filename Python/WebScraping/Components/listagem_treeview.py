@@ -254,13 +254,40 @@ class ListagemTreeview(ttk.Frame):
             pass
 
     # ----------------------------------------------------------------------
-
     def carregar(self, filtro=""):
         """Carrega os dados aplicando filtro e reinicia a paginação."""
         self.result_cache = self.fetch_func(filtro)
         self.pagina = 0
         self.tree.delete(*self.tree.get_children())
+
+        if not self.result_cache:
+            # Esconde colunas temporariamente
+            for col in self.headers:
+                self.tree.column(col, width=0, stretch=False)
+
+            # Ajusta a coluna de imagem para ocupar toda a largura
+            total_largura = sum(self._col_widths.values()) + self.img_w + 40
+            self.tree.column("#0", width=total_largura, anchor="center", stretch=True,)
+           
+            self.tree.insert(
+                "", "end",
+                text="Nenhum dado encontrado",
+                values=[],
+                tags=("empty",)                
+            )
+            self.tree['show'] = ''  # esconde cabeçalhos
+            return
+
+        # Caso tenha dados, restaura colunas
+        for col in self.headers:
+            self.tree.column(col, width=self._col_widths[col], stretch=True)
+
+        self.tree.column("#0", width=self.img_w + 20, anchor="center", stretch=False)
+
         self._carregar_pagina()
+
+
+
 
     def _carregar_pagina(self):
         """Carrega a próxima página de itens (lazy loading)."""

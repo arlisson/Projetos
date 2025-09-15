@@ -14,6 +14,10 @@ import re
 IMAGEM_PADRAO = "imagens/imagens_cartas/imagem_padrao.jpg"
 
 def criar_tela_cadastro_colecao(app):
+
+    contador_cartas_var = tk.StringVar(value="")
+
+
     largura = 700
     altura = 500
 
@@ -66,6 +70,8 @@ def criar_tela_cadastro_colecao(app):
         filtro_entry = ttk.Entry(frame)
         filtro_entry.grid(row=0, column=1, sticky="ew", padx=5)
         frame.columnconfigure(1, weight=1)
+
+
 
         lista_frame = ttk.Frame(frame)
         lista_frame.grid(row=1, column=0, columnspan=2, sticky="nsew")
@@ -147,6 +153,8 @@ def criar_tela_cadastro_colecao(app):
 
             except Exception as e:
                 registrar_erro(f"Erro ao preparar carta: {e}")
+
+        ttk.Label(frame, text=f"Total de cartas encontradas: {len(cartas)}").grid(row=3, column=0, sticky="w", pady=5)
 
         ttk.Button(frame, text="Salvar Selecionadas", command=lambda:iniciar_processamento(t="Aguarde", m="Salvando cartas selecionadas...", f=lambda modal: salvar_cartas_selecionadas())).grid(row=3, column=0, columnspan=2, pady=10)
 
