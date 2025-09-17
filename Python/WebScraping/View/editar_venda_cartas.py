@@ -19,7 +19,7 @@ from Components.thread_com_modal import executar_em_thread
 
 
 
-IMAGEM_PADRAO = "imagens/imagens_cartas/imagem_padrao.png"
+IMAGEM_PADRAO = "imagens/imagem_padrao.png"
 
 def criar_tela_editar_venda_carta(app, id_venda):
     from View.listar_venda_cartas import abrir_tela_listagem_venda

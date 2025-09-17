@@ -3,8 +3,7 @@ from datetime import datetime
 import json
 import os
 
-from DAO.database import (
-    buscar_raridade_qualidade_id,
+from DAO.database import (    
     buscar_todas_cartas,
     buscar_produto_por_id,
     buscar_carta_por_id,
@@ -125,7 +124,7 @@ def iniciar_atualizacao_diaria(callback_status=None):
         callback_status (func): Função opcional para atualizar interface visual.
     """
     if _ja_atualizado_hoje():
-        log_info("Atualização já feita hoje. Pulando.")
+        log_info(f"Atualização já feita hoje: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}. Pulando.")
         if callable(callback_status):
             callback_status("✔️ Preços já atualizados hoje.")
         return

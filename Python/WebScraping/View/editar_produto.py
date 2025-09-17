@@ -19,7 +19,7 @@ from DAO.database import atualizar_produto, buscar_historico_precos, buscar_prod
 
 import threading
 
-IMAGEM_PADRAO = "imagens/imagens_produtos/imagem_padrao.jpg"
+IMAGEM_PADRAO = "imagens/imagem_padrao.jpg"
 
 def criar_tela_editar_produto(app, id_produto):
     from View.listar_produtos import abrir_tela_listagem_produtos

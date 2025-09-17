@@ -39,8 +39,21 @@ class ModalProgresso:
         self.popup.update()
 
     def fechar(self):
-        self.barra.stop()
-        self.popup.destroy()
+        try:
+            if self.barra.winfo_exists():  # verifica se a barra ainda existe
+                self.barra.stop()
+            if self.popup.winfo_exists():  # verifica se a janela ainda existe
+                self.popup.destroy()
+        except tk.TclError:
+            # Se já tiver sido destruído, ignora silenciosamente
+            pass
+    
+    def fechar_async(self):
+        """Agenda o fechamento seguro a partir de qualquer thread."""
+        if self.parent and self.parent.winfo_exists():
+            self.parent.after(0, self.fechar)
+
+
 
     def _ignorar_fechar(self):
         pass  # Impede o usuário de fechar o modal

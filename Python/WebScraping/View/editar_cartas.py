@@ -21,7 +21,7 @@ from Components.scrollable_frame import ScrollableFrame
 from Components.grafico_historico import GraficoHistorico  # topo do arquivo
  
 
-IMAGEM_PADRAO = "imagens/imagens_cartas/imagem_padrao.jpg"
+IMAGEM_PADRAO = "imagens/imagem_padrao.jpg"
 
 def criar_tela_editar_carta(app, id_carta):
     from View.listar_cartas import abrir_tela_listagem

@@ -1,7 +1,9 @@
+import threading
 import tkinter as tk
 from tkinter import ttk, messagebox
 import hashlib
 
+from Components.modal_progresso import ModalProgresso
 from Utils.atualizador import iniciar_atualizacao_diaria
 from View.cadastrar_cartas import criar_tela_cadastro
 from View.cadastrar_cartas_colecao import criar_tela_cadastro_colecao
@@ -51,7 +53,7 @@ def criar_tela_principal():
         string_dados = "".join(f"{item['nome']}{item['preco']}" for item in itens)
         return hashlib.md5(string_dados.encode()).hexdigest()
 
-    def atualizar_tela():
+    def atualizar_tela(modal: ModalProgresso):
         nonlocal hash_atual, carrossel, grafico
 
         novos_itens = carregar_itens_do_banco()
@@ -80,6 +82,8 @@ def criar_tela_principal():
             grafico.pack(fill="both", expand=True, pady=20)
 
             hash_atual = novo_hash
+        
+        modal.fechar()
 
     # ======================== Menu ========================
 
@@ -157,8 +161,14 @@ def criar_tela_principal():
     )
     grafico.pack(fill="both", expand=True, pady=20)
 
+
+    executar_em_thread = lambda parent, func, titulo="Carregando", mensagem="Aguarde...": threading.Thread(
+        target=lambda: func(ModalProgresso(parent, titulo, mensagem)),
+        daemon=True
+    ).start()
+
     # ======================== Botão de Atualizar ========================
-    btn_atualizar = ttk.Button(root, text="🔄 Atualizar Tela", command=atualizar_tela)
+    btn_atualizar = ttk.Button(root, text="🔄 Atualizar Tela", command=lambda: executar_em_thread(root, atualizar_tela))
     btn_atualizar.pack(pady=(0, 10))
 
     root.mainloop()

@@ -1,17 +1,18 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from Components.entrada_padrao import criar_entrada_padrao, criar_entrada_data_com_calendario
+from Decorators.log_execao import log_excecoes
 from Utils.limpar_preco import limpar_preco
 from Utils.log import registrar_erro
 from scraping.scraping_cartas import buscar_cartas_colecao
 from DAO.database import buscar_raridade_qualidade_nome, inserir_carta, inserir_colecao, buscar_colecao_por_nome
 from PIL import Image, ImageTk
-from Utils.baixar_carta import salvar_imagem_local
+from Utils.baixar_carta import mostrar_erros_acumulados, salvar_imagem_local
 import threading
 from Components.modal_progresso import ModalProgresso
 import re
 
-IMAGEM_PADRAO = "imagens/imagens_cartas/imagem_padrao.jpg"
+IMAGEM_PADRAO = "imagens/imagem_padrao.jpg"
 
 def criar_tela_cadastro_colecao(app):
 
@@ -62,6 +63,7 @@ def criar_tela_cadastro_colecao(app):
         messagebox.showinfo("Sucesso", f"{len(selecionadas)} cartas inseridas com sucesso!", parent=root)
         root.destroy()
 
+    @log_excecoes
     def exibir_selecao(cartas, preco_unitario, quantidade, data):
         for widget in frame.winfo_children():
             widget.destroy()
@@ -106,59 +108,59 @@ def criar_tela_cadastro_colecao(app):
         chk_todos = ttk.Checkbutton(frame, text="Selecionar Todas", variable=selecionar_todos_var, command=toggle_selecionar_todos)
         chk_todos.grid(row=2, column=0, columnspan=2, pady=5)
 
-        for carta in cartas:
-            try:
-                nome = carta.get("nome")
-                codigo = carta.get("codigo", "")
-                preco_atual = limpar_preco(carta.get("preco_atual", 0.0))
-                imagem_url = carta.get("imagem") or IMAGEM_PADRAO
-                raridade = carta.get("raridade") or "Common"
-                qualidade = carta.get("qualidade") or "Nova"
-                colecao_nome = carta.get("colecao") or "Desconhecida"
+      
+        for carta in cartas:            
+            nome = carta.get("nome")
+            codigo = carta.get("codigo", "")
+            preco_atual = limpar_preco(carta.get("preco_atual", 0.0))
+            imagem_url = carta.get("imagem") or IMAGEM_PADRAO
+            raridade = carta.get("raridade") or "Common"
+            qualidade = carta.get("qualidade") or "Nova"
+            colecao_nome = carta.get("colecao") or "Desconhecida"
 
-                id_colecao = buscar_colecao_por_nome(colecao_nome)
-                if not id_colecao:
-                    id_colecao = inserir_colecao(colecao_nome)
+            id_colecao = buscar_colecao_por_nome(colecao_nome)
+            if not id_colecao:
+                id_colecao = inserir_colecao(colecao_nome)
 
-                id_raridade = buscar_raridade_qualidade_nome(raridade, "raridade") or 1
-                id_qualidade = buscar_raridade_qualidade_nome(qualidade, "qualidade") or 1
+            id_raridade = buscar_raridade_qualidade_nome(raridade, "raridade") or 1
+            id_qualidade = buscar_raridade_qualidade_nome(qualidade, "qualidade") or 1
 
-                nome_arquivo = f"{codigo}.jpg" if codigo else re.sub(r'\W+', '_', nome.lower()) + ".jpg"
-                caminho_imagem_local = salvar_imagem_local(imagem_url, nome_arquivo)
+            nome_arquivo = f"{codigo}.jpg" if codigo else re.sub(r'\W+', '_', nome.lower()) + ".jpg"
+            caminho_imagem_local = salvar_imagem_local(imagem_url, nome_arquivo)
 
-                dados_carta = {
-                    "link_site": carta.get("link_site"),
-                    "nome": nome,
-                    "colecao": id_colecao,
-                    "codigo": codigo,
-                    "preco_da_compra": preco_unitario,
-                    "data_da_compra": data,
-                    "raridade": id_raridade,
-                    "qualidade": id_qualidade,
-                    "quantidade": quantidade,
-                    "imagem": imagem_url,
-                    "imagem_salva": caminho_imagem_local.replace("\\", "/") or "",
-                    "origem": "MyPCards",
-                    "preco_atual": preco_atual
-                }
+            dados_carta = {
+                "link_site": carta.get("link_site"),
+                "nome": nome,
+                "colecao": id_colecao,
+                "codigo": codigo,
+                "preco_da_compra": preco_unitario,
+                "data_da_compra": data,
+                "raridade": id_raridade,
+                "qualidade": id_qualidade,
+                "quantidade": quantidade,
+                "imagem": imagem_url,
+                "imagem_salva": caminho_imagem_local.replace("\\", "/") if caminho_imagem_local else IMAGEM_PADRAO,
+                "origem": "MyPCards",
+                "preco_atual": preco_atual
+            }
 
-                var = tk.IntVar(value=1)
-                frame_carta = ttk.Frame(scroll_frame)
-                chk = ttk.Checkbutton(frame_carta, variable=var)
-                chk.pack(side="left")
-                ttk.Label(frame_carta, text=f"{nome} ({codigo})").pack(side="left", padx=5)
-                frame_carta.pack(fill="x", padx=5, pady=2)
+            var = tk.IntVar(value=1)
+            frame_carta = ttk.Frame(scroll_frame)
+            chk = ttk.Checkbutton(frame_carta, variable=var)
+            chk.pack(side="left")
+            ttk.Label(frame_carta, text=f"{nome} ({codigo})").pack(side="left", padx=5)
+            frame_carta.pack(fill="x", padx=5, pady=2)
 
-                lista_cartas.append({"var": var, "dados": dados_carta, "frame": frame_carta})
-
-            except Exception as e:
-                registrar_erro(f"Erro ao preparar carta: {e}")
+            lista_cartas.append({"var": var, "dados": dados_carta, "frame": frame_carta})
+            
+        
+        mostrar_erros_acumulados()
 
         ttk.Label(frame, text=f"Total de cartas encontradas: {len(cartas)}").grid(row=3, column=0, sticky="w", pady=5)
 
         ttk.Button(frame, text="Salvar Selecionadas", command=lambda:iniciar_processamento(t="Aguarde", m="Salvando cartas selecionadas...", f=lambda modal: salvar_cartas_selecionadas())).grid(row=3, column=0, columnspan=2, pady=10)
 
-    def buscar_cartas_thread(modal):
+    def buscar_cartas_thread(modal: ModalProgresso):
         try:
             link = campos["link"].get().strip()
             preco_unitario = limpar_preco(campos["preco_unitario"].get())
@@ -166,23 +168,25 @@ def criar_tela_cadastro_colecao(app):
             data = campos["data"].get().strip()
 
             if not link or preco_unitario <= 0 or quantidade <= 0 or not data:
-                modal.fechar()
+                root.after(0, modal.fechar_async)  # ✅ agenda no mainloop
                 messagebox.showerror("Erro", "Preencha todos os campos corretamente.", parent=root)
                 return
 
             cartas = buscar_cartas_colecao(link)
 
             if not cartas:
-                modal.fechar()
+                root.after(0, modal.fechar_async)  # ✅
                 messagebox.showwarning("Atenção", "Nenhuma carta encontrada via scraping.", parent=root)
                 return
 
-            modal.fechar()
+            root.after(0, modal.fechar_async)  # ✅
             exibir_selecao(cartas, preco_unitario, quantidade, data)
 
         except Exception as e:
-            modal.fechar()
+            root.after(0, modal.fechar_async)  # ✅
             messagebox.showerror("Erro", f"Erro ao buscar cartas: {e}", parent=root)
+            registrar_erro("Erro na thread de busca de cartas", e)
+
 
     def iniciar_processamento(t="Aguarde", m="Buscando cartas via scraping...",f=buscar_cartas_thread):
         modal = ModalProgresso(root, titulo=t, mensagem=m)

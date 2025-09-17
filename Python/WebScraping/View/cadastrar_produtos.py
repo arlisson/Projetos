@@ -15,7 +15,7 @@ from Components.thread_com_modal import executar_em_thread
 
 from Components.entrada_padrao import criar_entrada_com_botao_imagem, criar_entrada_padrao, criar_entrada_data_com_calendario
 
-IMAGEM_PADRAO = "imagens/imagens_produtos/imagem_padrao.jpg"
+IMAGEM_PADRAO = "imagens/imagem_padrao.jpg"
 
 def criar_tela_cadastro_produto(app):
     root = tk.Toplevel(app)

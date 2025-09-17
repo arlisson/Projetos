@@ -1,259 +1,113 @@
-2025-09-05 10:24:51,854 [ERROR] - Erro ao fazer a requisição: | Exceção: enumerate() takes at most 2 arguments (3 given)
-2025-09-05 10:40:05,628 [ERROR] - Erro ao fazer a requisição: | Exceção: 'NoneType' object has no attribute 'group'
-2025-09-05 11:00:06,269 [ERROR] - Erro ao fazer a requisição: | Exceção: 'NoneType' object has no attribute 'text'
-2025-09-05 11:00:19,039 [ERROR] - Erro ao fazer a requisição: | Exceção: 'NoneType' object has no attribute 'get_text'
-2025-09-05 11:00:55,369 [ERROR] - Erro ao fazer a requisição: | Exceção: invalid literal for int() with base 10: ''
-2025-09-05 11:03:23,443 [ERROR] - Erro ao fazer a requisição: | Exceção: 'href'
-2025-09-05 11:09:56,420 [ERROR] - Erro ao fazer a requisição em buscar_cartas_colecao | Exceção: name 'urljoin' is not defined
-2025-09-05 11:10:35,396 [ERROR] - Erro ao fazer a requisição em buscar_cartas_colecao | Exceção: 'NoneType' object has no attribute 'get_text'
-2025-09-05 11:13:40,323 [ERROR] - Erro ao fazer a requisição em buscar_cartas_colecao | Exceção: 'NoneType' object has no attribute 'get_text'
-2025-09-05 11:22:24,205 [ERROR] - Erro ao fazer a requisição em buscar_cartas_colecao | Exceção: 'NoneType' object has no attribute 'get_text'
-2025-09-05 11:25:04,480 [ERROR] - Erro ao fazer a requisição em buscar_cartas_colecao | Exceção: 'NoneType' object has no attribute 'get_text'
-2025-09-05 11:28:02,714 [ERROR] - Erro ao fazer a requisição em buscar_cartas_colecao | Exceção: 'NoneType' object has no attribute 'get_text'
-2025-09-05 11:46:07,122 [ERROR] - Erro em limpar_preco: | Exceção: expected string or bytes-like object, got 'function'
-2025-09-05 11:46:07,122 [ERROR] - Erro em limpar_preco: | Exceção: expected string or bytes-like object, got 'function'
-2025-09-05 11:49:27,802 [ERROR] - Erro em limpar_preco: | Exceção: expected string or bytes-like object, got 'function'
-2025-09-05 11:49:27,802 [ERROR] - Erro em limpar_preco: | Exceção: expected string or bytes-like object, got 'function'
-2025-09-05 19:28:24,236 [ERROR] - Erro ao buscar carta por ID | Exceção: no such table: cartas
-2025-09-06 11:59:03,746 [ERROR] - Erro ao registrar venda: | Exceção: inserir_venda_generica() got multiple values for argument 'id_item'
-2025-09-06 13:03:36,984 [ERROR] - Erro ao listar venda por ID (carta): | Exceção: no such column: id_venda
-2025-09-06 13:09:39,196 [ERROR] - Erro ao atualizar venda: | Exceção: 'data_da_venda'
-2025-09-06 13:28:35,766 [ERROR] - Erro ao atualizar venda: | Exceção: 'data_da_venda'
-2025-09-06 13:36:03,367 [ERROR] - Erro ao atualizar venda: | Exceção: no such column: id_venda
-2025-09-07 17:42:37,321 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
-2025-09-07 19:02:08,076 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: unknown url type: '/img/svg/arrow-double-left.svg'
-2025-09-08 13:19:22,252 [ERROR] - Erro ao atualizar produto | Exceção: 'imagem_salva'
-2025-09-08 13:37:34,543 [ERROR] - Erro ao carregar ícone do calendário: [Errno 2] No such file or directory: 'imagens/file_icon.png'
-2025-09-08 13:39:19,866 [ERROR] - Erro ao carregar ícone do calendário: [Errno 2] No such file or directory: 'imagens/file_icon.png'
-2025-09-08 13:39:53,068 [ERROR] - Erro ao carregar ícone do calendário: [Errno 2] No such file or directory: 'imagens/file_icon.png'
-2025-09-08 13:41:09,630 [ERROR] - Erro ao carregar ícone do calendário: [Errno 2] No such file or directory: 'imagens/file_icon.png'
-2025-09-08 13:43:20,274 [ERROR] - Erro ao carregar ícone do calendário: [Errno 2] No such file or directory: 'imagens/file_icon.png'
-2025-09-08 13:51:46,884 [ERROR] - Erro ao carregar imagem do calendário: [Errno 2] No such file or directory: 'imagens/calendario.jpg'
-2025-09-08 13:52:53,630 [ERROR] - Erro ao carregar imagem do calendário: [Errno 2] No such file or directory: 'imagens/calendario.jpg'
-2025-09-08 14:15:50,506 [ERROR] - [Erro] Falha ao carregar imagem: cannot identify image file 'D:/Repositorios/Projetos/Python/WebScraping/imagens/imagens_produtos/Edição de Colecionador - Coleção Lendária.jpg'
-2025-09-08 18:50:01,671 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
-2025-09-08 18:50:01,672 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
-2025-09-08 18:53:14,925 [ERROR] - Erro ao calcular lucro total de cartas | Exceção: no such column: quantidade_vendida
-2025-09-08 18:54:14,590 [ERROR] - Erro ao calcular lucro total de cartas | Exceção: no such column: tipo
-2025-09-08 18:55:21,959 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
-2025-09-08 18:55:21,959 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
-2025-09-08 18:55:28,743 [ERROR] - Erro ao apagar dados | Exceção: no such column: id_venda
-2025-09-08 18:57:43,440 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
-2025-09-08 18:57:43,440 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
-2025-09-08 18:57:52,011 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
-2025-09-08 18:57:52,011 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
-2025-09-08 19:05:04,406 [ERROR] - Erro ao calcular valor total de cartas | Exceção: no such column: quantidade_vendida
-2025-09-08 19:08:17,378 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
-2025-09-08 19:08:17,378 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
-2025-09-08 19:14:58,969 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
-2025-09-08 19:14:58,969 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
-2025-09-08 19:15:08,848 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
-2025-09-08 19:15:08,848 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
-2025-09-08 19:15:27,586 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
-2025-09-08 19:15:27,586 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
-2025-09-08 19:15:32,257 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
-2025-09-08 19:15:32,257 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
-2025-09-08 19:15:42,507 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
-2025-09-08 19:15:42,507 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
-2025-09-08 19:15:47,081 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
-2025-09-08 19:15:47,081 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
-2025-09-08 19:15:56,363 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
-2025-09-08 19:15:56,363 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
-2025-09-08 19:17:24,315 [ERROR] - [Erro] Falha ao carregar imagem: cannot identify image file 'D:/Repositorios/Projetos/Python/WebScraping/imagens/imagens_produtos/Edição de Colecionador - Coleção Lendária.jpg'
-2025-09-08 19:18:24,174 [ERROR] - Erro ao apagar dados | Exceção: no such column: id_carta
-2025-09-08 19:19:30,860 [ERROR] - Tipo inválido para listar vendas com filtro: | Exceção: venda_produto
-2025-09-08 19:19:30,860 [ERROR] - Erro ao listar vendas com filtro (venda_produto): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
-2025-09-08 19:19:49,867 [ERROR] - Tipo inválido para listar vendas com filtro: | Exceção: venda_produto
-2025-09-08 19:19:49,867 [ERROR] - Erro ao listar vendas com filtro (venda_produto): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
-2025-09-08 19:22:22,372 [ERROR] - Tipo inválido para listar vendas com filtro: | Exceção: venda_produto
-2025-09-08 19:22:22,373 [ERROR] - Erro ao listar vendas com filtro (venda_produto): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
-2025-09-08 19:31:58,797 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
-2025-09-08 19:31:58,798 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
-2025-09-08 19:32:05,441 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
-2025-09-08 19:32:05,441 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
-2025-09-08 19:33:14,047 [ERROR] - Tipo inválido para listar vendas: | Exceção: venda
-2025-09-08 19:33:14,047 [ERROR] - Erro ao listar vendas (venda): | Exceção: Tipo inválido. Use 'carta' ou 'produto'.
-2025-09-09 13:54:00,511 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:01,248 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:01,765 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:02,216 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:02,743 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:03,182 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:03,741 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:04,166 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:04,675 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:05,176 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:05,682 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:06,176 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:06,692 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:07,180 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:07,695 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:08,170 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:08,654 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:09,442 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:10,040 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:10,571 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:11,030 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:11,600 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:12,096 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:12,572 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:13,076 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:13,578 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:14,102 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:14,709 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:15,251 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:15,793 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:16,409 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:16,985 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:17,519 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:18,068 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:18,610 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:19,181 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:19,735 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:20,232 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:20,827 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:21,406 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:21,932 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:22,540 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 13:54:23,032 [ERROR] - Erro ao buscar coleção por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 18:53:10,023 [ERROR] - Erro ao buscar colecao por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 18:56:21,375 [ERROR] - Erro ao buscar raridade por nome | Exceção: 'int' object has no attribute 'upper'
-2025-09-09 19:08:52,429 [ERROR] - Erro ao listar vendas com filtro (carta): | Exceção: no such column: raridade
-2025-09-09 19:33:26,537 [ERROR] - Erro ao apagar dados | Exceção: FOREIGN KEY constraint failed
-2025-09-09 19:36:01,988 [ERROR] - Erro ao apagar dados | Exceção: FOREIGN KEY constraint failed
-2025-09-11 10:52:25,692 [ERROR] - Erro ao buscar carta por texto | Exceção: 'list' object has no attribute 'strip'
-2025-09-11 12:12:34,665 [ERROR] - Erro ao listar vendas com filtro (carta): | Exceção: Incorrect number of bindings supplied. The current statement uses 4, and there are 1 supplied.
-2025-09-13 12:51:44,973 [ERROR] - [Erro] Falha ao carregar imagem: module 'PIL.Image' has no attribute 'ANTIALIAS'
-2025-09-13 12:56:45,461 [ERROR] - [Erro] Falha ao carregar imagem: name 'imagem_label' is not defined
-2025-09-13 14:40:36,452 [ERROR] - Erro ao construir gráfico: unconverted data remains:  16:49:32
-2025-09-14 10:27:47,215 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,216 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,218 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,219 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,220 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,221 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,222 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,223 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,224 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,225 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,225 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,227 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,228 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,229 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,229 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,231 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,232 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,233 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,235 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,236 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,238 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,239 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,241 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,242 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,244 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,246 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,249 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,251 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,253 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,255 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,257 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,258 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,260 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,262 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,263 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,265 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,266 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,268 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,269 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,271 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,273 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,274 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:27:47,275 [ERROR] - Erro ao inserir carta | Exceção: FOREIGN KEY constraint failed
-2025-09-14 10:29:51,289 [ERROR] - Erro ao buscar todas as cartas | Exceção: database is locked
-2025-09-14 10:30:05,921 [ERROR] - Erro ao listar produtos | Exceção: database is locked
-2025-09-14 11:25:48,268 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:25:48,810 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:25:49,442 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:25:50,068 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:25:50,609 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:25:51,218 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:25:51,785 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:25:52,352 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:25:52,903 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:25:53,486 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:25:53,977 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:25:54,502 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:25:55,095 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:25:55,719 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:25:56,402 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:25:56,996 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:25:57,703 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:25:58,252 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:25:58,845 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:25:59,395 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:26:00,012 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:26:00,595 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:26:01,120 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:26:01,712 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:26:02,279 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:26:02,846 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:26:03,346 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:26:03,895 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:26:04,637 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:26:05,170 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:26:05,721 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:26:06,280 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:26:06,892 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:26:07,629 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:26:08,146 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:26:08,730 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:26:09,338 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:26:09,916 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:26:10,464 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:26:11,022 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:26:11,580 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:26:12,167 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 11:26:12,814 [ERROR] - Erro ao registrar histórico de lucro: no such column: id
-2025-09-14 12:45:27,861 [ERROR] - Erro ao atualizar carta ID 1: could not convert string to float: 'R$ 14,99'
-2025-09-14 12:45:28,276 [ERROR] - Erro ao atualizar carta ID 2: could not convert string to float: 'R$ 5,00'
-2025-09-14 12:45:28,763 [ERROR] - Erro ao atualizar carta ID 3: could not convert string to float: 'R$ 7,50'
-2025-09-14 12:45:29,152 [ERROR] - Erro ao atualizar carta ID 4: could not convert string to float: 'R$ 5,00'
-2025-09-14 12:45:29,500 [ERROR] - Erro ao atualizar carta ID 5: could not convert string to float: 'R$ 5,00'
-2025-09-14 12:45:29,863 [ERROR] - Erro ao atualizar carta ID 6: could not convert string to float: 'R$ 1,99'
-2025-09-14 12:45:30,209 [ERROR] - Erro ao atualizar carta ID 7: could not convert string to float: 'R$ 1,90'
-2025-09-14 12:45:30,531 [ERROR] - Erro ao atualizar carta ID 8: could not convert string to float: 'R$ 1,80'
-2025-09-14 12:45:30,878 [ERROR] - Erro ao atualizar carta ID 9: could not convert string to float: 'R$ 1,00'
-2025-09-14 12:45:31,263 [ERROR] - Erro ao atualizar carta ID 10: could not convert string to float: 'R$ 0,50'
-2025-09-14 12:45:31,741 [ERROR] - Erro ao atualizar carta ID 11: could not convert string to float: 'R$ 0,98'
-2025-09-14 12:45:32,103 [ERROR] - Erro ao atualizar carta ID 12: could not convert string to float: 'R$ 0,50'
-2025-09-14 12:45:32,537 [ERROR] - Erro ao atualizar carta ID 13: could not convert string to float: 'R$ 0,49'
-2025-09-14 12:45:32,908 [ERROR] - Erro ao atualizar carta ID 14: could not convert string to float: 'R$ 0,30'
-2025-09-14 12:45:33,325 [ERROR] - Erro ao atualizar carta ID 15: could not convert string to float: 'R$ 0,25'
-2025-09-14 12:45:33,708 [ERROR] - Erro ao atualizar carta ID 16: could not convert string to float: 'R$ 0,25'
-2025-09-14 12:45:34,141 [ERROR] - Erro ao atualizar carta ID 17: could not convert string to float: 'R$ 0,25'
-2025-09-14 12:45:34,504 [ERROR] - Erro ao atualizar carta ID 18: could not convert string to float: 'R$ 0,25'
-2025-09-14 12:45:34,868 [ERROR] - Erro ao atualizar carta ID 19: could not convert string to float: 'R$ 0,20'
-2025-09-14 12:45:35,346 [ERROR] - Erro ao atualizar carta ID 20: could not convert string to float: 'R$ 0,20'
-2025-09-14 12:45:35,710 [ERROR] - Erro ao atualizar carta ID 21: could not convert string to float: 'R$ 0,20'
-2025-09-14 12:45:36,070 [ERROR] - Erro ao atualizar carta ID 22: could not convert string to float: 'R$ 0,20'
-2025-09-14 12:45:36,497 [ERROR] - Erro ao atualizar carta ID 23: could not convert string to float: 'R$ 0,20'
-2025-09-14 12:45:36,937 [ERROR] - Erro ao atualizar carta ID 24: could not convert string to float: 'R$ 0,20'
-2025-09-14 12:45:37,298 [ERROR] - Erro ao atualizar carta ID 25: could not convert string to float: 'R$ 0,20'
-2025-09-14 12:45:37,723 [ERROR] - Erro ao atualizar carta ID 26: could not convert string to float: 'R$ 0,15'
-2025-09-14 12:45:38,176 [ERROR] - Erro ao atualizar carta ID 27: could not convert string to float: 'R$ 0,15'
-2025-09-14 12:45:38,521 [ERROR] - Erro ao atualizar carta ID 28: could not convert string to float: 'R$ 0,15'
-2025-09-14 12:45:39,015 [ERROR] - Erro ao atualizar carta ID 29: could not convert string to float: 'R$ 0,15'
-2025-09-14 12:45:39,403 [ERROR] - Erro ao atualizar carta ID 30: could not convert string to float: 'R$ 0,15'
-2025-09-14 12:45:40,001 [ERROR] - Erro ao atualizar carta ID 31: could not convert string to float: 'R$ 0,14'
-2025-09-14 12:45:41,260 [ERROR] - Erro ao atualizar carta ID 32: could not convert string to float: 'R$ 0,10'
-2025-09-14 12:45:41,630 [ERROR] - Erro ao atualizar carta ID 33: could not convert string to float: 'R$ 0,10'
-2025-09-14 12:45:42,044 [ERROR] - Erro ao atualizar carta ID 34: could not convert string to float: 'R$ 0,10'
-2025-09-14 12:45:42,416 [ERROR] - Erro ao atualizar carta ID 35: could not convert string to float: 'R$ 0,10'
-2025-09-14 12:45:42,795 [ERROR] - Erro ao atualizar carta ID 36: could not convert string to float: 'R$ 0,10'
-2025-09-14 12:45:43,269 [ERROR] - Erro ao atualizar carta ID 37: could not convert string to float: 'R$ 0,10'
-2025-09-14 12:45:43,684 [ERROR] - Erro ao atualizar carta ID 38: could not convert string to float: 'R$ 0,10'
-2025-09-14 12:45:44,079 [ERROR] - Erro ao atualizar carta ID 39: could not convert string to float: 'R$ 0,10'
-2025-09-14 12:45:44,474 [ERROR] - Erro ao atualizar carta ID 40: could not convert string to float: 'R$ 0,09'
-2025-09-14 12:45:44,861 [ERROR] - Erro ao atualizar carta ID 41: could not convert string to float: 'R$ 0,09'
-2025-09-14 12:45:45,506 [ERROR] - Erro ao atualizar carta ID 42: could not convert string to float: 'R$ 0,09'
-2025-09-14 12:45:46,025 [ERROR] - Erro ao atualizar carta ID 43: could not convert string to float: 'R$ 0,09'
+2025-09-17 14:07:08,426 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:08,426 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:08,567 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:08,568 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:08,641 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:08,641 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:08,939 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:08,940 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:10,072 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:10,073 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:11,366 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:11,366 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:13,423 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:13,423 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:14,457 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:14,458 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:15,395 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:15,395 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:15,461 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:15,462 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:19,823 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:19,823 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:20,277 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:20,278 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:21,120 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:21,120 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:25,431 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:25,432 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:25,507 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:25,507 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:28,511 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:28,512 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:29,033 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:29,034 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:29,105 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:29,106 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:29,688 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:29,689 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:29,772 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:29,773 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:30,204 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:30,205 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:31,067 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:31,068 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:31,208 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:31,209 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:32,312 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:32,313 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:33,755 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:33,756 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:35,890 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:35,890 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:36,048 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:36,048 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:38,631 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:38,631 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:38,799 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:38,800 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:41,620 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:41,621 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:41,688 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:41,688 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:41,830 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:41,831 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:45,707 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:45,708 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:45,911 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:45,912 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:46,052 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:46,053 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:46,246 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:46,247 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:46,874 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:46,875 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:07:49,247 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:07:49,247 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:26:00,590 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:26:00,590 [ERROR] - Erro ao preparar carta: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:44:31,670 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:44:31,670 [ERROR] - Erro na função criar_tela_cadastro_colecao.<locals>.exibir_selecao: 'NoneType' object has no attribute 'replace' | Exceção: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:44:31,673 [ERROR] - Traceback (most recent call last):
+  File "d:\Repositorios\Projetos\Python\WebScraping\Decorators\log_execao.py", line 21, in wrapper
+    return func(*args, **kwargs)
+  File "d:\Repositorios\Projetos\Python\WebScraping\View\cadastrar_cartas_colecao.py", line 142, in exibir_selecao
+    "imagem_salva": caminho_imagem_local.replace("\\", "/") or "",
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'replace'
+
+2025-09-17 14:49:50,752 [ERROR] - Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:49:50,753 [ERROR] - Erro na função criar_tela_cadastro_colecao.<locals>.exibir_selecao: 'NoneType' object has no attribute 'replace' | Exceção: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:49:50,756 [ERROR] - Traceback (most recent call last):
+  File "d:\Repositorios\Projetos\Python\WebScraping\Decorators\log_execao.py", line 21, in wrapper
+    return func(*args, **kwargs)
+  File "d:\Repositorios\Projetos\Python\WebScraping\View\cadastrar_cartas_colecao.py", line 142, in exibir_selecao
+    "imagem_salva": caminho_imagem_local.replace("\\", "/") or "",
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'replace'
+
+2025-09-17 14:57:43,179 [ERROR] - [salvar_imagem_local] Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 14:57:43,179 [ERROR] - [wrapper] Erro na função criar_tela_cadastro_colecao.<locals>.exibir_selecao: 'NoneType' object has no attribute 'replace' | Exceção: 'NoneType' object has no attribute 'replace'
+2025-09-17 14:57:43,181 [ERROR] - [wrapper] Traceback (most recent call last):
+  File "d:\Repositorios\Projetos\Python\WebScraping\Decorators\log_execao.py", line 21, in wrapper
+    return func(*args, **kwargs)
+  File "d:\Repositorios\Projetos\Python\WebScraping\View\cadastrar_cartas_colecao.py", line 142, in exibir_selecao
+    "imagem_salva": caminho_imagem_local.replace("\\", "/") or "",
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'replace'
+
+2025-09-17 14:58:01,453 [ERROR] - [buscar_cartas_thread] Erro na thread de busca de cartas | Exceção: 'NoneType' object has no attribute 'replace'
+2025-09-17 15:01:34,130 [ERROR] - [salvar_imagem_local] Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 15:01:35,858 [ERROR] - [salvar_imagem_local] Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 15:01:36,803 [ERROR] - [salvar_imagem_local] Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 15:01:38,073 [ERROR] - [salvar_imagem_local] Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
