@@ -421,12 +421,42 @@ def criar_tela_editar_carta(app, id_carta):
         abrir_popup_venda(root, nome_item, quantidade_disponivel, ao_confirmar)
 
 
+    def clonar():
+        if messagebox.askokcancel("Confirmar", "Deseja clonar esta carta?", parent=root):
+            try:
+                nova_carta = {
+                    "link_site": campos["link"].get(),
+                    "nome": campos["nome"].get(),
+                    "codigo": campos["codigo"].get(),
+                    "preco_da_compra": limpar_preco(campos["preco"].get()),
+                    "preco_atual": limpar_preco(campos["preco_atual"].get()),
+                    "data_da_compra": campos["data"].get(),
+                    "quantidade": int(campos["quantidade"].get()),
+                    "imagem": campos["imagem"].get() or IMAGEM_PADRAO,
+                    "origem": campos["origem"].get(),
+                    "raridade": mapa_raridades.get(campos["raridade"].get(), 1),
+                    "qualidade": mapa_qualidades.get(campos["qualidade"].get(), 1),
+                    "colecao": mapa_colecoes.get(campos["colecao"].get(), 1),
+                    "data_scraping": campos["data_scraping"].get() or datetime.today().strftime("%Y-%m-%d"),
+                    "imagem_salva": campos["imagem_salva"].get().replace("\\", "/") or ""
+                }
+                nova_id = inserir_carta(nova_carta)
+                if nova_id:
+                    messagebox.showinfo("Sucesso", f"Carta clonada com sucesso! Novo ID: {nova_id}", parent=root)
+                else:
+                    messagebox.showerror("Erro", "Erro ao clonar a carta.", parent=root)
+            except Exception as e:
+                registrar_erro(f"Erro ao clonar carta: {e}")
+                messagebox.showerror("Erro", f"Erro ao clonar a carta: {e}", parent=root)
+
+
     botoes_frame = ttk.Frame(main_frame)
     botoes_frame.grid(row=2, column=0, pady=10)
     ttk.Button(botoes_frame, text="Buscar via scraping", command=preencher_com_scraping).grid(row=0, column=0, padx=10)
     ttk.Button(botoes_frame, text="Salvar Alterações", command=salvar).grid(row=0, column=1, padx=10)
     ttk.Button(botoes_frame, text="Deletar", command=apagar).grid(row=0, column=2, padx=10)
     ttk.Button(botoes_frame, text="Vender Carta", command=vender).grid(row=0, column=3, padx=10)
+    ttk.Button(botoes_frame, text="Clonar Carta", command=clonar).grid(row=0, column=4, padx=10)
 
     root.mainloop()
 

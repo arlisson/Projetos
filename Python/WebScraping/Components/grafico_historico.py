@@ -172,8 +172,9 @@ class GraficoHistorico(ttk.Frame):
             max_x = date2num(max(xticks))
             range_x = max_x - min_x
 
-            span = range_x * 0.3 if range_x > 0 else 1
+            span = range_x * 0.8
             ax.set_xlim(max_x - span, max_x)
+
 
             self._dragging = False
             self._last_mouse_x = None

@@ -355,6 +355,27 @@ def criar_tela_editar_produto(app, id_produto):
 
         abrir_popup_venda(root, nome_item, quantidade_disponivel, ao_confirmar)
 
+    def clonar_produto():
+        if messagebox.askokcancel("Confirmar", "Deseja clonar este produto?", parent=root):
+            try:
+                novo_produto = {
+                    "nome_produto": campos["nome"].get(),
+                    "link": campos["link"].get(),
+                    "imagem": campos["imagem"].get() or IMAGEM_PADRAO,
+                    "preco_compra": to_decimal(campos["preco_compra"].get()),
+                    "preco_atual": to_decimal(campos["preco_atual"].get()),
+                    "data_compra": campos["data_compra"].get(),
+                    "quantidade": int(campos["quantidade"].get()),
+                    "origem": campos["origem"].get() or "Liga Yugioh",
+                    "data_scraping": campos["data_scraping"].get() or datetime.today().strftime("%Y-%m-%d"),
+                    "imagem_salva": campos["imagem_salva"].get() or "",
+                }
+                atualizar_produto(novo_produto, novo=True)
+                messagebox.showinfo("Sucesso", "Produto clonado com sucesso!", parent=root)
+                ao_fechar()
+            except Exception as e:
+                messagebox.showerror("Erro", f"Erro ao clonar produto: {e}", parent=root)
+                registrar_erro(f"Erro ao clonar produto: {e}")
 
     # Criar frame dos botões corretamente
     botoes_frame = ttk.Frame(main_frame)
@@ -367,6 +388,7 @@ def criar_tela_editar_produto(app, id_produto):
     ttk.Button(botoes_frame, text="Salvar Produto", command=salvar).grid(row=0, column=1, padx=10)
     ttk.Button(botoes_frame, text="Deletar Produto", command=apagar_produto).grid(row=0, column=2, padx=10)
     ttk.Button(botoes_frame, text="Vender Produto", command=vender).grid(row=0, column=3, padx=10)
+    ttk.Button(botoes_frame, text="Clonar Produto", command=clonar_produto).grid(row=0, column=4, padx=10)
 
 
     # Preencher campos com os dados do produto existente

@@ -14,7 +14,8 @@ def carregar_itens_do_banco():
         itens.append({
             "nome": carta.get("nome", "Carta"),
             "preco": carta.get("preco_atual", 0.0) or 0.0,
-            "imagem": carta.get("imagem_salva") or carta.get("imagem") or ""
+            "imagem": carta.get("imagem_salva") or carta.get("imagem") or "",
+            "raridade": carta.get("raridade_nome", "")
         })
 
     # Produtos
@@ -59,7 +60,7 @@ class CarrosselLateral(ttk.Frame):
             self.itens = self.itens * reps
 
         # Canvas: mostramos só N itens — as laterais ficam cortadas
-        altura_canvas = self.altura + 68  # espaço para texto
+        altura_canvas = self.altura + 90  # espaço para texto
         self.canvas = tk.Canvas(self, height=altura_canvas, bg="white", highlightthickness=0)
 
         if self.travar_largura_visivel:
@@ -126,7 +127,7 @@ class CarrosselLateral(ttk.Frame):
             foto = self._carregar_imagem(item.get("imagem"))
             self._imagens_cache.append(foto)
             self._labels[i][0].configure(image=foto)
-            self._labels[i][1].configure(text=f"{item.get('nome', 'Item')}\nR$ {float(item.get('preco', 0.0)):.2f}")
+            self._labels[i][1].configure(text=f"{item.get('nome', 'Item')}\nR$ {float(item.get('preco', 0.0)):.2f}\n{item.get('raridade', '')}")
 
         self.update_idletasks()
 

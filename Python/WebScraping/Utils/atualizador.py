@@ -4,6 +4,7 @@ import json
 import os
 
 from DAO.database import (
+    buscar_raridade_qualidade_id,
     buscar_todas_cartas,
     buscar_produto_por_id,
     buscar_carta_por_id,
@@ -58,13 +59,16 @@ def _atualizar_precos_e_lucro(callback_status=None):
 
         for i, carta in enumerate(cartas, start=1):
             id_carta = carta.get("id_carta")
-            url = carta.get("link_site")
+            url = carta.get("link_site")           
+            raridade = carta.get("raridade_nome", "")
+
+            
 
             if not id_carta or not url:
                 continue
 
             try:
-                novas_infos = buscar_carta_myp(url)
+                novas_infos = buscar_carta_myp(url,raridade)
                 if novas_infos:
                     nova = novas_infos[0]
                     carta_atual = buscar_carta_por_id(id_carta)
