@@ -47,8 +47,13 @@ def abrir_tela_listagem_produtos(app):
         return valores, produto["id_produto"]
 
     def on_edit(id_produto):
+        try:
+            root.grab_release()  # libera o grab antes
+        except Exception:
+            pass
         root.destroy()
         abrir_tela_editar_produto(app, id_produto)
+
 
     headers = [
         "Nome", "Preço Compra", "Preço Atual",
