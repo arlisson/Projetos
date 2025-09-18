@@ -111,3 +111,12 @@ AttributeError: 'NoneType' object has no attribute 'replace'
 2025-09-17 15:01:35,858 [ERROR] - [salvar_imagem_local] Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
 2025-09-17 15:01:36,803 [ERROR] - [salvar_imagem_local] Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
 2025-09-17 15:01:38,073 [ERROR] - [salvar_imagem_local] Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 18:48:50,891 [ERROR] - [salvar_imagem_local] Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 18:48:51,731 [ERROR] - [salvar_imagem_local] Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 18:48:51,814 [ERROR] - [salvar_imagem_local] Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 18:48:52,035 [ERROR] - [salvar_imagem_local] Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 18:48:52,117 [ERROR] - [salvar_imagem_local] Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 18:48:53,422 [ERROR] - [salvar_imagem_local] Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 18:48:54,175 [ERROR] - [salvar_imagem_local] Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 18:48:57,124 [ERROR] - [salvar_imagem_local] Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden
+2025-09-17 18:48:57,369 [ERROR] - [salvar_imagem_local] Erro ao baixar imagem em salvar_imagem_local | Exceção: HTTP Error 403: Forbidden

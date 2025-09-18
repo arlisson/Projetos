@@ -1481,6 +1481,18 @@ def buscar_historico_precos(tipo=None, id=None, resumo=False):
                     FROM produto
                 """)
                 resultados["lucro_produtos"] = cursor.fetchone()[0] or 0.0
+            
+            if tipo in[None,"venda"]:
+                cursor.execute("SELECT SUM(preco_da_venda * quantidade) AS total_vendas FROM venda")
+                resultados["total_vendas_cartas"] = cursor.fetchone()[0] or 0.0
+
+                cursor.execute("SELECT SUM(preco_venda * quantidade) AS total_vendas FROM venda_produto")
+                resultados["total_vendas_produtos"] = cursor.fetchone()[0] or 0.0
+            
+
+            
+            
+            
 
             # 🔁 Histórico de lucro consolidado (último valor)
             if tipo in [None, "lucro"]:
@@ -1554,3 +1566,29 @@ def buscar_historico_precos(tipo=None, id=None, resumo=False):
 
 
 
+def calcula_total_gasto():
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT SUM(preco_da_compra * quantidade) FROM carta WHERE preco_da_compra IS NOT NULL
+        """)
+        total_cartas = cursor.fetchone()[0] or 0.0
+
+        cursor.execute("""
+            SELECT SUM(preco_compra * quantidade) FROM produto WHERE preco_compra IS NOT NULL
+        """)
+        total_produtos = cursor.fetchone()[0] or 0.0
+
+        total_gasto = total_cartas + total_produtos
+        conn.close()
+        return total_gasto
+
+    except Exception as e:
+        messagebox.showerror("Erro", f"Erro ao calcular total gasto: {e}")
+        conn.close()
+        registrar_erro("Erro ao calcular total gasto", e)
+        return 0.0
+    finally:
+        conn.close()

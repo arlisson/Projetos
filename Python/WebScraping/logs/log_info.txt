@@ -1521,3 +1521,1552 @@ Total de cartas encontradas em buscar_cartas_colecao: 49
 2025-09-17 15:28:07,059 [INFO] - Encontradas 26 cartas em buscar_carta_myp: Aqua Chorus
 2025-09-17 15:28:07,059 [INFO] - Total de cartas encontradas em buscar_cartas_colecao: 221
 2025-09-17 15:28:07,060 [INFO] - Executando função: criar_tela_cadastro_colecao.<locals>.exibir_selecao
+2025-09-17 18:03:17,721 [INFO] - Atualização já feita hoje: 2025-09-17 18:03:17. Pulando.
+2025-09-17 18:07:50,298 [INFO] - Atualização já feita hoje: 2025-09-17 18:07:50. Pulando.
+2025-09-17 18:19:11,091 [INFO] - Atualização já feita hoje: 2025-09-17 18:19:11. Pulando.
+2025-09-17 18:22:47,626 [INFO] - Atualização já feita hoje: 2025-09-17 18:22:47. Pulando.
+2025-09-17 18:24:11,857 [INFO] - Atualização já feita hoje: 2025-09-17 18:24:11. Pulando.
+2025-09-17 18:48:10,070 [INFO] - Buscando página 1 de 2
+2025-09-17 18:48:11,564 [INFO] - Buscando página 2 de 2
+2025-09-17 18:48:12,771 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Neo-Spacian Grand Mole
+2025-09-17 18:48:13,026 [INFO] - Encontradas 8 cartas em buscar_carta_myp: Neo-Spacian Air Hummingbird
+2025-09-17 18:48:13,280 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Elemental HERO Storm Neos
+2025-09-17 18:48:13,565 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Neo-Spacian Dark Panther
+2025-09-17 18:48:13,832 [INFO] - Encontradas 11 cartas em buscar_carta_myp: Elemental HERO Dark Neos
+2025-09-17 18:48:14,223 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Elemental HERO Grand Neos
+2025-09-17 18:48:14,499 [INFO] - Encontradas 14 cartas em buscar_carta_myp: EN Shuffle
+2025-09-17 18:48:14,837 [INFO] - Encontradas 23 cartas em buscar_carta_myp: Fossil Dyna Pachycephalo
+2025-09-17 18:48:15,084 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Light Barrier
+2025-09-17 18:48:15,441 [INFO] - Encontradas 25 cartas em buscar_carta_myp: Elemental HERO Prisma
+2025-09-17 18:48:15,883 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Elemental HERO Aqua Neos
+2025-09-17 18:48:16,177 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Elemental HERO Glow Neos
+2025-09-17 18:48:16,619 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Sakuretsu Armor
+2025-09-17 18:48:16,897 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Elemental HERO Wildedge
+2025-09-17 18:48:17,247 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Elemental HERO Brave Neos
+2025-09-17 18:48:17,853 [INFO] - Encontradas 33 cartas em buscar_carta_myp: Dandylion
+2025-09-17 18:48:18,210 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Elemental HERO Neos
+2025-09-17 18:48:18,774 [INFO] - Encontradas 29 cartas em buscar_carta_myp: Mystical Space Typhoon
+2025-09-17 18:48:19,187 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Foolish Burial
+2025-09-17 18:48:19,488 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Arcana Force XXI - The World
+2025-09-17 18:48:19,835 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Pot of Avarice
+2025-09-17 18:48:20,103 [INFO] - Encontradas 11 cartas em buscar_carta_myp: Animadorned Archosaur
+2025-09-17 18:48:20,463 [INFO] - Encontradas 27 cartas em buscar_carta_myp: Gaia Plate the Earth Giant
+2025-09-17 18:48:20,778 [INFO] - Encontradas 15 cartas em buscar_carta_myp: O - Oversoul
+2025-09-17 18:48:21,055 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Arcana Force I - The Magician
+2025-09-17 18:48:21,344 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Arcana Force III - The Empress
+2025-09-17 18:48:21,598 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Cup of Ace
+2025-09-17 18:48:21,889 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Valhalla, Hall of the Fallen
+2025-09-17 18:48:22,266 [INFO] - Encontradas 31 cartas em buscar_carta_myp: Neo-Spacian Aqua Dolphin
+2025-09-17 18:48:22,574 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Paleozoic Canadia
+2025-09-17 18:48:22,895 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Divine Wrath
+2025-09-17 18:48:23,212 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Miracle Fusion
+2025-09-17 18:48:23,655 [INFO] - Encontradas 31 cartas em buscar_carta_myp: Arcana Force EX - The Light Ruler
+2025-09-17 18:48:24,169 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Arcana Force 0 - The Fool
+2025-09-17 18:48:24,534 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Arcana Force IV - The Emperor
+2025-09-17 18:48:24,978 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Arcana Force VI - The Lovers
+2025-09-17 18:48:25,248 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Arcana Force VII - The Chariot
+2025-09-17 18:48:25,546 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Arcana Force XIV - Temperance
+2025-09-17 18:48:25,883 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Arcana Force XVIII - The Moon
+2025-09-17 18:48:26,243 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Galaxy Cyclone
+2025-09-17 18:48:26,573 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Sabersaurus
+2025-09-17 18:48:26,869 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Generation Next
+2025-09-17 18:48:27,188 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Babycerasaurus
+2025-09-17 18:48:27,526 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Typhoon
+2025-09-17 18:48:27,852 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Neo-Spacian Glow Moss
+2025-09-17 18:48:28,143 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Convert Contact
+2025-09-17 18:48:28,471 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Tyranno Infinity
+2025-09-17 18:48:28,759 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Fossil Tusker
+2025-09-17 18:48:29,115 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Fossil Dig
+2025-09-17 18:48:29,398 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Neo Space
+2025-09-17 18:48:29,767 [INFO] - Encontradas 28 cartas em buscar_carta_myp: Ultimate Tyranno
+2025-09-17 18:48:30,070 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Cross Porter
+2025-09-17 18:48:30,383 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Limit Reverse
+2025-09-17 18:48:30,697 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Arcana Reading
+2025-09-17 18:48:30,975 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Arcana Call
+2025-09-17 18:48:31,246 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Reversal of Fate
+2025-09-17 18:48:31,703 [INFO] - Encontradas 23 cartas em buscar_carta_myp: By Order of the Emperor
+2025-09-17 18:48:31,989 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Inverse Universe
+2025-09-17 18:48:32,287 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Sauropod Brachion
+2025-09-17 18:48:32,595 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Black Veloci
+2025-09-17 18:48:32,868 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Destroyersaurus
+2025-09-17 18:48:33,160 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Dark Driceratops
+2025-09-17 18:48:33,490 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Gilasaurus
+2025-09-17 18:48:33,830 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Big Evolution Pill
+2025-09-17 18:48:34,145 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Tail Swipe
+2025-09-17 18:48:34,405 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Jurassic World
+2025-09-17 18:48:34,696 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Survival Instinct
+2025-09-17 18:48:34,959 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Dyna Tank
+2025-09-17 18:48:35,261 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Megarock Dragon
+2025-09-17 18:48:35,620 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Weathering Soldier
+2025-09-17 18:48:35,959 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Big-Tusked Mammoth
+2025-09-17 18:48:36,221 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Medusa Worm
+2025-09-17 18:48:36,512 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Time Stream
+2025-09-17 18:48:36,820 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Re-Fusion
+2025-09-17 18:48:37,257 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Blasting Fuse
+2025-09-17 18:48:37,635 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Spiritual Earth Art - Kurogane
+2025-09-17 18:48:37,910 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Fossil Dragon Skullgios
+2025-09-17 18:48:38,189 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Fossil Machine Skull Buggy
+2025-09-17 18:48:38,635 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Fossil Warrior Skull Knight
+2025-09-17 18:48:38,938 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Spacetime Transcendence
+2025-09-17 18:48:39,302 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Fossil Warrior Skull Bone
+2025-09-17 18:48:39,622 [INFO] - Encontradas 24 cartas em buscar_carta_myp: Mokey Mokey King
+2025-09-17 18:48:39,891 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Hero Blast
+2025-09-17 18:48:40,228 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Shell Knight
+2025-09-17 18:48:40,546 [INFO] - Encontradas 19 cartas em buscar_carta_myp: White Veil
+2025-09-17 18:48:40,870 [INFO] - Encontradas 26 cartas em buscar_carta_myp: Survivals End
+2025-09-17 18:48:41,203 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Contact Gate
+2025-09-17 18:48:41,510 [INFO] - Encontradas 21 cartas em buscar_carta_myp: The Fountain in the Sky
+2025-09-17 18:48:41,814 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Dyna Base
+2025-09-17 18:48:42,091 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Volcanic Eruption
+2025-09-17 18:48:42,376 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Revival Golem
+2025-09-17 18:48:42,694 [INFO] - Encontradas 19 cartas em buscar_carta_myp: A Feint Plan
+2025-09-17 18:48:43,429 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Cyberdark Cannon
+2025-09-17 18:48:43,741 [INFO] - Encontradas 22 cartas em buscar_carta_myp: NEXT
+2025-09-17 18:48:44,126 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Release from Stone
+2025-09-17 18:48:44,534 [INFO] - Encontradas 28 cartas em buscar_carta_myp: Elemental HERO Neos Alius
+2025-09-17 18:48:44,963 [INFO] - Encontradas 29 cartas em buscar_carta_myp: Armed Dragon LV10 White
+2025-09-17 18:48:45,390 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Mokey Mokey Adrift
+2025-09-17 18:48:45,864 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Flint Cragger
+2025-09-17 18:48:46,469 [INFO] - Encontradas 29 cartas em buscar_carta_myp: Card Trooper
+2025-09-17 18:48:46,790 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Straight out of Neo Space!
+2025-09-17 18:48:47,069 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Destructive Fate
+2025-09-17 18:48:47,366 [INFO] - Encontradas 23 cartas em buscar_carta_myp: Food Chain
+2025-09-17 18:48:47,653 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Major in Paleontology
+2025-09-17 18:48:47,931 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Wise Man Neos
+2025-09-17 18:48:48,214 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Magicians Scales
+2025-09-17 18:48:48,509 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Dino Brain Immunity
+2025-09-17 18:48:48,838 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Dig Site Inspection
+2025-09-17 18:48:49,102 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Invitation to the Society
+2025-09-17 18:48:49,393 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Mokey Mokey Madness
+2025-09-17 18:48:49,652 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Cyberdark Scheme
+2025-09-17 18:48:49,941 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Shouldering a Destiny
+2025-09-17 18:48:49,941 [INFO] - Total de cartas encontradas em buscar_cartas_colecao: 112
+2025-09-17 18:48:49,942 [INFO] - Executando função: criar_tela_cadastro_colecao.<locals>.exibir_selecao
+2025-09-18 09:11:09,105 [INFO] - Atualizada carta 1 - AMAZONESS QUEEN
+2025-09-18 09:11:11,258 [INFO] - Atualizada carta 2 - RAVIEL, LORD OF PHANTASMS
+2025-09-18 09:11:13,410 [INFO] - Atualizada carta 3 - GREN MAJU DA EIZA
+2025-09-18 09:11:15,634 [INFO] - Atualizada carta 4 - SUPER POLYMERIZATION
+2025-09-18 09:11:16,690 [INFO] - Atualizada carta 5 - VERSAGO THE DESTROYER
+2025-09-18 09:11:17,858 [INFO] - Atualizada carta 6 - URIA, LORD OF SEARING FLAMES
+2025-09-18 09:11:18,978 [INFO] - Atualizada carta 7 - HAMON, LORD OF STRIKING THUNDER
+2025-09-18 09:11:19,937 [INFO] - Atualizada carta 8 - AMAZONESS SWORDS WOMAN
+2025-09-18 09:11:21,007 [INFO] - Atualizada carta 9 - BOOK OF MOON
+2025-09-18 09:11:21,862 [INFO] - Atualizada carta 10 - BANISHER OF THE RADIANCE
+2025-09-18 09:11:23,054 [INFO] - Atualizada carta 11 - D.D. CROW
+2025-09-18 09:11:23,937 [INFO] - Atualizada carta 12 - SOUL RELEASE
+2025-09-18 09:11:24,766 [INFO] - Atualizada carta 13 - MACRO COSMOS
+2025-09-18 09:11:25,908 [INFO] - Atualizada carta 14 - TOTEM DRAGON
+2025-09-18 09:11:26,766 [INFO] - Atualizada carta 15 - BLACK METAL DRAGON
+2025-09-18 09:11:27,696 [INFO] - Atualizada carta 16 - RED-EYES BLACK DRAGON
+2025-09-18 09:11:28,633 [INFO] - Atualizada carta 17 - ARMED DRAGON LV10
+2025-09-18 09:11:29,547 [INFO] - Atualizada carta 18 - FOG KING
+2025-09-18 09:11:30,408 [INFO] - Atualizada carta 19 - DARK FUSION
+2025-09-18 09:11:31,509 [INFO] - Atualizada carta 20 - CYBER DRAGON
+2025-09-18 09:11:32,381 [INFO] - Atualizada carta 21 - EVIL HERO LIGHTNING GOLEM
+2025-09-18 09:11:33,275 [INFO] - Atualizada carta 22 - RED-EYES WYVERN
+2025-09-18 09:11:34,242 [INFO] - Atualizada carta 23 - GALAXY CYCLONE
+2025-09-18 09:11:35,449 [INFO] - Atualizada carta 24 - ELEMENTAL HERO SHINING FLARE WINGMAN
+2025-09-18 09:11:36,829 [INFO] - Atualizada carta 25 - ALLURE OF DARKNESS
+2025-09-18 09:11:37,777 [INFO] - Atualizada carta 26 - EVIL HERO DARK GAIA
+2025-09-18 09:11:38,636 [INFO] - Atualizada carta 27 - WALL OF DISRUPTION
+2025-09-18 09:11:39,557 [INFO] - Atualizada carta 28 - SKULL ARCHFIEND OF LIGHTNING
+2025-09-18 09:11:40,691 [INFO] - Atualizada carta 29 - WINDSTORM OF ETAQUA
+2025-09-18 09:11:41,444 [INFO] - Atualizada carta 30 - AMAZONESS HEIRLOOM
+2025-09-18 09:11:42,211 [INFO] - Atualizada carta 31 - CLOUDIAN - ACID CLOUD
+2025-09-18 09:11:43,091 [INFO] - Atualizada carta 32 - EVIL HERO MALICIOUS EDGE
+2025-09-18 09:11:44,295 [INFO] - Atualizada carta 33 - FOOLISH BURIAL
+2025-09-18 09:11:45,183 [INFO] - Atualizada carta 34 - RED-EYES DARKNESS DRAGON
+2025-09-18 09:11:46,083 [INFO] - Atualizada carta 35 - VAMPIRE GENESIS
+2025-09-18 09:11:47,009 [INFO] - Atualizada carta 36 - ELEMENTAL HERO AVIAN
+2025-09-18 09:11:47,867 [INFO] - Atualizada carta 37 - ELEMENTAL HERO BURSTINATRIX
+2025-09-18 09:11:48,684 [INFO] - Atualizada carta 38 - ELEMENTAL HERO CLAYMAN
+2025-09-18 09:11:49,459 [INFO] - Atualizada carta 39 - EVIL HERO INFERNAL PRODIGY
+2025-09-18 09:11:50,237 [INFO] - Atualizada carta 40 - DARK CALLING
+2025-09-18 09:11:51,051 [INFO] - Atualizada carta 41 - EVIL HERO WILD CYCLONE
+2025-09-18 09:11:51,909 [INFO] - Atualizada carta 42 - SPEAR DRAGON
+2025-09-18 09:11:52,788 [INFO] - Atualizada carta 43 - COSMIC CYCLONE
+2025-09-18 09:11:53,610 [INFO] - Atualizada carta 44 - NEGATE ATTACK
+2025-09-18 09:11:54,597 [INFO] - Atualizada carta 45 - RED-EYES SPIRIT
+2025-09-18 09:11:55,443 [INFO] - Atualizada carta 46 - VAMPIRE BABY
+2025-09-18 09:11:56,335 [INFO] - Atualizada carta 47 - BOOK OF LIFE
+2025-09-18 09:11:57,330 [INFO] - Atualizada carta 48 - FOOLISH BURIAL
+2025-09-18 09:11:58,272 [INFO] - Atualizada carta 49 - AXE OF DESPAIR
+2025-09-18 09:11:59,147 [INFO] - Atualizada carta 50 - AWAKENING OF THE SACRED BEASTS
+2025-09-18 09:12:00,069 [INFO] - Atualizada carta 51 - ELEMENTAL HERO SPARKMAN
+2025-09-18 09:12:01,103 [INFO] - Atualizada carta 52 - EVIL HERO INFERNO WING
+2025-09-18 09:12:01,989 [INFO] - Atualizada carta 53 - ELEMENTAL HERO WILDHEART
+2025-09-18 09:12:02,878 [INFO] - Atualizada carta 54 - VAMPIRE HUNTER
+2025-09-18 09:12:03,707 [INFO] - Atualizada carta 55 - LUSTER DRAGON #2
+2025-09-18 09:12:04,523 [INFO] - Atualizada carta 56 - VAMPIRE FAMILIAR
+2025-09-18 09:12:05,562 [INFO] - Atualizada carta 57 - VAMPIRE LADY
+2025-09-18 09:12:06,523 [INFO] - Atualizada carta 58 - VAMPIRE LORD
+2025-09-18 09:12:07,412 [INFO] - Atualizada carta 59 - VAMPIRE SORCERER
+2025-09-18 09:12:08,437 [INFO] - Atualizada carta 60 - AMAZONESS PALADIN
+2025-09-18 09:12:09,254 [INFO] - Atualizada carta 61 - AMAZONESS FIGHTER
+2025-09-18 09:12:10,366 [INFO] - Atualizada carta 62 - AMAZONESS TRAINEE
+2025-09-18 09:12:11,329 [INFO] - Atualizada carta 63 - D.D. SURVIVOR
+2025-09-18 09:12:12,163 [INFO] - Atualizada carta 64 - CLOUDIAN - EYE OF THE TYPHOON
+2025-09-18 09:12:13,025 [INFO] - Atualizada carta 65 - CLOUDIAN - ALTUS
+2025-09-18 09:12:13,922 [INFO] - Atualizada carta 66 - CLOUDIAN - CIRROSTRATUS
+2025-09-18 09:12:14,905 [INFO] - Atualizada carta 67 - BLACK DRAGON'S CHICK
+2025-09-18 09:12:15,697 [INFO] - Atualizada carta 68 - VAMPIRES CURSE
+2025-09-18 09:12:16,664 [INFO] - Atualizada carta 69 - AMAZONESS CHAIN MASTER
+2025-09-18 09:12:17,509 [INFO] - Atualizada carta 70 - AMAZONESS SAGE
+2025-09-18 09:12:18,425 [INFO] - Atualizada carta 71 - AMAZONESS SCOUTS
+2025-09-18 09:12:19,214 [INFO] - Atualizada carta 72 - AMAZONESS WILLPOWER
+2025-09-18 09:12:20,123 [INFO] - Atualizada carta 73 - HERO SIGNAL
+2025-09-18 09:12:21,293 [INFO] - Atualizada carta 74 - ZOMBINA
+2025-09-18 09:12:22,165 [INFO] - Atualizada carta 75 - AMAZONESS ARCHERS
+2025-09-18 09:12:23,002 [INFO] - Atualizada carta 76 - ARCHFIEND SOLDIER
+2025-09-18 09:12:23,791 [INFO] - Atualizada carta 77 - TERRORKING ARCHFIEND
+2025-09-18 09:12:24,640 [INFO] - Atualizada carta 78 - LUSTER DRAGON
+2025-09-18 09:12:25,494 [INFO] - Atualizada carta 79 - VANGUARD OF THE DRAGON
+2025-09-18 09:12:26,266 [INFO] - Atualizada carta 80 - SPIRIT OF THE PHARAOH
+2025-09-18 09:12:27,136 [INFO] - Atualizada carta 81 - HELIOS DUO MEGISTUS
+2025-09-18 09:12:28,086 [INFO] - Atualizada carta 82 - HELIOS - THE PRIMORDIAL SUN
+2025-09-18 09:12:29,016 [INFO] - Atualizada carta 83 - PANDEMONIUM
+2025-09-18 09:12:29,866 [INFO] - Atualizada carta 84 - MIRAGE DRAGON
+2025-09-18 09:12:30,758 [INFO] - Atualizada carta 85 - VAMPIRE RETAINER
+2025-09-18 09:12:32,220 [INFO] - Atualizada carta 86 - DESROOK ARCHFIEND
+2025-09-18 09:12:33,245 [INFO] - Atualizada carta 87 - NIGHTMARE WHEEL
+2025-09-18 09:12:34,045 [INFO] - Atualizada carta 88 - AMAZONESS SPELLCASTER
+2025-09-18 09:12:35,005 [INFO] - Atualizada carta 89 - MIST ARCHFIEND
+2025-09-18 09:12:36,193 [INFO] - Atualizada carta 90 - MOTHER GRIZZLY
+2025-09-18 09:12:37,359 [INFO] - Atualizada carta 91 - AMAZONESS FIGHTING SPIRIT
+2025-09-18 09:12:38,223 [INFO] - Atualizada carta 92 - SHADOWKNIGHT ARCHFIEND
+2025-09-18 09:12:39,060 [INFO] - Atualizada carta 93 - ARCHFIEND GENERAL
+2025-09-18 09:12:40,205 [INFO] - Atualizada carta 94 - LEGENDARY JUJITSU MASTER
+2025-09-18 09:12:41,635 [INFO] - Atualizada carta 95 - D.D. DESTROYER
+2025-09-18 09:12:42,461 [INFO] - Atualizada carta 96 - CLOUDIAN - STORM DRAGON
+2025-09-18 09:12:43,247 [INFO] - Atualizada carta 97 - CLOUDIAN SQUALL
+2025-09-18 09:12:44,027 [INFO] - Atualizada carta 98 - GAGAGIGO
+2025-09-18 09:12:44,778 [INFO] - Atualizada carta 99 - FOG WARNING
+2025-09-18 09:12:45,611 [INFO] - Atualizada carta 100 - DARK UNITY
+2025-09-18 09:12:46,570 [INFO] - Atualizada carta 101 - EVIL HERO MALICIOUS FIEND
+2025-09-18 09:12:47,398 [INFO] - Atualizada carta 102 - GOLDEN HOMUNCULUS
+2025-09-18 09:12:48,270 [INFO] - Atualizada carta 103 - EVIL HERO INFERNAL GAINER
+2025-09-18 09:12:49,215 [INFO] - Atualizada carta 104 - SAND MOTH
+2025-09-18 09:12:50,136 [INFO] - Atualizada carta 105 - ABSORBING JAR
+2025-09-18 09:12:50,957 [INFO] - Atualizada carta 106 - TROOP DRAGON
+2025-09-18 09:12:51,829 [INFO] - Atualizada carta 107 - STAMPING DESTRUCTION
+2025-09-18 09:12:52,691 [INFO] - Atualizada carta 108 - CALL OF THE MUMMY
+2025-09-18 09:12:53,579 [INFO] - Atualizada carta 109 - REINFORCEMENT OF THE ARMY
+2025-09-18 09:12:54,499 [INFO] - Atualizada carta 110 - AMAZONESS VILLAGE
+2025-09-18 09:12:55,288 [INFO] - Atualizada carta 111 - DOUBLE SPELL
+2025-09-18 09:12:56,446 [INFO] - Atualizada carta 112 - CHAOSRIDER GUSTAPH
+2025-09-18 09:12:57,289 [INFO] - Atualizada carta 113 - DISKBLADE RIDER
+2025-09-18 09:12:58,222 [INFO] - Atualizada carta 114 - D.D. SCOUT PLANE
+2025-09-18 09:12:59,033 [INFO] - Atualizada carta 115 - GRAND CONVERGENCE
+2025-09-18 09:12:59,947 [INFO] - Atualizada carta 116 - DIFFERENT DIMENSION GATE
+2025-09-18 09:13:00,775 [INFO] - Atualizada carta 117 - DARK SUMMONING BEAST
+2025-09-18 09:13:01,706 [INFO] - Atualizada carta 118 - DIAMOND-DUST CYCLONE
+2025-09-18 09:13:02,581 [INFO] - Atualizada carta 119 - PHARAOH'S SERVANT
+2025-09-18 09:13:03,468 [INFO] - Atualizada carta 120 - PHARAONIC PROTECTOR
+2025-09-18 09:13:04,298 [INFO] - Atualizada carta 121 - REIGN-BEAUX, OVERLORD OF DARK WORLD
+2025-09-18 09:13:05,210 [INFO] - Atualizada carta 122 - GARUDA THE WIND SPIRIT
+2025-09-18 09:13:06,023 [INFO] - Atualizada carta 123 - CHAOS TRAP HOLE
+2025-09-18 09:13:06,863 [INFO] - Atualizada carta 124 - RUTHLESS MEANS
+2025-09-18 09:13:07,686 [INFO] - Atualizada carta 125 - FORGED STEEL
+2025-09-18 09:13:08,516 [INFO] - Atualizada carta 126 - VAMPIRIC ARISTOCRACY
+2025-09-18 09:13:09,328 [INFO] - Atualizada carta 127 - WELCOME TO THE JUNGLE
+2025-09-18 09:13:10,166 [INFO] - Atualizada carta 128 - ARCHFIEND'S CONSCRIPTION
+2025-09-18 09:13:11,169 [INFO] - Atualizada carta 129 - PROFESSOR OF ALCHEMY
+2025-09-18 09:13:11,975 [INFO] - Atualizada carta 130 - UNLOCKING THE POWER
+2025-09-18 09:13:12,987 [INFO] - Atualizada carta 131 - DRAGON FORCE
+2025-09-18 09:13:13,892 [INFO] - Atualizada carta 132 - DELICIOUS MORSEL!
+2025-09-18 09:13:14,753 [INFO] - Atualizada carta 133 - ORDER OF THE QUEEN
+2025-09-18 09:13:15,620 [INFO] - Atualizada carta 134 - ARCHFIEND'S PROMOTION
+2025-09-18 09:13:16,420 [INFO] - Atualizada carta 135 - SETTING SUN
+2025-09-18 09:13:17,368 [INFO] - Atualizada carta 136 - VICTORY OF THE SHADOW RIDERS
+2025-09-18 09:13:18,154 [INFO] - Atualizada carta 137 - CLOUDY SKIES OF GREY
+2025-09-18 09:13:18,976 [INFO] - Atualizada carta 138 - IL BLUD
+2025-09-18 09:13:19,826 [INFO] - Atualizada carta 139 - DARK RULER HA DES
+2025-09-18 09:13:20,738 [INFO] - Atualizada carta 140 - DARK WORLD LIGHTNING
+2025-09-18 09:13:21,568 [INFO] - Atualizada carta 141 - DARK DEAL
+2025-09-18 09:13:22,421 [INFO] - Atualizada carta 142 - DRAGONS GUNFIRE
+2025-09-18 09:13:23,310 [INFO] - Atualizada carta 143 - DRAGONS RAGE
+2025-09-18 09:13:24,286 [INFO] - Atualizada carta 144 - GOBLIN ZOMBIE
+2025-09-18 09:13:25,177 [INFO] - Atualizada carta 145 - PLAGUE WOLF
+2025-09-18 09:13:26,014 [INFO] - Atualizada carta 146 - RYU KOKKI
+2025-09-18 09:13:26,852 [INFO] - Atualizada carta 147 - SOUL EXCHANGE
+2025-09-18 09:13:27,747 [INFO] - Atualizada carta 148 - VAMPIRE AWAKENING
+2025-09-18 09:13:28,478 [INFO] - Atualizada carta 149 - AMAZONESS TIGER
+2025-09-18 09:13:29,081 [INFO] - Atualizada carta 150 - QUEEN'S PAWN
+2025-09-18 09:13:29,562 [INFO] - Atualizada carta 151 - HALF COUNTER
+2025-09-18 09:13:30,256 [INFO] - Atualizada carta 152 - INFERNALQUEEN ARCHFIEND
+2025-09-18 09:13:30,723 [INFO] - Atualizada carta 153 - VILEPAWN ARCHFIEND
+2025-09-18 09:13:31,161 [INFO] - Atualizada carta 154 - DARKBISHOP ARCHFIEND
+2025-09-18 09:13:31,611 [INFO] - Atualizada carta 155 - GIANT ORC
+2025-09-18 09:13:32,036 [INFO] - Atualizada carta 156 - ANNIHILATOR ARCHFIEND
+2025-09-18 09:13:32,512 [INFO] - Atualizada carta 157 - CHECKMATE
+2025-09-18 09:13:32,954 [INFO] - Atualizada carta 158 - ARCHFIEND'S ROAR
+2025-09-18 09:13:33,520 [INFO] - Atualizada carta 159 - BATTLE-SCARRED
+2025-09-18 09:13:33,979 [INFO] - Atualizada carta 160 - BARK OF DARK RULER
+2025-09-18 09:13:34,496 [INFO] - Atualizada carta 161 - BAZOO THE SOUL-EATER
+2025-09-18 09:13:34,982 [INFO] - Atualizada carta 162 - D.D.M. - DIFFERENT DIMENSION MASTER
+2025-09-18 09:13:35,437 [INFO] - Atualizada carta 163 - TRIBE-SHOCKING VIRUS
+2025-09-18 09:13:35,921 [INFO] - Atualizada carta 164 - CURSE OF AGING
+2025-09-18 09:13:36,349 [INFO] - Atualizada carta 165 - GRAVITIC ORB
+2025-09-18 09:13:36,791 [INFO] - Atualizada carta 166 - GOBLIN KING
+2025-09-18 09:13:37,224 [INFO] - Atualizada carta 167 - GRAVE PROTECTOR
+2025-09-18 09:13:37,671 [INFO] - Atualizada carta 168 - FALLEN PARADISE
+2025-09-18 09:13:38,221 [INFO] - Atualizada carta 169 - BACKUP SQUAD
+2025-09-18 09:13:38,671 [INFO] - Atualizada carta 170 - DIFFERENT DIMENSION GATE
+2025-09-18 09:13:39,133 [INFO] - Atualizada carta 171 - UNENDING NIGHTMARE
+2025-09-18 09:13:39,655 [INFO] - Atualizada carta 172 - SWAMP MIRRORER
+2025-09-18 09:13:40,255 [INFO] - Atualizada carta 173 - FINAL ATTACK ORDERS
+2025-09-18 09:13:40,717 [INFO] - Atualizada carta 174 - CLOUDIAN - GHOST FOG
+2025-09-18 09:13:41,139 [INFO] - Atualizada carta 175 - CLOUDIAN - TURBULENCE
+2025-09-18 09:13:41,563 [INFO] - Atualizada carta 176 - CLOUDIAN - SMOKE BALL
+2025-09-18 09:13:41,972 [INFO] - Atualizada carta 177 - CLOUDIAN - NIMBUSMAN
+2025-09-18 09:13:42,447 [INFO] - Atualizada carta 178 - VORTEX TROOPER
+2025-09-18 09:13:42,872 [INFO] - Atualizada carta 179 - FOG CONTROL
+2025-09-18 09:13:43,334 [INFO] - Atualizada carta 180 - RAGING CLOUDIAN
+2025-09-18 09:13:43,872 [INFO] - Atualizada carta 181 - RAIN STORM
+2025-09-18 09:13:44,589 [INFO] - Atualizada carta 182 - THE FIRST SARCOPHAGUS
+2025-09-18 09:13:45,164 [INFO] - Atualizada carta 183 - THE SECOND SARCOPHAGUS
+2025-09-18 09:13:45,614 [INFO] - Atualizada carta 184 - THE THIRD SARCOPHAGUS
+2025-09-18 09:13:46,106 [INFO] - Atualizada carta 185 - BITELON
+2025-09-18 09:13:46,567 [INFO] - Atualizada carta 186 - VAMPIRIC KOALA
+2025-09-18 09:13:46,964 [INFO] - Atualizada carta 187 - FLASH OF THE FORBIDDEN SPELL
+2025-09-18 09:13:47,431 [INFO] - Atualizada carta 188 - SWING OF MEMORIES
+2025-09-18 09:13:47,907 [INFO] - Atualizada carta 189 - DRAMATIC RESCUE
+2025-09-18 09:13:48,432 [INFO] - Atualizada carta 190 - NO ONE SUSPECTS THE DARK SCORPION GANG!
+2025-09-18 09:13:49,001 [INFO] - Atualizada carta 191 - ANCIENT RULER RISES
+2025-09-18 09:13:49,568 [INFO] - Atualizada carta 192 - COLD-BLOODED TACTICIAN
+2025-09-18 09:13:50,285 [INFO] - Atualizada carta 193 - DARK CREATION
+2025-09-18 09:13:50,793 [INFO] - Atualizada carta 194 - THE FORCEFUL CHECKPOINT
+2025-09-18 09:13:51,265 [INFO] - Atualizada carta 195 - BATTLE SURVIVOR
+2025-09-18 09:13:51,677 [INFO] - Atualizada carta 196 - DIFFERENT DIMENSION ENCOUNTER
+2025-09-18 09:13:52,119 [INFO] - Atualizada carta 197 - MAD RELOADER
+2025-09-18 09:13:52,599 [INFO] - Atualizada carta 198 - D-BOYZ
+2025-09-18 09:13:53,035 [INFO] - Atualizada carta 199 - CERULEAN SKYFIRE
+2025-09-18 09:13:53,536 [INFO] - Atualizada carta 200 - CLOUDIAN AEROSOL
+2025-09-18 09:13:54,028 [INFO] - Atualizada carta 201 - SUMMON CLOUD
+2025-09-18 09:13:54,474 [INFO] - Atualizada carta 202 - AQUA SPIRIT
+2025-09-18 09:13:54,986 [INFO] - Atualizada carta 203 - HELIOS TRICE MEGISTUS
+2025-09-18 09:13:55,461 [INFO] - Atualizada carta 204 - TERRORKING SALMON
+2025-09-18 09:13:56,041 [INFO] - Atualizada carta 205 - EVIL MIND
+2025-09-18 09:13:56,458 [INFO] - Atualizada carta 206 - AEGIS OF GAIA
+2025-09-18 09:13:56,936 [INFO] - Atualizada carta 207 - ZURE, KNIGHT OF DARK WORLD
+2025-09-18 09:13:57,386 [INFO] - Atualizada carta 208 - BRRON, MAD KING OF DARK WORLD
+2025-09-18 09:13:57,824 [INFO] - Atualizada carta 209 - IMPRISONED QUEEN ARCHFIEND
+2025-09-18 09:13:58,320 [INFO] - Atualizada carta 210 - CLOUDIAN - SHEEP CLOUD
+2025-09-18 09:13:58,862 [INFO] - Atualizada carta 211 - HUMAN-WAVE TACTICS
+2025-09-18 09:13:59,853 [INFO] - Atualizada carta 212 - ZOMA THE SPIRIT
+2025-09-18 09:14:00,304 [INFO] - Atualizada carta 213 - DARK SCORPION - CLIFF THE TRAP REMOVER
+2025-09-18 09:14:00,766 [INFO] - Atualizada carta 214 - HEAVY KNIGHT OF THE FLAME
+2025-09-18 09:14:01,257 [INFO] - Atualizada carta 215 - VAMPIRE'S DESIRE
+2025-09-18 09:14:01,883 [INFO] - Atualizada carta 216 - VEIL OF DARKNESS
+2025-09-18 09:14:02,400 [INFO] - Atualizada carta 217 - DARK SCORPION - CHICK THE YELLOW
+2025-09-18 09:14:02,858 [INFO] - Atualizada carta 218 - OBSIDIAN DRAGON
+2025-09-18 09:14:03,351 [INFO] - Atualizada carta 219 - PITCH-BLACK WARWOLF
+2025-09-18 09:14:03,787 [INFO] - Atualizada carta 220 - COUNTER CLEANER
+2025-09-18 09:14:04,218 [INFO] - Atualizada carta 221 - AQUA CHORUS
+2025-09-18 09:14:04,879 [INFO] - Atualizada carta 222 - ELEMENTAL HERO SHINING FLARE WINGMAN
+2025-09-18 09:14:05,305 [INFO] - Atualizada carta 223 - GOLDEN HOMUNCULUS
+2025-09-18 09:14:05,880 [INFO] - Atualizada carta 224 - D.D. CROW
+2025-09-18 09:14:06,376 [INFO] - Atualizada carta 225 - VAMPIRE HUNTER
+2025-09-18 09:14:07,046 [INFO] - Atualizada carta 226 - CYBER DRAGON
+2025-09-18 09:14:07,999 [INFO] - Buscando página 1 de 3
+2025-09-18 09:14:08,194 [INFO] - Atualizada carta 227 - RED-EYES DARKNESS DRAGON
+2025-09-18 09:14:09,161 [INFO] - Buscando página 2 de 3
+2025-09-18 09:14:09,310 [INFO] - Atualizada carta 228 - IL BLUD
+2025-09-18 09:14:10,613 [INFO] - Buscando página 3 de 3
+2025-09-18 09:14:10,897 [INFO] - Atualizada carta 229 - ARMED DRAGON LV10
+2025-09-18 09:14:11,769 [INFO] - Atualizada carta 230 - NEO-SPACIAN GRAND MOLE
+2025-09-18 09:14:11,974 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Book of Moon
+2025-09-18 09:14:12,275 [INFO] - Encontradas 11 cartas em buscar_carta_myp: Gearfried the Red-Eyes Iron Knight
+2025-09-18 09:14:12,275 [INFO] - Atualizada carta 231 - NEO-SPACIAN AIR HUMMINGBIRD
+2025-09-18 09:14:12,731 [INFO] - Atualizada carta 232 - ELEMENTAL HERO STORM NEOS
+2025-09-18 09:14:12,864 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Summoned Skull
+2025-09-18 09:14:13,184 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Warrior of Atlantis
+2025-09-18 09:14:13,272 [INFO] - Atualizada carta 233 - NEO-SPACIAN DARK PANTHER
+2025-09-18 09:14:13,557 [INFO] - Encontradas 8 cartas em buscar_carta_myp: Dark Magician
+2025-09-18 09:14:13,794 [INFO] - Atualizada carta 234 - ELEMENTAL HERO DARK NEOS
+2025-09-18 09:14:13,976 [INFO] - Encontradas 28 cartas em buscar_carta_myp: Dark Magician (Arkana)
+2025-09-18 09:14:14,280 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Red-Eyes Baby Dragon
+2025-09-18 09:14:14,344 [INFO] - Atualizada carta 235 - ELEMENTAL HERO GRAND NEOS
+2025-09-18 09:14:14,576 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Anti-Magic Arrows
+2025-09-18 09:14:14,836 [INFO] - Atualizada carta 236 - EN SHUFFLE
+2025-09-18 09:14:14,952 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Red-Eyes Black Dragon
+2025-09-18 09:14:15,295 [INFO] - Encontradas 8 cartas em buscar_carta_myp: DNA Surgery
+2025-09-18 09:14:15,444 [INFO] - Atualizada carta 237 - FOSSIL DYNA PACHYCEPHALO
+2025-09-18 09:14:15,928 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Slifer the Sky Dragon
+2025-09-18 09:14:16,223 [INFO] - Atualizada carta 238 - LIGHT BARRIER
+2025-09-18 09:14:16,332 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Kycoo the Ghost Destroyer
+2025-09-18 09:14:16,827 [INFO] - Atualizada carta 239 - ELEMENTAL HERO PRISMA
+2025-09-18 09:14:16,846 [INFO] - Encontradas 9 cartas em buscar_carta_myp: Jinzo
+2025-09-18 09:14:17,344 [INFO] - Encontradas 8 cartas em buscar_carta_myp: Nobleman of Crossout
+2025-09-18 09:14:17,344 [INFO] - Atualizada carta 240 - ELEMENTAL HERO AQUA NEOS
+2025-09-18 09:14:17,736 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Polymerization
+2025-09-18 09:14:18,037 [INFO] - Atualizada carta 241 - ELEMENTAL HERO GLOW NEOS
+2025-09-18 09:14:18,087 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Polymerization
+2025-09-18 09:14:18,468 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Allure of Darkness
+2025-09-18 09:14:18,927 [INFO] - Atualizada carta 242 - SAKURETSU ARMOR
+2025-09-18 09:14:18,945 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Dark Magician Girl
+2025-09-18 09:14:19,386 [INFO] - Atualizada carta 243 - ELEMENTAL HERO WILDEDGE
+2025-09-18 09:14:19,401 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Dark Paladin
+2025-09-18 09:14:19,859 [INFO] - Encontradas 5 cartas em buscar_carta_myp: Time Wizard
+2025-09-18 09:14:19,924 [INFO] - Atualizada carta 244 - ELEMENTAL HERO BRAVE NEOS
+2025-09-18 09:14:20,235 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Cosmic Cyclone
+2025-09-18 09:14:20,706 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Dark Magician (Arkana)
+2025-09-18 09:14:20,841 [INFO] - Atualizada carta 245 - DANDYLION
+2025-09-18 09:14:21,077 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Dust Tornado
+2025-09-18 09:14:21,480 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Foolish Burial
+2025-09-18 09:14:21,545 [INFO] - Atualizada carta 246 - ELEMENTAL HERO NEOS
+2025-09-18 09:14:21,772 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Book of Taiyou
+2025-09-18 09:14:22,177 [INFO] - Encontradas 7 cartas em buscar_carta_myp: United We Stand
+2025-09-18 09:14:22,242 [INFO] - Atualizada carta 247 - MYSTICAL SPACE TYPHOON
+2025-09-18 09:14:22,429 [INFO] - Encontradas 2 cartas em buscar_carta_myp: Draining Shield
+2025-09-18 09:14:22,797 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Flame Swordsman
+2025-09-18 09:14:22,879 [INFO] - Atualizada carta 248 - FOOLISH BURIAL
+2025-09-18 09:14:23,200 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Creature Swap
+2025-09-18 09:14:23,541 [INFO] - Atualizada carta 249 - ARCANA FORCE XXI - THE WORLD
+2025-09-18 09:14:23,565 [INFO] - Encontradas 24 cartas em buscar_carta_myp: Night Beam
+2025-09-18 09:14:24,065 [INFO] - Encontradas 7 cartas em buscar_carta_myp: Mage Power
+2025-09-18 09:14:24,133 [INFO] - Atualizada carta 250 - POT OF AVARICE
+2025-09-18 09:14:24,364 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Thousand Dragon
+2025-09-18 09:14:24,642 [INFO] - Encontradas 7 cartas em buscar_carta_myp: Sphere Kuriboh
+2025-09-18 09:14:24,712 [INFO] - Atualizada carta 251 - ANIMADORNED ARCHOSAUR
+2025-09-18 09:14:25,144 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Dark Magic Curtain
+2025-09-18 09:14:25,560 [INFO] - Encontradas 11 cartas em buscar_carta_myp: Buster Blader
+2025-09-18 09:14:25,625 [INFO] - Atualizada carta 252 - GAIA PLATE THE EARTH GIANT
+2025-09-18 09:14:25,984 [INFO] - Encontradas 7 cartas em buscar_carta_myp: Breaker the Magical Warrior
+2025-09-18 09:14:26,336 [INFO] - Atualizada carta 253 - O - OVERSOUL
+2025-09-18 09:14:26,362 [INFO] - Encontradas 28 cartas em buscar_carta_myp: Reflect Bounder
+2025-09-18 09:14:26,886 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Floodgate Trap Hole
+2025-09-18 09:14:26,979 [INFO] - Atualizada carta 254 - ARCANA FORCE I - THE MAGICIAN
+2025-09-18 09:14:27,154 [INFO] - Encontradas 9 cartas em buscar_carta_myp: Maiden of the Aqua
+2025-09-18 09:14:27,461 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Zera the Mant
+2025-09-18 09:14:27,461 [INFO] - Atualizada carta 255 - ARCANA FORCE III - THE EMPRESS
+2025-09-18 09:14:27,763 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Giltia the D. Knight
+2025-09-18 09:14:28,126 [INFO] - Encontradas 28 cartas em buscar_carta_myp: Insect Queen
+2025-09-18 09:14:28,126 [INFO] - Atualizada carta 256 - CUP OF ACE
+2025-09-18 09:14:28,631 [INFO] - Atualizada carta 257 - VALHALLA, HALL OF THE FALLEN
+2025-09-18 09:14:28,649 [INFO] - Encontradas 24 cartas em buscar_carta_myp: Mind Crush
+2025-09-18 09:14:29,125 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Dark Renewal
+2025-09-18 09:14:29,180 [INFO] - Atualizada carta 258 - NEO-SPACIAN AQUA DOLPHIN
+2025-09-18 09:14:29,527 [INFO] - Encontradas 11 cartas em buscar_carta_myp: Magician of Faith
+2025-09-18 09:14:29,755 [INFO] - Atualizada carta 259 - PALEOZOIC CANADIA
+2025-09-18 09:14:29,880 [INFO] - Encontradas 11 cartas em buscar_carta_myp: Old Vindictive Magician
+2025-09-18 09:14:30,344 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Command Knight
+2025-09-18 09:14:30,480 [INFO] - Atualizada carta 260 - DIVINE WRATH
+2025-09-18 09:14:30,656 [INFO] - Encontradas 11 cartas em buscar_carta_myp: Baby Dragon
+2025-09-18 09:14:30,952 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Graceful Dice
+2025-09-18 09:14:31,014 [INFO] - Atualizada carta 261 - MIRACLE FUSION
+2025-09-18 09:14:31,349 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Reinforcement of the Army
+2025-09-18 09:14:31,651 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Skull Dice
+2025-09-18 09:14:31,714 [INFO] - Atualizada carta 262 - ARCANA FORCE EX - THE LIGHT RULER
+2025-09-18 09:14:32,029 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Kunai with Chain
+2025-09-18 09:14:32,403 [INFO] - Atualizada carta 263 - ARCANA FORCE 0 - THE FOOL
+2025-09-18 09:14:32,411 [INFO] - Encontradas 8 cartas em buscar_carta_myp: Karbonala Warrior
+2025-09-18 09:14:32,914 [INFO] - Atualizada carta 264 - ARCANA FORCE IV - THE EMPEROR
+2025-09-18 09:14:32,936 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Salvage
+2025-09-18 09:14:33,400 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Umi
+2025-09-18 09:14:33,476 [INFO] - Atualizada carta 265 - ARCANA FORCE VI - THE LOVERS
+2025-09-18 09:14:33,735 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Tornado Wall
+2025-09-18 09:14:34,140 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Magician of Faith
+2025-09-18 09:14:34,206 [INFO] - Atualizada carta 266 - ARCANA FORCE VII - THE CHARIOT
+2025-09-18 09:14:34,449 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Twister
+2025-09-18 09:14:34,883 [INFO] - Atualizada carta 267 - ARCANA FORCE XIV - TEMPERANCE
+2025-09-18 09:14:34,909 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Summoner's Art
+2025-09-18 09:14:35,346 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Emergency Provisions
+2025-09-18 09:14:35,515 [INFO] - Atualizada carta 268 - ARCANA FORCE XVIII - THE MOON
+2025-09-18 09:14:35,705 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Solemn Wishes
+2025-09-18 09:14:36,053 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Hammer Shot
+2025-09-18 09:14:36,119 [INFO] - Atualizada carta 269 - GALAXY CYCLONE
+2025-09-18 09:14:36,459 [INFO] - Encontradas 24 cartas em buscar_carta_myp: Gearfried the Iron Knight
+2025-09-18 09:14:36,748 [INFO] - Atualizada carta 270 - SABERSAURUS
+2025-09-18 09:14:36,819 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Marauding Captain
+2025-09-18 09:14:37,304 [INFO] - Atualizada carta 271 - GENERATION NEXT
+2025-09-18 09:14:37,311 [INFO] - Encontradas 23 cartas em buscar_carta_myp: The Legendary Fisherman
+2025-09-18 09:14:37,685 [INFO] - Encontradas 30 cartas em buscar_carta_myp: Parasite Paracide
+2025-09-18 09:14:38,023 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Skilled Dark Magician
+2025-09-18 09:14:38,091 [INFO] - Atualizada carta 272 - BABYCERASAURUS
+2025-09-18 09:14:38,305 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Blast Magician
+2025-09-18 09:14:38,601 [INFO] - Encontradas 11 cartas em buscar_carta_myp: Skilled White Magician
+2025-09-18 09:14:38,678 [INFO] - Atualizada carta 273 - TYPHOON
+2025-09-18 09:14:39,077 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Apprentice Magician
+2025-09-18 09:14:39,475 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Rocket Warrior
+2025-09-18 09:14:39,536 [INFO] - Atualizada carta 274 - NEO-SPACIAN GLOW MOSS
+2025-09-18 09:14:39,778 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Little-Winguard
+2025-09-18 09:14:40,203 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Alligators Sword
+2025-09-18 09:14:40,349 [INFO] - Atualizada carta 275 - CONVERT CONTACT
+2025-09-18 09:14:40,611 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Blast with Chain
+2025-09-18 09:14:40,926 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Alligators Sword Dragon
+2025-09-18 09:14:40,926 [INFO] - Atualizada carta 276 - TYRANNO INFINITY
+2025-09-18 09:14:41,250 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Fortress Whales Oath
+2025-09-18 09:14:41,557 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Howling Insect
+2025-09-18 09:14:41,557 [INFO] - Atualizada carta 277 - FOSSIL TUSKER
+2025-09-18 09:14:41,841 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Jinzo - Returner
+2025-09-18 09:14:42,237 [INFO] - Encontradas 19 cartas em buscar_carta_myp: The Fiend Megacyber
+2025-09-18 09:14:42,237 [INFO] - Atualizada carta 278 - FOSSIL DIG
+2025-09-18 09:14:42,565 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Amplifier
+2025-09-18 09:14:42,852 [INFO] - Atualizada carta 279 - NEO SPACE
+2025-09-18 09:14:42,872 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Gear Golem the Moving Fortress
+2025-09-18 09:14:43,231 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Mask of Darkness
+2025-09-18 09:14:43,555 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Ledger of Legerdemain
+2025-09-18 09:14:43,629 [INFO] - Atualizada carta 280 - ULTIMATE TYRANNO
+2025-09-18 09:14:43,883 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Dark Magic Attack
+2025-09-18 09:14:44,196 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Infinite Cards
+2025-09-18 09:14:44,196 [INFO] - Atualizada carta 281 - CROSS PORTER
+2025-09-18 09:14:44,474 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Jam Defender
+2025-09-18 09:14:44,894 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Lost Wind
+2025-09-18 09:14:45,062 [INFO] - Atualizada carta 282 - LIMIT REVERSE
+2025-09-18 09:14:45,323 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Freed the Matchless General
+2025-09-18 09:14:45,646 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Surface
+2025-09-18 09:14:45,646 [INFO] - Atualizada carta 283 - ARCANA READING
+2025-09-18 09:14:46,113 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Spell Canceller
+2025-09-18 09:14:46,113 [INFO] - Atualizada carta 284 - ARCANA CALL
+2025-09-18 09:14:46,585 [INFO] - Atualizada carta 285 - REVERSAL OF FATE
+2025-09-18 09:14:46,636 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Thousand Knives
+2025-09-18 09:14:46,946 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Revival Jam
+2025-09-18 09:14:47,234 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Humanoid Slime
+2025-09-18 09:14:47,312 [INFO] - Atualizada carta 286 - BY ORDER OF THE EMPEROR
+2025-09-18 09:14:47,598 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Jam Breeding Machine
+2025-09-18 09:14:47,981 [INFO] - Encontradas 25 cartas em buscar_carta_myp: Widespread Ruin
+2025-09-18 09:14:47,981 [INFO] - Atualizada carta 287 - INVERSE UNIVERSE
+2025-09-18 09:14:48,290 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Alchemist of Black Spells
+2025-09-18 09:14:48,598 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Malice Dispersion
+2025-09-18 09:14:48,743 [INFO] - Atualizada carta 288 - SAUROPOD BRACHION
+2025-09-18 09:14:48,908 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Destruction Swordsman Fusion
+2025-09-18 09:14:49,230 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Miracle Restoring
+2025-09-18 09:14:49,317 [INFO] - Atualizada carta 289 - BLACK VELOCI
+2025-09-18 09:14:49,687 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Pitch-Black Power Stone
+2025-09-18 09:14:49,977 [INFO] - Atualizada carta 290 - DESTROYERSAURUS
+2025-09-18 09:14:50,012 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Oyster Meister
+2025-09-18 09:14:50,490 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Piercing Moray
+2025-09-18 09:14:50,559 [INFO] - Atualizada carta 291 - DARK DRICERATOPS
+2025-09-18 09:14:50,793 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Fiend Kraken
+2025-09-18 09:14:51,102 [INFO] - Encontradas 16 cartas em buscar_carta_myp: 7 Colored Fish
+2025-09-18 09:14:51,159 [INFO] - Atualizada carta 292 - GILASAURUS
+2025-09-18 09:14:51,522 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Fortress Whale
+2025-09-18 09:14:51,836 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Prickle Fairy
+2025-09-18 09:14:51,943 [INFO] - Atualizada carta 293 - BIG EVOLUTION PILL
+2025-09-18 09:14:52,182 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Insect Princess
+2025-09-18 09:14:52,491 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Gokibore
+2025-09-18 09:14:52,560 [INFO] - Atualizada carta 294 - TAIL SWIPE
+2025-09-18 09:14:52,854 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Metal Armored Bug
+2025-09-18 09:14:53,227 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Multiplication of Ants
+2025-09-18 09:14:53,343 [INFO] - Atualizada carta 295 - JURASSIC WORLD
+2025-09-18 09:14:53,526 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Insect Barrier
+2025-09-18 09:14:53,847 [INFO] - Atualizada carta 296 - SURVIVAL INSTINCT
+2025-09-18 09:14:53,862 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Eradicating Aerosol
+2025-09-18 09:14:54,151 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Golgoil
+2025-09-18 09:14:54,731 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Twin-Barrel Dragon
+2025-09-18 09:14:54,822 [INFO] - Atualizada carta 297 - DYNA TANK
+2025-09-18 09:14:55,049 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Pineapple Blast
+2025-09-18 09:14:55,335 [INFO] - Atualizada carta 298 - MEGAROCK DRAGON
+2025-09-18 09:14:55,462 [INFO] - Encontradas 9 cartas em buscar_carta_myp: Metalmorph
+2025-09-18 09:14:55,749 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Anarchist Monk Ranshin
+2025-09-18 09:14:55,819 [INFO] - Atualizada carta 299 - WEATHERING SOLDIER
+2025-09-18 09:14:56,046 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Mei-Kou, Master of Barriers
+2025-09-18 09:14:56,353 [INFO] - Atualizada carta 300 - BIG-TUSKED MAMMOTH
+2025-09-18 09:14:56,394 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Double Coston
+2025-09-18 09:14:56,683 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Sealmaster Meisei
+2025-09-18 09:14:56,956 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Talisman of Trap Sealing
+2025-09-18 09:14:57,097 [INFO] - Atualizada carta 301 - MEDUSA WORM
+2025-09-18 09:14:57,246 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Talisman of Spell Sealing
+2025-09-18 09:14:57,564 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Birthright
+2025-09-18 09:14:57,602 [INFO] - Atualizada carta 302 - TIME STREAM
+2025-09-18 09:14:57,898 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Worm Drake
+2025-09-18 09:14:58,237 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Muka Muka
+2025-09-18 09:14:58,294 [INFO] - Atualizada carta 303 - RE-FUSION
+2025-09-18 09:14:58,578 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Enraged Muka Muka
+2025-09-18 09:14:58,898 [INFO] - Encontradas 9 cartas em buscar_carta_myp: Sinister Serpent
+2025-09-18 09:14:58,899 [INFO] - Atualizada carta 304 - BLASTING FUSE
+2025-09-18 09:14:59,227 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Mother Grizzly
+2025-09-18 09:14:59,635 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Token Stampede
+2025-09-18 09:14:59,819 [INFO] - Atualizada carta 305 - SPIRITUAL EARTH ART - KUROGANE
+2025-09-18 09:15:00,047 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Humanoid Worm Drake
+2025-09-18 09:15:00,494 [INFO] - Atualizada carta 306 - FOSSIL DRAGON SKULLGIOS
+2025-09-18 09:15:00,648 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Airorca
+2025-09-18 09:15:01,106 [INFO] - Atualizada carta 307 - FOSSIL MACHINE SKULL BUGGY
+2025-09-18 09:15:01,143 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Flyfang
+2025-09-18 09:15:01,644 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Needle Sunfish
+2025-09-18 09:15:02,098 [INFO] - Atualizada carta 308 - FOSSIL WARRIOR SKULL KNIGHT
+2025-09-18 09:15:02,264 [INFO] - Encontradas 16 cartas em buscar_carta_myp: The Legendary Fisherman II
+2025-09-18 09:15:02,631 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Jinzo - Lord
+2025-09-18 09:15:02,699 [INFO] - Atualizada carta 309 - SPACETIME TRANSCENDENCE
+2025-09-18 09:15:03,059 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Cyber Energy Shock
+2025-09-18 09:15:03,423 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Cosmos Channelling
+2025-09-18 09:15:03,487 [INFO] - Atualizada carta 310 - FOSSIL WARRIOR SKULL BONE
+2025-09-18 09:15:03,742 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Gift of the Martyr
+2025-09-18 09:15:04,072 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Voltic Kong
+2025-09-18 09:15:04,137 [INFO] - Atualizada carta 311 - MOKEY MOKEY KING
+2025-09-18 09:15:04,385 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Dark Red Enchanter
+2025-09-18 09:15:04,768 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Hannibal Necromancer
+2025-09-18 09:15:04,799 [INFO] - Atualizada carta 312 - HERO BLAST
+2025-09-18 09:15:05,197 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Michizure
+2025-09-18 09:15:05,458 [INFO] - Atualizada carta 313 - SHELL KNIGHT
+2025-09-18 09:15:05,588 [INFO] - Encontradas 20 cartas em buscar_carta_myp: The Forceful Checkpoint
+2025-09-18 09:15:06,062 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Chow Sai the Ghost Stopper
+2025-09-18 09:15:06,063 [INFO] - Atualizada carta 314 - WHITE VEIL
+2025-09-18 09:15:06,378 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Chow Len the Prophet
+2025-09-18 09:15:06,657 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Legion the Fiend Jester
+2025-09-18 09:15:06,824 [INFO] - Atualizada carta 315 - SURVIVALS END
+2025-09-18 09:15:06,973 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Cross-Sword Beetle
+2025-09-18 09:15:07,343 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Big Wave Small Wave
+2025-09-18 09:15:07,343 [INFO] - Atualizada carta 316 - CONTACT GATE
+2025-09-18 09:15:07,649 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Fish Depth Charge
+2025-09-18 09:15:07,968 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Spider Egg
+2025-09-18 09:15:08,029 [INFO] - Atualizada carta 317 - THE FOUNTAIN IN THE SKY
+2025-09-18 09:15:08,312 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Airknight Parshath
+2025-09-18 09:15:08,594 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Chainsaw Insect
+2025-09-18 09:15:08,704 [INFO] - Atualizada carta 318 - DYNA BASE
+2025-09-18 09:15:08,961 [INFO] - Encontradas 24 cartas em buscar_carta_myp: Goblin Attack Force
+2025-09-18 09:15:09,271 [INFO] - Atualizada carta 319 - VOLCANIC ERUPTION
+2025-09-18 09:15:09,322 [INFO] - Encontradas 23 cartas em buscar_carta_myp: Exchange
+2025-09-18 09:15:09,711 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Pinch Hopper
+2025-09-18 09:15:09,780 [INFO] - Atualizada carta 320 - REVIVAL GOLEM
+2025-09-18 09:15:10,149 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Magical Reflect Slime
+2025-09-18 09:15:10,380 [INFO] - Atualizada carta 321 - A FEINT PLAN
+2025-09-18 09:15:10,519 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Brain Crusher
+2025-09-18 09:15:10,831 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Chaos Command Magician
+2025-09-18 09:15:10,892 [INFO] - Atualizada carta 322 - CYBERDARK CANNON
+2025-09-18 09:15:11,152 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Maiden of Macabre
+2025-09-18 09:15:11,471 [INFO] - Atualizada carta 323 - NEXT
+2025-09-18 09:15:11,473 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Magical Marionette
+2025-09-18 09:15:11,892 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Acid Rain
+2025-09-18 09:15:11,963 [INFO] - Atualizada carta 324 - RELEASE FROM STONE
+2025-09-18 09:15:12,164 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Last Day of Witch
+2025-09-18 09:15:12,527 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Mega Ton Magical Cannon
+2025-09-18 09:15:12,580 [INFO] - Atualizada carta 325 - ELEMENTAL HERO NEOS ALIUS
+2025-09-18 09:15:12,813 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Zera Ritual
+2025-09-18 09:15:13,197 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Barrel Behind the Door
+2025-09-18 09:15:13,263 [INFO] - Atualizada carta 326 - ARMED DRAGON LV10 WHITE
+2025-09-18 09:15:13,535 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Exhausting Spell
+2025-09-18 09:15:13,872 [INFO] - Atualizada carta 327 - MOKEY MOKEY ADRIFT
+2025-09-18 09:15:13,880 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Magical Arm Shield
+2025-09-18 09:15:14,357 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Blowback Dragon
+2025-09-18 09:15:14,448 [INFO] - Atualizada carta 328 - FLINT CRAGGER
+2025-09-18 09:15:14,826 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Dark Scorpion - Meanae the Thorn
+2025-09-18 09:15:15,136 [INFO] - Atualizada carta 329 - CARD TROOPER
+2025-09-18 09:15:15,161 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Dark Scorpion - Gorg the Strong
+2025-09-18 09:15:15,631 [INFO] - Atualizada carta 330 - STRAIGHT OUT OF NEO SPACE!
+2025-09-18 09:15:15,737 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Fusion Weapon
+2025-09-18 09:15:16,156 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Metal Reflect Slime
+2025-09-18 09:15:16,243 [INFO] - Atualizada carta 331 - DESTRUCTIVE FATE
+2025-09-18 09:15:16,486 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Wall of Disruption
+2025-09-18 09:15:16,802 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Ready for Intercepting
+2025-09-18 09:15:16,872 [INFO] - Atualizada carta 332 - FOOD CHAIN
+2025-09-18 09:15:17,105 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Dicephoon
+2025-09-18 09:15:17,413 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Water Hazard
+2025-09-18 09:15:17,481 [INFO] - Atualizada carta 333 - MAJOR IN PALEONTOLOGY
+2025-09-18 09:15:17,708 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Magnetic Mosquito
+2025-09-18 09:15:17,976 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Resonance Insect
+2025-09-18 09:15:18,035 [INFO] - Atualizada carta 334 - WISE MAN NEOS
+2025-09-18 09:15:18,292 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Verdant Sanctuary
+2025-09-18 09:15:18,578 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Cyber Raider
+2025-09-18 09:15:18,657 [INFO] - Atualizada carta 335 - MAGICIANS SCALES
+2025-09-18 09:15:18,899 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Psychic Shockwave
+2025-09-18 09:15:19,204 [INFO] - Atualizada carta 336 - DINO BRAIN IMMUNITY
+2025-09-18 09:15:19,244 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Token Sundae
+2025-09-18 09:15:19,815 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Pumprincess the Princess of Ghosts
+2025-09-18 09:15:20,049 [INFO] - Atualizada carta 337 - DIG SITE INSPECTION
+2025-09-18 09:15:20,152 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Skilled Red Magician
+2025-09-18 09:15:20,509 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Iron Grit
+2025-09-18 09:15:20,582 [INFO] - Atualizada carta 338 - INVITATION TO THE SOCIETY
+2025-09-18 09:15:20,795 [INFO] - Encontradas 18 cartas em buscar_carta_myp: KaibaCorp Research
+2025-09-18 09:15:21,114 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Solitary Sword of Poison
+2025-09-18 09:15:21,190 [INFO] - Atualizada carta 339 - MOKEY MOKEY MADNESS
+2025-09-18 09:15:21,427 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Roulette Spider
+2025-09-18 09:15:21,739 [INFO] - Encontradas 11 cartas em buscar_carta_myp: Lightning Blade
+2025-09-18 09:15:21,739 [INFO] - Atualizada carta 340 - CYBERDARK SCHEME
+2025-09-18 09:15:22,061 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Paleozoic Eldonia
+2025-09-18 09:15:22,402 [INFO] - Atualizada carta 341 - SHOULDERING A DESTINY
+2025-09-18 09:15:22,411 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Parasite Paranoid
+2025-09-18 09:15:22,920 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Destructotron
+2025-09-18 09:15:22,982 [INFO] - Atualizada carta 342 - SAKURETSU ARMOR
+2025-09-18 09:15:23,207 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Dr. Frankenderp
+2025-09-18 09:15:23,501 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Reactor Slime
+2025-09-18 09:15:23,557 [INFO] - Atualizada carta 343 - MIRACLE FUSION
+2025-09-18 09:15:23,897 [INFO] - Encontradas 17 cartas em buscar_carta_myp: A Legendary Ocean
+2025-09-18 09:15:24,373 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Ultimate Wizardry
+2025-09-18 09:15:24,445 [INFO] - Atualizada carta 344 - ULTIMATE TYRANNO
+2025-09-18 09:15:24,678 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Whale of a Tale
+2025-09-18 09:15:24,977 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Insect Infestation
+2025-09-18 09:15:25,041 [INFO] - Atualizada carta 345 - FOSSIL DIG
+2025-09-18 09:15:25,311 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Intel from the Cosmos
+2025-09-18 09:15:25,652 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Stalked by the Rare Hunters
+2025-09-18 09:15:25,947 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Now You See Them...
+2025-09-18 09:15:26,238 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Slimey Slimes
+2025-09-18 09:15:26,533 [INFO] - Encontradas 16 cartas em buscar_carta_myp: The Dragon Hunting Swordsman
+2025-09-18 09:15:26,884 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Heart of a Warrior
+2025-09-18 09:15:27,178 [INFO] - Encontradas 16 cartas em buscar_carta_myp: A Bountiful Ocean
+2025-09-18 09:15:27,483 [INFO] - Encontradas 17 cartas em buscar_carta_myp: My Precious Queen!
+2025-09-18 09:15:27,766 [INFO] - Encontradas 16 cartas em buscar_carta_myp: The Machine Menace
+2025-09-18 09:15:28,098 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Collector
+2025-09-18 09:15:28,544 [INFO] - Encontradas 14 cartas em buscar_carta_myp: A Terrible Fate
+2025-09-18 09:15:28,872 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Slimey Disposition
+2025-09-18 09:15:29,295 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Malicious Motivation
+2025-09-18 09:15:29,614 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Battle City Siren
+2025-09-18 09:15:30,071 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Premature Material
+2025-09-18 09:15:30,383 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Reversible Beetle
+2025-09-18 09:15:30,720 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Spell Power Grasp
+2025-09-18 09:15:30,720 [INFO] - Total de cartas encontradas em buscar_cartas_colecao: 215
+2025-09-18 09:15:30,721 [INFO] - Executando função: criar_tela_cadastro_colecao.<locals>.exibir_selecao
+2025-09-18 09:28:31,423 [INFO] - Atualização já feita hoje: 2025-09-18 09:28:31. Pulando.
+2025-09-18 09:29:05,998 [INFO] - Atualização já feita hoje: 2025-09-18 09:29:05. Pulando.
+2025-09-18 09:31:21,735 [INFO] - Atualização já feita hoje: 2025-09-18 09:31:21. Pulando.
+2025-09-18 09:33:55,449 [INFO] - Atualização já feita hoje: 2025-09-18 09:33:55. Pulando.
+2025-09-18 09:34:37,988 [INFO] - Atualização já feita hoje: 2025-09-18 09:34:37. Pulando.
+2025-09-18 09:35:47,251 [INFO] - Atualização já feita hoje: 2025-09-18 09:35:47. Pulando.
+2025-09-18 09:37:08,398 [INFO] - Atualização já feita hoje: 2025-09-18 09:37:08. Pulando.
+2025-09-18 09:38:40,809 [INFO] - Atualização já feita hoje: 2025-09-18 09:38:40. Pulando.
+2025-09-18 09:39:08,407 [INFO] - Atualização já feita hoje: 2025-09-18 09:39:08. Pulando.
+2025-09-18 09:48:40,451 [INFO] - Buscando página 1 de 3
+2025-09-18 09:48:41,459 [INFO] - Buscando página 2 de 3
+2025-09-18 09:48:42,774 [INFO] - Buscando página 3 de 3
+2025-09-18 09:48:43,993 [INFO] - Encontradas 24 cartas em buscar_carta_myp: Obelisk the Tormentor
+2025-09-18 09:48:44,323 [INFO] - Encontradas 12 cartas em buscar_carta_myp: King of the Swamp
+2025-09-18 09:48:44,963 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Lava Golem
+2025-09-18 09:48:45,307 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Magikuriboh
+2025-09-18 09:48:45,667 [INFO] - Encontradas 29 cartas em buscar_carta_myp: Maxx C
+2025-09-18 09:48:46,034 [INFO] - Encontradas 27 cartas em buscar_carta_myp: Gravekeepers Descendant
+2025-09-18 09:48:46,466 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Blue-Eyes Ultimate Dragon
+2025-09-18 09:48:46,852 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Slifer the Sky Dragon
+2025-09-18 09:48:47,189 [INFO] - Encontradas 12 cartas em buscar_carta_myp: The Winged Dragon of Ra
+2025-09-18 09:48:47,532 [INFO] - Encontradas 29 cartas em buscar_carta_myp: The Winged Dragon of Ra - Sphere Mode
+2025-09-18 09:48:47,892 [INFO] - Encontradas 29 cartas em buscar_carta_myp: Necrovalley
+2025-09-18 09:48:48,223 [INFO] - Encontradas 35 cartas em buscar_carta_myp: The Winged Dragon of Ra - Immortal Phoenix
+2025-09-18 09:48:48,692 [INFO] - Encontradas 9 cartas em buscar_carta_myp: Gravekeepers Commandant
+2025-09-18 09:48:49,024 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Waboku
+2025-09-18 09:48:49,349 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Mirror Wall
+2025-09-18 09:48:49,726 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Monster Reborn
+2025-09-18 09:48:50,093 [INFO] - Encontradas 31 cartas em buscar_carta_myp: Mirage of Nightmare
+2025-09-18 09:48:50,511 [INFO] - Encontradas 8 cartas em buscar_carta_myp: Book of Moon
+2025-09-18 09:48:50,837 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Cyber Harpie Lady
+2025-09-18 09:48:51,234 [INFO] - Encontradas 11 cartas em buscar_carta_myp: Jinzo
+2025-09-18 09:48:51,571 [INFO] - Encontradas 27 cartas em buscar_carta_myp: Amazoness Princess
+2025-09-18 09:48:51,880 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Tribe-Infecting Virus
+2025-09-18 09:48:52,246 [INFO] - Encontradas 37 cartas em buscar_carta_myp: Breakthrough Skill
+2025-09-18 09:48:52,599 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Monster Reborn
+2025-09-18 09:48:52,918 [INFO] - Encontradas 24 cartas em buscar_carta_myp: Jokers Knight
+2025-09-18 09:48:53,257 [INFO] - Encontradas 35 cartas em buscar_carta_myp: Harpie Channeler
+2025-09-18 09:48:53,548 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Imperial Bower
+2025-09-18 09:48:53,865 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Amazoness Queen
+2025-09-18 09:48:54,181 [INFO] - Encontradas 24 cartas em buscar_carta_myp: Fire Sorcerer
+2025-09-18 09:48:54,585 [INFO] - Encontradas 11 cartas em buscar_carta_myp: Red-Eyes Black Dragon
+2025-09-18 09:48:54,866 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Arcana Triumph Joker
+2025-09-18 09:48:55,453 [INFO] - Encontradas 36 cartas em buscar_carta_myp: Blue-Eyes White Dragon
+2025-09-18 09:48:55,796 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Mudora the Sword Oracle
+2025-09-18 09:48:56,142 [INFO] - Encontradas 30 cartas em buscar_carta_myp: Asura Priest
+2025-09-18 09:48:56,442 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Gravekeepers Recruiter
+2025-09-18 09:48:56,801 [INFO] - Encontradas 11 cartas em buscar_carta_myp: Harpies Pet Dragon - Fearsome Fire Blast
+2025-09-18 09:48:57,277 [INFO] - Encontradas 27 cartas em buscar_carta_myp: Dark Magician
+2025-09-18 09:48:57,607 [INFO] - Encontradas 27 cartas em buscar_carta_myp: Shinato, King of a Higher Plane
+2025-09-18 09:48:58,003 [INFO] - Encontradas 25 cartas em buscar_carta_myp: Gravekeepers Spy
+2025-09-18 09:48:58,378 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Enemy Controller
+2025-09-18 09:48:58,784 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Sakuretsu Armor
+2025-09-18 09:48:59,107 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Amazoness Swords Woman
+2025-09-18 09:48:59,596 [INFO] - Encontradas 32 cartas em buscar_carta_myp: Dark Magician Girl
+2025-09-18 09:49:00,061 [INFO] - Encontradas 31 cartas em buscar_carta_myp: Swords of Revealing Light
+2025-09-18 09:49:00,586 [INFO] - Encontradas 38 cartas em buscar_carta_myp: Harpie Queen
+2025-09-18 09:49:00,963 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Premature Burial
+2025-09-18 09:49:01,340 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Elegant Egotist
+2025-09-18 09:49:01,673 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Hino-Kagu-Tsuchi
+2025-09-18 09:49:02,011 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Magicians Valkyria
+2025-09-18 09:49:02,315 [INFO] - Encontradas 23 cartas em buscar_carta_myp: Thunder Ball
+2025-09-18 09:49:02,842 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Breaker the Magical Warrior
+2025-09-18 09:49:03,147 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Trap Hole of Spikes
+2025-09-18 09:49:03,527 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Sangan
+2025-09-18 09:49:03,831 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Destiny Board
+2025-09-18 09:49:04,143 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Spirit Message A
+2025-09-18 09:49:04,527 [INFO] - Encontradas 32 cartas em buscar_carta_myp: Injection Fairy Lily
+2025-09-18 09:49:04,913 [INFO] - Encontradas 33 cartas em buscar_carta_myp: Mobius the Frost Monarch
+2025-09-18 09:49:05,248 [INFO] - Encontradas 14 cartas em buscar_carta_myp: XYZ-Dragon Cannon
+2025-09-18 09:49:05,567 [INFO] - Encontradas 15 cartas em buscar_carta_myp: XY-Dragon Cannon
+2025-09-18 09:49:05,883 [INFO] - Encontradas 14 cartas em buscar_carta_myp: XZ-Tank Cannon
+2025-09-18 09:49:06,184 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Blue Flame Swordsman
+2025-09-18 09:49:06,603 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Fissure
+2025-09-18 09:49:07,031 [INFO] - Encontradas 18 cartas em buscar_carta_myp: United We Stand
+2025-09-18 09:49:07,411 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Foolish Burial
+2025-09-18 09:49:07,715 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Gravekeepers Guard
+2025-09-18 09:49:08,073 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Swords of Revealing Light
+2025-09-18 09:49:08,444 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Mystical Space Typhoon
+2025-09-18 09:49:08,765 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Harpie Dancer
+2025-09-18 09:49:09,084 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Harpie Lady 1
+2025-09-18 09:49:09,641 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Harpie Lady Sisters
+2025-09-18 09:49:09,993 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Harpies Hunting Ground
+2025-09-18 09:49:10,388 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Mystic Tomato
+2025-09-18 09:49:10,664 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Harpies Kaleidoscope
+2025-09-18 09:49:11,098 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Dark Necrofear
+2025-09-18 09:49:11,405 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Sol and Luna
+2025-09-18 09:49:11,726 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Spirit Message I
+2025-09-18 09:49:12,037 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Spirit Message N
+2025-09-18 09:49:12,327 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Spirit Message L
+2025-09-18 09:49:12,624 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Hysteric Party
+2025-09-18 09:49:12,914 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Amazoness Onslaught
+2025-09-18 09:49:13,279 [INFO] - Encontradas 20 cartas em buscar_carta_myp: The Melody of Awakening Dragon
+2025-09-18 09:49:13,603 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Snipe Hunter
+2025-09-18 09:49:13,980 [INFO] - Encontradas 31 cartas em buscar_carta_myp: Spirit Reaper
+2025-09-18 09:49:14,266 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Quaking Mirror Force
+2025-09-18 09:49:14,569 [INFO] - Encontradas 15 cartas em buscar_carta_myp: X-Head Cannon
+2025-09-18 09:49:14,891 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Y-Dragon Head
+2025-09-18 09:49:15,230 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Z-Metal Tank
+2025-09-18 09:49:15,580 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Penguin Soldier
+2025-09-18 09:49:15,918 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Floodgate Trap Hole
+2025-09-18 09:49:16,391 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Wall of Disruption
+2025-09-18 09:49:16,685 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Swarm of Centipedes
+2025-09-18 09:49:17,001 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Tiki Soul
+2025-09-18 09:49:17,278 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Amazoness Call
+2025-09-18 09:49:17,607 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Windstorm of Etaqua
+2025-09-18 09:49:17,962 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Witch of the Black Forest
+2025-09-18 09:49:18,231 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Tribal Unity
+2025-09-18 09:49:18,542 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Spell Shattering Arrow
+2025-09-18 09:49:18,859 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Dust Tornado
+2025-09-18 09:49:19,150 [INFO] - Encontradas 17 cartas em buscar_carta_myp: The King of D.
+2025-09-18 09:49:19,459 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Union Hangar
+2025-09-18 09:49:19,784 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Shadow Spell
+2025-09-18 09:49:20,185 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Reinforcement of the Army
+2025-09-18 09:49:20,559 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Zoma the Spirit
+2025-09-18 09:49:20,877 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Exchange of the Spirit
+2025-09-18 09:49:21,289 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Curse of Anubis
+2025-09-18 09:49:21,625 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Amazoness Chain Master
+2025-09-18 09:49:21,898 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Amazoness Fighting Spirit
+2025-09-18 09:49:22,220 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Obnoxious Celtic Guard
+2025-09-18 09:49:22,512 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Thunderspeed Summon
+2025-09-18 09:49:22,949 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Court of Cards
+2025-09-18 09:49:23,332 [INFO] - Encontradas 20 cartas em buscar_carta_myp: La Jinn the Mystical Genie of the Lamp
+2025-09-18 09:49:23,710 [INFO] - Encontradas 18 cartas em buscar_carta_myp: The Flute of Summoning Dragon
+2025-09-18 09:49:24,018 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Union Scramble
+2025-09-18 09:49:24,286 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Absolute Crusader
+2025-09-18 09:49:24,603 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Valkyrian Knight
+2025-09-18 09:49:25,004 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Gearfried the Iron Knight
+2025-09-18 09:49:25,366 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Fairy Box
+2025-09-18 09:49:25,721 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Kunai with Chain
+2025-09-18 09:49:26,031 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Lekunga
+2025-09-18 09:49:26,361 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Remove Trap
+2025-09-18 09:49:26,658 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Nightmare Wheel
+2025-09-18 09:49:26,994 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Metal Reflect Slime
+2025-09-18 09:49:27,263 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Spiritualism
+2025-09-18 09:49:27,607 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Blast Held by a Tribute
+2025-09-18 09:49:27,929 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Ordeal of a Traveler
+2025-09-18 09:49:28,275 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Shining Angel
+2025-09-18 09:49:28,580 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Nightmare Penguin
+2025-09-18 09:49:28,859 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Prime Material Dragon
+2025-09-18 09:49:29,219 [INFO] - Encontradas 31 cartas em buscar_carta_myp: D.D. Warrior
+2025-09-18 09:49:29,679 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Kings Knight
+2025-09-18 09:49:30,026 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Queens Knight
+2025-09-18 09:49:30,385 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Trade-In
+2025-09-18 09:49:30,672 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Dark Spirits Mastery
+2025-09-18 09:49:30,999 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Judgment of Anubis
+2025-09-18 09:49:31,351 [INFO] - Encontradas 29 cartas em buscar_carta_myp: Gilford the Lightning
+2025-09-18 09:49:31,711 [INFO] - Encontradas 31 cartas em buscar_carta_myp: Doomcaliber Knight
+2025-09-18 09:49:32,051 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Big Shield Gardna
+2025-09-18 09:49:32,369 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Jokers Wild
+2025-09-18 09:49:32,678 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Dragon Revival Rhapsody
+2025-09-18 09:49:33,021 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Fusion Sword Murasame Blade
+2025-09-18 09:49:33,353 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Blast with Chain
+2025-09-18 09:49:33,674 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Rite of Spirit
+2025-09-18 09:49:34,107 [INFO] - Encontradas 37 cartas em buscar_carta_myp: Shrink
+2025-09-18 09:49:34,440 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Jacks Knight
+2025-09-18 09:49:34,724 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Loop of Destruction
+2025-09-18 09:49:35,035 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Champions Vigilance
+2025-09-18 09:49:35,343 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Total Defense Shogun
+2025-09-18 09:49:35,644 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Command Knight
+2025-09-18 09:49:36,081 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Holding Arms
+2025-09-18 09:49:36,389 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Reactor Slime
+2025-09-18 09:49:36,715 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Dark Jeroid
+2025-09-18 09:49:37,059 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Newdoria
+2025-09-18 09:49:37,383 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Millennium Revelation
+2025-09-18 09:49:37,674 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Owners Seal
+2025-09-18 09:49:37,989 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Malevolent Catastrophe
+2025-09-18 09:49:38,274 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Hidden Soldiers
+2025-09-18 09:49:38,633 [INFO] - Encontradas 23 cartas em buscar_carta_myp: Dark Ruler Ha Des
+2025-09-18 09:49:38,973 [INFO] - Encontradas 23 cartas em buscar_carta_myp: Invader of Darkness
+2025-09-18 09:49:39,241 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Fusion Devourer
+2025-09-18 09:49:39,557 [INFO] - Encontradas 11 cartas em buscar_carta_myp: Night Assailant
+2025-09-18 09:49:39,905 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Offerings to the Doomed
+2025-09-18 09:49:40,264 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Sentence of Doom
+2025-09-18 09:49:40,587 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Cataclysmic Crusted Calcifida
+2025-09-18 09:49:40,910 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Agido
+2025-09-18 09:49:41,216 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Mudora
+2025-09-18 09:49:41,565 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Zolga
+2025-09-18 09:49:41,909 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Airknight Parshath
+2025-09-18 09:49:42,176 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Gravekeepers Oracle
+2025-09-18 09:49:42,472 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Dragged Down into the Grave
+2025-09-18 09:49:42,907 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Bashing Shield
+2025-09-18 09:49:43,188 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Gravekeepers Trap
+2025-09-18 09:49:43,481 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Mystical Beast of Serket
+2025-09-18 09:49:43,772 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Guardian Sphinx
+2025-09-18 09:49:44,083 [INFO] - Encontradas 16 cartas em buscar_carta_myp: The End of Anubis
+2025-09-18 09:49:44,459 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Des Lacooda
+2025-09-18 09:49:44,764 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Tiki Curse
+2025-09-18 09:49:45,048 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Harpie Lady 2
+2025-09-18 09:49:45,343 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Hysteric Sign
+2025-09-18 09:49:45,620 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Shinatos Ark
+2025-09-18 09:49:45,942 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Sword of Kusanagi
+2025-09-18 09:49:46,234 [INFO] - Encontradas 25 cartas em buscar_carta_myp: Angel O1
+2025-09-18 09:49:46,540 [INFO] - Encontradas 24 cartas em buscar_carta_myp: Guiding Light
+2025-09-18 09:49:46,846 [INFO] - Encontradas 23 cartas em buscar_carta_myp: Orgoth the Relentless
+2025-09-18 09:49:47,184 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Des Feral Imp
+2025-09-18 09:49:47,520 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Otohime
+2025-09-18 09:49:47,816 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Ancient Lamp
+2025-09-18 09:49:48,134 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Invader of the Throne
+2025-09-18 09:49:48,437 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Makyura the Destructor
+2025-09-18 09:49:48,774 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Revival Jam
+2025-09-18 09:49:49,078 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Fiendish Rhino Warrior
+2025-09-18 09:49:49,535 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Winged Minion
+2025-09-18 09:49:49,809 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Jowls of Dark Demise
+2025-09-18 09:49:50,123 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Doomdog Octhros
+2025-09-18 09:49:50,441 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Kelbek
+2025-09-18 09:49:50,755 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Keldo
+2025-09-18 09:49:51,041 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Double Snare
+2025-09-18 09:49:51,380 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Embodiment of Apophis
+2025-09-18 09:49:51,677 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Flying Kamakiri #1
+2025-09-18 09:49:52,226 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Lord Poison
+2025-09-18 09:49:52,564 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Granadora
+2025-09-18 09:49:52,867 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Swarm of Scarabs
+2025-09-18 09:49:53,164 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Swarm of Locusts
+2025-09-18 09:49:53,465 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Sky God Revelation
+2025-09-18 09:49:53,750 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Executive Privilege
+2025-09-18 09:49:54,028 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Battle City Slugger
+2025-09-18 09:49:54,314 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Advent of Ra
+2025-09-18 09:49:54,598 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Fear of the Dark
+2025-09-18 09:49:54,882 [INFO] - Encontradas 19 cartas em buscar_carta_myp: As I Predicted...!
+2025-09-18 09:49:55,179 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Royal Temple of the Kings
+2025-09-18 09:49:55,635 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Ever Faithful Companions
+2025-09-18 09:49:55,927 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Symbol of Pride
+2025-09-18 09:49:56,225 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Red-Eye Inferno
+2025-09-18 09:49:56,644 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Pulling the Strings
+2025-09-18 09:49:56,942 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Malevolence of the Millennium Ring
+2025-09-18 09:49:57,210 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Keeper of the Valley
+2025-09-18 09:49:57,506 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Deserts Peril
+2025-09-18 09:49:57,801 [INFO] - Encontradas 21 cartas em buscar_carta_myp: See Me Rolling
+2025-09-18 09:49:58,105 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Battle City Bestie
+2025-09-18 09:49:58,411 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Even the Odds
+2025-09-18 09:49:58,708 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Noahs Arc
+2025-09-18 09:49:58,708 [INFO] - Total de cartas encontradas em buscar_cartas_colecao: 220
+2025-09-18 09:49:58,708 [INFO] - Executando função: criar_tela_cadastro_colecao.<locals>.exibir_selecao
+2025-09-18 10:04:15,386 [INFO] - Buscando página 1 de 1
+2025-09-18 10:04:16,458 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Ghost Belle & Haunted Mansion
+2025-09-18 10:04:16,972 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Ash Blossom & Joyous Spring
+2025-09-18 10:04:17,373 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Rainbow Bridge of the Heart
+2025-09-18 10:04:17,723 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Crystal Bond
+2025-09-18 10:04:18,011 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Awakening of the Crystal Ultimates
+2025-09-18 10:04:18,437 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Dimension Shifter
+2025-09-18 10:04:18,800 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Ultimate Crystal Rainbow Dragon Overdrive
+2025-09-18 10:04:19,152 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Crystal Beast Sapphire Pegasus
+2025-09-18 10:04:19,704 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Foolish Burial Goods
+2025-09-18 10:04:20,129 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Rainbow Dragon
+2025-09-18 10:04:20,520 [INFO] - Encontradas 34 cartas em buscar_carta_myp: Crystal Beast Rainbow Dragon
+2025-09-18 10:04:20,942 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Jesse and Ruby - Unleashing the Legend
+2025-09-18 10:04:21,349 [INFO] - Encontradas 33 cartas em buscar_carta_myp: Rainbow Bridge
+2025-09-18 10:04:21,721 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Jesse Anderson - Bonder with the Crystal Beasts
+2025-09-18 10:04:22,075 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Rainbow Overdragon
+2025-09-18 10:04:22,443 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Crystal Beast Token
+2025-09-18 10:04:22,794 [INFO] - Encontradas 33 cartas em buscar_carta_myp: Crystal Miracle
+2025-09-18 10:04:23,230 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Hamon, Lord of Striking Thunder
+2025-09-18 10:04:23,632 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Crystal Promise
+2025-09-18 10:04:24,032 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Advanced Dark
+2025-09-18 10:04:24,483 [INFO] - Encontradas 40 cartas em buscar_carta_myp: The Melody of Awakening Dragon
+2025-09-18 10:04:24,966 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Crystal Conclave
+2025-09-18 10:04:25,403 [INFO] - Encontradas 38 cartas em buscar_carta_myp: Crystal Beast Ruby Carbuncle
+2025-09-18 10:04:25,775 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Crystal Beast Amethyst Cat
+2025-09-18 10:04:26,161 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Rainbow Dark Dragon
+2025-09-18 10:04:26,525 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Crystal Master
+2025-09-18 10:04:27,046 [INFO] - Encontradas 25 cartas em buscar_carta_myp: Contact C
+2025-09-18 10:04:27,460 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Crystal Aegis
+2025-09-18 10:04:28,203 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Ancient City - Rainbow Ruins
+2025-09-18 10:04:28,648 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Crystal Beacon
+2025-09-18 10:04:29,274 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Crystal Blessing
+2025-09-18 10:04:29,663 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Crystal Abundance
+2025-09-18 10:04:30,072 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Crystal Tree
+2025-09-18 10:04:30,455 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Crystal Release
+2025-09-18 10:04:30,819 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Rainbow Refraction
+2025-09-18 10:04:31,306 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Cosmic Cyclone
+2025-09-18 10:04:32,243 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Crystal Boon
+2025-09-18 10:04:32,694 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Crystal Brilliance
+2025-09-18 10:04:33,048 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Crystal Pair
+2025-09-18 10:04:33,403 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Ultimate Crystal Magic
+2025-09-18 10:04:33,745 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Counter Gem
+2025-09-18 10:04:34,131 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Crystal Beast Topaz Tiger
+2025-09-18 10:04:34,547 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Crystal Beast Amber Mammoth
+2025-09-18 10:04:35,117 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Crystal Beast Cobalt Eagle
+2025-09-18 10:04:35,511 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Crystal Keeper
+2025-09-18 10:04:35,953 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Rare Value
+2025-09-18 10:04:36,330 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Ferret Flames
+2025-09-18 10:04:36,733 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Metaverse
+2025-09-18 10:04:37,146 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Crystal Beast Emerald Tortoise
+2025-09-18 10:04:37,146 [INFO] - Total de cartas encontradas em buscar_cartas_colecao: 49
+2025-09-18 10:04:37,147 [INFO] - Executando função: criar_tela_cadastro_colecao.<locals>.exibir_selecao
+2025-09-18 12:49:48,596 [INFO] - Atualização já feita hoje: 2025-09-18 12:49:48. Pulando.
+2025-09-18 12:54:13,135 [INFO] - Atualização já feita hoje: 2025-09-18 12:54:13. Pulando.
+2025-09-18 12:56:23,574 [INFO] - Atualização já feita hoje: 2025-09-18 12:56:23. Pulando.
+2025-09-18 12:59:15,843 [INFO] - Atualização já feita hoje: 2025-09-18 12:59:15. Pulando.
+2025-09-18 13:04:11,034 [INFO] - Atualização já feita hoje: 2025-09-18 13:04:11. Pulando.
+2025-09-18 13:08:00,286 [INFO] - Atualização já feita hoje: 2025-09-18 13:08:00. Pulando.
+2025-09-18 13:08:57,494 [INFO] - Atualização já feita hoje: 2025-09-18 13:08:57. Pulando.
+2025-09-18 13:12:55,202 [INFO] - Atualização já feita hoje: 2025-09-18 13:12:55. Pulando.
+2025-09-18 13:13:25,222 [INFO] - Atualização já feita hoje: 2025-09-18 13:13:25. Pulando.
+2025-09-18 13:15:19,811 [INFO] - Atualização já feita hoje: 2025-09-18 13:15:19. Pulando.
+2025-09-18 13:18:04,055 [INFO] - Atualização já feita hoje: 2025-09-18 13:18:04. Pulando.
+2025-09-18 13:19:31,930 [INFO] - Atualização já feita hoje: 2025-09-18 13:19:31. Pulando.
+2025-09-18 13:19:50,808 [INFO] - Atualização já feita hoje: 2025-09-18 13:19:50. Pulando.
+2025-09-18 13:20:24,401 [INFO] - Atualização já feita hoje: 2025-09-18 13:20:24. Pulando.
+2025-09-18 13:22:03,621 [INFO] - Atualização já feita hoje: 2025-09-18 13:22:03. Pulando.
+2025-09-18 13:22:25,165 [INFO] - Atualização já feita hoje: 2025-09-18 13:22:25. Pulando.
+2025-09-18 13:23:26,363 [INFO] - Atualização já feita hoje: 2025-09-18 13:23:26. Pulando.
+2025-09-18 13:27:48,475 [INFO] - Atualização já feita hoje: 2025-09-18 13:27:48. Pulando.
+2025-09-18 13:31:57,347 [INFO] - Atualização já feita hoje: 2025-09-18 13:31:57. Pulando.
+2025-09-18 13:35:51,112 [INFO] - Buscando página 1 de 1
+2025-09-18 13:35:53,881 [INFO] - Encontradas 35 cartas em buscar_carta_myp: Infinite Impermanence
+2025-09-18 13:35:54,375 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Ash Blossom & Joyous Spring
+2025-09-18 13:35:54,794 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Maiden of White
+2025-09-18 13:35:55,301 [INFO] - Encontradas 35 cartas em buscar_carta_myp: Nibiru, the Primal Being
+2025-09-18 13:35:56,079 [INFO] - Encontradas 37 cartas em buscar_carta_myp: Spirit with Eyes of Blue
+2025-09-18 13:35:56,643 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Wishes for Eyes of Blue
+2025-09-18 13:35:57,036 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Blue-Eyes Ultimate Spirit Dragon
+2025-09-18 13:35:57,411 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Roar of the Blue-Eyed Dragons
+2025-09-18 13:35:57,823 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Indigo-Eyes Silver Dragon
+2025-09-18 13:35:58,360 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Effect Veiler
+2025-09-18 13:35:58,727 [INFO] - Encontradas 35 cartas em buscar_carta_myp: Neo Kaiser Sea Horse
+2025-09-18 13:35:59,094 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Majesty of the White Dragons
+2025-09-18 13:35:59,731 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Blue-Eyes White Dragon
+2025-09-18 13:36:00,145 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Neo Blue-Eyes Ultimate Dragon
+2025-09-18 13:36:00,631 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Blue-Eyes Alternative White Dragon
+2025-09-18 13:36:01,164 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Called by the Grave
+2025-09-18 13:36:01,560 [INFO] - Encontradas 40 cartas em buscar_carta_myp: The White Stone of Ancients
+2025-09-18 13:36:02,040 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Dragon Spirit of White
+2025-09-18 13:36:02,439 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Blue-Eyes Jet Dragon
+2025-09-18 13:36:02,955 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Mausoleum of White
+2025-09-18 13:36:03,646 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Burst Stream of Destruction
+2025-09-18 13:36:04,629 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Blue-Eyes Tyrant Dragon
+2025-09-18 13:36:05,403 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Hieratic Seal of the Heavenly Spheres
+2025-09-18 13:36:06,224 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Destined Rivals
+2025-09-18 13:36:06,857 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Blue-Eyes Ultimate Dragon
+2025-09-18 13:36:08,465 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Blue-Eyes Spirit Dragon
+2025-09-18 13:36:09,157 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Chaos Form
+2025-09-18 13:36:09,616 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Blue-Eyes White Dragon
+2025-09-18 13:36:10,220 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Blue-Eyes White Dragon
+2025-09-18 13:36:10,648 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Blue-Eyes Abyss Dragon
+2025-09-18 13:36:11,073 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Blue-Eyes Chaos MAX Dragon
+2025-09-18 13:36:11,448 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Blue-Eyes Chaos Dragon
+2025-09-18 13:36:11,985 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Sage with Eyes of Blue
+2025-09-18 13:36:12,437 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Master with Eyes of Blue
+2025-09-18 13:36:12,801 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Dictator of D.
+2025-09-18 13:36:13,204 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Ultimate Fusion
+2025-09-18 13:36:13,590 [INFO] - Encontradas 40 cartas em buscar_carta_myp: True Light
+2025-09-18 13:36:14,007 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Blue-Eyes Twin Burst Dragon
+2025-09-18 13:36:14,451 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Azure-Eyes Silver Dragon
+2025-09-18 13:36:14,984 [INFO] - Encontradas 40 cartas em buscar_carta_myp: The White Stone of Legend
+2025-09-18 13:36:15,572 [INFO] - Encontradas 40 cartas em buscar_carta_myp: The Melody of Awakening Dragon
+2025-09-18 13:36:16,036 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Trade-In
+2025-09-18 13:36:16,424 [INFO] - Encontradas 40 cartas em buscar_carta_myp: The Ultimate Creature of Destruction
+2025-09-18 13:36:16,425 [INFO] - Total de cartas encontradas em buscar_cartas_colecao: 43
+2025-09-18 13:36:16,425 [INFO] - Executando função: criar_tela_cadastro_colecao.<locals>.exibir_selecao
+2025-09-18 13:38:40,394 [INFO] - Atualização já feita hoje: 2025-09-18 13:38:40. Pulando.
+2025-09-18 13:40:36,836 [INFO] - Atualização já feita hoje: 2025-09-18 13:40:36. Pulando.
+2025-09-18 13:45:42,487 [INFO] - Buscando página 1 de 2
+2025-09-18 13:45:43,750 [INFO] - Buscando página 2 de 2
+2025-09-18 13:45:44,731 [INFO] - Encontradas 7 cartas em buscar_carta_myp: Gaia the Dragon Champion
+2025-09-18 13:45:45,125 [INFO] - Encontradas 5 cartas em buscar_carta_myp: Blue-Eyes Ultimate Dragon
+2025-09-18 13:45:45,550 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Blue-Eyes White Dragon
+2025-09-18 13:45:46,075 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Summoned Skull
+2025-09-18 13:45:46,497 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Swords of Revealing Light
+2025-09-18 13:45:46,846 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Suijin
+2025-09-18 13:45:47,222 [INFO] - Encontradas 7 cartas em buscar_carta_myp: Thunder Dragon
+2025-09-18 13:45:47,529 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Twin-Headed Thunder Dragon
+2025-09-18 13:45:47,899 [INFO] - Encontradas 3 cartas em buscar_carta_myp: Left Arm of the Forbidden One
+2025-09-18 13:45:48,279 [INFO] - Encontradas 7 cartas em buscar_carta_myp: Sanga of the Thunder
+2025-09-18 13:45:48,630 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Kazejin
+2025-09-18 13:45:48,948 [INFO] - Encontradas 5 cartas em buscar_carta_myp: Painful Choice
+2025-09-18 13:45:49,327 [INFO] - Encontradas 9 cartas em buscar_carta_myp: Catapult Turtle
+2025-09-18 13:45:49,664 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Upstart Goblin
+2025-09-18 13:45:49,980 [INFO] - Encontradas 3 cartas em buscar_carta_myp: Black Skull Dragon (as B. Skull Dragon)
+2025-09-18 13:45:50,330 [INFO] - Encontradas 9 cartas em buscar_carta_myp: Dark Magician
+2025-09-18 13:45:50,619 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Cyber Harpie Lady
+2025-09-18 13:45:50,934 [INFO] - Encontradas 3 cartas em buscar_carta_myp: Kaibaman
+2025-09-18 13:45:51,360 [INFO] - Encontradas 9 cartas em buscar_carta_myp: Red-Eyes Black Dragon (as Red-Eyes B. Dragon)
+2025-09-18 13:45:51,708 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Exodia the Forbidden One
+2025-09-18 13:45:52,039 [INFO] - Encontradas 5 cartas em buscar_carta_myp: Megamorph
+2025-09-18 13:45:52,389 [INFO] - Encontradas 5 cartas em buscar_carta_myp: Relinquished
+2025-09-18 13:45:52,700 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Right Leg of the Forbidden One
+2025-09-18 13:45:53,104 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Barrel Dragon
+2025-09-18 13:45:53,629 [INFO] - Encontradas 9 cartas em buscar_carta_myp: La Jinn the Mystical Genie of the Lamp
+2025-09-18 13:45:54,014 [INFO] - Encontradas 8 cartas em buscar_carta_myp: Lord of D.
+2025-09-18 13:45:54,406 [INFO] - Encontradas 11 cartas em buscar_carta_myp: Penguin Soldier
+2025-09-18 13:45:54,806 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Scapegoat
+2025-09-18 13:45:55,156 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Time Wizard
+2025-09-18 13:45:55,605 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Monster Reborn
+2025-09-18 13:45:55,972 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Axe of Despair
+2025-09-18 13:45:56,316 [INFO] - Encontradas 3 cartas em buscar_carta_myp: Card Destruction
+2025-09-18 13:45:56,703 [INFO] - Encontradas 7 cartas em buscar_carta_myp: Raigeki
+2025-09-18 13:45:57,096 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Left Leg of the Forbidden One
+2025-09-18 13:45:57,455 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Blue-Eyes Toon Dragon
+2025-09-18 13:45:57,845 [INFO] - Encontradas 8 cartas em buscar_carta_myp: Giant Trunade
+2025-09-18 13:45:58,214 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Embodiment of Apophis
+2025-09-18 13:45:58,599 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Amazoness Chain Master
+2025-09-18 13:45:58,984 [INFO] - Encontradas 5 cartas em buscar_carta_myp: Copycat
+2025-09-18 13:45:59,290 [INFO] - Encontradas 5 cartas em buscar_carta_myp: Ancient Lamp
+2025-09-18 13:45:59,718 [INFO] - Encontradas 2 cartas em buscar_carta_myp: Right Arm of the Forbidden One
+2025-09-18 13:46:00,131 [INFO] - Encontradas 11 cartas em buscar_carta_myp: Sangan
+2025-09-18 13:46:00,513 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Blast Sphere
+2025-09-18 13:46:00,846 [INFO] - Encontradas 2 cartas em buscar_carta_myp: Cloning
+2025-09-18 13:46:01,597 [INFO] - Encontradas 5 cartas em buscar_carta_myp: Exchange of the Spirit
+2025-09-18 13:46:01,959 [INFO] - Encontradas 1 cartas em buscar_carta_myp: Relieve Monster
+2025-09-18 13:46:02,289 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Messenger of Peace
+2025-09-18 13:46:02,722 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Harpie Lady Sisters
+2025-09-18 13:46:03,220 [INFO] - Encontradas 3 cartas em buscar_carta_myp: The Flute of Summoning Dragon
+2025-09-18 13:46:03,604 [INFO] - Encontradas 2 cartas em buscar_carta_myp: Graceful Charity
+2025-09-18 13:46:04,046 [INFO] - Encontradas 3 cartas em buscar_carta_myp: Solemn Judgment
+2025-09-18 13:46:04,441 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Magician of Faith
+2025-09-18 13:46:04,765 [INFO] - Encontradas 1 cartas em buscar_carta_myp: Gate Guardian
+2025-09-18 13:46:05,122 [INFO] - Encontradas 1 cartas em buscar_carta_myp: Kuriboh
+2025-09-18 13:46:05,466 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Wall of Illusion
+2025-09-18 13:46:05,870 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Gaia the Fierce Knight
+2025-09-18 13:46:06,369 [INFO] - Encontradas 5 cartas em buscar_carta_myp: Fissure
+2025-09-18 13:46:06,805 [INFO] - Encontradas 7 cartas em buscar_carta_myp: Polymerization
+2025-09-18 13:46:07,162 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Thousand Dragon
+2025-09-18 13:46:07,494 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Curse of Dragon
+2025-09-18 13:46:07,889 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Senju of the Thousand Hands
+2025-09-18 13:46:08,229 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Harpie Lady
+2025-09-18 13:46:08,650 [INFO] - Encontradas 9 cartas em buscar_carta_myp: Magic Jammer
+2025-09-18 13:46:08,968 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Gravekeepers Servant
+2025-09-18 13:46:09,517 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Mystical Space Typhoon
+2025-09-18 13:46:09,861 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Giant Germ
+2025-09-18 13:46:10,298 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Mystic Tomato
+2025-09-18 13:46:10,753 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Trap Hole
+2025-09-18 13:46:11,092 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Armed Ninja
+2025-09-18 13:46:11,545 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Mask of Darkness
+2025-09-18 13:46:11,951 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Shining Angel
+2025-09-18 13:46:12,369 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Toon Summoned Skull
+2025-09-18 13:46:12,719 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Toon Mermaid
+2025-09-18 13:46:13,089 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Gaia Power
+2025-09-18 13:46:13,473 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Flame Swordsman
+2025-09-18 13:46:13,935 [INFO] - Encontradas 11 cartas em buscar_carta_myp: Seven Tools of the Bandit
+2025-09-18 13:46:14,258 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Flying Kamakiri #1
+2025-09-18 13:46:14,618 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Rising Air Current
+2025-09-18 13:46:15,020 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Elegant Egotist
+2025-09-18 13:46:15,340 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Cannon Soldier
+2025-09-18 13:46:15,716 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Giant Rat
+2025-09-18 13:46:16,148 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Molten Destruction
+2025-09-18 13:46:16,489 [INFO] - Encontradas 11 cartas em buscar_carta_myp: Baby Dragon
+2025-09-18 13:46:16,878 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Toon World
+2025-09-18 13:46:17,356 [INFO] - Encontradas 14 cartas em buscar_carta_myp: UFO Turtle
+2025-09-18 13:46:17,648 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Umiiruka
+2025-09-18 13:46:18,027 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Black Illusion Ritual
+2025-09-18 13:46:18,372 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Jirai Gumo
+2025-09-18 13:46:18,728 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Hyozanryu
+2025-09-18 13:46:19,097 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Luminous Spark
+2025-09-18 13:46:19,498 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Giant Soldier of Stone
+2025-09-18 13:46:19,893 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Man-Eater Bug
+2025-09-18 13:46:20,259 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Gazelle the King of Mythical Beasts
+2025-09-18 13:46:20,633 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Mother Grizzly
+2025-09-18 13:46:21,002 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Maha Vailo
+2025-09-18 13:46:21,477 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Manga Ryu-Ran
+2025-09-18 13:46:21,908 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Sonic Bird
+2025-09-18 13:46:22,308 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Black Pendant
+2025-09-18 13:46:22,734 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Nimble Momonga
+2025-09-18 13:46:23,161 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Hane-Hane
+2025-09-18 13:46:23,633 [INFO] - Encontradas 1 cartas em buscar_carta_myp: Heavy Storm
+2025-09-18 13:46:23,633 [INFO] - Total de cartas encontradas em buscar_cartas_colecao: 101
+2025-09-18 13:46:23,633 [INFO] - Executando função: criar_tela_cadastro_colecao.<locals>.exibir_selecao
+2025-09-18 13:54:38,932 [INFO] - Buscando página 1 de 2
+2025-09-18 13:54:39,878 [INFO] - Buscando página 2 de 2
+2025-09-18 13:54:40,899 [INFO] - Encontradas 7 cartas em buscar_carta_myp: Gaia the Dragon Champion
+2025-09-18 13:54:41,254 [INFO] - Encontradas 5 cartas em buscar_carta_myp: Blue-Eyes Ultimate Dragon
+2025-09-18 13:54:41,618 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Blue-Eyes White Dragon
+2025-09-18 13:54:41,959 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Summoned Skull
+2025-09-18 13:54:42,327 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Swords of Revealing Light
+2025-09-18 13:54:42,630 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Suijin
+2025-09-18 13:54:42,932 [INFO] - Encontradas 7 cartas em buscar_carta_myp: Thunder Dragon
+2025-09-18 13:54:43,233 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Twin-Headed Thunder Dragon
+2025-09-18 13:54:43,549 [INFO] - Encontradas 3 cartas em buscar_carta_myp: Left Arm of the Forbidden One
+2025-09-18 13:54:44,009 [INFO] - Encontradas 7 cartas em buscar_carta_myp: Sanga of the Thunder
+2025-09-18 13:54:44,304 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Kazejin
+2025-09-18 13:54:44,568 [INFO] - Encontradas 5 cartas em buscar_carta_myp: Painful Choice
+2025-09-18 13:54:44,891 [INFO] - Encontradas 9 cartas em buscar_carta_myp: Catapult Turtle
+2025-09-18 13:54:45,310 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Upstart Goblin
+2025-09-18 13:54:45,602 [INFO] - Encontradas 3 cartas em buscar_carta_myp: Black Skull Dragon (as B. Skull Dragon)
+2025-09-18 13:54:45,985 [INFO] - Encontradas 9 cartas em buscar_carta_myp: Dark Magician
+2025-09-18 13:54:46,273 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Cyber Harpie Lady
+2025-09-18 13:54:46,597 [INFO] - Encontradas 3 cartas em buscar_carta_myp: Kaibaman
+2025-09-18 13:54:46,950 [INFO] - Encontradas 9 cartas em buscar_carta_myp: Red-Eyes Black Dragon (as Red-Eyes B. Dragon)
+2025-09-18 13:54:47,304 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Exodia the Forbidden One
+2025-09-18 13:54:47,636 [INFO] - Encontradas 5 cartas em buscar_carta_myp: Megamorph
+2025-09-18 13:54:47,965 [INFO] - Encontradas 5 cartas em buscar_carta_myp: Relinquished
+2025-09-18 13:54:48,288 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Right Leg of the Forbidden One
+2025-09-18 13:54:48,633 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Barrel Dragon
+2025-09-18 13:54:48,967 [INFO] - Encontradas 9 cartas em buscar_carta_myp: La Jinn the Mystical Genie of the Lamp
+2025-09-18 13:54:49,292 [INFO] - Encontradas 8 cartas em buscar_carta_myp: Lord of D.
+2025-09-18 13:54:49,681 [INFO] - Encontradas 11 cartas em buscar_carta_myp: Penguin Soldier
+2025-09-18 13:54:50,097 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Scapegoat
+2025-09-18 13:54:50,439 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Time Wizard
+2025-09-18 13:54:50,961 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Monster Reborn
+2025-09-18 13:54:51,296 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Axe of Despair
+2025-09-18 13:54:51,636 [INFO] - Encontradas 3 cartas em buscar_carta_myp: Card Destruction
+2025-09-18 13:54:52,000 [INFO] - Encontradas 7 cartas em buscar_carta_myp: Raigeki
+2025-09-18 13:54:52,334 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Left Leg of the Forbidden One
+2025-09-18 13:54:52,659 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Blue-Eyes Toon Dragon
+2025-09-18 13:54:53,016 [INFO] - Encontradas 8 cartas em buscar_carta_myp: Giant Trunade
+2025-09-18 13:54:53,342 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Embodiment of Apophis
+2025-09-18 13:54:53,621 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Amazoness Chain Master
+2025-09-18 13:54:53,983 [INFO] - Encontradas 5 cartas em buscar_carta_myp: Copycat
+2025-09-18 13:54:54,265 [INFO] - Encontradas 5 cartas em buscar_carta_myp: Ancient Lamp
+2025-09-18 13:54:54,599 [INFO] - Encontradas 2 cartas em buscar_carta_myp: Right Arm of the Forbidden One
+2025-09-18 13:54:54,984 [INFO] - Encontradas 11 cartas em buscar_carta_myp: Sangan
+2025-09-18 13:54:55,276 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Blast Sphere
+2025-09-18 13:54:55,567 [INFO] - Encontradas 2 cartas em buscar_carta_myp: Cloning
+2025-09-18 13:54:55,839 [INFO] - Encontradas 5 cartas em buscar_carta_myp: Exchange of the Spirit
+2025-09-18 13:54:56,228 [INFO] - Encontradas 1 cartas em buscar_carta_myp: Relieve Monster
+2025-09-18 13:54:56,513 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Messenger of Peace
+2025-09-18 13:54:56,957 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Harpie Lady Sisters
+2025-09-18 13:54:57,285 [INFO] - Encontradas 3 cartas em buscar_carta_myp: The Flute of Summoning Dragon
+2025-09-18 13:54:57,570 [INFO] - Encontradas 2 cartas em buscar_carta_myp: Graceful Charity
+2025-09-18 13:54:58,065 [INFO] - Encontradas 3 cartas em buscar_carta_myp: Solemn Judgment
+2025-09-18 13:54:58,434 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Magician of Faith
+2025-09-18 13:54:58,709 [INFO] - Encontradas 1 cartas em buscar_carta_myp: Gate Guardian
+2025-09-18 13:54:59,037 [INFO] - Encontradas 1 cartas em buscar_carta_myp: Kuriboh
+2025-09-18 13:54:59,360 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Wall of Illusion
+2025-09-18 13:54:59,702 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Gaia the Fierce Knight
+2025-09-18 13:55:00,062 [INFO] - Encontradas 5 cartas em buscar_carta_myp: Fissure
+2025-09-18 13:55:00,499 [INFO] - Encontradas 7 cartas em buscar_carta_myp: Polymerization
+2025-09-18 13:55:00,892 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Thousand Dragon
+2025-09-18 13:55:01,244 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Curse of Dragon
+2025-09-18 13:55:01,601 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Senju of the Thousand Hands
+2025-09-18 13:55:01,991 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Harpie Lady
+2025-09-18 13:55:02,364 [INFO] - Encontradas 9 cartas em buscar_carta_myp: Magic Jammer
+2025-09-18 13:55:02,650 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Gravekeepers Servant
+2025-09-18 13:55:03,204 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Mystical Space Typhoon
+2025-09-18 13:55:03,578 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Giant Germ
+2025-09-18 13:55:04,001 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Mystic Tomato
+2025-09-18 13:55:04,431 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Trap Hole
+2025-09-18 13:55:04,755 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Armed Ninja
+2025-09-18 13:55:05,142 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Mask of Darkness
+2025-09-18 13:55:05,671 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Shining Angel
+2025-09-18 13:55:06,039 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Toon Summoned Skull
+2025-09-18 13:55:06,457 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Toon Mermaid
+2025-09-18 13:55:06,822 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Gaia Power
+2025-09-18 13:55:07,241 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Flame Swordsman
+2025-09-18 13:55:07,681 [INFO] - Encontradas 11 cartas em buscar_carta_myp: Seven Tools of the Bandit
+2025-09-18 13:55:07,990 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Flying Kamakiri #1
+2025-09-18 13:55:08,322 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Rising Air Current
+2025-09-18 13:55:08,665 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Elegant Egotist
+2025-09-18 13:55:08,977 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Cannon Soldier
+2025-09-18 13:55:09,380 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Giant Rat
+2025-09-18 13:55:09,692 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Molten Destruction
+2025-09-18 13:55:10,167 [INFO] - Encontradas 11 cartas em buscar_carta_myp: Baby Dragon
+2025-09-18 13:55:10,543 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Toon World
+2025-09-18 13:55:10,901 [INFO] - Encontradas 14 cartas em buscar_carta_myp: UFO Turtle
+2025-09-18 13:55:11,245 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Umiiruka
+2025-09-18 13:55:11,626 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Black Illusion Ritual
+2025-09-18 13:55:11,920 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Jirai Gumo
+2025-09-18 13:55:12,264 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Hyozanryu
+2025-09-18 13:55:12,593 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Luminous Spark
+2025-09-18 13:55:13,155 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Giant Soldier of Stone
+2025-09-18 13:55:13,532 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Man-Eater Bug
+2025-09-18 13:55:13,882 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Gazelle the King of Mythical Beasts
+2025-09-18 13:55:14,287 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Mother Grizzly
+2025-09-18 13:55:14,659 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Maha Vailo
+2025-09-18 13:55:15,022 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Manga Ryu-Ran
+2025-09-18 13:55:15,371 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Sonic Bird
+2025-09-18 13:55:15,749 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Black Pendant
+2025-09-18 13:55:16,128 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Nimble Momonga
+2025-09-18 13:55:16,460 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Hane-Hane
+2025-09-18 13:55:16,809 [INFO] - Encontradas 1 cartas em buscar_carta_myp: Heavy Storm
+2025-09-18 13:55:16,809 [INFO] - Total de cartas encontradas em buscar_cartas_colecao: 101
+2025-09-18 13:55:16,810 [INFO] - Executando função: criar_tela_cadastro_colecao.<locals>.exibir_selecao
+2025-09-18 13:58:08,747 [INFO] - Buscando página 1 de 2
+2025-09-18 13:58:10,228 [INFO] - Buscando página 2 de 2
+2025-09-18 13:58:11,437 [INFO] - Encontradas 7 cartas em buscar_carta_myp: Gaia the Dragon Champion
+2025-09-18 13:58:11,815 [INFO] - Encontradas 5 cartas em buscar_carta_myp: Blue-Eyes Ultimate Dragon
+2025-09-18 13:58:12,157 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Blue-Eyes White Dragon
+2025-09-18 13:58:12,674 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Summoned Skull
+2025-09-18 13:58:13,047 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Swords of Revealing Light
+2025-09-18 13:58:13,351 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Suijin
+2025-09-18 13:58:13,677 [INFO] - Encontradas 7 cartas em buscar_carta_myp: Thunder Dragon
+2025-09-18 13:58:13,979 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Twin-Headed Thunder Dragon
+2025-09-18 13:58:14,319 [INFO] - Encontradas 3 cartas em buscar_carta_myp: Left Arm of the Forbidden One
+2025-09-18 13:58:14,612 [INFO] - Encontradas 7 cartas em buscar_carta_myp: Sanga of the Thunder
+2025-09-18 13:58:14,911 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Kazejin
+2025-09-18 13:58:15,295 [INFO] - Encontradas 5 cartas em buscar_carta_myp: Painful Choice
+2025-09-18 13:58:15,618 [INFO] - Encontradas 9 cartas em buscar_carta_myp: Catapult Turtle
+2025-09-18 13:58:15,955 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Upstart Goblin
+2025-09-18 13:58:16,404 [INFO] - Encontradas 3 cartas em buscar_carta_myp: Black Skull Dragon (as B. Skull Dragon)
+2025-09-18 13:58:16,774 [INFO] - Encontradas 9 cartas em buscar_carta_myp: Dark Magician
+2025-09-18 13:58:17,085 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Cyber Harpie Lady
+2025-09-18 13:58:17,388 [INFO] - Encontradas 3 cartas em buscar_carta_myp: Kaibaman
+2025-09-18 13:58:17,764 [INFO] - Encontradas 9 cartas em buscar_carta_myp: Red-Eyes Black Dragon (as Red-Eyes B. Dragon)
+2025-09-18 13:58:18,139 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Exodia the Forbidden One
+2025-09-18 13:58:18,518 [INFO] - Encontradas 5 cartas em buscar_carta_myp: Megamorph
+2025-09-18 13:58:18,890 [INFO] - Encontradas 5 cartas em buscar_carta_myp: Relinquished
+2025-09-18 13:58:19,222 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Right Leg of the Forbidden One
+2025-09-18 13:58:19,545 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Barrel Dragon
+2025-09-18 13:58:19,895 [INFO] - Encontradas 9 cartas em buscar_carta_myp: La Jinn the Mystical Genie of the Lamp
+2025-09-18 13:58:20,345 [INFO] - Encontradas 8 cartas em buscar_carta_myp: Lord of D.
+2025-09-18 13:58:20,706 [INFO] - Encontradas 11 cartas em buscar_carta_myp: Penguin Soldier
+2025-09-18 13:58:21,089 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Scapegoat
+2025-09-18 13:58:21,463 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Time Wizard
+2025-09-18 13:58:21,841 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Monster Reborn
+2025-09-18 13:58:22,208 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Axe of Despair
+2025-09-18 13:58:22,608 [INFO] - Encontradas 3 cartas em buscar_carta_myp: Card Destruction
+2025-09-18 13:58:22,964 [INFO] - Encontradas 7 cartas em buscar_carta_myp: Raigeki
+2025-09-18 13:58:23,311 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Left Leg of the Forbidden One
+2025-09-18 13:58:23,789 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Blue-Eyes Toon Dragon
+2025-09-18 13:58:24,183 [INFO] - Encontradas 8 cartas em buscar_carta_myp: Giant Trunade
+2025-09-18 13:58:24,543 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Embodiment of Apophis
+2025-09-18 13:58:24,815 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Amazoness Chain Master
+2025-09-18 13:58:25,130 [INFO] - Encontradas 5 cartas em buscar_carta_myp: Copycat
+2025-09-18 13:58:25,443 [INFO] - Encontradas 5 cartas em buscar_carta_myp: Ancient Lamp
+2025-09-18 13:58:25,785 [INFO] - Encontradas 2 cartas em buscar_carta_myp: Right Arm of the Forbidden One
+2025-09-18 13:58:26,206 [INFO] - Encontradas 11 cartas em buscar_carta_myp: Sangan
+2025-09-18 13:58:26,514 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Blast Sphere
+2025-09-18 13:58:26,832 [INFO] - Encontradas 2 cartas em buscar_carta_myp: Cloning
+2025-09-18 13:58:27,119 [INFO] - Encontradas 5 cartas em buscar_carta_myp: Exchange of the Spirit
+2025-09-18 13:58:27,435 [INFO] - Encontradas 1 cartas em buscar_carta_myp: Relieve Monster
+2025-09-18 13:58:27,735 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Messenger of Peace
+2025-09-18 13:58:28,060 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Harpie Lady Sisters
+2025-09-18 13:58:28,406 [INFO] - Encontradas 3 cartas em buscar_carta_myp: The Flute of Summoning Dragon
+2025-09-18 13:58:28,698 [INFO] - Encontradas 2 cartas em buscar_carta_myp: Graceful Charity
+2025-09-18 13:58:29,089 [INFO] - Encontradas 3 cartas em buscar_carta_myp: Solemn Judgment
+2025-09-18 13:58:29,515 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Magician of Faith
+2025-09-18 13:58:29,824 [INFO] - Encontradas 1 cartas em buscar_carta_myp: Gate Guardian
+2025-09-18 13:58:30,195 [INFO] - Encontradas 1 cartas em buscar_carta_myp: Kuriboh
+2025-09-18 13:58:30,529 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Wall of Illusion
+2025-09-18 13:58:30,994 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Gaia the Fierce Knight
+2025-09-18 13:58:31,516 [INFO] - Encontradas 5 cartas em buscar_carta_myp: Fissure
+2025-09-18 13:58:31,894 [INFO] - Encontradas 7 cartas em buscar_carta_myp: Polymerization
+2025-09-18 13:58:32,320 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Thousand Dragon
+2025-09-18 13:58:32,680 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Curse of Dragon
+2025-09-18 13:58:33,041 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Senju of the Thousand Hands
+2025-09-18 13:58:33,404 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Harpie Lady
+2025-09-18 13:58:33,822 [INFO] - Encontradas 9 cartas em buscar_carta_myp: Magic Jammer
+2025-09-18 13:58:34,109 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Gravekeepers Servant
+2025-09-18 13:58:34,468 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Mystical Space Typhoon
+2025-09-18 13:58:34,780 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Giant Germ
+2025-09-18 13:58:35,129 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Mystic Tomato
+2025-09-18 13:58:35,508 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Trap Hole
+2025-09-18 13:58:35,831 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Armed Ninja
+2025-09-18 13:58:36,193 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Mask of Darkness
+2025-09-18 13:58:36,533 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Shining Angel
+2025-09-18 13:58:36,864 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Toon Summoned Skull
+2025-09-18 13:58:37,204 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Toon Mermaid
+2025-09-18 13:58:37,529 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Gaia Power
+2025-09-18 13:58:38,003 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Flame Swordsman
+2025-09-18 13:58:38,373 [INFO] - Encontradas 11 cartas em buscar_carta_myp: Seven Tools of the Bandit
+2025-09-18 13:58:38,678 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Flying Kamakiri #1
+2025-09-18 13:58:39,071 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Rising Air Current
+2025-09-18 13:58:39,451 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Elegant Egotist
+2025-09-18 13:58:39,766 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Cannon Soldier
+2025-09-18 13:58:40,169 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Giant Rat
+2025-09-18 13:58:40,486 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Molten Destruction
+2025-09-18 13:58:40,834 [INFO] - Encontradas 11 cartas em buscar_carta_myp: Baby Dragon
+2025-09-18 13:58:41,248 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Toon World
+2025-09-18 13:58:41,607 [INFO] - Encontradas 14 cartas em buscar_carta_myp: UFO Turtle
+2025-09-18 13:58:41,930 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Umiiruka
+2025-09-18 13:58:42,304 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Black Illusion Ritual
+2025-09-18 13:58:42,649 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Jirai Gumo
+2025-09-18 13:58:42,971 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Hyozanryu
+2025-09-18 13:58:43,294 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Luminous Spark
+2025-09-18 13:58:43,743 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Giant Soldier of Stone
+2025-09-18 13:58:44,113 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Man-Eater Bug
+2025-09-18 13:58:44,490 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Gazelle the King of Mythical Beasts
+2025-09-18 13:58:44,821 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Mother Grizzly
+2025-09-18 13:58:45,320 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Maha Vailo
+2025-09-18 13:58:45,676 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Manga Ryu-Ran
+2025-09-18 13:58:46,069 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Sonic Bird
+2025-09-18 13:58:46,447 [INFO] - Encontradas 12 cartas em buscar_carta_myp: Black Pendant
+2025-09-18 13:58:46,783 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Nimble Momonga
+2025-09-18 13:58:47,168 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Hane-Hane
+2025-09-18 13:58:47,540 [INFO] - Encontradas 1 cartas em buscar_carta_myp: Heavy Storm
+2025-09-18 13:58:47,540 [INFO] - Total de cartas encontradas em buscar_cartas_colecao: 101
+2025-09-18 13:58:47,541 [INFO] - Executando função: criar_tela_cadastro_colecao.<locals>.exibir_selecao
+2025-09-18 14:43:55,819 [INFO] - Atualização já feita hoje: 2025-09-18 14:43:55. Pulando.
+2025-09-18 14:45:54,452 [INFO] - Atualização já feita hoje: 2025-09-18 14:45:54. Pulando.
+2025-09-18 14:48:36,421 [INFO] - Atualização já feita hoje: 2025-09-18 14:48:36. Pulando.
+2025-09-18 14:48:58,346 [INFO] - Atualização já feita hoje: 2025-09-18 14:48:58. Pulando.
+2025-09-18 14:53:40,623 [INFO] - Buscando página 1 de 2
+2025-09-18 14:53:41,541 [INFO] - Buscando página 2 de 2
+2025-09-18 14:53:43,298 [INFO] - Encontradas 30 cartas em buscar_carta_myp: D/D/D Vice King Requiem
+2025-09-18 14:53:43,671 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Crystron Halqifibrax
+2025-09-18 14:53:44,015 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Quintet Magician
+2025-09-18 14:53:44,391 [INFO] - Encontradas 33 cartas em buscar_carta_myp: Number 60: Dugares the Timeless
+2025-09-18 14:53:44,689 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Dark Contract with the Gate
+2025-09-18 14:53:45,018 [INFO] - Encontradas 23 cartas em buscar_carta_myp: Tenyi Spirit - Vishuda
+2025-09-18 14:53:45,438 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Chimeratech Fortress Dragon
+2025-09-18 14:53:45,750 [INFO] - Encontradas 28 cartas em buscar_carta_myp: Crystal Beast Rainbow Dragon
+2025-09-18 14:53:46,121 [INFO] - Encontradas 32 cartas em buscar_carta_myp: Number 97: Draglubion
+2025-09-18 14:53:46,486 [INFO] - Encontradas 23 cartas em buscar_carta_myp: Odd-Eyes Rebellion Dragon Overlord
+2025-09-18 14:53:46,911 [INFO] - Encontradas 28 cartas em buscar_carta_myp: Manju of the Ten Thousand Hands
+2025-09-18 14:53:47,177 [INFO] - Encontradas 14 cartas em buscar_carta_myp: Chronicle Magician
+2025-09-18 14:53:47,514 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Blue-Eyes White Dragon
+2025-09-18 14:53:47,792 [INFO] - Encontradas 9 cartas em buscar_carta_myp: The Eye of Timaeus
+2025-09-18 14:53:48,120 [INFO] - Encontradas 24 cartas em buscar_carta_myp: Code Radiator
+2025-09-18 14:53:48,535 [INFO] - Encontradas 29 cartas em buscar_carta_myp: Cynet Conflict
+2025-09-18 14:53:48,886 [INFO] - Encontradas 33 cartas em buscar_carta_myp: Vampire Sucker
+2025-09-18 14:53:49,205 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Number 38: Hope Harbinger Dragon Titanic Galaxy
+2025-09-18 14:53:49,626 [INFO] - Encontradas 36 cartas em buscar_carta_myp: Zombie World
+2025-09-18 14:53:49,942 [INFO] - Encontradas 8 cartas em buscar_carta_myp: Dark Armed Dragon
+2025-09-18 14:53:50,321 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Cyber Dragon
+2025-09-18 14:53:50,644 [INFO] - Encontradas 27 cartas em buscar_carta_myp: Protector of The Agents - Moon
+2025-09-18 14:53:51,038 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Necroworld Banshee
+2025-09-18 14:53:51,326 [INFO] - Encontradas 21 cartas em buscar_carta_myp: Tenyi Spirit - Ashuna
+2025-09-18 14:53:51,590 [INFO] - Encontradas 15 cartas em buscar_carta_myp: Whitebeard, the Plunder Patroll Helm
+2025-09-18 14:53:51,968 [INFO] - Encontradas 36 cartas em buscar_carta_myp: Aluber the Jester of Despia
+2025-09-18 14:53:52,397 [INFO] - Encontradas 13 cartas em buscar_carta_myp: Dark Magician the Dragon Knight
+2025-09-18 14:53:52,661 [INFO] - Encontradas 7 cartas em buscar_carta_myp: Vision HERO Increase
+2025-09-18 14:53:52,963 [INFO] - Encontradas 26 cartas em buscar_carta_myp: Redbeard, the Plunder Patroll Matey
+2025-09-18 14:53:53,242 [INFO] - Encontradas 6 cartas em buscar_carta_myp: The Winged Dragon of Ra - Sphere Mode
+2025-09-18 14:53:53,524 [INFO] - Encontradas 6 cartas em buscar_carta_myp: Red Dragon Archfiend
+2025-09-18 14:53:53,836 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Ghostrick Mary
+2025-09-18 14:53:54,181 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Dark Magician Girl
+2025-09-18 14:53:54,505 [INFO] - Encontradas 3 cartas em buscar_carta_myp: Red-Eyes Black Dragon
+2025-09-18 14:53:54,831 [INFO] - Encontradas 4 cartas em buscar_carta_myp: Blue-Eyes Ultimate Dragon
+2025-09-18 14:53:55,160 [INFO] - Encontradas 12 cartas em buscar_carta_myp: D/D Savant Thomas
+2025-09-18 14:53:55,680 [INFO] - Encontradas 25 cartas em buscar_carta_myp: Go! - D/D/D Divine Zero King Rage
+2025-09-18 14:53:56,137 [INFO] - Encontradas 25 cartas em buscar_carta_myp: Tenyi Spirit - Adhara
+2025-09-18 14:53:56,499 [INFO] - Encontradas 36 cartas em buscar_carta_myp: Galaxy Soldier
+2025-09-18 14:53:56,863 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Borrelend Dragon
+2025-09-18 14:53:57,148 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Tenyi Spirit - Shthana
+2025-09-18 14:53:57,475 [INFO] - Encontradas 34 cartas em buscar_carta_myp: Doomking Balerdroch
+2025-09-18 14:53:57,864 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Geomathmech Final Sigma
+2025-09-18 14:53:58,219 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Advanced Ritual Art
+2025-09-18 14:53:58,576 [INFO] - Encontradas 30 cartas em buscar_carta_myp: Goldenhair, the Newest Plunder Patroll
+2025-09-18 14:53:58,890 [INFO] - Encontradas 10 cartas em buscar_carta_myp: Domain of the True Monarchs
+2025-09-18 14:53:59,343 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Fossil Fusion
+2025-09-18 14:53:59,640 [INFO] - Encontradas 27 cartas em buscar_carta_myp: Masterflare Hyperion
+2025-09-18 14:53:59,974 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Vision HERO Vyon
+2025-09-18 14:54:00,259 [INFO] - Encontradas 16 cartas em buscar_carta_myp: D/D Savant Copernicus
+2025-09-18 14:54:00,652 [INFO] - Encontradas 36 cartas em buscar_carta_myp: Raiza the Mega Monarch
+2025-09-18 14:54:00,961 [INFO] - Encontradas 19 cartas em buscar_carta_myp: D/D/D Duo-Dawn King Kali Yuga
+2025-09-18 14:54:01,342 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Decode Talker Heatsoul
+2025-09-18 14:54:01,635 [INFO] - Encontradas 23 cartas em buscar_carta_myp: The Sacred Waters in the Sky
+2025-09-18 14:54:02,059 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Salamangreat Blaze Dragon
+2025-09-18 14:54:02,407 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Mystical Shine Ball
+2025-09-18 14:54:02,788 [INFO] - Encontradas 29 cartas em buscar_carta_myp: Vision HERO Faris
+2025-09-18 14:54:03,159 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Mardel, Generaider Boss of Light
+2025-09-18 14:54:03,475 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Retaliating C
+2025-09-18 14:54:03,817 [INFO] - Encontradas 34 cartas em buscar_carta_myp: Mystical Sand
+2025-09-18 14:54:04,162 [INFO] - Encontradas 29 cartas em buscar_carta_myp: Chimeratech Rampage Dragon
+2025-09-18 14:54:04,538 [INFO] - Encontradas 37 cartas em buscar_carta_myp: Primathmech Laplacian
+2025-09-18 14:54:04,850 [INFO] - Encontradas 18 cartas em buscar_carta_myp: The Flute of Summoning Kuriboh
+2025-09-18 14:54:05,212 [INFO] - Encontradas 27 cartas em buscar_carta_myp: Generaider Boss Stage
+2025-09-18 14:54:05,510 [INFO] - Encontradas 24 cartas em buscar_carta_myp: Heavenly Dragon Circle
+2025-09-18 14:54:05,870 [INFO] - Encontradas 26 cartas em buscar_carta_myp: Despia, Theater of the Branded
+2025-09-18 14:54:06,371 [INFO] - Encontradas 19 cartas em buscar_carta_myp: The Agent of Life - Neptune
+2025-09-18 14:54:06,639 [INFO] - Encontradas 17 cartas em buscar_carta_myp: Fallen Sanctuary
+2025-09-18 14:54:06,983 [INFO] - Encontradas 31 cartas em buscar_carta_myp: The Agent of Mystery - Earth
+2025-09-18 14:54:07,355 [INFO] - Encontradas 28 cartas em buscar_carta_myp: Code Generator
+2025-09-18 14:54:07,832 [INFO] - Encontradas 30 cartas em buscar_carta_myp: Despian Tragedy
+2025-09-18 14:54:08,231 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Dramaturge of Despia
+2025-09-18 14:54:08,649 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Mathmech Addition
+2025-09-18 14:54:09,038 [INFO] - Encontradas 27 cartas em buscar_carta_myp: Yazi, Evil of the Yang Zing
+2025-09-18 14:54:09,341 [INFO] - Encontradas 30 cartas em buscar_carta_myp: Ghostrick Socuteboss
+2025-09-18 14:54:09,748 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Sky Cavalry Centaurea
+2025-09-18 14:54:10,050 [INFO] - Encontradas 24 cartas em buscar_carta_myp: Tenyi Spirit - Mapura
+2025-09-18 14:54:10,359 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Hela, Generaider Boss of Doom
+2025-09-18 14:54:10,680 [INFO] - Encontradas 26 cartas em buscar_carta_myp: Ghostrick Dullahan
+2025-09-18 14:54:11,006 [INFO] - Encontradas 37 cartas em buscar_carta_myp: Outburst Dragon
+2025-09-18 14:54:11,308 [INFO] - Encontradas 20 cartas em buscar_carta_myp: The Sanctum of Parshath
+2025-09-18 14:54:11,611 [INFO] - Encontradas 20 cartas em buscar_carta_myp: Vampire Takeover
+2025-09-18 14:54:11,933 [INFO] - Encontradas 20 cartas em buscar_carta_myp: The Agent of Creation - Venus
+2025-09-18 14:54:12,345 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Fossil Warrior Skull Knight
+2025-09-18 14:54:12,695 [INFO] - Encontradas 39 cartas em buscar_carta_myp: Code Exporter
+2025-09-18 14:54:13,173 [INFO] - Encontradas 35 cartas em buscar_carta_myp: Victorica, Angel of Bravery
+2025-09-18 14:54:13,533 [INFO] - Encontradas 33 cartas em buscar_carta_myp: Doppelwarrior
+2025-09-18 14:54:13,891 [INFO] - Encontradas 33 cartas em buscar_carta_myp: Sanwitch
+2025-09-18 14:54:14,223 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Brute Enforcer
+2025-09-18 14:54:14,556 [INFO] - Encontradas 30 cartas em buscar_carta_myp: Despian Comedy
+2025-09-18 14:54:14,882 [INFO] - Encontradas 16 cartas em buscar_carta_myp: Chimeratech Megafleet Dragon
+2025-09-18 14:54:15,198 [INFO] - Encontradas 38 cartas em buscar_carta_myp: Glow-Up Bloom
+2025-09-18 14:54:15,618 [INFO] - Encontradas 34 cartas em buscar_carta_myp: Jormungandr, Generaider Boss of Eternity
+2025-09-18 14:54:15,928 [INFO] - Encontradas 22 cartas em buscar_carta_myp: Malefic Cyber End Dragon
+2025-09-18 14:54:16,265 [INFO] - Encontradas 38 cartas em buscar_carta_myp: Nirvana High Paladin
+2025-09-18 14:54:16,581 [INFO] - Encontradas 38 cartas em buscar_carta_myp: Chaos Grepher
+2025-09-18 14:54:16,905 [INFO] - Encontradas 29 cartas em buscar_carta_myp: Master Hyperion
+2025-09-18 14:54:17,213 [INFO] - Encontradas 26 cartas em buscar_carta_myp: Ghostrick Lantern
+2025-09-18 14:54:17,497 [INFO] - Encontradas 20 cartas em buscar_carta_myp: D/D Lamia
+2025-09-18 14:54:17,880 [INFO] - Encontradas 31 cartas em buscar_carta_myp: Tenyi Spirit - Nahata
+2025-09-18 14:54:18,261 [INFO] - Encontradas 37 cartas em buscar_carta_myp: Wandering King Wildwind
+2025-09-18 14:54:18,628 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Rare Fish
+2025-09-18 14:54:19,041 [INFO] - Encontradas 39 cartas em buscar_carta_myp: Rose Spectre of Dunn
+2025-09-18 14:54:19,407 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Plunder Patrollship Lys
+2025-09-18 14:54:19,935 [INFO] - Encontradas 30 cartas em buscar_carta_myp: Baxia, Brightness of the Yang Zing
+2025-09-18 14:54:20,293 [INFO] - Encontradas 35 cartas em buscar_carta_myp: Red-Eyes Zombie Necro Dragon
+2025-09-18 14:54:20,690 [INFO] - Encontradas 36 cartas em buscar_carta_myp: Princess Cologne
+2025-09-18 14:54:21,036 [INFO] - Encontradas 29 cartas em buscar_carta_myp: Plunder Patroll Shipyarrrd
+2025-09-18 14:54:21,386 [INFO] - Encontradas 18 cartas em buscar_carta_myp: Vampire Domination
+2025-09-18 14:54:21,750 [INFO] - Encontradas 24 cartas em buscar_carta_myp: Fists of the Unrivaled Tenyi
+2025-09-18 14:54:22,093 [INFO] - Encontradas 34 cartas em buscar_carta_myp: Fossil Machine Skull Convoy
+2025-09-18 14:54:22,438 [INFO] - Encontradas 28 cartas em buscar_carta_myp: Bluebeard, the Plunder Patroll Shipwright
+2025-09-18 14:54:22,783 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Dotscaper
+2025-09-18 14:54:23,149 [INFO] - Encontradas 32 cartas em buscar_carta_myp: Vampire Kingdom
+2025-09-18 14:54:23,491 [INFO] - Encontradas 30 cartas em buscar_carta_myp: Yang Zing Brutality
+2025-09-18 14:54:23,843 [INFO] - Encontradas 26 cartas em buscar_carta_myp: Pendulum Area
+2025-09-18 14:54:24,184 [INFO] - Encontradas 33 cartas em buscar_carta_myp: Majesty Hyperion
+2025-09-18 14:54:24,588 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Plunder Patrollship Brann
+2025-09-18 14:54:24,960 [INFO] - Encontradas 32 cartas em buscar_carta_myp: Nine Pillars of Yang Zing
+2025-09-18 14:54:25,332 [INFO] - Encontradas 40 cartas em buscar_carta_myp: The Chorus in the Sky
+2025-09-18 14:54:25,683 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Trackblack
+2025-09-18 14:54:26,060 [INFO] - Encontradas 36 cartas em buscar_carta_myp: The Executor of the Underworld - Pluto
+2025-09-18 14:54:26,425 [INFO] - Encontradas 28 cartas em buscar_carta_myp: Shell Knight
+2025-09-18 14:54:26,734 [INFO] - Encontradas 27 cartas em buscar_carta_myp: Fossil Machine Skull Wagon
+2025-09-18 14:54:27,290 [INFO] - Encontradas 37 cartas em buscar_carta_myp: Puppet Queen
+2025-09-18 14:54:27,822 [INFO] - Encontradas 30 cartas em buscar_carta_myp: Vision HERO Gravito
+2025-09-18 14:54:28,151 [INFO] - Encontradas 38 cartas em buscar_carta_myp: Ghostrick Jiangshi
+2025-09-18 14:54:28,514 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Cupid Pitch
+2025-09-18 14:54:28,865 [INFO] - Encontradas 27 cartas em buscar_carta_myp: Dark Contract with the Swamp King
+2025-09-18 14:54:29,240 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Leraje the God of Archery
+2025-09-18 14:54:29,620 [INFO] - Encontradas 37 cartas em buscar_carta_myp: The Agent of Wisdom - Mercury
+2025-09-18 14:54:29,951 [INFO] - Encontradas 30 cartas em buscar_carta_myp: The Agent of Force - Mars
+2025-09-18 14:54:30,256 [INFO] - Encontradas 30 cartas em buscar_carta_myp: The Agent of Entropy - Uranus
+2025-09-18 14:54:30,617 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Tatsunecro
+2025-09-18 14:54:31,008 [INFO] - Encontradas 34 cartas em buscar_carta_myp: Yang Zing Prana
+2025-09-18 14:54:31,384 [INFO] - Encontradas 37 cartas em buscar_carta_myp: Samsara Dragon
+2025-09-18 14:54:31,727 [INFO] - Encontradas 27 cartas em buscar_carta_myp: D/D/D Destiny King Zero Laplace
+2025-09-18 14:54:32,079 [INFO] - Encontradas 39 cartas em buscar_carta_myp: Flint Cragger
+2025-09-18 14:54:32,445 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Infernity Sage
+2025-09-18 14:54:32,792 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Fossil Machine Skull Buggy
+2025-09-18 14:54:33,163 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Contract with the Void
+2025-09-18 14:54:33,506 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Void Cauldron
+2025-09-18 14:54:34,004 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Motor Shell
+2025-09-18 14:54:34,409 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Performapal Miss Director
+2025-09-18 14:54:34,778 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Cocatorium the Heavy Metal Avian
+2025-09-18 14:54:35,142 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Proxy Horse
+2025-09-18 14:54:35,451 [INFO] - Encontradas 32 cartas em buscar_carta_myp: The Agent of Miracles - Jupiter
+2025-09-18 14:54:35,775 [INFO] - Encontradas 29 cartas em buscar_carta_myp: Vision HERO Minimum Ray
+2025-09-18 14:54:36,160 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Inzektor Giga-Mantis
+2025-09-18 14:54:36,558 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Shadow Vampire
+2025-09-18 14:54:36,922 [INFO] - Encontradas 37 cartas em buscar_carta_myp: Vampire Grace
+2025-09-18 14:54:37,288 [INFO] - Encontradas 40 cartas em buscar_carta_myp: D/D Swirl Slime
+2025-09-18 14:54:37,677 [INFO] - Encontradas 40 cartas em buscar_carta_myp: D/D Necro Slime
+2025-09-18 14:54:38,041 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Alien Ammonite
+2025-09-18 14:54:38,379 [INFO] - Encontradas 35 cartas em buscar_carta_myp: Box of Friends
+2025-09-18 14:54:38,736 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Crimson Knight Vampire Bram
+2025-09-18 14:54:39,109 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Plunder Patrollship Moerk
+2025-09-18 14:54:39,430 [INFO] - Encontradas 24 cartas em buscar_carta_myp: The Sanctuary in the Sky
+2025-09-18 14:54:39,806 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Reptilianne Spawn
+2025-09-18 14:54:40,105 [INFO] - Encontradas 19 cartas em buscar_carta_myp: Elemental HERO Neos Kluger
+2025-09-18 14:54:40,447 [INFO] - Encontradas 39 cartas em buscar_carta_myp: Dark Alligator
+2025-09-18 14:54:40,933 [INFO] - Encontradas 39 cartas em buscar_carta_myp: Time Thief Temporwhal
+2025-09-18 14:54:41,257 [INFO] - Encontradas 31 cartas em buscar_carta_myp: Vision HERO Multiply Guy
+2025-09-18 14:54:41,594 [INFO] - Encontradas 36 cartas em buscar_carta_myp: Ghostrick Stein
+2025-09-18 14:54:41,947 [INFO] - Encontradas 36 cartas em buscar_carta_myp: Ghostrick Mummy
+2025-09-18 14:54:42,319 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Onmoraki
+2025-09-18 14:54:42,689 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Altergeist Failover
+2025-09-18 14:54:43,067 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Primal Dragon, the Primordial
+2025-09-18 14:54:43,389 [INFO] - Encontradas 31 cartas em buscar_carta_myp: Rookie Warrior Lady
+2025-09-18 14:54:43,822 [INFO] - Encontradas 37 cartas em buscar_carta_myp: Inzektor Hornet
+2025-09-18 14:54:44,281 [INFO] - Encontradas 39 cartas em buscar_carta_myp: Vampire Sorcerer
+2025-09-18 14:54:44,680 [INFO] - Encontradas 33 cartas em buscar_carta_myp: Vampire Duke
+2025-09-18 14:54:45,057 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Deskbot 001
+2025-09-18 14:54:45,473 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Cipher Twin Raptor
+2025-09-18 14:54:45,817 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Reptilianne Lamia
+2025-09-18 14:54:46,149 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Inzektor Sword - Zektkaliber
+2025-09-18 14:54:46,545 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Reptia Egg
+2025-09-18 14:54:46,922 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Mecha Phantom Beast Coltwing
+2025-09-18 14:54:47,376 [INFO] - Encontradas 38 cartas em buscar_carta_myp: The Agent of Judgment - Saturn
+2025-09-18 14:54:47,908 [INFO] - Encontradas 31 cartas em buscar_carta_myp: Vision HERO Poisoner
+2025-09-18 14:54:48,259 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Infernity Pawn
+2025-09-18 14:54:48,634 [INFO] - Encontradas 40 cartas em buscar_carta_myp: Ghostrick Specter
+2025-09-18 14:54:48,966 [INFO] - Encontradas 38 cartas em buscar_carta_myp: Great Mammoth of Goldfine
+2025-09-18 14:54:48,967 [INFO] - Total de cartas encontradas em buscar_cartas_colecao: 183
+2025-09-18 14:54:48,967 [INFO] - Executando função: criar_tela_cadastro_colecao.<locals>.exibir_selecao
+2025-09-18 15:11:56,536 [INFO] - Produto encontrado em buscar_produto_liga: {'imagem': 'https://repositorio.sbrauble.com/arquivos/up/prod/20230417/1693846020_8974.jpg', 'nome': 'Caixa Colecionável Yu-Gi-Oh! - Speed Duel: Ruas da Batalha da Cidade', 'preco_atual': 'R$ 259,90', 'origem': 'Liga Yu-Gi-Oh', 'link_site': 'https://www.ligayugioh.com.br/?view=prod/view&pcode=127682&prod=Yu-Gi-Oh!%20Collectible%20Box%20-%20Speed%20Duel:%20Streets%20of%20Battle%20City'}
+2025-09-18 15:13:33,936 [INFO] - Produto encontrado em buscar_produto_liga: {'imagem': 'https://repositorio.sbrauble.com/arquivos/up/prod/20230405/1680722599_2069.jpg', 'nome': 'Caixa Vazia Yu-Gi-Oh! - Speed Duel GX: Duelistas das Sombras', 'preco_atual': 'R$ 9,99', 'origem': 'Liga Yu-Gi-Oh', 'link_site': 'https://www.ligayugioh.com.br/?view=prod/view&pcode=127650&prod=Empty%20Box%20-%20Speed%20Duel%20GX:%20Duelists%20of%20Shadows'}
+2025-09-18 15:14:02,711 [INFO] - Produto encontrado em buscar_produto_liga: {'imagem': 'https://repositorio.sbrauble.com/arquivos/up/prod/20230317/1680090300_1903.jpg', 'nome': 'Caixa Colecionável Yu-Gi-Oh! - Speed Duel GX: Duelistas das Sombras', 'preco_atual': 'R$ 239,90', 'origem': 'Liga Yu-Gi-Oh', 'link_site': 'https://www.ligayugioh.com.br/?view=prod/view&pcode=127577&prod=Yu-Gi-Oh!%20Collectible%20Box%20-%20Speed%20Duel%20GX:%20Duelists%20of%20Shadows'}
+2025-09-18 15:15:52,447 [INFO] - Produto encontrado em buscar_produto_liga: {'imagem': 'https://repositorio.sbrauble.com/arquivos/up/prod/20211201/1687272263_2562.jpg', 'nome': 'Edição de Colecionador - Fantasmas do Passado: A 2 Assombração', 'preco_atual': 'R$ 75,00', 'origem': 'Liga Yu-Gi-Oh', 'link_site': 'https://www.ligayugioh.com.br/?view=prod/view&pcode=118544&prod=Collectors%20Set%20-%20Ghosts%20from%20the%20Past:%20The%202nd%20Haunting'}

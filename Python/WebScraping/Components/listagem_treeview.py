@@ -6,7 +6,7 @@ from io import BytesIO
 from Utils.log import registrar_erro
 import platform
 import tkinter.font as tkFont
-
+import textwrap
 # cache global de imagens
 _image_cache = {}
 
@@ -23,6 +23,7 @@ def carregar_imagem(caminho, largura=80, altura=112, texto_abaixo=None):
     """
     Carrega imagem de um caminho local ou URL, redimensiona
     e adiciona texto opcional abaixo dela (ex: raridade).
+    Retorna (PhotoImage, altura_total).
     """
     chave_cache = (caminho, largura, altura, texto_abaixo)
     if chave_cache in _image_cache:
@@ -43,22 +44,37 @@ def carregar_imagem(caminho, largura=80, altura=112, texto_abaixo=None):
         registrar_erro(f"[Erro imagem] {e}")
         im = Image.new("RGB", (largura, altura), "gray")
 
-    # adiciona texto abaixo, se houver
+    extra_altura = 0
     if texto_abaixo:
         fonte = ImageFont.load_default()
-        w_texto, h_texto = _medir_tamanho_texto(texto_abaixo, fonte)
-        nova_altura = altura + h_texto + 6
+
+        # Quebra a raridade em várias linhas para caber na largura
+        max_chars = max(1, largura // 6)
+        linhas = textwrap.wrap(texto_abaixo, width=max_chars)
+
+        h_linha = _medir_tamanho_texto("Ag", fonte)[1]
+        extra_altura = len(linhas) * h_linha + 6
+
+        nova_altura = altura + extra_altura
         canvas = Image.new("RGB", (largura, nova_altura), "white")
         canvas.paste(im, (0, 0))
         draw = ImageDraw.Draw(canvas)
-        x = (largura - w_texto) // 2
+
+        # Desenha linha por linha centralizado
         y = altura + 2
-        draw.text((x, y), texto_abaixo, font=fonte, fill="black")
+        for linha in linhas:
+            w_texto, _ = _medir_tamanho_texto(linha, fonte)
+            x = (largura - w_texto) // 2
+            draw.text((x, y), linha, font=fonte, fill="black")
+            y += h_linha
+
         im = canvas
 
     photo = ImageTk.PhotoImage(im)
-    _image_cache[chave_cache] = photo
-    return photo
+    altura_total = altura + extra_altura
+    _image_cache[chave_cache] = (photo, altura_total)
+    return photo, altura_total
+
 
 
 class ListagemTreeview(ttk.Frame):
@@ -232,11 +248,19 @@ class ListagemTreeview(ttk.Frame):
         item = self.tree.identify_row(event.y)
         if item != self._hovered_item:
             if self._hovered_item:
-                base_tag = "evenrow" if int(self.tree.index(self._hovered_item)) % 2 == 0 else "oddrow"
-                self.tree.item(self._hovered_item, tags=(base_tag,))
+                try:
+                    base_tag = "evenrow" if int(self.tree.index(self._hovered_item)) % 2 == 0 else "oddrow"
+                    self.tree.item(self._hovered_item, tags=(base_tag,))
+                except tk.TclError:
+                    # item não existe mais, ignore
+                    pass
+
             if item:
                 self.tree.item(item, tags=("hover",))
                 self._hovered_item = item
+            else:
+                self._hovered_item = None
+
 
     def _on_leave(self, event):
         if self._hovered_item:
@@ -284,6 +308,9 @@ class ListagemTreeview(ttk.Frame):
 
         self.tree.column("#0", width=self.img_w + 20, anchor="center", stretch=False)
 
+        self.tree['show'] = 'tree headings'  # <- restaura cabeçalhos
+
+
         self._carregar_pagina()
 
 
@@ -298,6 +325,8 @@ class ListagemTreeview(ttk.Frame):
         if not subset:
             return
 
+        style = ttk.Style()
+
         for item in subset:
             if self.row_formatter:
                 result = self.row_formatter(item)
@@ -311,12 +340,17 @@ class ListagemTreeview(ttk.Frame):
                 iid = item.get("id")
                 texto_imagem = ""
 
-            img = carregar_imagem(
+            img, altura_img = carregar_imagem(
                 item.get("imagem_salva") or item.get("imagem"),
                 largura=self.img_w,
                 altura=self.img_h,
                 texto_abaixo=texto_imagem if texto_imagem else None
             )
+
+            # Ajusta dinamicamente o rowheight se necessário
+            if altura_img + 8 > self.rowheight:
+                self.rowheight = altura_img + 8
+                style.configure("Treeview", rowheight=self.rowheight)
 
             # Ajuste automático da largura da coluna
             for col, valor in zip(self.headers, valores):
@@ -329,6 +363,7 @@ class ListagemTreeview(ttk.Frame):
             self.tree.insert("", "end", image=img, values=valores, iid=iid, tags=(tag,))
 
         self.pagina += 1
+
 
     # ----------------------------------------------------------------------
 

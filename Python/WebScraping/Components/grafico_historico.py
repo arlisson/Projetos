@@ -173,7 +173,14 @@ class GraficoHistorico(ttk.Frame):
             range_x = max_x - min_x
 
             span = range_x * 0.8
-            ax.set_xlim(max_x - span, max_x)
+            limite_inferior = max_x - span
+            limite_superior = max_x
+
+            if limite_inferior == limite_superior:
+                limite_inferior -= 1  # abre 1 unidade para evitar singularidade
+
+            ax.set_xlim(limite_inferior, limite_superior)
+
 
 
             self._dragging = False
