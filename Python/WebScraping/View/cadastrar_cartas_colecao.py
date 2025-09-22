@@ -57,11 +57,13 @@ def criar_tela_cadastro_colecao(app):
             return
 
         for carta in selecionadas:
-            dados = carta["dados"]
+            dados = carta["dados"].copy()  # copia os dados
+            dados["quantidade"] = carta["quantidade_var"].get()  # usa o valor digitado
             inserir_carta(dados)
 
         messagebox.showinfo("Sucesso", f"{len(selecionadas)} cartas inseridas com sucesso!", parent=root)
         root.destroy()
+
 
     @log_excecoes
     def exibir_selecao(cartas, preco_unitario, quantidade, data):
@@ -128,6 +130,9 @@ def criar_tela_cadastro_colecao(app):
             nome_arquivo = f"{codigo}.jpg" if codigo else re.sub(r'\W+', '_', nome.lower()) + ".jpg"
             caminho_imagem_local = salvar_imagem_local(imagem_url, nome_arquivo)
 
+            # quantidade inicial = a quantidade definida no campo geral
+            quantidade_var = tk.IntVar(value=quantidade)
+
             dados_carta = {
                 "link_site": carta.get("link_site"),
                 "nome": nome,
@@ -137,7 +142,7 @@ def criar_tela_cadastro_colecao(app):
                 "data_da_compra": data,
                 "raridade": id_raridade,
                 "qualidade": id_qualidade,
-                "quantidade": quantidade,
+                "quantidade": quantidade_var,   # agora guardamos a variável, não só o número
                 "imagem": imagem_url,
                 "imagem_salva": caminho_imagem_local.replace("\\", "/") if caminho_imagem_local else IMAGEM_PADRAO,
                 "origem": "MyPCards",
@@ -145,13 +150,25 @@ def criar_tela_cadastro_colecao(app):
             }
 
             var = tk.IntVar(value=1)
+
             frame_carta = ttk.Frame(scroll_frame)
             chk = ttk.Checkbutton(frame_carta, variable=var)
             chk.pack(side="left")
+
             ttk.Label(frame_carta, text=f"{nome} ({codigo})").pack(side="left", padx=5)
+
+            # Campo para digitar a quantidade
+            spin_qtd = ttk.Spinbox(frame_carta, from_=1, to=999, textvariable=quantidade_var, width=5)
+            spin_qtd.pack(side="right", padx=5)
+
             frame_carta.pack(fill="x", padx=5, pady=2)
 
-            lista_cartas.append({"var": var, "dados": dados_carta, "frame": frame_carta})
+            lista_cartas.append({
+                "var": var,
+                "dados": dados_carta,
+                "frame": frame_carta,
+                "quantidade_var": quantidade_var  # guardamos separado também
+            })
             
         
         mostrar_erros_acumulados()

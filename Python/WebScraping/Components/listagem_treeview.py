@@ -189,9 +189,11 @@ class ListagemTreeview(ttk.Frame):
 
     def _ordenar_por_coluna(self, col, reverse=None):
         """
-        Ordena os itens pela coluna clicada e adiciona um indicador ▲ ▼ no cabeçalho.
+        Ordena TODOS os dados da result_cache pela coluna clicada,
+        e recarrega a Treeview respeitando paginação.
         """
-        dados = [(self.tree.set(k, col), k) for k in self.tree.get_children("")]
+        if not self.result_cache:
+            return
 
         # tenta converter para número (se possível)
         def try_num(val):
@@ -205,11 +207,19 @@ class ListagemTreeview(ttk.Frame):
         if reverse is None:
             reverse = current_state
 
-        dados.sort(key=lambda t: try_num(t[0]), reverse=reverse)
+        # aplica ordenação na cache
+        self.result_cache.sort(
+            key=lambda item: try_num(
+                self.row_formatter(item)[0][self.headers.index(col)]
+                if self.row_formatter else item.get(col, "")
+            ),
+            reverse=reverse
+        )
 
-        # reordena no treeview
-        for index, (val, k) in enumerate(dados):
-            self.tree.move(k, "", index)
+        # reinicia árvore
+        self.pagina = 0
+        self.tree.delete(*self.tree.get_children())
+        self._carregar_pagina()
 
         # atualiza estado da coluna
         self._sort_state[col] = not reverse
@@ -221,6 +231,7 @@ class ListagemTreeview(ttk.Frame):
         # adiciona seta na coluna clicada
         seta = "▲" if not reverse else "▼"
         self.tree.heading(col, text=f"{col} {seta}", command=lambda c=col: self._ordenar_por_coluna(c, not reverse))
+
 
 
     def _yview_and_check(self, *args):

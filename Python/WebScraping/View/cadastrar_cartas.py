@@ -163,14 +163,14 @@ def criar_tela_cadastro(app):
                 campos["origem"].delete(0, tk.END)
                 campos["origem"].insert(0, dados["origem"])
 
-                colecao_nome = dados["colecao"]
+                colecao_nome = dados["colecao"].strip().lower()
                 colecao_id = buscar_colecao_por_nome(colecao_nome)
                 if not colecao_id:
                     colecao_id = inserir_colecao(colecao_nome)
 
                 popular_dropdown(campos["colecao"], buscar_valores_tabela("colecao"))
                 for i, val in enumerate(campos["colecao"].cget("values")):
-                    if val.startswith(f"{colecao_nome}"):
+                    if colecao_nome in val.lower():
                         campos["colecao"].current(i)
                         break
 
