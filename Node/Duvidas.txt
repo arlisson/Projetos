@@ -1,0 +1,2 @@
+Gemonetria do sitio: exportar do json do sitio, ou do json shapefiles?
+Tabelas com "tm" são do mesmo escopo de tabelas sem tm?

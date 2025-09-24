@@ -1,0 +1,145 @@
+DOCUMENTAÇÃO ETL - MAPEAMENTO JSON -> MODELS
+
+==================================================
+1) PROJECT ESTABLISHMENT DATA -> TMProjeto
+==================================================
+JSON Field                        -> Model Field
+--------------------------------------------------
+id                                -> TMProjeto.id
+uuid                              -> TMProjeto.uuid
+organization-name                 -> TMProjeto.organizacao
+project_name                      -> TMProjeto.nome
+status                            -> TMProjeto.status
+planting_start_date               -> TMProjeto.data_inicio_plantio
+planting_end_date                 -> TMProjeto.data_fim_plantio
+continent                         -> TMProjeto.continente
+country                           -> TMProjeto.pais
+trees_grown_goal                  -> (dados_extras)
+total_hectares_restored_goal      -> TMProjeto.hectares_objetivo
+survival_rate                     -> TMProjeto.taxa_sobrevivencia
+year_five_crown_cover             -> TMProjeto.meta_cobertura_cinco_anos
+description_of_project_timeline   -> TMProjeto.descricao_timeline
+history                           -> TMProjeto.historico
+other_additional_documents, file  -> TMProjeto.arquivos_adicionais
+
+ASSOCIAÇÕES DE PROJETO:
+- TMProjetoTemEspecieArvore  <- treeSpecies
+- TMProjetoTemTecnica        <- restoration_strategy
+- TMProjetoTemTipoUsoSolo    <- land_use_types
+- TMMembroProjeto            <- (não no JSON, vem de planilha de pessoas)
+
+
+==================================================
+2) SITE ESTABLISHMENT DATA -> TMSitio
+==================================================
+JSON Field                        -> Model Field
+--------------------------------------------------
+id                                -> TMSitio.id
+uuid                              -> TMSitio.uuid
+project-id                        -> TMSitio.projeto_id
+name                              -> TMSitio.nome
+link_to_terramatch                 -> TMSitio.link_terramatch
+status                            -> TMSitio.status
+description                       -> TMSitio.descricao
+history                           -> TMSitio.historico
+start_date                        -> TMSitio.data_inicio
+end_date                          -> TMSitio.data_fim
+land_tenures                      -> TMSitio.posse_categoria_id
+survival_rate_planted             -> TMSitio.taxa_sobrevivencia_plantada
+aim_year_five_crown_cover         -> TMSitio.meta_cobertura_cinco_anos
+direct_seeding_survival_rate      -> TMSitio.taxa_sobrevivencia_semeadura_direta
+a_nat_regeneration_trees_per_hectare -> TMSitio.arvores_regeneracao_natural_por_hectare
+a_nat_regeneration                -> TMSitio.regeneracao_natural_indice
+aim_number_of_mature_trees        -> TMSitio.meta_numero_arvores_maduras
+soil_condition                    -> TMSitio.condicao_solo
+planting_pattern                  -> TMSitio.padrao_plantio
+stratas                           -> TMSitio.estratos
+seedings                          -> TMSitio.sementes
+other_additional_documents, document_files -> TMSitio.arquivos_adicionais
+
+ASSOCIAÇÕES DE SÍTIO:
+- TMSitioTemEspecieArvore  <- invasives
+- TMSitioTemTecnica        <- restoration_strategy
+- TMSitioTemTipoUsoSolo    <- land_use_types
+- TMGeometriaSitio         <- arquivos geoespaciais (link_to_terramatch)
+
+
+==================================================
+3) PROJECT REPORTS -> TMRelatorioProjeto
+==================================================
+JSON Field                        -> Model Field
+--------------------------------------------------
+id                                -> TMRelatorioProjeto.id
+uuid                              -> TMRelatorioProjeto.uuid
+project-id                        -> TMRelatorioProjeto.projeto_id
+due_date                          -> TMRelatorioProjeto.data_prazo
+title                             -> TMRelatorioProjeto.titulo
+technical_narrative               -> TMRelatorioProjeto.narrativa_tecnica
+public_narrative                  -> TMRelatorioProjeto.narrativa_publica
+total_seedlings_grown_report      -> TMRelatorioProjeto.total_mudas_produzidas_relatorio
+total_unique_restoration_partners -> TMRelatorioProjeto.total_parceiros_restauracao_unicos
+file                              -> TMRelatorioProjeto.arquivo
+other_additional_documents        -> TMRelatorioProjeto.outros_documentos_adicionais
+extras                            -> TMRelatorioProjeto.dados_extras
+
+ASSOCIAÇÕES DE RELATÓRIO DE PROJETO:
+- TMRelatorioProjetoFoto            <- photos
+- TMRelatorioProjetoHasDemografia   <- workdays_* (dias pagos/voluntários)
+
+
+==================================================
+4) SITE REPORTS -> TMRelatorioSitio
+==================================================
+JSON Field                        -> Model Field
+--------------------------------------------------
+id                                -> TMRelatorioSitio.id
+uuid                              -> TMRelatorioSitio.uuid
+due_date                          -> TMRelatorioSitio.data_de_vencimento
+title                             -> TMRelatorioSitio.titulo
+technical_narrative               -> TMRelatorioSitio.narrativa_tecnica
+public_narrative                  -> TMRelatorioSitio.narrativa_publica
+total_seedlings_grown             -> TMRelatorioSitio.total_arvores_plantadas
+total_seedlings_grown_report      -> TMRelatorioSitio.total_sementes_plantadas
+photos                            -> TMRelatorioSitio.midia
+other_additional_documents        -> TMRelatorioSitio.outros_documentos_adicionais
+treeSpecies                       -> via TMRelatorioSitioTemEspecieArvore
+
+ASSOCIAÇÕES DE RELATÓRIO DE SÍTIO:
+- TMRelatorioSitioFoto            <- photos
+- TMRelatorioSitioTemEspecieArvore <- treeSpecies
+- TMRelatorioSitioHasDemografia   <- workdays_* (dias pagos/voluntários no nível do sítio)
+- TMDisturbio                     <- problemas/impactos descritos
+
+
+==================================================
+5) DEMOGRAFIA -> TMDemografia*
+==================================================
+Origem JSON: campos workdays_* (ex.: workdays_paid, workdays_volunteer, workdaysPaidProjectManagement)
+
+- TMDemografiaDiasUteis
+  tipo       -> pago / voluntario
+  categoria  -> área (gestão, viveiro, campo etc.)
+
+- TMDemografiaHasGenero
+  origem: gender:(x:male)(y:female)
+
+- TMDemografiaHasFaixaEtaria
+  origem: age:(n:youth)(m:adult)
+
+- TMDemografiaHasEtnia
+  origem: ethnicity:(z:unknown)
+
+Esses dados se associam tanto a TMRelatorioProjeto quanto a TMRelatorioSitio via tabelas intermediárias:
+- TMRelatorioProjetoHasDemografia
+- TMRelatorioSitioHasDemografia
+
+==================================================
+RESUMO FINAL
+==================================================
+- Projeto (TMProjeto)  <- Project Establishment JSON
+- Sítio (TMSitio)      <- Site Establishment JSON
+- Relatório Projeto (TMRelatorioProjeto) <- Project Reports JSON
+- Relatório Sítio (TMRelatorioSitio)     <- Project Reports JSON (detalhes por site)
+- Demografia (TMDemografia*) <- workdays_* fields
+- Associações extras: espécies, técnicas, uso do solo, fotos, distúrbios
+
