@@ -1,2 +1,5 @@
 Gemonetria do sitio: exportar do json do sitio, ou do json shapefiles?
 Tabelas com "tm" são do mesmo escopo de tabelas sem tm?
+Sitio não se relaciona com tm_sitio_tem_especie_invasora (apenas boolena na "tem_arvore")
+tm_relatorio e relatorio, dizem respeito a mesma coisa?
+sugestão: mudar o campo evidencia -> id_relatorio
