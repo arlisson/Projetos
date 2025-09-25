@@ -65,3 +65,5 @@ export function import_xlsx({ filePath = null, export_json = false }) {
     throw error;
   }
 }
+
+import_csv({ filePath: "../Arli/TerraMatch/projects-MDPS - Flagship/site reports/MDPS - Flagship - Sítio 1 (Fazenda Álamo) - site reports.csv", export_json: true })

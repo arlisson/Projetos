@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "dependencies": {
     "cli-table3": "^0.6.5",
     "csv-parser": "^3.2.0",

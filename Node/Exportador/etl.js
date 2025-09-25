@@ -6,8 +6,10 @@ import { import_csv, import_xlsx } from "./utils/fileImporter.js";
 import { importProjetosFromArray } from "./importers/projetoImporter.js";
 import { importSitiosFromArray } from "./importers/sitioImporter.js";
 import { importRelatoriosFromArray } from "./importers/relatorioProjetoImporter.js";
+import { importRelatoriosSitioFromArray } from "./importers/relatorioSitioImporter.js";
 
-
+//TODO: Escrever o importador de atualizações.
+//TODO: Escrever a regex para generalizar os nomes dos projetos e sitios.
 async function runETL() {
   try {
     await sequelize.authenticate();
@@ -18,6 +20,7 @@ async function runETL() {
       "../Arli/TerraMatch/projects-MDPS - Flagship/MDPS - Flagship - project establishment data.csv",
       "../Arli/TerraMatch/projects-MDPS - Flagship/MDPS - Flagship - site establishment data.csv",
       "../Arli/TerraMatch/projects-MDPS - Flagship/MDPS - Flagship - project reports.csv",
+      "../Arli/TerraMatch/projects-MDPS - Flagship/site reports/MDPS - Flagship - Sítio 1 (Fazenda Álamo) - site reports.json",
     ];
 
     for (const file of files) {
@@ -39,9 +42,9 @@ async function runETL() {
         console.warn(`⚠️ Tipo de arquivo não suportado: ${file}`);
         continue;
       }
-
+       
       // chama o importador correto
-      if (file.toLowerCase().includes("site")) {
+      if (file.toLowerCase().includes("site establishment")) {
         const sitiosNormalizados = await normalizeSitesData(data);
         await importSitiosFromArray(sitiosNormalizados);
 
@@ -50,6 +53,8 @@ async function runETL() {
 
       } else if (file.toLowerCase().includes("project reports")) {
         await importRelatoriosFromArray(data);
+      } else if (file.toLowerCase().includes("site reports")) {
+        await importRelatoriosSitioFromArray(data);
       }
 
     }
