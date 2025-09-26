@@ -1,6 +1,5 @@
 -- Adminer 5.3.0 PostgreSQL 17.5 dump
 
-\connect "gwc";
 
 
 

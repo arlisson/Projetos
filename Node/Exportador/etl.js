@@ -7,6 +7,7 @@ import { importProjetosFromArray } from "./importers/projetoImporter.js";
 import { importSitiosFromArray } from "./importers/sitioImporter.js";
 import { importRelatoriosFromArray } from "./importers/relatorioProjetoImporter.js";
 import { importRelatoriosSitioFromArray } from "./importers/relatorioSitioImporter.js";
+import { importGeometriaSitio } from "./importers/importGeometriaSitio.js";
 
 //TODO: Escrever o importador de atualizações.
 //TODO: Escrever a regex para generalizar os nomes dos projetos e sitios.
@@ -19,8 +20,10 @@ async function runETL() {
     const files = [
       "../Arli/TerraMatch/projects-MDPS - Flagship/MDPS - Flagship - project establishment data.csv",
       "../Arli/TerraMatch/projects-MDPS - Flagship/MDPS - Flagship - site establishment data.csv",
+      "../Arli/TerraMatch/projects-MDPS - Flagship/Sites Shapefiles/Sítio 1 (Fazenda Álamo).geojson",
       "../Arli/TerraMatch/projects-MDPS - Flagship/MDPS - Flagship - project reports.csv",
-      "../Arli/TerraMatch/projects-MDPS - Flagship/site reports/MDPS - Flagship - Sítio 1 (Fazenda Álamo) - site reports.json",
+      "../Arli/TerraMatch/projects-MDPS - Flagship/site reports/MDPS - Flagship - Sítio 1 (Fazenda Álamo) - site reports.csv",
+      
     ];
 
     for (const file of files) {
@@ -34,10 +37,15 @@ async function runETL() {
         data = import_xlsx({ filePath: file });
         data = normalizeKeys(data);
 
-      } else if (file.endsWith(".json")) {
+      } else if (file.endsWith(".json") || file.endsWith(".geojson")) {
         const raw = fs.readFileSync(file, "utf-8");
         data = JSON.parse(raw);
-        data = normalizeKeys(data); // 👈 funciona igual
+
+        if (file.endsWith(".geojson")) {
+          data = data.features; // 👈 pega só o array de features
+        }
+
+        data = normalizeKeys(data);
       } else {
         console.warn(`⚠️ Tipo de arquivo não suportado: ${file}`);
         continue;
@@ -47,14 +55,14 @@ async function runETL() {
       if (file.toLowerCase().includes("site establishment")) {
         const sitiosNormalizados = await normalizeSitesData(data);
         await importSitiosFromArray(sitiosNormalizados);
-
       } else if (file.toLowerCase().includes("project establishment")) {
         await importProjetosFromArray(data);
-
       } else if (file.toLowerCase().includes("project reports")) {
         await importRelatoriosFromArray(data);
       } else if (file.toLowerCase().includes("site reports")) {
         await importRelatoriosSitioFromArray(data);
+      } else if (file.toLowerCase().endsWith(".geojson")) {
+        await importGeometriaSitio(file);
       }
 
     }

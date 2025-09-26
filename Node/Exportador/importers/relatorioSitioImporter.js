@@ -96,14 +96,14 @@ export async function importRelatoriosSitioFromArray(relatorios) {
       const relatorioUuid = r.uuid;
 
       if (!siteId) {
-        console.warn(`⚠️ Relatório ${r.title} não tem site-id definido`);
+        console.warn(`⚠️ Relatório ${r["site-name"]} não tem site-id definido`);
         continue;
       }
 
       const sitio = await TMSitio.findOne({ where: { id: siteId } });
 
       if (!sitio) {
-        console.warn(`⚠️ Sítio não encontrado para relatório ${r.title} (site-id: ${siteId})`);
+        console.warn(`⚠️ Sítio não encontrado para relatório ${r['site-name']} (site-id: ${siteId})`);
         continue;
       }
 
@@ -113,7 +113,7 @@ export async function importRelatoriosSitioFromArray(relatorios) {
           uuid: relatorioUuid,
           tm_sitio_id: sitio.id, // 👈 corrigido para bater com o model
           data_de_vencimento: r.due_date || null,
-          titulo: r.title || null,
+          titulo: r['site-name'] || null,
           narrativa_tecnica: r.technical_narrative || null,
           narrativa_publica: r.public_narrative || null,
           total_arvores_plantadas: r.total_trees_planted || null,
@@ -127,9 +127,9 @@ export async function importRelatoriosSitioFromArray(relatorios) {
 
             
         });
-        console.log(`✅ Relatório de sítio criado id sitio: ${relatorioDb.tm_sitio_id}`);
+        console.log(`✅ Relatório de sítio criado : ${relatorioDb.titulo}`);
       } else {
-        console.log(`↔️ Relatório de sítio já existe id sitio: ${relatorioDb.tm_sitio_id}`);
+        console.log(`↔️ Relatório de sítio já existe : ${relatorioDb.titulo}`);
       }
 
       // 📷 Fotos
@@ -139,7 +139,7 @@ export async function importRelatoriosSitioFromArray(relatorios) {
           const [evidencia] = await TMEvidenciaRegistroFotografico.findOrCreate({
             where: { link_registro_fotografico: url },
             defaults: {
-              evidencias: `Foto importada do relatório de sítio id: ${relatorioDb.tm_sitio_id}`,
+              evidencias: `Foto importada do relatório de sítio : ${relatorioDb.titulo}`,
               link_registro_fotografico: url,
             },
           });
@@ -194,7 +194,7 @@ export async function importRelatoriosSitioFromArray(relatorios) {
       await salvarDemografia(relatorioDb, r.workdaysVolunteerOtherActivities, "voluntario", "OtherActivities");
 
     } catch (err) {
-      console.error(`❌ Erro ao importar relatório de sítio ${r.title} (uuid: ${r.uuid}):`, err);
+      console.error(`❌ Erro ao importar relatório de sítio ${r["site-name"]} (uuid: ${r.uuid}):`, err);
     }
   }
 

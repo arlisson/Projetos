@@ -3,3 +3,6 @@ Tabelas com "tm" são do mesmo escopo de tabelas sem tm? (ERA PRA SER UMA COISA 
 Sitio não se relaciona com tm_sitio_tem_especie_invasora (apenas boolena na "tem_arvore") OK
 tm_relatorio e relatorio, dizem respeito a mesma coisa? Ver com Everaldo
 sugestão: mudar o campo evidencia -> id_relatorio (MIDIAS DE TM SITIO, DEVEM SER ARMAZENADAS AONDE? EVIDÊNCIAS/REGISTROS FOTOGRAFICOS)
+De onde vem o tm_disturbio??
+
+FK adicionada nos models de relatório e de geometria

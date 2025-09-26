@@ -129,14 +129,16 @@ export async function importRelatoriosFromArray(relatorios) {
 
       // 🔍 encontra projeto
       const projeto = await TMProjeto.findOne({ where: { uuid: r.project_uuid } });
+      
       if (!projeto) {
+
         console.warn(`⚠️ Projeto não encontrado para relatório ${r.title} (project_uuid: ${r.project_uuid})`);
         continue;
       }
 
       // 🔍 evita duplicados pelo uuid
       let relatorioDb = await TMRelatorioProjeto.findOne({ where: { uuid } });
-
+      
       if (!relatorioDb) {
         relatorioDb = await TMRelatorioProjeto.create({
           uuid,
@@ -194,7 +196,7 @@ export async function importRelatoriosFromArray(relatorios) {
         const [evidencia] = await TMEvidenciaRegistroFotografico.findOrCreate({
           where: { link_registro_fotografico: url },
           defaults: {
-            evidencias: `Foto importada do relatório ${relatorioDb.titulo} - id: ${relatorioDb.id}`,
+            evidencias: `Foto importada do relatório ${relatorioDb.titulo}`,
             link_registro_fotografico: url,
           },
         });
