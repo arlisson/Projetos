@@ -9,6 +9,13 @@ import { importRelatoriosFromArray } from "./importers/relatorioProjetoImporter.
 import { importRelatoriosSitioFromArray } from "./importers/relatorioSitioImporter.js";
 import { importGeometriaSitio } from "./importers/importGeometriaSitio.js";
 
+//TODO: Escrever o importador de atualizações.
+//TODO: Escrever a regex para generalizar os nomes dos projetos e sitios.
+//TODO: Forçar a organização de importação de arquivos seguindo a ordem: 
+// projetos e seus relacionados (relatórios do projeto),
+// sítios e seus relacionados (geometria e relatórios),
+// relatórios de projetos
+
 /**
  * Executa o ETL em uma lista de arquivos fornecidos.
  * @param {string[]} files - Caminhos dos arquivos a serem importados
