@@ -2,3 +2,9 @@
 2 - Sitio e suas dependencias (no caso, geometria sitio)
 3 - Relatórios sítio/projeto
  
+//TODO: Escrever o importador de atualizações.
+//TODO: Escrever a regex para generalizar os nomes dos projetos e sitios.
+//TODO: Forçar a organização de importação de arquivos seguindo a ordem:
+//  projetos e seus relacionados (relatórios do projeto),
+//  sítios e seus relacionados (geometria e relatórios),
+//  relatórios de projetos

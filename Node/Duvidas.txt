@@ -1,8 +1,8 @@
-Gemonetria do sitio: exportar do json do sitio, ou do json shapefiles? (GEOJSON É A GEOMETRIA DO SÍTIO)
-Tabelas com "tm" são do mesmo escopo de tabelas sem tm? (ERA PRA SER UMA COISA SÓ, POR ENQUANTO É SEPARADO) Ver com Everaldo
-Sitio não se relaciona com tm_sitio_tem_especie_invasora (apenas boolena na "tem_arvore") OK
-tm_relatorio e relatorio, dizem respeito a mesma coisa? Ver com Everaldo
-sugestão: mudar o campo evidencia -> id_relatorio (MIDIAS DE TM SITIO, DEVEM SER ARMAZENADAS AONDE? EVIDÊNCIAS/REGISTROS FOTOGRAFICOS)
-De onde vem o tm_disturbio??
+~Gemonetria do sitio: exportar do json do sitio, ou do json shapefiles? (GEOJSON É A GEOMETRIA DO SÍTIO)~
+~Tabelas com "tm" são do mesmo escopo de tabelas sem tm? (ERA PRA SER UMA COISA SÓ, MAS SÃO COISAS DIFERENTES) Ver com Everaldo~
+~Sitio não se relaciona com tm_sitio_tem_especie_invasora (apenas boolena na "tem_arvore") OK~
+~tm_relatorio e relatorio, dizem respeito a mesma coisa? Ver com Everaldo (ERA PRA SER A MESMA COISA, MAS NÃO É)~
+~mudar o campo evidencia -> descrição da imagem no json (MIDIAS DE TM SITIO, DEVEM SER ARMAZENADAS AONDE? EVIDÊNCIAS/REGISTROS FOTOGRAFICOS)~
+~De onde vem o tm_disturbio?? (vem do campo "disturbance" de relatórios)~
 
-FK adicionada nos models de relatório e de geometria
+*FK adicionada nos models de relatório e de geometria*

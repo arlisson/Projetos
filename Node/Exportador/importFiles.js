@@ -9,22 +9,14 @@ import { importRelatoriosFromArray } from "./importers/relatorioProjetoImporter.
 import { importRelatoriosSitioFromArray } from "./importers/relatorioSitioImporter.js";
 import { importGeometriaSitio } from "./importers/importGeometriaSitio.js";
 
-//TODO: Escrever o importador de atualizações.
-//TODO: Escrever a regex para generalizar os nomes dos projetos e sitios.
-async function runETL() {
+/**
+ * Executa o ETL em uma lista de arquivos fornecidos.
+ * @param {string[]} files - Caminhos dos arquivos a serem importados
+ */
+export async function importFiles(files = []) {
   try {
     await sequelize.authenticate();
     console.log("Conexão OK com o banco!");
-
-    // lista de arquivos de entrada
-    const files = [
-      "../Arli/TerraMatch/projects-MDPS - Flagship/MDPS - Flagship - project establishment data.csv",
-      "../Arli/TerraMatch/projects-MDPS - Flagship/MDPS - Flagship - site establishment data.csv",
-      "../Arli/TerraMatch/projects-MDPS - Flagship/Sites Shapefiles/Sítio 1 (Fazenda Álamo).geojson",
-      "../Arli/TerraMatch/projects-MDPS - Flagship/MDPS - Flagship - project reports.csv",
-      "../Arli/TerraMatch/projects-MDPS - Flagship/site reports/MDPS - Flagship - Sítio 1 (Fazenda Álamo) - site reports.csv",
-      
-    ];
 
     for (const file of files) {
       let data;
@@ -50,21 +42,24 @@ async function runETL() {
         console.warn(`⚠️ Tipo de arquivo não suportado: ${file}`);
         continue;
       }
-       
+
       // chama o importador correto
       if (file.toLowerCase().includes("site establishment")) {
         const sitiosNormalizados = await normalizeSitesData(data);
         await importSitiosFromArray(sitiosNormalizados);
+
       } else if (file.toLowerCase().includes("project establishment")) {
         await importProjetosFromArray(data);
+
       } else if (file.toLowerCase().includes("project reports")) {
         await importRelatoriosFromArray(data);
+
       } else if (file.toLowerCase().includes("site reports")) {
         await importRelatoriosSitioFromArray(data);
+
       } else if (file.toLowerCase().endsWith(".geojson")) {
         await importGeometriaSitio(file);
       }
-
     }
 
     await sequelize.close();
@@ -73,5 +68,3 @@ async function runETL() {
     console.error("❌ Erro no ETL:", err);
   }
 }
-
-runETL();

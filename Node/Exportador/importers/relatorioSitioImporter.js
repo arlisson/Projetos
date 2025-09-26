@@ -167,19 +167,32 @@ export async function importRelatoriosSitioFromArray(relatorios) {
         }
       }
 
+          
       // ⚡ Distúrbios
-      if (r.disturbances && r.disturbances !== "") {
-        const disturbios = JSON.parse(r.disturbances);
-        for (const d of disturbios) {
-          await TMDisturbio.findOrCreate({
-            where: {
-              relatorio_sitio_id: relatorioDb.id,
-              titulo: d.title,
-            },
-            defaults: { descricao: d.description },
-          });
-        }
+      if (r.disturbances && r.disturbances.trim() !== "") {
+        await TMDisturbio.findOrCreate({
+          where: {
+            relatorio_sitio_id: relatorioDb.id,
+            titulo: r.disturbances.trim(),
+          },
+          defaults: {
+            descricao: r.disturbance_details || null,
+          },
+        });
+      } else if (r.disturbance_details && r.disturbance_details.trim() !== "") {
+        // Caso tenha descrição mas não tenha título
+        await TMDisturbio.findOrCreate({
+          where: {
+            relatorio_sitio_id: relatorioDb.id,
+            titulo: "Distúrbio registrado em texto",
+          },
+          defaults: {
+            descricao: r.disturbance_details || null,
+          },
+        });
       }
+
+
 
       // 👥 Demografia
       await salvarDemografia(relatorioDb, r.workdaysPaidSiteEstablishment, "pago", "SiteEstablishment");
