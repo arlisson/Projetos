@@ -3,6 +3,8 @@ from datetime import datetime
 import json
 import os
 
+from rich import _console
+
 from DAO.database import (    
     buscar_todas_cartas,
     buscar_produto_por_id,
@@ -83,12 +85,12 @@ def _atualizar_precos_e_lucro(callback_status=None):
 
         produtos = listar_todos_produtos()
         total_produtos = len(produtos)
-
+        
         atualizar_status("🔄 Atualizando produtos...")
 
         for i, produto in enumerate(produtos, start=1):
             id_produto = produto.get("id_produto")
-            url = produto.get("link_site")
+            url = produto.get("link")
 
             if not id_produto or not url:
                 continue

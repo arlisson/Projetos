@@ -670,7 +670,7 @@ def listar_todos_produtos(filtro=""):
             cursor.execute("""
                 SELECT
                     *
-                FROM produto
+                FROM vw_produtos_detalhados
                 ORDER BY id_produto DESC
             """)
 

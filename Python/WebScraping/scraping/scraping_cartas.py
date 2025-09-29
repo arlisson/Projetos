@@ -134,7 +134,7 @@ def buscar_produto_liga(url):
             "origem": "Liga Yu-Gi-Oh",
             "link_site": url
         }
-        log_info(f"Produto encontrado em buscar_produto_liga: {produto}")
+        log_info(f"Produto encontrado em buscar_produto_liga: {produto.get('nome')}")
         return produto
 
     except Exception as e:
