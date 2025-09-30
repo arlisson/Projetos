@@ -28,11 +28,22 @@ export async function importSitiosFromArray(sitios) {
       }
 
       // 🔍 resolve ou cria categoria
+      // Mapeamento para normalizar valores
+      const categoriaMap = {
+        "private": "Privado",
+        "privada": "Privado",
+        "public": "Público",
+        "publica": "Público",
+        "indigenous": "Indígena",
+        "indigena": "Indígena"
+      };
+
       let posseCategoriaId = null;
       if (s.land_tenures) {
         const tenureRaw = s.land_tenures.split("??").pop().trim().toLowerCase();
-        const descricao =
-          tenureRaw.charAt(0).toUpperCase() + tenureRaw.slice(1);
+
+        // pega a versão normalizada ou usa capitalizado
+        const descricao = categoriaMap[tenureRaw] || (tenureRaw.charAt(0).toUpperCase() + tenureRaw.slice(1));
 
         const [categoria] = await Categoria.findOrCreate({
           where: { descricao },
@@ -41,6 +52,7 @@ export async function importSitiosFromArray(sitios) {
 
         posseCategoriaId = categoria.id;
       }
+
 
       // 🔍 evita duplicados
       let sitioDb = await TMSitio.findOne({ where: { id: idSitio } });
