@@ -1,0 +1,76 @@
+# 📄 Mapeamento de Planilhas (JSON) → Tabelas Sequelize
+
+## Arquivo: CERT_Database_MonitoringY0_CBCA01_02
+
+- **Controle.json** → monitoramento
+  - Insira uma data → data_monitoramento
+  - Nome da Organização → instituicao
+  - ID_Sitio → id_sitio
+  - Nome_Sitio → nome_sitio
+  - Tipo_Sitio → tipo_sitio
+  - Invasoras/Nativas → monitoramento_especie_invasora / monitoramento_especie_nativa
+
+- **Coord_PACTO.json** → coordenadas_pacto
+  - Plot ID → plotId
+  - Vértice → vertice
+  - X/Y SIRGAS2000 UTM23S → x_sirgas2000_utm23s, y_sirgas2000_utm23s
+  - Notes → notes
+
+- **Coord_PPC.json** → coordenadas_ppc
+  - LatitudeWGS84, LongitudeWGS84 → latitudeWGS84, longitudeWGS84
+  - Elevação → elevacao
+  - DataHora → dataHora
+
+- **PPC_Pacto_CERT.json** → parcela_monitoramento + subparcela_monitoramento
+  - Parcelas 30x30 → ParcelaMonitoramento
+  - Subparcelas 3x3 → SubparcelaMonitoramento
+  - Fotos → Midia
+
+- **Y0_Database.json** → y0_database_arvore
+  - Parcela → parcelaId
+  - TotalArvoresGTE10 → totalArvoresGTE10
+  - TotalArvoresLT10 → totalArvoresLT10
+  - TotalGeral → totalGeral
+
+---
+
+## Arquivo: PPCPACTO_Tree_Monitoring...
+
+- **3x3_Subplot_Repeat.json** → subparcela_arvore
+  - Espécies de árvores (nome científico) → especieId
+  - Tipo de Árvore → tipoArvore
+  - Número de Árvores desta Espécie → numeroArvoresEspecie
+
+- **30x30_Plot_Repeat.json** → arvore
+  - Espécies de árvores (nome científico) → especieId
+  - Número da Árvore → numeroArvore
+  - Número do Fuste → fusteNumero
+  - DAP (cm) → dap
+
+- **30x30_Plot_Repeat_Planted_10cm.json** → arvore_dap_10cm
+  - Espécies de árvores → especieId
+  - Número de Árvores desta Espécie → numeroArvores
+
+- **group_un3bb19.json** → detalhe de arvore (fustes adicionais por árvore)
+  - Número da Árvore → numeroArvore
+  - Fuste N. → fusteNumero
+  - DAP (cm) → dap
+
+- **Plot_Info_Repeat.json** → midia
+  - Fotos Adicionais (Opcional) → arquivo
+  - Fotos Adicionais (Opcional)_URL → url
+
+- **PPC_PACTO_Tree_Monitoring_....json** (aba raiz) → monitoramento / parcela_monitoramento
+  - Metadados de submissão e info geral de parcelas
+
+---
+
+# 📊 Relações
+
+- Monitoramento 1:N ParcelaMonitoramento
+- ParcelaMonitoramento 1:N SubparcelaMonitoramento
+- ParcelaMonitoramento 1:N Arvore
+- Arvore 1:N ArvoreDAP10
+- ParcelaMonitoramento 1:N Midia
+- Monitoramento 1:N MonitoramentoEspecieInvasora
+- Monitoramento 1:N MonitoramentoEspecieNativa
