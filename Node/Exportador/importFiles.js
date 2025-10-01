@@ -8,6 +8,7 @@ import { importSitiosFromArray } from "./importers/sitioImporter.js";
 import { importRelatoriosFromArray } from "./importers/relatorioProjetoImporter.js";
 import { importRelatoriosSitioFromArray } from "./importers/relatorioSitioImporter.js";
 import { importGeometriaSitio } from "./importers/importGeometriaSitio.js";
+import { kb_importPPC_Pacto_CERT } from "./importers/kb_ppcPactoImporter.js";
 
 //TODO: Escrever o importador de atualizações.
 //TODO: Escrever a regex para generalizar os nomes dos projetos e sitios.
@@ -33,9 +34,42 @@ export async function importFiles(files = []) {
         data = normalizeKeys(data);
 
       } else if (file.endsWith(".xlsx")) {
-        data = import_xlsx({ filePath: file });
-        data = normalizeKeys(data);
+        const sheetsData = import_xlsx({ filePath: file }); // { SheetName: rows[] }
 
+        // percorre cada aba
+        for (const [sheetName, rows] of Object.entries(sheetsData)) {
+          const normalized = normalizeKeys(rows);
+
+          // agora decide o importador, mas baseado no nome do arquivo + nome da aba
+          if (file.toLowerCase().includes("site establishment")) {
+            const sitiosNormalizados = await normalizeSitesData(normalized);
+            await importSitiosFromArray(sitiosNormalizados);
+
+          } else if (file.toLowerCase().includes("project establishment")) {
+            await importProjetosFromArray(normalized);
+
+          } else if (file.toLowerCase().includes("project reports")) {
+            await importRelatoriosFromArray(normalized);
+
+          } else if (file.toLowerCase().includes("site reports")) {
+            await importRelatoriosSitioFromArray(normalized);
+
+          }else if (sheetName.toLowerCase().includes("ppc_pacto_cert")) { 
+              console.log('Importando dados do PPC_Pacto_CERT...');
+              await kb_importPPC_Pacto_CERT(normalized);
+          }else if (sheetName.toLowerCase().includes("controle")) {
+            console.log('Importando dados de Controle...');
+          } else if (sheetName.toLowerCase().includes("y0_database")) {
+            console.log('Importando dados de Y0_Database...');
+          } else if (sheetName.toLowerCase().includes("coord_ppc")) {
+            console.log('Importando dados de Coord_PPC...');
+          } else if (sheetName.toLowerCase().includes("coord_pacto")) {
+            console.log('Importando dados de Coord_Pacto...');
+          } else {
+            console.warn(`⚠️ Aba ignorada: ${sheetName} em ${file}`);
+          }
+        }
+        continue;
       } else if (file.endsWith(".json") || file.endsWith(".geojson")) {
         const raw = fs.readFileSync(file, "utf-8");
         data = JSON.parse(raw);
@@ -66,7 +100,9 @@ export async function importFiles(files = []) {
 
       } else if (file.toLowerCase().endsWith(".geojson")) {
         await importGeometriaSitio(file);
-      }
+
+      } 
+
     }
 
     await sequelize.close();

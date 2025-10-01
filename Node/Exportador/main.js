@@ -7,12 +7,16 @@
 
 import { importFiles } from "./importFiles.js";
 
+// const tm_files = [
+//   "../Arli/TerraMatch/projects-MDPS - Flagship/MDPS - Flagship - project establishment data.csv",
+//   "../Arli/TerraMatch/projects-MDPS - Flagship/MDPS - Flagship - site establishment data.csv",
+//   "../Arli/TerraMatch/projects-MDPS - Flagship/Sites Shapefiles/Sítio 1 (Fazenda Álamo).geojson",
+//   "../Arli/TerraMatch/projects-MDPS - Flagship/MDPS - Flagship - project reports.csv",
+//   "../Arli/TerraMatch/projects-MDPS - Flagship/site reports/MDPS - Flagship - Sítio 1 (Fazenda Álamo) - site reports.csv",
+// ];
+
 const files = [
-  "../Arli/TerraMatch/projects-MDPS - Flagship/MDPS - Flagship - project establishment data.csv",
-  "../Arli/TerraMatch/projects-MDPS - Flagship/MDPS - Flagship - site establishment data.csv",
-  "../Arli/TerraMatch/projects-MDPS - Flagship/Sites Shapefiles/Sítio 1 (Fazenda Álamo).geojson",
-  "../Arli/TerraMatch/projects-MDPS - Flagship/MDPS - Flagship - project reports.csv",
-  "../Arli/TerraMatch/projects-MDPS - Flagship/site reports/MDPS - Flagship - Sítio 1 (Fazenda Álamo) - site reports.csv",
+  "../Arli/Kobo/CERT_Database_MonitoringY0_CBCA01_02.xlsx",
 ];
 
 await importFiles(files);

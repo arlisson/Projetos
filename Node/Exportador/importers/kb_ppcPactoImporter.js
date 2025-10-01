@@ -1,0 +1,415 @@
+import Monitoramento from "../models/kobo/monitoramento.model.js";
+import ParcelaMonitoramento from "../models/kobo/parcela-monitoramento.model.js";
+import SubparcelaMonitoramento from "../models/kobo/subparcela-monitoramento.model.js";
+import {Op} from "sequelize";
+import Especie from "#models/catalogo/especie.model.js";
+import MonitoramentoEspecieNativa from "../models/kobo/monitoramento.especie.nativa.model.js";
+import MonitoramentoEspecieInvasora from "../models/kobo/monitoramento.especie.invasora.model.js";
+import Pessoa from "../models/pessoa/pessoa.model.js";
+import PessoaFisica from "../models/pessoa/pessoa-fisica.model.js";
+import MonitoramentoMembro from "../models/kobo/membros.model.js";
+
+
+/* ==========================================
+   Config
+========================================== */
+const REQUIRE_RESPONSAVEL = true; // se sua coluna aceitar NULL, troque para false
+const DEFAULT_RESPONSAVEL_NOME = "Responsável desconhecido (import)";
+
+/* ==========================================
+   Helpers gerais
+========================================== */
+function mapPeriodo(valor) {
+  if (!valor) return null;
+  const v = String(valor).toLowerCase();
+  if (v.includes("ano 0")) return "Ano_0";
+  if (v.includes("ano 2,5")) return "Ano_2,5";
+  if (v.includes("ano 5")) return "Ano_5";
+  return null;
+}
+
+function parseBool(valor) {
+  if (valor === null || valor === undefined) return false;
+  const v = String(valor).trim().toLowerCase();
+  return v.startsWith("s") || v === "true" || v === "1";
+}
+
+// XLSX → atributos do model Monitoramento
+const monitoramentoMap = {
+  "ID do Sítio": "idSitio",
+  "Tipo do Sítio": "tipoSitio",
+  "Selecione seu País": "pais",
+  "Período de Amostragem": "periodoAmostragem",
+  "Insira uma data": "dataColeta",
+  "Hora de Início": "horaInicio",
+  "Hora de Fim": "horaFim",
+  "Observações": "observacoes",
+};
+
+/* ==========================================
+   Pessoa / PessoaFisica (sem User)
+========================================== */
+const pessoaByNomeCache = new Map(); // nome lower → pessoa_id
+let defaultPessoaIdCache = null;
+
+/**
+ * Procura/Cria cadeia correta SEM User:
+ *  1) buscar PessoaFisica.nome ILIKE rawName → retorna pessoa_id
+ *  2) se não houver, cria Pessoa e PessoaFisica(nome=rawName)
+ * Retorna pessoa_id.
+ */
+/* ==========================================
+   Pessoa / PessoaFisica (sem User, permite null)
+========================================== */
+
+
+  async function getOrCreatePessoaFisicaByNome(rawName) {
+    if (!rawName) return null;
+    const key = String(rawName).trim().toLowerCase();
+    if (pessoaByNomeCache.has(key)) return pessoaByNomeCache.get(key);
+
+    // tenta achar por PessoaFisica.nome
+    const fisica = await PessoaFisica.findOne({
+      where: { nome: { [Op.iLike]: rawName } },
+      attributes: ["pessoa_id"],
+    });
+
+    if (fisica?.pessoa_id) {
+      pessoaByNomeCache.set(key, fisica.pessoa_id);
+      return fisica.pessoa_id;
+    }
+
+    // cria Pessoa + PessoaFisica
+    const pessoa = await Pessoa.create({});
+    await PessoaFisica.create({ pessoa_id: pessoa.id, nome: rawName });
+
+    pessoaByNomeCache.set(key, pessoa.id);
+    return pessoa.id;
+  }
+
+
+async function getDefaultPessoaId() {
+  if (defaultPessoaIdCache) return defaultPessoaIdCache;
+
+  // tenta pela PF.nome primeiro
+  let pf = await PessoaFisica.findOne({
+    where: { nome: { [Op.iLike]: DEFAULT_RESPONSAVEL_NOME } },
+    attributes: ["pessoa_id"],
+  });
+  if (pf?.pessoa_id) {
+    defaultPessoaIdCache = pf.pessoa_id;
+    return defaultPessoaIdCache;
+  }
+
+  // cria Pessoa + PessoaFisica padrão
+  const pessoa = await Pessoa.create({});
+  await PessoaFisica.create({ pessoa_id: pessoa.id, nome: DEFAULT_RESPONSAVEL_NOME });
+
+  defaultPessoaIdCache = pessoa.id;
+  return defaultPessoaIdCache;
+}
+
+/* ==========================================
+   Espécies (parser + criação automática)
+========================================== */
+function splitSpeciesList(value) {
+  if (!value) return [];
+  return String(value)
+    .split(/[,;]+/g)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+function normalizeBinomial(scientific) {
+  if (!scientific) return null;
+  const tokens = String(scientific).trim().split(/\s+/);
+  if (tokens.length < 2) return null;
+  return `${tokens[0]} ${tokens[1]}`;
+}
+
+function extractPopularAndScientific(raw) {
+  if (!raw) return { popular: null, scientific: null };
+  const s = String(raw).trim();
+
+  // Popular (Científico)
+  const m = s.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
+  if (m && m[1] && m[2]) {
+    const popular = m[1].trim();
+    const sci = normalizeBinomial(m[2]);
+    return { popular, scientific: sci };
+  }
+
+  // tenta achar "Genus species" no texto
+  const mb = s.match(/\b([A-Z][a-z]+)\s+([a-z-]+)\b/);
+  if (mb) {
+    return { popular: null, scientific: normalizeBinomial(`${mb[1]} ${mb[2]}`) };
+  }
+
+  // sem binômio; trata como popular
+  return { popular: s, scientific: null };
+}
+
+const especieCache = new Map(); // chave lower → especie_id
+
+async function getOrCreateEspecieId(rawName) {
+  if (!rawName) return null;
+  const cacheKey = String(rawName).toLowerCase();
+  if (especieCache.has(cacheKey)) return especieCache.get(cacheKey);
+
+  const { popular, scientific } = extractPopularAndScientific(rawName);
+  let found = null;
+
+  // 1) tenta pelo nome científico
+  if (scientific) {
+    found = await Especie.findOne({
+      where: {
+        [Op.or]: [
+          { nome_cientifico: { [Op.iLike]: scientific } },
+          { nome_cientifico: { [Op.iLike]: `${scientific}%` } }, // com autores
+        ],
+      },
+      attributes: ["id"],
+    });
+
+    if (!found) {
+      const created = await Especie.create({
+        nome_cientifico: scientific,
+        nome: popular || null,
+      });
+      especieCache.set(cacheKey, created.id);
+      return created.id;
+    }
+  }
+
+  // 2) tenta pelo nome popular
+  if (!found && popular) {
+    found = await Especie.findOne({
+      where: { nome: { [Op.iLike]: popular } },
+      attributes: ["id"],
+    });
+
+    if (!found) {
+      const created = await Especie.create({
+        nome: popular,
+        nome_cientifico: scientific || null,
+      });
+      especieCache.set(cacheKey, created.id);
+      return created.id;
+    }
+  }
+
+  const id = found ? found.id : null;
+  especieCache.set(cacheKey, id);
+  return id;
+}
+
+async function relacionarNativas(monitoramentoId, listStr) {
+  const items = splitSpeciesList(listStr);
+  if (!items.length) {
+    console.log("   ↳ Nenhuma espécie nativa informada.");
+    return { ok: 0, notFound: [] };
+  }
+
+  let ok = 0;
+  const notFound = [];
+  for (const item of items) {
+    const especieId = await getOrCreateEspecieId(item);
+    if (!especieId) { notFound.push(item); continue; }
+
+    await MonitoramentoEspecieNativa.findOrCreate({
+      where: { monitoramento_id: monitoramentoId, especie_id: especieId },
+      defaults: { monitoramento_id: monitoramentoId, especie_id: especieId },
+    });
+    ok++;
+  }
+  return { ok, notFound };
+}
+
+async function relacionarInvasoras(monitoramentoId, listStr) {
+  const items = splitSpeciesList(listStr);
+  if (!items.length) {
+    console.log("   ↳ Nenhuma espécie invasora informada.");
+    return { ok: 0, notFound: [] };
+  }
+
+  let ok = 0;
+  const notFound = [];
+  for (const item of items) {
+    const especieId = await getOrCreateEspecieId(item);
+    if (!especieId) { notFound.push(item); continue; }
+
+    await MonitoramentoEspecieInvasora.findOrCreate({
+      where: { monitoramento_id: monitoramentoId, especie_id: especieId },
+      defaults: { monitoramento_id: monitoramentoId, especie_id: especieId },
+    });
+    ok++;
+  }
+  return { ok, notFound };
+}
+
+/* ==========================================
+   Importer principal
+========================================== */
+export async function kb_importPPC_Pacto_CERT(rows = []) {
+  try {
+    console.log(`🔍 Importando ${rows.length} registros de PPC_Pacto_CERT...`);
+
+    for (const [i, row] of rows.entries()) {
+      try {
+       
+        /* ===== 0) Pessoa (Responsável pela Coleta) ===== */
+        const responsavelNome = row["Nome do Responsável pela Coleta"];
+        let responsavelColetaId = null;
+
+        if (responsavelNome && String(responsavelNome).trim()) {
+          responsavelColetaId = await getOrCreatePessoaFisicaByNome(responsavelNome);
+        } else {
+          responsavelColetaId = null; // agora pode ficar null sem erro
+        }
+
+        /* ===== 1) MONITORAMENTO ===== */
+        const monitoramentoData = {};
+        for (const [coluna, campo] of Object.entries(monitoramentoMap)) {
+          monitoramentoData[campo] = row[coluna] ?? null;
+        }
+        monitoramentoData.periodoAmostragem = mapPeriodo(row["Período de Amostragem"]);
+        monitoramentoData.responsavelColetaId = responsavelColetaId;
+
+        const monitoramento = await Monitoramento.create(monitoramentoData);
+
+        // vincula também na tabela de membros (sempre que houver pessoa)
+        if (responsavelColetaId) {
+          await MonitoramentoMembro.findOrCreate({
+            where: {
+              monitoramento_id: monitoramento.id,
+              pessoa_id: responsavelColetaId,
+            },
+            defaults: {
+              monitoramento_id: monitoramento.id,
+              pessoa_id: responsavelColetaId,
+              funcao: "Responsável pela coleta",
+            },
+          });
+        }
+
+        /* ===== 1.1) ESPÉCIES ===== */
+        const campoNativas =
+          "Indicador 2.1: Identificação de espécies nativas plantadas de recobrimento";
+        const campoInvasoras = "Indicador 2.2. Espécies invasoras arbóreas";
+
+        const nativasStr = row[campoNativas];
+        const invasorasStr = row[campoInvasoras];
+
+        if (nativasStr) {
+          const { ok, notFound } = await relacionarNativas(monitoramento.id, nativasStr);
+          console.log(`   ↳ Nativas relacionadas: ${ok}`);
+          if (notFound.length)
+            console.warn(`   ⚠️ Nativas não encontradas/criadas (linha ${i + 1}): ${notFound.join(" | ")}`);
+        } else {
+          console.log("   ↳ Nenhuma espécie nativa informada.");
+        }
+
+        if (invasorasStr) {
+          const { ok, notFound } = await relacionarInvasoras(monitoramento.id, invasorasStr);
+          console.log(`   ↳ Invasoras relacionadas: ${ok}`);
+          if (notFound.length)
+            console.warn(`   ⚠️ Invasoras não encontradas/criadas (linha ${i + 1}): ${notFound.join(" | ")}`);
+        } else {
+          console.log("   ↳ Nenhuma espécie invasora informada.");
+        }
+
+        /* ===== 2) PARCELA ===== */
+        const [parcela] = await ParcelaMonitoramento.findOrCreate({
+          where: {
+            idParcela: row["Identificação (ID) da Parcela de Monitoramento de Árvores"],
+          },
+          defaults: {
+            estrato: row["Estrato"],
+            tipoParcela: row["Tipo de Parcela"],
+            descricaoEspacamentoPlantio:
+              row["Descrição do espaçamento de plantio dentro da parcela"],
+            numeroReamostragens:
+              row["Número de Reamostragens Necessárias para Parcelas 30m x 30m"],
+            arvoresDAPPresentes: parseBool(
+              row["Há árvores >10cm DAP presentes na parcela?"]
+            ),
+            monitoramentoId: monitoramento.id,
+            vertices: [
+              {
+                lat: row["_Vertice 1 da parcela de 30m x 30m_latitude"],
+                lon: row["_Vertice 1 da parcela de 30m x 30m_longitude"],
+                alt: row["_Vertice 1 da parcela de 30m x 30m_altitude"],
+                precisao: row["_Vertice 1 da parcela de 30m x 30m_precision"],
+              },
+              {
+                lat: row["_Vertice 2 da parcela de 30m x 30m_latitude"],
+                lon: row["_Vertice 2 da parcela de 30m x 30m_longitude"],
+                alt: row["_Vertice 2 da parcela de 30m x 30m_altitude"],
+                precisao: row["_Vertice 2 da parcela de 30m x 30m_precision"],
+              },
+              {
+                lat: row["_Vertice 3 da parcela de 30m x 30m_latitude"],
+                lon: row["_Vertice 3 da parcela de 30m x 30m_longitude"],
+                alt: row["_Vertice 3 da parcela de 30m x 30m_altitude"],
+                precisao: row["_Vertice 3 da parcela de 30m x 30m_precision"],
+              },
+              {
+                lat: row["_Vertice 4 da parcela de 30m x 30m_latitude"],
+                lon: row["_Vertice 4 da parcela de 30m x 30m_longitude"],
+                alt: row["_Vertice 4 da parcela de 30m x 30m_altitude"],
+                precisao: row["_Vertice 4 da parcela de 30m x 30m_precision"],
+              },
+            ],
+          },
+        });
+
+        /* ===== 3) SUBPARCELA ===== */
+        const lat = row["_Centróide da subparcela de 3m x 3m_latitude"];
+        const lon = row["_Centróide da subparcela de 3m x 3m_longitude"];
+
+        if (lat && lon) {
+          const [subparcela] = await SubparcelaMonitoramento.findOrCreate({
+            where: { idSubparcela: `SP-${i + 1}`, parcelaId: parcela.id },
+            defaults: {
+              centroideLatitude: lat,
+              centroideLongitude: lon,
+              centroideAltitude: row["_Centróide da subparcela de 3m x 3m_altitude"],
+              centroidePrecisao: row["_Centróide da subparcela de 3m x 3m_precision"],
+              fotoUrl: row["Foto da subparcela 3mx3m_URL"],
+              descricaoLocalizacao:
+                row[
+                  "Descrição da localização da subparcela (3mx3m) dentro da parcela maior (30mx30m)"
+                ],
+              numeroAmostragens:
+                row["**Número de amostragens necessárias para a parcela de 3m x 3m**"],
+              arvoresDAP_1_9_Presentes: parseBool(
+                row["**Existem árvores de 1-9,9cm DAP na parcela de 3m x 3m?**"]
+              ),
+            },
+          });
+
+          console.log(
+            subparcela?._options?.isNewRecord
+              ? `   ↳ Subparcela criada (linha ${i + 1})`
+              : `   ↔️ Subparcela já existia (linha ${i + 1})`
+          );
+        } else {
+          console.log(`   ⚠️ Nenhuma subparcela encontrada (linha ${i + 1}), ignorando...`);
+        }
+
+        console.log(`✅ Registro ${i + 1} importado.`);
+      } catch (err) {
+        console.error(`❌ Erro na linha ${i + 1}:`, {
+          name: err.name,
+          message: err.message,
+          details: err.errors ? err.errors.map((e) => e.message) : null,
+          row,
+        });
+      }
+    }
+
+    console.log(`🏁 Importação PPC_Pacto_CERT concluída: ${rows.length} registros`);
+  } catch (err) {
+    console.error("❌ Erro ao importar PPC_Pacto_CERT:", err);
+  }
+}

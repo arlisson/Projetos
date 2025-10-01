@@ -1,0 +1,124 @@
+# Mapeamento CORRIGIDO (JSON → Sequelize) — apenas campos existentes no banco
+
+## CERT_Database_MonitoringY0_CBCA01_02
+
+- **(2)** Controle.json → (informativo de parcela de controle)
+  • Parcela → ParcelaMonitoramento.idParcela
+  • (demais colunas deste arquivo não têm coluna correspondente nos models e NÃO serão importadas)
+    - ID_Sitio — não mapeado
+    - Nome_Sitio — não mapeado
+    - Tamanho_parcela — não mapeado
+    - Arvore_Tipo — não mapeado
+    - Nome_Científico — não mapeado
+    - Quantidade — não mapeado
+    - Número da Árvore — não mapeado
+    - Fuste N. — não mapeado
+    - DAP (diam) — não mapeado
+    - Obs — não mapeado
+
+- **(7)** Coord_PACTO.json → CoordenadasPacto
+  • Parcela → (resolver para CoordenadasPacto.parcelaId via lookup em ParcelaMonitoramento.idParcela)
+  • Plot ID → CoordenadasPacto.plotId
+  • X - Latitude (SIRGAS 2000 UTM 23S) → CoordenadasPacto.x_sirgas2000_utm23s
+  • Y - Longitude (SIRGAS 2000 UTM 23S) → CoordenadasPacto.y_sirgas2000_utm23s
+  • Notes on PACTO → CoordenadasPacto.notes
+  • Vértices PACTO — não mapeado
+
+- **(8)** Coord_PPC.json → CoordenadasPPC
+  • Parcela → (resolver para CoordenadasPPC.parcelaId via lookup em ParcelaMonitoramento.idParcela)
+  • Latitude (SIRGAS 2000) → CoordenadasPPC.x_sirgas2000_utm23s
+  • Longitude (SIRGAS 2000) → CoordenadasPPC.y_sirgas2000_utm23s
+  • Latitude (WGS 84) → CoordenadasPPC.latitudeWGS84
+  • Longitude (WGS 84) → CoordenadasPPC.longitudeWGS84
+  • Elevação → CoordenadasPPC.elevacao
+  • Data e Hora → CoordenadasPPC.dataHora
+
+- **(1)** PPC_Pacto_CERT.json → Monitoramento + ParcelaMonitoramento + SubparcelaMonitoramento
+  • (Monitoramento)
+    - ID do Sítio → Monitoramento.idSitio
+    - Tipo do Sítio → Monitoramento.tipoSitio
+    - Selecione seu País → Monitoramento.pais
+    - Período de Amostragem → Monitoramento.periodoAmostragem
+    - Insira uma data → Monitoramento.dataColeta
+    - Hora de Início → Monitoramento.horaInicio
+    - Hora de Fim → Monitoramento.horaFim
+    - Indicador 1.1: Cobertura de copa (%) → Monitoramento.coberturaCopaPct
+    - Indicador 1.2: nível de invasoras → Monitoramento.invasorasNivel
+    - Indicador 3.2: Compactação do solo → Monitoramento.compactacaoSoloConstatada
+    - Indicador 3.3.1 Conservação do solo (erosão) → Monitoramento.conservacaoSoloErosao
+    - Indicador 3.3.2 Conservação do solo (solo descoberto) → Monitoramento.conservacaoSoloSoloDescoberto
+    - Indicador 3.4. Outros filtros edáficos → Monitoramento.filtrosEdaficosOutros
+    - Indicador 4.1: Ocorrência de fogo → Monitoramento.fogoOcorrencia
+    - Indicador 4.1..._URL → Monitoramento.fogoFotoUrl
+    - Indicador 4.2: Presença de gado → Monitoramento.gadoPresenca
+    - Indicador 4.3: Ataque de formigas → Monitoramento.ataqueFormigas
+    - Observações → Monitoramento.observacoes
+    - (__version__, _status, _submission_time, _submitted_by, _uuid) → (status, submission_time, submittedById*, uuid**)
+      *submittedById requer mapeamento externo de usuário; **uuid é gerado pelo banco (não sobrescrever).
+    - (Espécies nativas de recobrimento) → relação MonitoramentoEspecieNativa (via Especie.id)
+    - (Espécies invasoras arbóreas) → relação MonitoramentoEspecieInvasora (via Especie.id)
+
+  • (ParcelaMonitoramento)
+    - Identificação (ID) da Parcela de Monitoramento de Árvores → ParcelaMonitoramento.idParcela
+    - Estrato → ParcelaMonitoramento.estrato
+    - Tipo de parcela → ParcelaMonitoramento.tipoParcela
+    - Descrição do espaçamento de plantio dentro da parcela → ParcelaMonitoramento.descricaoEspacamentoPlantio
+    - Número de reamostragens realizadas na parcela → ParcelaMonitoramento.numeroReamostragens
+    - Existem árvores com DAP ≥10cm → ParcelaMonitoramento.arvoresDAPPresentes
+    - Vértice 1..4 (lat/long/alt/precision) → ParcelaMonitoramento.vertices = [
+        {lat, lon, alt, precisao} × 4 (usar os campos “_Vertice N da parcela de 30m x 30m_*” quando disponíveis)
+      ]
+
+  • (SubparcelaMonitoramento)
+    - Centróide da subparcela (lat) → SubparcelaMonitoramento.centroideLatitude
+    - Centróide da subparcela (lon) → SubparcelaMonitoramento.centroideLongitude
+    - Centróide da subparcela (altitude) → SubparcelaMonitoramento.centroideAltitude
+    - Centróide da subparcela (precision) → SubparcelaMonitoramento.centroidePrecisao
+    - Foto da subparcela 3x3 (URL) → SubparcelaMonitoramento.fotoUrl
+    - Descrição da localização da subparcela → SubparcelaMonitoramento.descricaoLocalizacao
+    - Número de amostragens necessárias (3x3) → SubparcelaMonitoramento.numeroAmostragens
+    - Existem árvores de 1–9,9 cm DAP na 3x3? → SubparcelaMonitoramento.arvoresDAP_1_9_Presentes
+    - (ID da subparcela) → SubparcelaMonitoramento.idSubparcela (GERAR; não vem no JSON)
+
+- **(10)** Y0_Database.json → (NÃO HÁ MAPEAMENTO DIRETO)
+  • Este JSON não traz os totais agregados esperados pelo model Y0DatabaseArvore.
+  • Os totais são recalculados automaticamente pelos hooks (recomputeY0.js) a partir de Arvore e SubparcelaArvore.
+
+## PPCPACTO_Tree_Monitoring_…
+
+- **(5)** _3x3_Subplot_Repeat.json → SubparcelaArvore
+  • Espécies de árvores (use nome científico) → SubparcelaArvore.especieId (via lookup por nome científico)
+  • Tipo de Árvore → SubparcelaArvore.tipoArvore
+  • Número de Árvores desta Espécie → SubparcelaArvore.numeroArvoresEspecie
+  • Observação — não mapeado
+
+- **(3)** _30x30_Plot_Repeat.json → Arvore
+  • Espécies de árvores (use nome científico) → Arvore.especieId (via lookup por nome científico)
+  • Tipo de Árvore → Arvore.tipoArvore
+  • Número da Árvore → Arvore.numeroArvore
+  • Número do Fuste → Arvore.numeroFuste
+  • DAP (cm) da árvore à 1.3m de altura → Arvore.dap_cm
+
+- **(4)** group_un3bb19.json → Arvore (fustes adicionais do mesmo número de árvore)
+  • Número da Árvore → Arvore.numeroArvore
+  • Fuste N. → Arvore.numeroFuste
+  • DAP (cm) à 1.3m → Arvore.dap_cm
+
+- **(6)** _30x30_Plot_Repeat_Planted_10cm.json → ArvorePlantadaDAP10
+  • Espécies de árvores (use nome científico) → ArvorePlantadaDAP10.especieId (via lookup)
+  • Número de Árvores desta Espécie → ArvorePlantadaDAP10.numeroArvores
+  • (Tipo de Árvore) → ArvorePlantadaDAP10.tipoArvore (se existir no JSON; caso contrário, opcional)
+
+- **(9)** Plot_Info_Repeat.json → MidiaAdicionalParcela
+  • Fotos Adicionais (Opcional) → MidiaAdicionalParcela.fotoNome
+  • Fotos Adicionais (Opcional)_URL → MidiaAdicionalParcela.fotoUrl
+  • Arquivos Adicionais (Opcional) → MidiaAdicionalParcela.arquivoNome
+  • Arquivos Adicionais (Opcional)_URL → MidiaAdicionalParcela.arquivoUrl
+  • (Parcela) → MidiaAdicionalParcela.parcelaId via ParcelaMonitoramento.idParcela
+
+---
+
+Observações importantes
+• Campos marcados como “via lookup” exigem tabelas auxiliares já carregadas (ex.: Especie, ParcelaMonitoramento).
+• IDs de Pessoa/Usuário (responsável/organização/submittedBy) dependem de mapeamento externo. Se não houver, deixar nulo.
+• Não mapeamos campos inexistentes nos models (listados acima como “não mapeado”).
