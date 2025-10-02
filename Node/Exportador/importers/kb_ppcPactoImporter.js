@@ -9,6 +9,7 @@ import Pessoa from "../models/pessoa/pessoa.model.js";
 import PessoaFisica from "../models/pessoa/pessoa-fisica.model.js";
 import PessoaJuridica from "../models/pessoa/pessoa-juridica.model.js";
 import MonitoramentoMembro from "../models/kobo/membros.model.js";
+import MidiaAdicionalParcela from "../models/kobo/midia.model.js";
 
 
 /* ==========================================
@@ -261,7 +262,7 @@ export async function kb_importPPC_Pacto_CERT(rows = []) {
         let responsavelColetaId = null;
         const organizacaoNome = row["Nome da Organização"];
         let organizacaoId = null;
-        
+
         if (organizacaoNome && String(organizacaoNome).trim()) {
           organizacaoId = await getOrCreatePessoaJuridicaByNome(organizacaoNome);
         } else {
@@ -418,6 +419,70 @@ export async function kb_importPPC_Pacto_CERT(rows = []) {
         } else {
           console.log(`   ⚠️ Nenhuma subparcela encontrada (linha ${i + 1}), ignorando...`);
         }
+
+        /* ===== 4) Midia Adicional ===== */
+        function cleanStr(x) {
+          const s = (x ?? '').toString().trim();
+          return s.length ? s : null;
+        }
+
+        // Mapeia todos os campos "Foto do vertice" (30x30 e 30x15)
+        function collectVertexPhotos(row) {
+          const entries = [];
+
+          // 30m x 30m — chaves sem sufixo
+          for (let i = 1; i <= 4; i++) {
+            const nomeKey = `Foto do vertice ${i}`;
+            const urlKey  = `Foto do vertice ${i}_URL`;
+            const nome = cleanStr(row[nomeKey]);
+            const url  = cleanStr(row[urlKey]);
+            if (nome || url) entries.push({ fotoNome: nome, fotoUrl: url });
+          }
+
+          // 30m x 15m — chaves com sufixo "_1" (quando existirem)
+          for (let i = 1; i <= 4; i++) {
+            const nomeKey = `Foto do vertice ${i}_1`;
+            const urlKey  = `Foto do vertice ${i}_URL_1`;
+            const nome = cleanStr(row[nomeKey]);
+            const url  = cleanStr(row[urlKey]);
+            if (nome || url) entries.push({ fotoNome: nome, fotoUrl: url });
+          }
+
+          return entries;
+        }
+
+        async function saveMidiasAdicionaisParcela(parcelaId, row) {
+          const items = collectVertexPhotos(row);
+          if (!items.length) return 0;
+
+          let created = 0;
+          // evita duplicar: usa findOrCreate por (parcelaId, fotoNome, fotoUrl)
+          for (const it of items) {
+            await MidiaAdicionalParcela.findOrCreate({
+              where: {
+                parcelaId,
+                fotoNome: it.fotoNome ?? null,
+                fotoUrl: it.fotoUrl ?? null, // envia null se vazio p/ não quebrar isUrl
+              },
+              defaults: {
+                parcelaId,
+                fotoNome: it.fotoNome ?? null,
+                fotoUrl: it.fotoUrl ?? null,
+              },
+            });
+            created++;
+          }
+          return created;
+        }
+
+        // salvar mídias adicionais de vértices da PARCELA
+        const qntMidias = await saveMidiasAdicionaisParcela(parcela.id, row);
+        if (qntMidias) {
+          console.log(`   ↳ Mídias adicionais (vértices) salvas: ${qntMidias}`);
+        } else {
+          console.log("   ↳ Nenhuma mídia adicional de vértice encontrada.");
+        }
+
 
         console.log(`✅ Registro ${i + 1} importado.`);
       } catch (err) {
