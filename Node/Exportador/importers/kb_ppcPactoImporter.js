@@ -284,7 +284,43 @@ export async function kb_importPPC_Pacto_CERT(rows = []) {
         monitoramentoData.responsavelColetaId = responsavelColetaId;
         monitoramentoData.organizacaoId = organizacaoId;
 
-        const monitoramento = await Monitoramento.create(monitoramentoData);
+        // _uuid da planilha
+        const uuidFromSheetRaw = row["_uuid"];
+        const uuidFromSheet = uuidFromSheetRaw && String(uuidFromSheetRaw).trim().toLowerCase();
+
+        // Validação simples de formato UUID v4 (evita "invalid input syntax for type uuid")
+        const UUID_V4_RX = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+        const hasValidUuid = !!(uuidFromSheet && UUID_V4_RX.test(uuidFromSheet));
+
+        let monitoramento = null;
+
+        if (hasValidUuid) {
+          // ✅ Igualdade direta para coluna UUID
+          monitoramento = await Monitoramento.findOne({
+            where: { uuid: uuidFromSheet }, // nada de Op.iLike aqui
+            attributes: ["id", "uuid"],
+          });
+
+          if (monitoramento) {
+            console.log(`   ↔️ Monitoramento já existe para uuid=${uuidFromSheet}. Reutilizando.`);
+          }
+        } else if (uuidFromSheet) {
+          console.warn(`   ⚠️ _uuid com formato inválido: "${uuidFromSheet}". Ignorando como chave.`);
+        }
+
+        // Cria se não encontrou (ou se não veio uuid válido)
+        if (!monitoramento) {
+          const payload = { ...monitoramentoData };
+          if (hasValidUuid) payload.uuid = uuidFromSheet; // banco aceita direto porque é UUID válido
+
+          monitoramento = await Monitoramento.create(payload);
+          console.log(
+            hasValidUuid
+              ? `   ✅ Monitoramento criado com uuid=${uuidFromSheet}.`
+              : `   ✅ Monitoramento criado (uuid gerado automaticamente).`
+          );
+        }
+
 
         // vincula também na tabela de membros (sempre que houver pessoa)
         if (responsavelColetaId) {

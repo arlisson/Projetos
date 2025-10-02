@@ -2,7 +2,7 @@
 
 ## CERT_Database_MonitoringY0_CBCA01_02
 
-- **(2)** Controle.json → (informativo de parcela de controle)
+- **(2)** Controle.json → (informativo de parcela de controle - NÃO VALE NADA)
   • Parcela → ParcelaMonitoramento.idParcela
   • (demais colunas deste arquivo não têm coluna correspondente nos models e NÃO serão importadas)
     - ID_Sitio — não mapeado
