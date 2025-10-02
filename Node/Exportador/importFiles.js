@@ -10,6 +10,7 @@ import { importRelatoriosSitioFromArray } from "./importers/relatorioSitioImport
 import { importGeometriaSitio } from "./importers/importGeometriaSitio.js";
 import { kb_importPPC_Pacto_CERT } from "./importers/kb_ppcPactoImporter.js";
 import { kb_importY0_Database } from "./importers/kb_Y0DatabaseImporter.js";
+import { kb_importCoord_PPC } from "./importers/kb_coordPpcImporter.js";
 
 //TODO: Escrever o importador de atualizações.
 //TODO: Escrever a regex para generalizar os nomes dos projetos e sitios.
@@ -67,7 +68,9 @@ export async function importFiles(files = []) {
             console.log(`Y0_Database → inserted: ${inserted}, updated: ${updated}, skipped: ${skipped}`);
 
           } else if (sheetName.toLowerCase().includes("coord_ppc")) {
-            console.log('Importando dados de Coord_PPC...');
+            console.log("Importando dados de Coord_PPC...");
+            const { inserted, errors } = await kb_importCoord_PPC(normalized);
+            console.log(`Coord_PPC → inserted: ${inserted}, errors: ${errors}`);
           } else if (sheetName.toLowerCase().includes("coord_pacto")) {
             console.log('Importando dados de Coord_Pacto...');
           } else {
