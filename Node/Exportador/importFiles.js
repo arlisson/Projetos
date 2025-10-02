@@ -1,6 +1,6 @@
 import fs from "fs";
 import sequelize from "./config/postgres.config.js";
-import { normalizeKeys } from "./utils/normalizeKeys.js";
+import { normalizeKeys, normalizePPCPACTO } from "./utils/normalizeKeys.js";
 import { normalizeSitesData } from "./utils/normalizeSitesData.js";
 import { import_csv, import_xlsx } from "./utils/fileImporter.js";
 import { importProjetosFromArray } from "./importers/projetoImporter.js";
@@ -57,10 +57,11 @@ export async function importFiles(files = []) {
           } else if (file.toLowerCase().includes("site reports")) {
             await importRelatoriosSitioFromArray(normalized);
 
-          }else if (sheetName.toLowerCase().includes("ppc_pacto_cert")) { 
+          } else if (sheetName.toLowerCase().includes("ppc_pacto_cert") || sheetName.toLowerCase().includes("ppc_pacto")) {
               console.log('Importando dados do PPC_Pacto_CERT...');
               await kb_importPPC_Pacto_CERT(normalized);
-          }else if (sheetName.toLowerCase().includes("controle")) {
+
+          } else if (sheetName.toLowerCase().includes("controle")) {
             console.log('Importando dados de Controle...');
           } else if (sheetName.toLowerCase().includes("y0_database")) {
             
