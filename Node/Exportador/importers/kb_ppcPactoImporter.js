@@ -7,14 +7,9 @@ import MonitoramentoEspecieNativa from "../models/kobo/monitoramento.especie.nat
 import MonitoramentoEspecieInvasora from "../models/kobo/monitoramento.especie.invasora.model.js";
 import Pessoa from "../models/pessoa/pessoa.model.js";
 import PessoaFisica from "../models/pessoa/pessoa-fisica.model.js";
+import PessoaJuridica from "../models/pessoa/pessoa-juridica.model.js";
 import MonitoramentoMembro from "../models/kobo/membros.model.js";
 
-
-/* ==========================================
-   Config
-========================================== */
-const REQUIRE_RESPONSAVEL = true; // se sua coluna aceitar NULL, troque para false
-const DEFAULT_RESPONSAVEL_NOME = "Responsável desconhecido (import)";
 
 /* ==========================================
    Helpers gerais
@@ -50,7 +45,6 @@ const monitoramentoMap = {
    Pessoa / PessoaFisica (sem User)
 ========================================== */
 const pessoaByNomeCache = new Map(); // nome lower → pessoa_id
-let defaultPessoaIdCache = null;
 
 /**
  * Procura/Cria cadeia correta SEM User:
@@ -87,27 +81,32 @@ let defaultPessoaIdCache = null;
     return pessoa.id;
   }
 
+  async function getOrCreatePessoaJuridicaByNome(rawName) {
+    const normalized = String(rawName || '').trim();
+    if (!normalized) return null;
 
-async function getDefaultPessoaId() {
-  if (defaultPessoaIdCache) return defaultPessoaIdCache;
+    const key = normalized.toLowerCase();
+    if (pessoaByNomeCache.has(key)) return pessoaByNomeCache.get(key);
 
-  // tenta pela PF.nome primeiro
-  let pf = await PessoaFisica.findOne({
-    where: { nome: { [Op.iLike]: DEFAULT_RESPONSAVEL_NOME } },
-    attributes: ["pessoa_id"],
-  });
-  if (pf?.pessoa_id) {
-    defaultPessoaIdCache = pf.pessoa_id;
-    return defaultPessoaIdCache;
+    const juridica = await PessoaJuridica.findOne({
+      where: { razao_social: { [Op.iLike]: normalized } }, // match case-insensitive
+      attributes: ['pessoa_id'],
+    });
+
+    if (juridica?.pessoa_id) {
+      pessoaByNomeCache.set(key, juridica.pessoa_id);
+      return juridica.pessoa_id;
+    }
+
+    const pessoa = await Pessoa.create({});
+    await PessoaJuridica.create({ pessoa_id: pessoa.id, razao_social: normalized });
+
+    pessoaByNomeCache.set(key, pessoa.id);
+    return pessoa.id;
   }
 
-  // cria Pessoa + PessoaFisica padrão
-  const pessoa = await Pessoa.create({});
-  await PessoaFisica.create({ pessoa_id: pessoa.id, nome: DEFAULT_RESPONSAVEL_NOME });
 
-  defaultPessoaIdCache = pessoa.id;
-  return defaultPessoaIdCache;
-}
+
 
 /* ==========================================
    Espécies (parser + criação automática)
@@ -260,6 +259,14 @@ export async function kb_importPPC_Pacto_CERT(rows = []) {
         /* ===== 0) Pessoa (Responsável pela Coleta) ===== */
         const responsavelNome = row["Nome do Responsável pela Coleta"];
         let responsavelColetaId = null;
+        const organizacaoNome = row["Nome da Organização"];
+        let organizacaoId = null;
+        
+        if (organizacaoNome && String(organizacaoNome).trim()) {
+          organizacaoId = await getOrCreatePessoaJuridicaByNome(organizacaoNome);
+        } else {
+          organizacaoId = null;
+        }
 
         if (responsavelNome && String(responsavelNome).trim()) {
           responsavelColetaId = await getOrCreatePessoaFisicaByNome(responsavelNome);
@@ -274,6 +281,7 @@ export async function kb_importPPC_Pacto_CERT(rows = []) {
         }
         monitoramentoData.periodoAmostragem = mapPeriodo(row["Período de Amostragem"]);
         monitoramentoData.responsavelColetaId = responsavelColetaId;
+        monitoramentoData.organizacaoId = organizacaoId;
 
         const monitoramento = await Monitoramento.create(monitoramentoData);
 
@@ -291,6 +299,20 @@ export async function kb_importPPC_Pacto_CERT(rows = []) {
             },
           });
         }
+        if (organizacaoId) {
+          await MonitoramentoMembro.findOrCreate({
+            where: {
+              monitoramento_id: monitoramento.id,
+              pessoa_id: organizacaoId,
+            },
+            defaults: {
+              monitoramento_id: monitoramento.id,
+              pessoa_id: organizacaoId,
+              funcao: "Responsável pela coleta",
+            },
+          });
+        }
+        
 
         /* ===== 1.1) ESPÉCIES ===== */
         const campoNativas =
