@@ -12,6 +12,11 @@ import { kb_importPPC_Pacto_CERT } from "./importers/kb_ppcPactoImporter.js";
 import { kb_importY0_Database } from "./importers/kb_Y0DatabaseImporter.js";
 import { kb_importCoord_PPC } from "./importers/kb_coordPpcImporter.js";
 import { kb_importCoord_PACTO } from "./importers/kb_coordPactoImporter.js";
+import { kb_importPlotInfoRepeat } from "./importers/kb_importPlotInfoRepeat.js";
+import { kb_importPlotRepeatPlanted10 } from "./importers/kb_importPlotRepeatPlanted10.js";
+import { kb_stagePlotRepeat } from "./importers/kb_stagePlotRepeat.js";
+import { kb_importFustesFromGroup } from "./importers/kb_importFustesFromGroup.js";
+import { kb_import3x3SubplotRepeat } from "./importers/kb_import3x3SubplotRepeat.js";
 
 //TODO: Escrever o importador de atualizações.
 //TODO: Escrever a regex para generalizar os nomes dos projetos e sitios.
@@ -77,8 +82,43 @@ export async function importFiles(files = []) {
             console.log("Importando dados de Coord_PACTO...");
             const { inserted, skippedDuplicates, errors, unresolved } = await kb_importCoord_PACTO(normalized);
             console.log(`Coord_PACTO → inserted: ${inserted}, skippedDuplicates: ${skippedDuplicates}, errors: ${errors}, unresolved: ${unresolved}`);
-            
-          } else {
+
+          } else if (sheetName.toLowerCase().includes("plot_info_repeat")) {
+            console.log("Importando Plot_Info_Repeat → MidiaAdicionalParcela...");
+            const { inserted, skippedDuplicates, unresolved, errors } =
+              await kb_importPlotInfoRepeat(normalized);
+            console.log(
+              `Plot_Info_Repeat → inserted: ${inserted}, skippedDuplicates: ${skippedDuplicates}, unresolved: ${unresolved}, errors: ${errors}`
+            );
+            } else if (sheetName.toLowerCase().includes("30x30_plot_repeat_planted_10cm")) {
+              console.log("Importando 30x30_Plot_Repeat_Planted_10cm → ArvorePlantadaDAP10...");
+              const { inserted, updated, skippedZero, unresolved, errors } =
+                await kb_importPlotRepeatPlanted10(normalized);
+              console.log(
+                `Planted_10cm → inserted: ${inserted}, updated: ${updated}, skippedZero: ${skippedZero}, unresolved: ${unresolved}, errors: ${errors}`
+              );
+
+          } else if (sheetName.toLowerCase().includes("30x30_plot_repeat")) {
+            console.log("Staging 30x30_Plot_Repeat...");
+            const { staged, unresolved, noSpecies, errors } = await kb_stagePlotRepeat(normalized);
+            console.log(`30x30_Plot_Repeat stage → staged: ${staged}, unresolved: ${unresolved}, noSpecies: ${noSpecies}, errors: ${errors}`);
+
+          } else if (sheetName.toLowerCase().includes("group_un3bb19")) {
+            console.log("Importando group_un3bb19 (fustes) → Arvore...");
+            const { inserted, unresolvedStage, skippedInvalid, errors, skippedDuplicates } =
+              await kb_importFustesFromGroup(normalized);
+            console.log(`group_un3bb19 → inserted: ${inserted}, unresolvedStage: ${unresolvedStage}, skippedInvalid: ${skippedInvalid}, errors: ${errors}, skippedDuplicates: ${skippedDuplicates}`);
+
+
+
+         } else if (sheetName.toLowerCase().includes("3x3_subplot_repeat")) {
+          console.log("Importando 3x3_Subplot_Repeat → SubparcelaMonitoramento...");
+          const { insertedArvores, insertedSubparcelas, updatedSubparcelas, skippedSubparcelas, unresolvedSubparcelas, errors } =
+            await kb_import3x3SubplotRepeat(normalized);
+          console.log(
+            `3x3_Subplot_Repeat → insertedArvores: ${insertedArvores}, insertedSubparcelas: ${insertedSubparcelas}, updatedSubparcelas: ${updatedSubparcelas}, skippedSubparcelas: ${skippedSubparcelas}, unresolvedSubparcelas: ${unresolvedSubparcelas}, errors: ${errors}`
+          );
+        } else {
             console.warn(`⚠️ Aba ignorada: ${sheetName} em ${file}`);
           }
         }

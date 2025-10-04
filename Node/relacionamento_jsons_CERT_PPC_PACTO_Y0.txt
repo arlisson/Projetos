@@ -1,0 +1,55 @@
+=== Relacionamento entre JSONs (CERT / PPC / PACTO / Y0) ===
+
+- Arquivo: CERT_Database_MonitoringY0_CBCA01_02.Coord_PPC.json
+  • Registros: 99
+  • Campos: Data e Hora, Elevação, Latitude (SIRGAS 2000), Latitude (WGS 84), Longitude (SIRGAS 2000), Longitude (WGS 84), Parcela
+
+- Arquivo: CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json
+  • Registros: 11
+  • Campos: **Existem árvores de 1-9,9cm DAP na parcela de 3m x 3m?**, **Existem árvores de 1-9,9cm DAP na parcela de 3m x 3m?**_1, **Existem árvores de 1-9,9cm DAP na parcela de 3m x 3m?**_2, **Número de amostragens necessárias para a parcela de 3m x 3m**, **Número de amostragens necessárias para a parcela de 3m x 3m***, **Número de amostragens necessárias para a parcela de 3m x 3m**_1, Centróide da subparcela de 3m x 3m, Centróide da subparcela de 3m x 3m_1, Descrição da localização da subparcela (3mx3m) dentro da parcela maior (30mx30m), Descrição da localização da subparcela (3mx3m) dentro da parcela maior (30mx30m)_1, Descrição do espaçamento de plantio dentro da parcela, Descrição do espaçamento de plantio dentro da parcela_1, Descrição do espaçamento de plantio dentro da parcela_2, Diagrama da Parcela 30mx15m, Diagrama de Cobertura de Copa, Diagrama de Parcelas de Monitoramento, Estrato, Estrato_1, Foto da subparcela 3mx3m, Foto da subparcela 3mx3m_1, Foto da subparcela 3mx3m_URL, Foto da subparcela 3mx3m_URL_1, Foto do vertice 1, Foto do vertice 1_1, Foto do vertice 1_URL, Foto do vertice 1_URL_1, Foto do vertice 2, Foto do vertice 2_1, Foto do vertice 2_URL, Foto do vertice 2_URL_1 ...
+
+- Arquivo: CERT_Database_MonitoringY0_CBCA01_02.Y0_Database.json
+  • Registros: 239
+  • Campos: Arvore_Tipo, Classe_DAP, DAP (diam), Fuste N., ID_Sitio, Nome_Científico, Nome_Sitio, Número da Árvore, Obs, Parcela, Quantidade, Tamanho_parcela
+
+- Arquivo: CERT_Database_MonitoringY0_CBCA01_02.Coord_PACTO.json
+  • Registros: 44
+  • Campos: Notes on PACTO, Parcela, Plot ID, Vértices PACTO, X - Latitude (SIRGAS 2000 UTM 23S), Y - Longitude (SIRGAS 2000 UTM 23S)
+
+- Arquivo: CERT_Database_MonitoringY0_CBCA01_02.Controle.json
+  • Registros: 1
+  • Campos: Arvore_Tipo, DAP (diam), Fuste N., ID_Sitio, Nome_Científico, Nome_Sitio, Número da Árvore, Obs, Parcela, Quantidade, Tamanho_parcela
+
+
+=== Chaves de ligação sugeridas ===
+1) PPC_Pacto_CERT ↔ Y0_Database
+   JOIN ON (PPC_Pacto_CERT['ID do Sítio'] = Y0_Database['ID_Sitio'])
+        AND (zeroPad(PPC_Pacto_CERT['Identificação (ID) da Parcela de Monitoramento de Árvores']) = zeroStrip(Y0_Database['Parcela']))
+   Observação: 'Parcela' no Y0 pode estar como '1' enquanto no PPC_Pacto pode estar como '01'. Normalizar para comparar.
+
+2) Coord_PPC ↔ PPC_Pacto_CERT
+   Opção A (recomendado): por proximidade geográfica (WGS84).
+     - Calcular o centróide dos 4 vértices 30x30 do PPC_Pacto e casar com o ponto mais próximo em Coord_PPC.
+   Opção B (textual): normalizar 'Parcela' de Coord_PPC removendo sufixos (30x30, 3x3, 4x25, -Vn) e usar o rótulo base como idParcela.
+     - O seu importador já implementa essa normalização (normalizeParcelaLabel).
+   Na prática, use A para robustez e B como fallback.
+
+3) Coord_PACTO ↔ PPC_Pacto_CERT
+   - Mesma lógica do item 2, mas usando X/Y SIRGAS 2000 UTM 23S quando disponíveis.
+
+4) Controle ↔ Demais
+   - 'Controle' geralmente traz metadados de campanha; relacione por data/período e, se houver, por 'Parcela' textual.
+
+
+=== Exemplos detectados automaticamente (proximidade geográfica) ===
+- Site 2050 (Y0: 'CBCA 02'), Parcela 07 ↔ Coord_PPC 'CBCA-CONTROLE-30X30-V2' | distância ≈ 6132531 m | centróide (-8.911225, -64.086582)
+- Site 2049 (Y0: 'CBCA-01'), Parcela 02 ↔ Coord_PPC 'CBCA-CONTROLE-30X30-V2' | distância ≈ 6132573 m | centróide (-8.91085, -64.069715)
+- Site 2050 (Y0: 'CBCA 02'), Parcela 09 ↔ Coord_PPC 'CBCA-CONTROLE-30X30-V2' | distância ≈ 6132711 m | centróide (-8.909604, -64.083911)
+- Site 2050 (Y0: 'CBCA 02'), Parcela 06 ↔ Coord_PPC 'CBCA-CONTROLE-30X30-V2' | distância ≈ 6132736 m | centróide (-8.909382, -64.086037)
+- Site 2049 (Y0: 'CBCA-01'), Parcela 01 ↔ Coord_PPC 'CBCA-CONTROLE-30X30-V2' | distância ≈ 6132771 m | centróide (-8.909062, -64.06945)
+- Site 2050 (Y0: 'CBCA 02'), Parcela 10 ↔ Coord_PPC 'CBCA-CONTROLE-30X30-V2' | distância ≈ 6132986 m | centróide (-8.907134, -64.086857)
+- Site 2050 (Y0: 'CBCA 02'), Parcela 08 ↔ Coord_PPC 'CBCA-CONTROLE-30X30-V2' | distância ≈ 6133079 m | centróide (-8.906298, -64.083612)
+- Site 2050 (Y0: 'CBCA 02'), Parcela 05 ↔ Coord_PPC 'CBCA-CONTROLE-30X30-V2' | distância ≈ 6133180 m | centróide (-8.905384, -64.075818)
+- Site 2050 (Y0: 'CBCA 02'), Parcela 04 ↔ Coord_PPC 'CBCA-CONTROLE-30X30-V2' | distância ≈ 6133247 m | centróide (-8.904789, -64.073865)
+- Site 2050 (Y0: 'CBCA 02'), Parcela 03 ↔ Coord_PPC 'CBCA-CONTROLE-30X30-V2' | distância ≈ 6133304 m | centróide (-8.904273, -64.077606)
+- Site 2050 (Y0: 'desconhecido'), Parcela Parcela controle ↔ Coord_PPC 'CBCA-CONTROLE-30X30-V2' | distância ≈ 6134425 m | centróide (-8.894187, -64.062542)

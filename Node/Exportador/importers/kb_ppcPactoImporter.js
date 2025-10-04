@@ -522,7 +522,7 @@ export async function kb_importPPC_Pacto_CERT(rows = []) {
 
         console.log(`✅ Registro ${i + 1} importado.`);
       } catch (err) {
-        console.error(`❌ Erro na linha ${i + 1}:`, {
+        console.error(`❌ kb_ppcPactoImporter Erro na linha ${i + 1}:`, {
           name: err.name,
           message: err.message,
           details: err.errors ? err.errors.map((e) => e.message) : null,

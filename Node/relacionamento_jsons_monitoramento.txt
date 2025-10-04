@@ -1,0 +1,1243 @@
+RELACIONAMENTO ENTRE JSONs (por nomes de campos normalizados)
+
+Legenda: normalização = minúsculas, sem acentos, caracteres não alfanuméricos viram '_'
+
+========================================================================================
+
+# POSSÍVEIS RELAÇÕES ENTRE ARQUIVOS (mesmo 'nome' de campo normalizado)
+
+- Campo normalizado: 
+    • CERT_Database_MonitoringY0_CBCA01_02.Controle.json — exemplos de rótulos: 
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: , )
+    • CERT_Database_MonitoringY0_CBCA01_02.Y0_Database.json — exemplos de rótulos: 
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: , )
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).group_un3bb19.json — exemplos de rótulos: 
+
+- Campo normalizado: 1_cobertura_de_copa
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: 1: Cobertura de copa (%)
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: 1: Cobertura de copa (%)
+
+- Campo normalizado: 1_conservacao_do_solo
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: 1 Conservação do solo
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: 1 Conservação do solo
+
+- Campo normalizado: 1_identificacao_de_especies_nativas_plantadas_de_recobrimento
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: 1: Identificação de espécies nativas plantadas de recobrimento
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: 1: Identificação de espécies nativas plantadas de recobrimento
+
+- Campo normalizado: 2_conservacao_do_solo
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: 2 Conservação do solo
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: 2 Conservação do solo
+
+- Campo normalizado: 2_selecione_o_nivel_de_especies_invasoras_que_melhor_corresponda_a_condicao_da_sua_parcela
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: 2: Selecione o nível de espécies invasoras que melhor corresponda à condição da sua parcela
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: 2: Selecione o nível de espécies invasoras que melhor corresponda à condição da sua parcela
+
+- Campo normalizado: 3m_de_altura
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat.json — exemplos de rótulos: 3m de altura
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).group_un3bb19.json — exemplos de rótulos: 3m de altura
+
+- Campo normalizado: 4
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: 4
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: 4
+
+- Campo normalizado: arvore_tipo
+    • CERT_Database_MonitoringY0_CBCA01_02.Controle.json — exemplos de rótulos: Arvore_Tipo
+    • CERT_Database_MonitoringY0_CBCA01_02.Y0_Database.json — exemplos de rótulos: Arvore_Tipo
+
+- Campo normalizado: ataque_de_formigas_cortadeiras_e_outros_herbivoros
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos:  Ataque de formigas-cortadeiras e outros herbívoros
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos:  Ataque de formigas-cortadeiras e outros herbívoros
+
+- Campo normalizado: centroide_da_subparcela_de_3m_x_3m
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Centróide da subparcela de 3m x 3m
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Centróide da subparcela de 3m x 3m
+
+- Campo normalizado: centroide_da_subparcela_de_3m_x_3m_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Centróide da subparcela de 3m x 3m_1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Centróide da subparcela de 3m x 3m_1
+
+- Campo normalizado: centroide_da_subparcela_de_3m_x_3m_altitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Centróide da subparcela de 3m x 3m_altitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Centróide da subparcela de 3m x 3m_altitude
+
+- Campo normalizado: centroide_da_subparcela_de_3m_x_3m_altitude_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Centróide da subparcela de 3m x 3m_altitude_1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Centróide da subparcela de 3m x 3m_altitude_1
+
+- Campo normalizado: centroide_da_subparcela_de_3m_x_3m_latitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Centróide da subparcela de 3m x 3m_latitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Centróide da subparcela de 3m x 3m_latitude
+
+- Campo normalizado: centroide_da_subparcela_de_3m_x_3m_latitude_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Centróide da subparcela de 3m x 3m_latitude_1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Centróide da subparcela de 3m x 3m_latitude_1
+
+- Campo normalizado: centroide_da_subparcela_de_3m_x_3m_longitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Centróide da subparcela de 3m x 3m_longitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Centróide da subparcela de 3m x 3m_longitude
+
+- Campo normalizado: centroide_da_subparcela_de_3m_x_3m_longitude_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Centróide da subparcela de 3m x 3m_longitude_1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Centróide da subparcela de 3m x 3m_longitude_1
+
+- Campo normalizado: centroide_da_subparcela_de_3m_x_3m_precision
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Centróide da subparcela de 3m x 3m_precision
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Centróide da subparcela de 3m x 3m_precision
+
+- Campo normalizado: centroide_da_subparcela_de_3m_x_3m_precision_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Centróide da subparcela de 3m x 3m_precision_1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Centróide da subparcela de 3m x 3m_precision_1
+
+- Campo normalizado: clique_no_botao_para_adicionar_mais_especies_de_arvores_ou_mais_combinacoes_de_arvores_tipos
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat.json — exemplos de rótulos: Clique no botão '+' para adicionar mais espécies de árvores ou mais combinações de árvores/tipos
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._3x3_Subplot_Repeat.json — exemplos de rótulos: Clique no botão '+' para adicionar mais espécies de árvores ou mais combinações de árvores/tipos
+
+- Campo normalizado: compactacao_do_solo
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos:  Compactação do solo
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos:  Compactação do solo
+
+- Campo normalizado: dap_diam
+    • CERT_Database_MonitoringY0_CBCA01_02.Controle.json — exemplos de rótulos: DAP (diam)
+    • CERT_Database_MonitoringY0_CBCA01_02.Y0_Database.json — exemplos de rótulos: DAP (diam)
+
+- Campo normalizado: descricao_da_localizacao_da_subparcela_3mx3m_dentro_da_parcela_maior_30mx30m
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Descrição da localização da subparcela (3mx3m) dentro da parcela maior (30mx30m)
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Descrição da localização da subparcela (3mx3m) dentro da parcela maior (30mx30m)
+
+- Campo normalizado: descricao_da_localizacao_da_subparcela_3mx3m_dentro_da_parcela_maior_30mx30m_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Descrição da localização da subparcela (3mx3m) dentro da parcela maior (30mx30m)_1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Descrição da localização da subparcela (3mx3m) dentro da parcela maior (30mx30m)_1
+
+- Campo normalizado: descricao_do_espacamento_de_plantio_dentro_da_parcela
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Descrição do espaçamento de plantio dentro da parcela
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Descrição do espaçamento de plantio dentro da parcela
+
+- Campo normalizado: descricao_do_espacamento_de_plantio_dentro_da_parcela_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Descrição do espaçamento de plantio dentro da parcela_1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Descrição do espaçamento de plantio dentro da parcela_1
+
+- Campo normalizado: descricao_do_espacamento_de_plantio_dentro_da_parcela_2
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Descrição do espaçamento de plantio dentro da parcela_2
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Descrição do espaçamento de plantio dentro da parcela_2
+
+- Campo normalizado: diagrama_da_parcela_30mx15m
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Diagrama da Parcela 30mx15m
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Diagrama da Parcela 30mx15m
+
+- Campo normalizado: diagrama_de_cobertura_de_copa
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Diagrama de Cobertura de Copa
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Diagrama de Cobertura de Copa
+
+- Campo normalizado: diagrama_de_parcelas_de_monitoramento
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Diagrama de Parcelas de Monitoramento
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Diagrama de Parcelas de Monitoramento
+
+- Campo normalizado: especies_de_arvores_use_nome_cientifico
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat.json — exemplos de rótulos: Espécies de árvores (use nome científico)
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat_Planted_10cm.json — exemplos de rótulos: Espécies de árvores (use nome científico)
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._3x3_Subplot_Repeat.json — exemplos de rótulos: Espécies de árvores (use nome científico)
+
+- Campo normalizado: especies_invasoras_arboreas
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos:  Espécies invasoras arbóreas
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos:  Espécies invasoras arbóreas
+
+- Campo normalizado: estrato
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Estrato
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Estrato
+
+- Campo normalizado: estrato_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Estrato_1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Estrato_1
+
+- Campo normalizado: existem_arvores_de_1_9_9cm_dap_na_parcela_de_3m_x_3m
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: **Existem árvores de 1-9,9cm DAP na parcela de 3m x 3m?**
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: **Existem árvores de 1-9,9cm DAP na parcela de 3m x 3m?**
+
+- Campo normalizado: existem_arvores_de_1_9_9cm_dap_na_parcela_de_3m_x_3m_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: **Existem árvores de 1-9,9cm DAP na parcela de 3m x 3m?**_1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: **Existem árvores de 1-9,9cm DAP na parcela de 3m x 3m?**_1
+
+- Campo normalizado: existem_arvores_de_1_9_9cm_dap_na_parcela_de_3m_x_3m_2
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: **Existem árvores de 1-9,9cm DAP na parcela de 3m x 3m?**_2
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: **Existem árvores de 1-9,9cm DAP na parcela de 3m x 3m?**_2
+
+- Campo normalizado: fertilidade_quimica_e_textura_do_solo
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos:  Fertilidade química e textura do solo
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos:  Fertilidade química e textura do solo
+
+- Campo normalizado: foto_da_subparcela_3mx3m
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Foto da subparcela 3mx3m
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Foto da subparcela 3mx3m
+
+- Campo normalizado: foto_da_subparcela_3mx3m_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Foto da subparcela 3mx3m_1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Foto da subparcela 3mx3m_1
+
+- Campo normalizado: foto_da_subparcela_3mx3m_url
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Foto da subparcela 3mx3m_URL
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Foto da subparcela 3mx3m_URL
+
+- Campo normalizado: foto_da_subparcela_3mx3m_url_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Foto da subparcela 3mx3m_URL_1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Foto da subparcela 3mx3m_URL_1
+
+- Campo normalizado: foto_do_vertice_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Foto do vertice 1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Foto do vertice 1
+
+- Campo normalizado: foto_do_vertice_1_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Foto do vertice 1_1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Foto do vertice 1_1
+
+- Campo normalizado: foto_do_vertice_1_url
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Foto do vertice 1_URL
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Foto do vertice 1_URL
+
+- Campo normalizado: foto_do_vertice_1_url_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Foto do vertice 1_URL_1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Foto do vertice 1_URL_1
+
+- Campo normalizado: foto_do_vertice_2
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Foto do vertice 2
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Foto do vertice 2
+
+- Campo normalizado: foto_do_vertice_2_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Foto do vertice 2_1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Foto do vertice 2_1
+
+- Campo normalizado: foto_do_vertice_2_url
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Foto do vertice 2_URL
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Foto do vertice 2_URL
+
+- Campo normalizado: foto_do_vertice_2_url_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Foto do vertice 2_URL_1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Foto do vertice 2_URL_1
+
+- Campo normalizado: foto_do_vertice_3
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Foto do vertice 3
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Foto do vertice 3
+
+- Campo normalizado: foto_do_vertice_3_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Foto do vertice 3_1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Foto do vertice 3_1
+
+- Campo normalizado: foto_do_vertice_3_url
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Foto do vertice 3_URL
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Foto do vertice 3_URL
+
+- Campo normalizado: foto_do_vertice_3_url_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Foto do vertice 3_URL_1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Foto do vertice 3_URL_1
+
+- Campo normalizado: foto_do_vertice_4
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Foto do vertice 4
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Foto do vertice 4
+
+- Campo normalizado: foto_do_vertice_4_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Foto do vertice 4_1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Foto do vertice 4_1
+
+- Campo normalizado: foto_do_vertice_4_url
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Foto do vertice 4_URL
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Foto do vertice 4_URL
+
+- Campo normalizado: foto_do_vertice_4_url_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Foto do vertice 4_URL_1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Foto do vertice 4_URL_1
+
+- Campo normalizado: ha_arvores_10cm_dap_presentes_na_parcela
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Há árvores >10cm DAP presentes na parcela?
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Há árvores >10cm DAP presentes na parcela?
+
+- Campo normalizado: ha_arvores_10cm_dap_presentes_na_parcela_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Há árvores >10cm DAP presentes na parcela?_1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Há árvores >10cm DAP presentes na parcela?_1
+
+- Campo normalizado: hora_de_fim
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Hora de Fim
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Hora de Fim
+
+- Campo normalizado: hora_de_inicio
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Hora de Início
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Hora de Início
+
+- Campo normalizado: id
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _id
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _id
+
+- Campo normalizado: id_do_sitio
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: ID do Sítio
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: ID do Sítio
+
+- Campo normalizado: id_sitio
+    • CERT_Database_MonitoringY0_CBCA01_02.Controle.json — exemplos de rótulos: ID_Sitio
+    • CERT_Database_MonitoringY0_CBCA01_02.Y0_Database.json — exemplos de rótulos: ID_Sitio
+
+- Campo normalizado: identificacao_id_da_parcela_de_monitoramento_de_arvores
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Identificação (ID) da Parcela de Monitoramento de Árvores
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Identificação (ID) da Parcela de Monitoramento de Árvores
+
+- Campo normalizado: identificacao_id_da_parcela_de_monitoramento_de_arvores_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Identificação (ID) da Parcela de Monitoramento de Árvores_1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Identificação (ID) da Parcela de Monitoramento de Árvores_1
+
+- Campo normalizado: index
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _index
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _index
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).Plot_Info_Repeat.json — exemplos de rótulos: _index
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat.json — exemplos de rótulos: _index
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat_Planted_10cm.json — exemplos de rótulos: _index
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._3x3_Subplot_Repeat.json — exemplos de rótulos: _index
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).group_un3bb19.json — exemplos de rótulos: _index
+
+- Campo normalizado: indicadores_do_ppc
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Indicadores do PPC
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Indicadores do PPC
+
+- Campo normalizado: insira_uma_data
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Insira uma data
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Insira uma data
+
+- Campo normalizado: nome_cientifico
+    • CERT_Database_MonitoringY0_CBCA01_02.Controle.json — exemplos de rótulos: Nome_Científico
+    • CERT_Database_MonitoringY0_CBCA01_02.Y0_Database.json — exemplos de rótulos: Nome_Científico
+
+- Campo normalizado: nome_da_organizacao
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Nome da Organização
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Nome da Organização
+
+- Campo normalizado: nome_do_formulario
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Nome do formulário
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Nome do formulário
+
+- Campo normalizado: nome_do_responsavel_pela_coleta
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Nome do Responsável pela Coleta
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Nome do Responsável pela Coleta
+
+- Campo normalizado: nome_sitio
+    • CERT_Database_MonitoringY0_CBCA01_02.Controle.json — exemplos de rótulos: Nome_Sitio
+    • CERT_Database_MonitoringY0_CBCA01_02.Y0_Database.json — exemplos de rótulos: Nome_Sitio
+
+- Campo normalizado: notes
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _notes
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _notes
+
+- Campo normalizado: numero_da_arvore
+    • CERT_Database_MonitoringY0_CBCA01_02.Controle.json — exemplos de rótulos: Número da Árvore
+    • CERT_Database_MonitoringY0_CBCA01_02.Y0_Database.json — exemplos de rótulos: Número da Árvore
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat.json — exemplos de rótulos: Número da Árvore
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).group_un3bb19.json — exemplos de rótulos: Número da Árvore
+
+- Campo normalizado: numero_de_amostragens_necessarias_para_a_parcela_de_3m_x_3m
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: **Número de amostragens necessárias para a parcela de 3m x 3m**, **Número de amostragens necessárias para a parcela de 3m x 3m***
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: **Número de amostragens necessárias para a parcela de 3m x 3m**, **Número de amostragens necessárias para a parcela de 3m x 3m***
+
+- Campo normalizado: numero_de_amostragens_necessarias_para_a_parcela_de_3m_x_3m_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: **Número de amostragens necessárias para a parcela de 3m x 3m**_1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: **Número de amostragens necessárias para a parcela de 3m x 3m**_1
+
+- Campo normalizado: numero_de_arvores_desta_especie
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat_Planted_10cm.json — exemplos de rótulos: Número de Árvores desta Espécie
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._3x3_Subplot_Repeat.json — exemplos de rótulos: Número de Árvores desta Espécie
+
+- Campo normalizado: numero_de_reamostragens_necessarias_para_parcelas_30m_x_15m
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Número de Reamostragens Necessárias para Parcelas 30m x 15m
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Número de Reamostragens Necessárias para Parcelas 30m x 15m
+
+- Campo normalizado: numero_de_reamostragens_necessarias_para_parcelas_30m_x_30m
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Número de Reamostragens Necessárias para Parcelas 30m x 30m
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Número de Reamostragens Necessárias para Parcelas 30m x 30m
+
+- Campo normalizado: obs
+    • CERT_Database_MonitoringY0_CBCA01_02.Controle.json — exemplos de rótulos: Obs
+    • CERT_Database_MonitoringY0_CBCA01_02.Y0_Database.json — exemplos de rótulos: Obs
+
+- Campo normalizado: observacao
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Observação
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Observação
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._3x3_Subplot_Repeat.json — exemplos de rótulos: Observação
+
+- Campo normalizado: observacao_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Observação_1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Observação_1
+
+- Campo normalizado: observacao_2
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Observação_2
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Observação_2
+
+- Campo normalizado: observacao_3
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Observação_3
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Observação_3
+
+- Campo normalizado: observacoes
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Observações
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Observações
+
+- Campo normalizado: ocorrencia_de_fogo_incendios
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos:  Ocorrência de fogo (Incêndios)
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos:  Ocorrência de fogo (Incêndios)
+
+- Campo normalizado: ocorrencia_de_fogo_incendios_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos:  Ocorrência de fogo (Incêndios)_1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos:  Ocorrência de fogo (Incêndios)_1
+
+- Campo normalizado: ocorrencia_de_fogo_incendios_url
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos:  Ocorrência de fogo (Incêndios)_URL
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos:  Ocorrência de fogo (Incêndios)_URL
+
+- Campo normalizado: outros_filtros_edaficos
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos:  Outros filtros edáficos
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos:  Outros filtros edáficos
+
+- Campo normalizado: pacto_4x25_canopycover
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: PACTO_4x25_CanopyCover
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: PACTO_4x25_CanopyCover
+
+- Campo normalizado: pacto_4x25_herbaceousinvasives
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: PACTO_4x25_HerbaceousInvasives
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: PACTO_4x25_HerbaceousInvasives
+
+- Campo normalizado: pacto_4x25_invasivetrees
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: PACTO_4x25_InvasiveTrees
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: PACTO_4x25_InvasiveTrees
+
+- Campo normalizado: pacto_4x25_nativetrees
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: PACTO_4x25_NativeTrees
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: PACTO_4x25_NativeTrees
+
+- Campo normalizado: parcela
+    • CERT_Database_MonitoringY0_CBCA01_02.Controle.json — exemplos de rótulos: Parcela
+    • CERT_Database_MonitoringY0_CBCA01_02.Coord_PACTO.json — exemplos de rótulos: Parcela
+    • CERT_Database_MonitoringY0_CBCA01_02.Coord_PPC.json — exemplos de rótulos: Parcela
+    • CERT_Database_MonitoringY0_CBCA01_02.Y0_Database.json — exemplos de rótulos: Parcela
+
+- Campo normalizado: parent_index
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).Plot_Info_Repeat.json — exemplos de rótulos: _parent_index
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat.json — exemplos de rótulos: _parent_index
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat_Planted_10cm.json — exemplos de rótulos: _parent_index
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._3x3_Subplot_Repeat.json — exemplos de rótulos: _parent_index
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).group_un3bb19.json — exemplos de rótulos: _parent_index
+
+- Campo normalizado: parent_table_name
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).Plot_Info_Repeat.json — exemplos de rótulos: _parent_table_name
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat.json — exemplos de rótulos: _parent_table_name
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat_Planted_10cm.json — exemplos de rótulos: _parent_table_name
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._3x3_Subplot_Repeat.json — exemplos de rótulos: _parent_table_name
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).group_un3bb19.json — exemplos de rótulos: _parent_table_name
+
+- Campo normalizado: periodo_de_amostragem
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Período de Amostragem
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Período de Amostragem
+
+- Campo normalizado: presenca_de_gado_e_outros_animais_domesticos_e_isolamento_da_area
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos:  Presença de gado e outros animais domésticos e isolamento da área
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos:  Presença de gado e outros animais domésticos e isolamento da área
+
+- Campo normalizado: primeiro_canto_da_parcela_4x25m
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Primeiro canto da parcela 4x25m
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Primeiro canto da parcela 4x25m
+
+- Campo normalizado: quantidade
+    • CERT_Database_MonitoringY0_CBCA01_02.Controle.json — exemplos de rótulos: Quantidade
+    • CERT_Database_MonitoringY0_CBCA01_02.Y0_Database.json — exemplos de rótulos: Quantidade
+
+- Campo normalizado: quarto_canto_da_parcela_4x25m
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Quarto canto da parcela 4x25m
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Quarto canto da parcela 4x25m
+
+- Campo normalizado: segundo_canto_da_parcela_4x25m
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Segundo canto da parcela 4x25m
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Segundo canto da parcela 4x25m
+
+- Campo normalizado: selecione_seu_pais
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Selecione seu País
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Selecione seu País
+
+- Campo normalizado: seu_sitio_e_suficientemente_grande_para_alocar_uma_parcela_de_monitoramento_de_30m_x_30m
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Seu sítio é suficientemente grande para alocar uma parcela de monitoramento de 30m x 30m?
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Seu sítio é suficientemente grande para alocar uma parcela de monitoramento de 30m x 30m?
+
+- Campo normalizado: site_info_sitestructure
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Site_Info_SiteStructure
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Site_Info_SiteStructure
+
+- Campo normalizado: status
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _status
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _status
+
+- Campo normalizado: submission_id
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).Plot_Info_Repeat.json — exemplos de rótulos: _submission__id
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat.json — exemplos de rótulos: _submission__id
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat_Planted_10cm.json — exemplos de rótulos: _submission__id
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._3x3_Subplot_Repeat.json — exemplos de rótulos: _submission__id
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).group_un3bb19.json — exemplos de rótulos: _submission__id
+
+- Campo normalizado: submission_notes
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).Plot_Info_Repeat.json — exemplos de rótulos: _submission__notes
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat.json — exemplos de rótulos: _submission__notes
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat_Planted_10cm.json — exemplos de rótulos: _submission__notes
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._3x3_Subplot_Repeat.json — exemplos de rótulos: _submission__notes
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).group_un3bb19.json — exemplos de rótulos: _submission__notes
+
+- Campo normalizado: submission_status
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).Plot_Info_Repeat.json — exemplos de rótulos: _submission__status
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat.json — exemplos de rótulos: _submission__status
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat_Planted_10cm.json — exemplos de rótulos: _submission__status
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._3x3_Subplot_Repeat.json — exemplos de rótulos: _submission__status
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).group_un3bb19.json — exemplos de rótulos: _submission__status
+
+- Campo normalizado: submission_submission_time
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).Plot_Info_Repeat.json — exemplos de rótulos: _submission__submission_time
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat.json — exemplos de rótulos: _submission__submission_time
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat_Planted_10cm.json — exemplos de rótulos: _submission__submission_time
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._3x3_Subplot_Repeat.json — exemplos de rótulos: _submission__submission_time
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).group_un3bb19.json — exemplos de rótulos: _submission__submission_time
+
+- Campo normalizado: submission_submitted_by
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).Plot_Info_Repeat.json — exemplos de rótulos: _submission__submitted_by
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat.json — exemplos de rótulos: _submission__submitted_by
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat_Planted_10cm.json — exemplos de rótulos: _submission__submitted_by
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._3x3_Subplot_Repeat.json — exemplos de rótulos: _submission__submitted_by
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).group_un3bb19.json — exemplos de rótulos: _submission__submitted_by
+
+- Campo normalizado: submission_tags
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).Plot_Info_Repeat.json — exemplos de rótulos: _submission__tags
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat.json — exemplos de rótulos: _submission__tags
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat_Planted_10cm.json — exemplos de rótulos: _submission__tags
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._3x3_Subplot_Repeat.json — exemplos de rótulos: _submission__tags
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).group_un3bb19.json — exemplos de rótulos: _submission__tags
+
+- Campo normalizado: submission_time
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _submission_time
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _submission_time
+
+- Campo normalizado: submission_uuid
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).Plot_Info_Repeat.json — exemplos de rótulos: _submission__uuid
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat.json — exemplos de rótulos: _submission__uuid
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat_Planted_10cm.json — exemplos de rótulos: _submission__uuid
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._3x3_Subplot_Repeat.json — exemplos de rótulos: _submission__uuid
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).group_un3bb19.json — exemplos de rótulos: _submission__uuid
+
+- Campo normalizado: submission_validation_status
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).Plot_Info_Repeat.json — exemplos de rótulos: _submission__validation_status
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat.json — exemplos de rótulos: _submission__validation_status
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat_Planted_10cm.json — exemplos de rótulos: _submission__validation_status
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._3x3_Subplot_Repeat.json — exemplos de rótulos: _submission__validation_status
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).group_un3bb19.json — exemplos de rótulos: _submission__validation_status
+
+- Campo normalizado: submission_version
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).Plot_Info_Repeat.json — exemplos de rótulos: _submission___version__
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat.json — exemplos de rótulos: _submission___version__
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat_Planted_10cm.json — exemplos de rótulos: _submission___version__
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._3x3_Subplot_Repeat.json — exemplos de rótulos: _submission___version__
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).group_un3bb19.json — exemplos de rótulos: _submission___version__
+
+- Campo normalizado: submitted_by
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _submitted_by
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _submitted_by
+
+- Campo normalizado: tags
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _tags
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _tags
+
+- Campo normalizado: tamanho_parcela
+    • CERT_Database_MonitoringY0_CBCA01_02.Controle.json — exemplos de rótulos: Tamanho_parcela
+    • CERT_Database_MonitoringY0_CBCA01_02.Y0_Database.json — exemplos de rótulos: Tamanho_parcela
+
+- Campo normalizado: terceiro_canto_da_parcela_4x25m
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Terceiro canto da parcela 4x25m
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Terceiro canto da parcela 4x25m
+
+- Campo normalizado: tipo_de_arvore
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat.json — exemplos de rótulos: Tipo de Árvore
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._3x3_Subplot_Repeat.json — exemplos de rótulos: Tipo de Árvore
+
+- Campo normalizado: tipo_de_parcela
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Tipo de Parcela
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Tipo de Parcela
+
+- Campo normalizado: tipo_de_parcela_1
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Tipo de Parcela_1
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Tipo de Parcela_1
+
+- Campo normalizado: tipo_do_sitio
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Tipo do Sítio
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Tipo do Sítio
+
+- Campo normalizado: uuid
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _uuid
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _uuid
+
+- Campo normalizado: validation_status
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _validation_status
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _validation_status
+
+- Campo normalizado: version
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: __version__
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: __version__
+
+- Campo normalizado: vertice_1_da_parcela_de_30m_x_15m
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Vertice 1 da parcela de 30m x 15m
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Vertice 1 da parcela de 30m x 15m
+
+- Campo normalizado: vertice_1_da_parcela_de_30m_x_15m_altitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 1 da parcela de 30m x 15m_altitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 1 da parcela de 30m x 15m_altitude
+
+- Campo normalizado: vertice_1_da_parcela_de_30m_x_15m_latitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 1 da parcela de 30m x 15m_latitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 1 da parcela de 30m x 15m_latitude
+
+- Campo normalizado: vertice_1_da_parcela_de_30m_x_15m_longitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 1 da parcela de 30m x 15m_longitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 1 da parcela de 30m x 15m_longitude
+
+- Campo normalizado: vertice_1_da_parcela_de_30m_x_15m_precision
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 1 da parcela de 30m x 15m_precision
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 1 da parcela de 30m x 15m_precision
+
+- Campo normalizado: vertice_1_da_parcela_de_30m_x_30m
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Vertice 1 da parcela de 30m x 30m
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Vertice 1 da parcela de 30m x 30m
+
+- Campo normalizado: vertice_1_da_parcela_de_30m_x_30m_altitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 1 da parcela de 30m x 30m_altitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 1 da parcela de 30m x 30m_altitude
+
+- Campo normalizado: vertice_1_da_parcela_de_30m_x_30m_latitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 1 da parcela de 30m x 30m_latitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 1 da parcela de 30m x 30m_latitude
+
+- Campo normalizado: vertice_1_da_parcela_de_30m_x_30m_longitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 1 da parcela de 30m x 30m_longitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 1 da parcela de 30m x 30m_longitude
+
+- Campo normalizado: vertice_1_da_parcela_de_30m_x_30m_precision
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 1 da parcela de 30m x 30m_precision
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 1 da parcela de 30m x 30m_precision
+
+- Campo normalizado: vertice_2_da_parcela_de_30m_x_15m
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Vertice 2 da parcela de 30m x 15m
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Vertice 2 da parcela de 30m x 15m
+
+- Campo normalizado: vertice_2_da_parcela_de_30m_x_15m_altitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 2 da parcela de 30m x 15m_altitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 2 da parcela de 30m x 15m_altitude
+
+- Campo normalizado: vertice_2_da_parcela_de_30m_x_15m_latitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 2 da parcela de 30m x 15m_latitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 2 da parcela de 30m x 15m_latitude
+
+- Campo normalizado: vertice_2_da_parcela_de_30m_x_15m_longitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 2 da parcela de 30m x 15m_longitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 2 da parcela de 30m x 15m_longitude
+
+- Campo normalizado: vertice_2_da_parcela_de_30m_x_15m_precision
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 2 da parcela de 30m x 15m_precision
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 2 da parcela de 30m x 15m_precision
+
+- Campo normalizado: vertice_2_da_parcela_de_30m_x_30m
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Vertice 2 da parcela de 30m x 30m
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Vertice 2 da parcela de 30m x 30m
+
+- Campo normalizado: vertice_2_da_parcela_de_30m_x_30m_altitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 2 da parcela de 30m x 30m_altitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 2 da parcela de 30m x 30m_altitude
+
+- Campo normalizado: vertice_2_da_parcela_de_30m_x_30m_latitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 2 da parcela de 30m x 30m_latitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 2 da parcela de 30m x 30m_latitude
+
+- Campo normalizado: vertice_2_da_parcela_de_30m_x_30m_longitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 2 da parcela de 30m x 30m_longitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 2 da parcela de 30m x 30m_longitude
+
+- Campo normalizado: vertice_2_da_parcela_de_30m_x_30m_precision
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 2 da parcela de 30m x 30m_precision
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 2 da parcela de 30m x 30m_precision
+
+- Campo normalizado: vertice_3_da_parcela_de_30m_x_15m
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Vertice 3 da parcela de 30m x 15m
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Vertice 3 da parcela de 30m x 15m
+
+- Campo normalizado: vertice_3_da_parcela_de_30m_x_15m_altitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 3 da parcela de 30m x 15m_altitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 3 da parcela de 30m x 15m_altitude
+
+- Campo normalizado: vertice_3_da_parcela_de_30m_x_15m_latitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 3 da parcela de 30m x 15m_latitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 3 da parcela de 30m x 15m_latitude
+
+- Campo normalizado: vertice_3_da_parcela_de_30m_x_15m_longitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 3 da parcela de 30m x 15m_longitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 3 da parcela de 30m x 15m_longitude
+
+- Campo normalizado: vertice_3_da_parcela_de_30m_x_15m_precision
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 3 da parcela de 30m x 15m_precision
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 3 da parcela de 30m x 15m_precision
+
+- Campo normalizado: vertice_3_da_parcela_de_30m_x_30m
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Vertice 3 da parcela de 30m x 30m
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Vertice 3 da parcela de 30m x 30m
+
+- Campo normalizado: vertice_3_da_parcela_de_30m_x_30m_altitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 3 da parcela de 30m x 30m_altitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 3 da parcela de 30m x 30m_altitude
+
+- Campo normalizado: vertice_3_da_parcela_de_30m_x_30m_latitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 3 da parcela de 30m x 30m_latitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 3 da parcela de 30m x 30m_latitude
+
+- Campo normalizado: vertice_3_da_parcela_de_30m_x_30m_longitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 3 da parcela de 30m x 30m_longitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 3 da parcela de 30m x 30m_longitude
+
+- Campo normalizado: vertice_3_da_parcela_de_30m_x_30m_precision
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 3 da parcela de 30m x 30m_precision
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 3 da parcela de 30m x 30m_precision
+
+- Campo normalizado: vertice_4_da_parcela_de_30m_x_15m
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Vertice 4 da parcela de 30m x 15m
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Vertice 4 da parcela de 30m x 15m
+
+- Campo normalizado: vertice_4_da_parcela_de_30m_x_15m_altitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 4 da parcela de 30m x 15m_altitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 4 da parcela de 30m x 15m_altitude
+
+- Campo normalizado: vertice_4_da_parcela_de_30m_x_15m_latitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 4 da parcela de 30m x 15m_latitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 4 da parcela de 30m x 15m_latitude
+
+- Campo normalizado: vertice_4_da_parcela_de_30m_x_15m_longitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 4 da parcela de 30m x 15m_longitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 4 da parcela de 30m x 15m_longitude
+
+- Campo normalizado: vertice_4_da_parcela_de_30m_x_15m_precision
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 4 da parcela de 30m x 15m_precision
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 4 da parcela de 30m x 15m_precision
+
+- Campo normalizado: vertice_4_da_parcela_de_30m_x_30m
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Vertice 4 da parcela de 30m x 30m
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Vertice 4 da parcela de 30m x 30m
+
+- Campo normalizado: vertice_4_da_parcela_de_30m_x_30m_altitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 4 da parcela de 30m x 30m_altitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 4 da parcela de 30m x 30m_altitude
+
+- Campo normalizado: vertice_4_da_parcela_de_30m_x_30m_latitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 4 da parcela de 30m x 30m_latitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 4 da parcela de 30m x 30m_latitude
+
+- Campo normalizado: vertice_4_da_parcela_de_30m_x_30m_longitude
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 4 da parcela de 30m x 30m_longitude
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 4 da parcela de 30m x 30m_longitude
+
+- Campo normalizado: vertice_4_da_parcela_de_30m_x_30m_precision
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: _Vertice 4 da parcela de 30m x 30m_precision
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: _Vertice 4 da parcela de 30m x 30m_precision
+
+- Campo normalizado: voce_deseja_coletar_a_subparcela_de_controle_opcional_3mx3m
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json — exemplos de rótulos: Você deseja coletar a subparcela de controle opcional 3mx3m?
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json — exemplos de rótulos: Você deseja coletar a subparcela de controle opcional 3mx3m?
+
+
+========================================================================================
+
+# CAMPOS POR ARQUIVO (amostra de caminhos de chaves)
+
+Arquivo: CERT_Database_MonitoringY0_CBCA01_02.Controle.json
+  Registros (aprox.): 1
+  Campos observados (amostra):
+    - Arvore_Tipo
+    - DAP (diam)
+    - Fuste N.
+    - ID_Sitio
+    - Nome_Científico
+    - Nome_Sitio
+    - Número da Árvore
+    - Obs
+    - Parcela
+    - Quantidade
+    - Tamanho_parcela
+  Nomes de campo (folhas) normalizados → variantes encontradas (amostra):
+    -  -> 
+    - arvore_tipo -> Arvore_Tipo
+    - dap_diam -> DAP (diam)
+    - id_sitio -> ID_Sitio
+    - nome_cientifico -> Nome_Científico
+    - nome_sitio -> Nome_Sitio
+    - numero_da_arvore -> Número da Árvore
+    - obs -> Obs
+    - parcela -> Parcela
+    - quantidade -> Quantidade
+    - tamanho_parcela -> Tamanho_parcela
+
+Arquivo: CERT_Database_MonitoringY0_CBCA01_02.Coord_PACTO.json
+  Registros (aprox.): 44
+  Campos observados (amostra):
+    - Notes on PACTO
+    - Parcela
+    - Plot ID
+    - Vértices PACTO
+    - X - Latitude (SIRGAS 2000 UTM 23S)
+    - Y - Longitude (SIRGAS 2000 UTM 23S)
+  Nomes de campo (folhas) normalizados → variantes encontradas (amostra):
+    - notes_on_pacto -> Notes on PACTO
+    - parcela -> Parcela
+    - plot_id -> Plot ID
+    - vertices_pacto -> Vértices PACTO
+    - x_latitude_sirgas_2000_utm_23s -> X - Latitude (SIRGAS 2000 UTM 23S)
+    - y_longitude_sirgas_2000_utm_23s -> Y - Longitude (SIRGAS 2000 UTM 23S)
+
+Arquivo: CERT_Database_MonitoringY0_CBCA01_02.Coord_PPC.json
+  Registros (aprox.): 99
+  Campos observados (amostra):
+    - Data e Hora
+    - Elevação
+    - Latitude (SIRGAS 2000)
+    - Latitude (WGS 84)
+    - Longitude (SIRGAS 2000)
+    - Longitude (WGS 84)
+    - Parcela
+  Nomes de campo (folhas) normalizados → variantes encontradas (amostra):
+    - data_e_hora -> Data e Hora
+    - elevacao -> Elevação
+    - latitude_sirgas_2000 -> Latitude (SIRGAS 2000)
+    - latitude_wgs_84 -> Latitude (WGS 84)
+    - longitude_sirgas_2000 -> Longitude (SIRGAS 2000)
+    - longitude_wgs_84 -> Longitude (WGS 84)
+    - parcela -> Parcela
+
+Arquivo: CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json
+  Registros (aprox.): 11
+  Campos observados (amostra):
+    - **Existem árvores de 1-9,9cm DAP na parcela de 3m x 3m?**
+    - **Existem árvores de 1-9,9cm DAP na parcela de 3m x 3m?**_1
+    - **Existem árvores de 1-9,9cm DAP na parcela de 3m x 3m?**_2
+    - **Número de amostragens necessárias para a parcela de 3m x 3m**
+    - **Número de amostragens necessárias para a parcela de 3m x 3m***
+    - **Número de amostragens necessárias para a parcela de 3m x 3m**_1
+    - Centróide da subparcela de 3m x 3m
+    - Centróide da subparcela de 3m x 3m_1
+    - Descrição da localização da subparcela (3mx3m) dentro da parcela maior (30mx30m)
+    - Descrição da localização da subparcela (3mx3m) dentro da parcela maior (30mx30m)_1
+    - Descrição do espaçamento de plantio dentro da parcela
+    - Descrição do espaçamento de plantio dentro da parcela_1
+    - Descrição do espaçamento de plantio dentro da parcela_2
+    - Diagrama da Parcela 30mx15m
+    - Diagrama de Cobertura de Copa
+    - Diagrama de Parcelas de Monitoramento
+    - Estrato
+    - Estrato_1
+    - Foto da subparcela 3mx3m
+    - Foto da subparcela 3mx3m_1
+    - Foto da subparcela 3mx3m_URL
+    - Foto da subparcela 3mx3m_URL_1
+    - Foto do vertice 1
+    - Foto do vertice 1_1
+    - Foto do vertice 1_URL
+    - Foto do vertice 1_URL_1
+    - Foto do vertice 2
+    - Foto do vertice 2_1
+    - Foto do vertice 2_URL
+    - Foto do vertice 2_URL_1
+    - Foto do vertice 3
+    - Foto do vertice 3_1
+    - Foto do vertice 3_URL
+    - Foto do vertice 3_URL_1
+    - Foto do vertice 4
+    - Foto do vertice 4_1
+    - Foto do vertice 4_URL
+    - Foto do vertice 4_URL_1
+    - Hora de Fim
+    - Hora de Início
+    - Há árvores >10cm DAP presentes na parcela?
+    - Há árvores >10cm DAP presentes na parcela?_1
+    - ID do Sítio
+    - Identificação (ID) da Parcela de Monitoramento de Árvores
+    - Identificação (ID) da Parcela de Monitoramento de Árvores_1
+    - Indicador 1.1: Cobertura de copa (%)
+    - Indicador 1.2: Selecione o nível de espécies invasoras que melhor corresponda à condição da sua parcela
+    - Indicador 2.1: Identificação de espécies nativas plantadas de recobrimento
+    - Indicador 2.2. Espécies invasoras arbóreas
+    - Indicador 3.1. Fertilidade química e textura do solo
+    - Indicador 3.2. Compactação do solo
+    - Indicador 3.3.1 Conservação do solo
+    - Indicador 3.3.2 Conservação do solo
+    - Indicador 3.4. Outros filtros edáficos
+    - Indicador 4.1. Ocorrência de fogo (Incêndios)
+    - Indicador 4.1. Ocorrência de fogo (Incêndios)_1
+    - Indicador 4.1. Ocorrência de fogo (Incêndios)_URL
+    - Indicador 4.2. Presença de gado e outros animais domésticos e isolamento da área
+    - Indicador 4.3. Ataque de formigas-cortadeiras e outros herbívoros
+    - Indicadores do PPC
+  Nomes de campo (folhas) normalizados → variantes encontradas (amostra):
+    -  -> , )
+    - 1_cobertura_de_copa -> 1: Cobertura de copa (%)
+    - 1_conservacao_do_solo -> 1 Conservação do solo
+    - 1_identificacao_de_especies_nativas_plantadas_de_recobrimento -> 1: Identificação de espécies nativas plantadas de recobrimento
+    - 2_conservacao_do_solo -> 2 Conservação do solo
+    - 2_selecione_o_nivel_de_especies_invasoras_que_melhor_corresponda_a_condicao_da_sua_parcela -> 2: Selecione o nível de espécies invasoras que melhor corresponda à condição da sua parcela
+    - 4 -> 4
+    - ataque_de_formigas_cortadeiras_e_outros_herbivoros ->  Ataque de formigas-cortadeiras e outros herbívoros
+    - centroide_da_subparcela_de_3m_x_3m -> Centróide da subparcela de 3m x 3m
+    - centroide_da_subparcela_de_3m_x_3m_1 -> Centróide da subparcela de 3m x 3m_1
+    - centroide_da_subparcela_de_3m_x_3m_altitude -> _Centróide da subparcela de 3m x 3m_altitude
+    - centroide_da_subparcela_de_3m_x_3m_altitude_1 -> _Centróide da subparcela de 3m x 3m_altitude_1
+    - centroide_da_subparcela_de_3m_x_3m_latitude -> _Centróide da subparcela de 3m x 3m_latitude
+    - centroide_da_subparcela_de_3m_x_3m_latitude_1 -> _Centróide da subparcela de 3m x 3m_latitude_1
+    - centroide_da_subparcela_de_3m_x_3m_longitude -> _Centróide da subparcela de 3m x 3m_longitude
+    - centroide_da_subparcela_de_3m_x_3m_longitude_1 -> _Centróide da subparcela de 3m x 3m_longitude_1
+    - centroide_da_subparcela_de_3m_x_3m_precision -> _Centróide da subparcela de 3m x 3m_precision
+    - centroide_da_subparcela_de_3m_x_3m_precision_1 -> _Centróide da subparcela de 3m x 3m_precision_1
+    - compactacao_do_solo ->  Compactação do solo
+    - descricao_da_localizacao_da_subparcela_3mx3m_dentro_da_parcela_maior_30mx30m -> Descrição da localização da subparcela (3mx3m) dentro da parcela maior (30mx30m)
+    - descricao_da_localizacao_da_subparcela_3mx3m_dentro_da_parcela_maior_30mx30m_1 -> Descrição da localização da subparcela (3mx3m) dentro da parcela maior (30mx30m)_1
+    - descricao_do_espacamento_de_plantio_dentro_da_parcela -> Descrição do espaçamento de plantio dentro da parcela
+    - descricao_do_espacamento_de_plantio_dentro_da_parcela_1 -> Descrição do espaçamento de plantio dentro da parcela_1
+    - descricao_do_espacamento_de_plantio_dentro_da_parcela_2 -> Descrição do espaçamento de plantio dentro da parcela_2
+    - diagrama_da_parcela_30mx15m -> Diagrama da Parcela 30mx15m
+
+Arquivo: CERT_Database_MonitoringY0_CBCA01_02.Y0_Database.json
+  Registros (aprox.): 239
+  Campos observados (amostra):
+    - Arvore_Tipo
+    - Classe_DAP
+    - DAP (diam)
+    - Fuste N.
+    - ID_Sitio
+    - Nome_Científico
+    - Nome_Sitio
+    - Número da Árvore
+    - Obs
+    - Parcela
+    - Quantidade
+    - Tamanho_parcela
+  Nomes de campo (folhas) normalizados → variantes encontradas (amostra):
+    -  -> 
+    - arvore_tipo -> Arvore_Tipo
+    - classe_dap -> Classe_DAP
+    - dap_diam -> DAP (diam)
+    - id_sitio -> ID_Sitio
+    - nome_cientifico -> Nome_Científico
+    - nome_sitio -> Nome_Sitio
+    - numero_da_arvore -> Número da Árvore
+    - obs -> Obs
+    - parcela -> Parcela
+    - quantidade -> Quantidade
+    - tamanho_parcela -> Tamanho_parcela
+
+Arquivo: PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._3x3_Subplot_Repeat.json
+  Registros (aprox.): 211
+  Campos observados (amostra):
+    - Clique no botão '+' para adicionar mais espécies de árvores ou mais combinações de árvores/tipos
+    - Espécies de árvores (use nome científico)
+    - Número de Árvores desta Espécie
+    - Observação
+    - Tipo de Árvore
+    - _index
+    - _parent_index
+    - _parent_table_name
+    - _submission___version__
+    - _submission__id
+    - _submission__notes
+    - _submission__status
+    - _submission__submission_time
+    - _submission__submitted_by
+    - _submission__tags
+    - _submission__uuid
+    - _submission__validation_status
+  Nomes de campo (folhas) normalizados → variantes encontradas (amostra):
+    - clique_no_botao_para_adicionar_mais_especies_de_arvores_ou_mais_combinacoes_de_arvores_tipos -> Clique no botão '+' para adicionar mais espécies de árvores ou mais combinações de árvores/tipos
+    - especies_de_arvores_use_nome_cientifico -> Espécies de árvores (use nome científico)
+    - index -> _index
+    - numero_de_arvores_desta_especie -> Número de Árvores desta Espécie
+    - observacao -> Observação
+    - parent_index -> _parent_index
+    - parent_table_name -> _parent_table_name
+    - submission_id -> _submission__id
+    - submission_notes -> _submission__notes
+    - submission_status -> _submission__status
+    - submission_submission_time -> _submission__submission_time
+    - submission_submitted_by -> _submission__submitted_by
+    - submission_tags -> _submission__tags
+    - submission_uuid -> _submission__uuid
+    - submission_validation_status -> _submission__validation_status
+    - submission_version -> _submission___version__
+    - tipo_de_arvore -> Tipo de Árvore
+
+Arquivo: PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat.json
+  Registros (aprox.): 896
+  Campos observados (amostra):
+    - Clique no botão '+' abaixo para adicionar mais espécies de árvores ou mais combinações de árvores/tipos
+    - Clique no botão '+' para adicionar mais espécies de árvores ou mais combinações de árvores/tipos
+    - DAP (cm) da árvore à 1.3m de altura
+    - Espécies de árvores (use nome científico)
+    - Número da Árvore
+    - Número do Fuste
+    - Tipo de Árvore
+    - _index
+    - _parent_index
+    - _parent_table_name
+    - _submission___version__
+    - _submission__id
+    - _submission__notes
+    - _submission__status
+    - _submission__submission_time
+    - _submission__submitted_by
+    - _submission__tags
+    - _submission__uuid
+    - _submission__validation_status
+  Nomes de campo (folhas) normalizados → variantes encontradas (amostra):
+    - 3m_de_altura -> 3m de altura
+    - clique_no_botao_abaixo_para_adicionar_mais_especies_de_arvores_ou_mais_combinacoes_de_arvores_tipos -> Clique no botão '+' abaixo para adicionar mais espécies de árvores ou mais combinações de árvores/tipos
+    - clique_no_botao_para_adicionar_mais_especies_de_arvores_ou_mais_combinacoes_de_arvores_tipos -> Clique no botão '+' para adicionar mais espécies de árvores ou mais combinações de árvores/tipos
+    - especies_de_arvores_use_nome_cientifico -> Espécies de árvores (use nome científico)
+    - index -> _index
+    - numero_da_arvore -> Número da Árvore
+    - numero_do_fuste -> Número do Fuste
+    - parent_index -> _parent_index
+    - parent_table_name -> _parent_table_name
+    - submission_id -> _submission__id
+    - submission_notes -> _submission__notes
+    - submission_status -> _submission__status
+    - submission_submission_time -> _submission__submission_time
+    - submission_submitted_by -> _submission__submitted_by
+    - submission_tags -> _submission__tags
+    - submission_uuid -> _submission__uuid
+    - submission_validation_status -> _submission__validation_status
+    - submission_version -> _submission___version__
+    - tipo_de_arvore -> Tipo de Árvore
+
+Arquivo: PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat_Planted_10cm.json
+  Registros (aprox.): 480
+  Campos observados (amostra):
+    - Clique no botão '+' para adicionar mais espécies de árvores
+    - Espécies de árvores (use nome científico)
+    - Número de Árvores desta Espécie
+    - _index
+    - _parent_index
+    - _parent_table_name
+    - _submission___version__
+    - _submission__id
+    - _submission__notes
+    - _submission__status
+    - _submission__submission_time
+    - _submission__submitted_by
+    - _submission__tags
+    - _submission__uuid
+    - _submission__validation_status
+  Nomes de campo (folhas) normalizados → variantes encontradas (amostra):
+    - clique_no_botao_para_adicionar_mais_especies_de_arvores -> Clique no botão '+' para adicionar mais espécies de árvores
+    - especies_de_arvores_use_nome_cientifico -> Espécies de árvores (use nome científico)
+    - index -> _index
+    - numero_de_arvores_desta_especie -> Número de Árvores desta Espécie
+    - parent_index -> _parent_index
+    - parent_table_name -> _parent_table_name
+    - submission_id -> _submission__id
+    - submission_notes -> _submission__notes
+    - submission_status -> _submission__status
+    - submission_submission_time -> _submission__submission_time
+    - submission_submitted_by -> _submission__submitted_by
+    - submission_tags -> _submission__tags
+    - submission_uuid -> _submission__uuid
+    - submission_validation_status -> _submission__validation_status
+    - submission_version -> _submission___version__
+
+Arquivo: PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).group_un3bb19.json
+  Registros (aprox.): 974
+  Campos observados (amostra):
+    - Clique no botão '+' para adicionar mais fustes, se necessário
+    - DAP (cm) da árvore à 1.3m de altura
+    - Fuste N.
+    - Número da Árvore
+    - _index
+    - _parent_index
+    - _parent_table_name
+    - _submission___version__
+    - _submission__id
+    - _submission__notes
+    - _submission__status
+    - _submission__submission_time
+    - _submission__submitted_by
+    - _submission__tags
+    - _submission__uuid
+    - _submission__validation_status
+  Nomes de campo (folhas) normalizados → variantes encontradas (amostra):
+    -  -> 
+    - 3m_de_altura -> 3m de altura
+    - clique_no_botao_para_adicionar_mais_fustes_se_necessario -> Clique no botão '+' para adicionar mais fustes, se necessário
+    - index -> _index
+    - numero_da_arvore -> Número da Árvore
+    - parent_index -> _parent_index
+    - parent_table_name -> _parent_table_name
+    - submission_id -> _submission__id
+    - submission_notes -> _submission__notes
+    - submission_status -> _submission__status
+    - submission_submission_time -> _submission__submission_time
+    - submission_submitted_by -> _submission__submitted_by
+    - submission_tags -> _submission__tags
+    - submission_uuid -> _submission__uuid
+    - submission_validation_status -> _submission__validation_status
+    - submission_version -> _submission___version__
+
+Arquivo: PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).Plot_Info_Repeat.json
+  Registros (aprox.): 33
+  Campos observados (amostra):
+    - Arquivos Adicionais (Opcional)
+    - Arquivos Adicionais (Opcional)_URL
+    - Fotos Adicionais (Opcional)
+    - Fotos Adicionais (Opcional)_URL
+    - _index
+    - _parent_index
+    - _parent_table_name
+    - _submission___version__
+    - _submission__id
+    - _submission__notes
+    - _submission__status
+    - _submission__submission_time
+    - _submission__submitted_by
+    - _submission__tags
+    - _submission__uuid
+    - _submission__validation_status
+  Nomes de campo (folhas) normalizados → variantes encontradas (amostra):
+    - arquivos_adicionais_opcional -> Arquivos Adicionais (Opcional)
+    - arquivos_adicionais_opcional_url -> Arquivos Adicionais (Opcional)_URL
+    - fotos_adicionais_opcional -> Fotos Adicionais (Opcional)
+    - fotos_adicionais_opcional_url -> Fotos Adicionais (Opcional)_URL
+    - index -> _index
+    - parent_index -> _parent_index
+    - parent_table_name -> _parent_table_name
+    - submission_id -> _submission__id
+    - submission_notes -> _submission__notes
+    - submission_status -> _submission__status
+    - submission_submission_time -> _submission__submission_time
+    - submission_submitted_by -> _submission__submitted_by
+    - submission_tags -> _submission__tags
+    - submission_uuid -> _submission__uuid
+    - submission_validation_status -> _submission__validation_status
+    - submission_version -> _submission___version__
+
+Arquivo: PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json
+  Registros (aprox.): 136
+  Campos observados (amostra):
+    - **Existem árvores de 1-9,9cm DAP na parcela de 3m x 3m?**
+    - **Existem árvores de 1-9,9cm DAP na parcela de 3m x 3m?**_1
+    - **Existem árvores de 1-9,9cm DAP na parcela de 3m x 3m?**_2
+    - **Número de amostragens necessárias para a parcela de 3m x 3m**
+    - **Número de amostragens necessárias para a parcela de 3m x 3m***
+    - **Número de amostragens necessárias para a parcela de 3m x 3m**_1
+    - Centróide da subparcela de 3m x 3m
+    - Centróide da subparcela de 3m x 3m_1
+    - Descrição da localização da subparcela (3mx3m) dentro da parcela maior (30mx30m)
+    - Descrição da localização da subparcela (3mx3m) dentro da parcela maior (30mx30m)_1
+    - Descrição do espaçamento de plantio dentro da parcela
+    - Descrição do espaçamento de plantio dentro da parcela_1
+    - Descrição do espaçamento de plantio dentro da parcela_2
+    - Diagrama da Parcela 30mx15m
+    - Diagrama de Cobertura de Copa
+    - Diagrama de Parcelas de Monitoramento
+    - Estrato
+    - Estrato_1
+    - Foto da subparcela 3mx3m
+    - Foto da subparcela 3mx3m_1
+    - Foto da subparcela 3mx3m_URL
+    - Foto da subparcela 3mx3m_URL_1
+    - Foto do vertice 1
+    - Foto do vertice 1_1
+    - Foto do vertice 1_URL
+    - Foto do vertice 1_URL_1
+    - Foto do vertice 2
+    - Foto do vertice 2_1
+    - Foto do vertice 2_URL
+    - Foto do vertice 2_URL_1
+    - Foto do vertice 3
+    - Foto do vertice 3_1
+    - Foto do vertice 3_URL
+    - Foto do vertice 3_URL_1
+    - Foto do vertice 4
+    - Foto do vertice 4_1
+    - Foto do vertice 4_URL
+    - Foto do vertice 4_URL_1
+    - Hora de Fim
+    - Hora de Início
+    - Há árvores >10cm DAP presentes na parcela?
+    - Há árvores >10cm DAP presentes na parcela?_1
+    - ID do Sítio
+    - Identificação (ID) da Parcela de Monitoramento de Árvores
+    - Identificação (ID) da Parcela de Monitoramento de Árvores_1
+    - Indicador 1.1: Cobertura de copa (%)
+    - Indicador 1.2: Selecione o nível de espécies invasoras que melhor corresponda à condição da sua parcela
+    - Indicador 2.1: Identificação de espécies nativas plantadas de recobrimento
+    - Indicador 2.2. Espécies invasoras arbóreas
+    - Indicador 3.1. Fertilidade química e textura do solo
+    - Indicador 3.2. Compactação do solo
+    - Indicador 3.3.1 Conservação do solo
+    - Indicador 3.3.2 Conservação do solo
+    - Indicador 3.4. Outros filtros edáficos
+    - Indicador 4.1. Ocorrência de fogo (Incêndios)
+    - Indicador 4.1. Ocorrência de fogo (Incêndios)_1
+    - Indicador 4.1. Ocorrência de fogo (Incêndios)_URL
+    - Indicador 4.2. Presença de gado e outros animais domésticos e isolamento da área
+    - Indicador 4.3. Ataque de formigas-cortadeiras e outros herbívoros
+    - Indicadores do PPC
+  Nomes de campo (folhas) normalizados → variantes encontradas (amostra):
+    -  -> , )
+    - 1_cobertura_de_copa -> 1: Cobertura de copa (%)
+    - 1_conservacao_do_solo -> 1 Conservação do solo
+    - 1_identificacao_de_especies_nativas_plantadas_de_recobrimento -> 1: Identificação de espécies nativas plantadas de recobrimento
+    - 2_conservacao_do_solo -> 2 Conservação do solo
+    - 2_selecione_o_nivel_de_especies_invasoras_que_melhor_corresponda_a_condicao_da_sua_parcela -> 2: Selecione o nível de espécies invasoras que melhor corresponda à condição da sua parcela
+    - 4 -> 4
+    - ataque_de_formigas_cortadeiras_e_outros_herbivoros ->  Ataque de formigas-cortadeiras e outros herbívoros
+    - centroide_da_subparcela_de_3m_x_3m -> Centróide da subparcela de 3m x 3m
+    - centroide_da_subparcela_de_3m_x_3m_1 -> Centróide da subparcela de 3m x 3m_1
+    - centroide_da_subparcela_de_3m_x_3m_altitude -> _Centróide da subparcela de 3m x 3m_altitude
+    - centroide_da_subparcela_de_3m_x_3m_altitude_1 -> _Centróide da subparcela de 3m x 3m_altitude_1
+    - centroide_da_subparcela_de_3m_x_3m_latitude -> _Centróide da subparcela de 3m x 3m_latitude
+    - centroide_da_subparcela_de_3m_x_3m_latitude_1 -> _Centróide da subparcela de 3m x 3m_latitude_1
+    - centroide_da_subparcela_de_3m_x_3m_longitude -> _Centróide da subparcela de 3m x 3m_longitude
+    - centroide_da_subparcela_de_3m_x_3m_longitude_1 -> _Centróide da subparcela de 3m x 3m_longitude_1
+    - centroide_da_subparcela_de_3m_x_3m_precision -> _Centróide da subparcela de 3m x 3m_precision
+    - centroide_da_subparcela_de_3m_x_3m_precision_1 -> _Centróide da subparcela de 3m x 3m_precision_1
+    - compactacao_do_solo ->  Compactação do solo
+    - descricao_da_localizacao_da_subparcela_3mx3m_dentro_da_parcela_maior_30mx30m -> Descrição da localização da subparcela (3mx3m) dentro da parcela maior (30mx30m)
+    - descricao_da_localizacao_da_subparcela_3mx3m_dentro_da_parcela_maior_30mx30m_1 -> Descrição da localização da subparcela (3mx3m) dentro da parcela maior (30mx30m)_1
+    - descricao_do_espacamento_de_plantio_dentro_da_parcela -> Descrição do espaçamento de plantio dentro da parcela
+    - descricao_do_espacamento_de_plantio_dentro_da_parcela_1 -> Descrição do espaçamento de plantio dentro da parcela_1
+    - descricao_do_espacamento_de_plantio_dentro_da_parcela_2 -> Descrição do espaçamento de plantio dentro da parcela_2
+    - diagrama_da_parcela_30mx15m -> Diagrama da Parcela 30mx15m
+
+========================================================================================
+
+# SUGESTOES DE CHAVES DE LIGACAO (heuristica por nomes usuais)
+
+- id_sitio: presente em 2 arquivos:
+    • CERT_Database_MonitoringY0_CBCA01_02.Controle.json (variantes: ID_Sitio)
+    • CERT_Database_MonitoringY0_CBCA01_02.Y0_Database.json (variantes: ID_Sitio)
+- id_do_sitio: presente em 2 arquivos:
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json (variantes: ID do Sítio)
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json (variantes: ID do Sítio)
+- parcela: presente em 4 arquivos:
+    • CERT_Database_MonitoringY0_CBCA01_02.Controle.json (variantes: Parcela)
+    • CERT_Database_MonitoringY0_CBCA01_02.Coord_PACTO.json (variantes: Parcela)
+    • CERT_Database_MonitoringY0_CBCA01_02.Coord_PPC.json (variantes: Parcela)
+    • CERT_Database_MonitoringY0_CBCA01_02.Y0_Database.json (variantes: Parcela)
+- nome_sitio: presente em 2 arquivos:
+    • CERT_Database_MonitoringY0_CBCA01_02.Controle.json (variantes: Nome_Sitio)
+    • CERT_Database_MonitoringY0_CBCA01_02.Y0_Database.json (variantes: Nome_Sitio)
+- insira_uma_data: presente em 2 arquivos:
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json (variantes: Insira uma data)
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json (variantes: Insira uma data)
+- submission_time: presente em 2 arquivos:
+    • CERT_Database_MonitoringY0_CBCA01_02.PPC_Pacto_CERT.json (variantes: _submission_time)
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).PPC_PACTO_Tree_Monitoring_-_....json (variantes: _submission_time)
+- numero_da_arvore: presente em 4 arquivos:
+    • CERT_Database_MonitoringY0_CBCA01_02.Controle.json (variantes: Número da Árvore)
+    • CERT_Database_MonitoringY0_CBCA01_02.Y0_Database.json (variantes: Número da Árvore)
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1)._30x30_Plot_Repeat.json (variantes: Número da Árvore)
+    • PPCPACTO_Tree_Monitoring_-_Brazil_only_-_all_versions_-_Portuguese_pt_-_2024-11-08-13-36-52_(1).group_un3bb19.json (variantes: Número da Árvore)
+- nome_cientifico: presente em 2 arquivos:
+    • CERT_Database_MonitoringY0_CBCA01_02.Controle.json (variantes: Nome_Científico)
+    • CERT_Database_MonitoringY0_CBCA01_02.Y0_Database.json (variantes: Nome_Científico)
