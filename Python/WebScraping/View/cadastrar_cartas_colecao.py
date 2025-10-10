@@ -92,7 +92,7 @@ def criar_tela_cadastro_colecao(app):
         canvas.pack(side="left", fill="both", expand=True)
         scrollbar.pack(side="right", fill="y")
 
-        selecionar_todos_var = tk.IntVar()
+        selecionar_todos_var = tk.IntVar(value=1)
 
         def filtrar():
             texto = filtro_entry.get().lower()
@@ -104,14 +104,22 @@ def criar_tela_cadastro_colecao(app):
         filtro_entry.bind("<KeyRelease>", lambda e: filtrar())
 
         def toggle_selecionar_todos():
+            marcado = selecionar_todos_var.get()    
             for carta in lista_cartas:
                 carta["var"].set(selecionar_todos_var.get())
 
-        chk_todos = ttk.Checkbutton(frame, text="Selecionar Todas", variable=selecionar_todos_var, command=toggle_selecionar_todos)
+        chk_todos = ttk.Checkbutton(
+            frame,
+            text="Selecionar Todas",
+            variable=selecionar_todos_var,  # já vem 1
+            command=toggle_selecionar_todos,
+            onvalue=1, offvalue=0
+        )
         chk_todos.grid(row=2, column=0, columnspan=2, pady=5)
 
-      
-        for carta in cartas:            
+        
+
+        for carta in cartas:
             nome = carta.get("nome")
             codigo = carta.get("codigo", "")
             preco_atual = limpar_preco(carta.get("preco_atual", 0.0))

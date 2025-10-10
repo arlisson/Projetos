@@ -123,3 +123,9 @@ AttributeError: 'NoneType' object has no attribute 'replace'
 2025-09-29 10:03:35,345 [ERROR] - [_atualizar_precos_e_lucro] Erro geral ao atualizar preços e lucros: name 'produtos' is not defined
 2025-09-29 10:06:29,837 [ERROR] - [_atualizar_precos_e_lucro] Erro geral ao atualizar preços e lucros: 'NoneType' object has no attribute 'log'
 2025-09-29 10:07:19,780 [ERROR] - [_atualizar_precos_e_lucro] Erro geral ao atualizar preços e lucros: 'NoneType' object has no attribute 'log'
+2025-10-05 11:31:53,067 [ERROR] - [buscar_produto_liga] Erro ao fazer a requisição buscar produto Liga Yu-Gi-Oh: | Exceção: Page.wait_for_selector: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator(".price") to be visible
+
+2025-10-10 11:18:07,510 [ERROR] - [buscar_carta_myp] Erro inesperado ao processar página de carta: | Exceção: list index out of range
+2025-10-10 11:18:15,513 [ERROR] - [buscar_carta_myp] Erro inesperado ao processar página de carta: | Exceção: list index out of range

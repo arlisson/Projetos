@@ -1458,65 +1458,45 @@ def buscar_historico_precos(tipo=None, id=None, resumo=False):
         return [dict(zip(colunas, row)) for row in rows]
 
     try:
-        # Resumo: totais e lucros atuais
+        # =============== RESUMO (usado no dados_resumo) ===============
         if resumo:
             resultados = {}
 
-            if tipo in [None, "carta"]:
-                cursor.execute("SELECT SUM(preco) AS total_cartas FROM historico_precos WHERE id_carta IS NOT NULL")
-                resultados["total_cartas"] = cursor.fetchone()[0] or 0.0
+            # Lucro (em posse) de cartas: (preco_atual - preco_da_compra) * quantidade
+            cursor.execute("""
+                SELECT COALESCE(SUM((COALESCE(preco_atual,0) - COALESCE(preco_da_compra,0)) * COALESCE(quantidade,1)), 0)
+                FROM carta
+            """)
+            resultados["lucro_cartas"] = cursor.fetchone()[0] or 0.0
 
-                cursor.execute("""
-                    SELECT SUM((preco_atual - preco_da_compra) * quantidade) AS lucro_cartas
-                    FROM carta
-                """)
-                resultados["lucro_cartas"] = cursor.fetchone()[0] or 0.0
+            # Lucro (em posse) de produtos: (preco_atual - preco_compra) * quantidade
+            cursor.execute("""
+                SELECT COALESCE(SUM((COALESCE(preco_atual,0) - COALESCE(preco_compra,0)) * COALESCE(quantidade,1)), 0)
+                FROM produto
+            """)
+            resultados["lucro_produtos"] = cursor.fetchone()[0] or 0.0
 
-            if tipo in [None, "produto"]:
-                cursor.execute("SELECT SUM(preco) AS total_produtos FROM historico_precos WHERE id_produto IS NOT NULL")
-                resultados["total_produtos"] = cursor.fetchone()[0] or 0.0
+            # Vendas (realizadas) de cartas
+            cursor.execute("""
+                SELECT COALESCE(SUM(COALESCE(preco_da_venda,0) * COALESCE(quantidade,1)), 0)
+                FROM venda
+            """)
+            resultados["total_vendas_cartas"] = cursor.fetchone()[0] or 0.0
 
-                cursor.execute("""
-                    SELECT SUM((preco_atual - preco_compra) * quantidade) AS lucro_produtos
-                    FROM produto
-                """)
-                resultados["lucro_produtos"] = cursor.fetchone()[0] or 0.0
-            
-            if tipo in[None,"venda"]:
-                cursor.execute("SELECT SUM(preco_da_venda * quantidade) AS total_vendas FROM venda")
-                resultados["total_vendas_cartas"] = cursor.fetchone()[0] or 0.0
+            # Vendas (realizadas) de produtos
+            cursor.execute("""
+                SELECT COALESCE(SUM(COALESCE(preco_venda,0) * COALESCE(quantidade,1)), 0)
+                FROM venda_produto
+            """)
+            resultados["total_vendas_produtos"] = cursor.fetchone()[0] or 0.0
 
-                cursor.execute("SELECT SUM(preco_venda * quantidade) AS total_vendas FROM venda_produto")
-                resultados["total_vendas_produtos"] = cursor.fetchone()[0] or 0.0
-            
+            # Lucro total (em posse) = cartas + produtos
+            resultados["lucro_total"] = (resultados.get("lucro_cartas", 0.0)
+                                         + resultados.get("lucro_produtos", 0.0))
 
-            
-            
-            
-
-            # 🔁 Histórico de lucro consolidado (último valor)
-            if tipo in [None, "lucro"]:
-                cursor.execute("""
-                    SELECT lucro_cartas, lucro_produtos, lucro_total
-                    FROM historico_lucro
-                    ORDER BY data DESC
-                    LIMIT 1
-                """)
-                row = cursor.fetchone()
-                if row:
-                    resultados["lucro_cartas_historico"] = row[0] or 0.0
-                    resultados["lucro_produtos_historico"] = row[1] or 0.0
-                    resultados["lucro_total_historico"] = row[2] or 0.0
-
-            # Lucro total atual (não histórico)
-            lucro_cartas = resultados.get("lucro_cartas", 0)
-            lucro_produtos = resultados.get("lucro_produtos", 0)
-            resultados["lucro_total"] = lucro_cartas + lucro_produtos
-
-            conn.close()
             return resultados
 
-        # Histórico por ID
+        # =============== HISTÓRICO POR ID (inalterado) ===============
         if tipo and id is not None:
             if tipo == "carta":
                 cursor.execute("""
@@ -1534,13 +1514,10 @@ def buscar_historico_precos(tipo=None, id=None, resumo=False):
                 """, (id,))
             else:
                 raise ValueError("Tipo inválido. Use 'carta', 'produto', 'lucro' ou None.")
-
             rows = cursor.fetchall()
-            historico = rows_como_dict(cursor, rows)
-            conn.close()
-            return historico
+            return rows_como_dict(cursor, rows)
 
-        # Histórico geral
+        # =============== HISTÓRICO GERAL (inalterado) ===============
         if tipo == "lucro":
             cursor.execute("""
                 SELECT id_lucro, data, lucro_cartas, lucro_produtos, lucro_total
@@ -1553,18 +1530,17 @@ def buscar_historico_precos(tipo=None, id=None, resumo=False):
                 FROM historico_precos
                 ORDER BY data
             """)
-
         rows = cursor.fetchall()
-        historico_geral = rows_como_dict(cursor, rows)
-        conn.close()
-        return historico_geral
+        return rows_como_dict(cursor, rows)
 
     except Exception as e:
-        conn.close()
         registrar_erro(f"Erro ao buscar histórico: {e}")
         return []
-
-
+    finally:
+        try:
+            conn.close()
+        except:
+            pass
 
 def calcula_total_gasto():
     try:

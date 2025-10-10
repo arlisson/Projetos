@@ -1,5 +1,5 @@
 from urllib import response
-from urllib.parse import urljoin
+from urllib.parse import urlparse, parse_qs, urlencode, urlunparse, urljoin
 import requests
 from bs4 import BeautifulSoup
 import cloudscraper
@@ -142,61 +142,81 @@ def buscar_produto_liga(url):
         return []
 
 
+def _set_page(url: str, page: int) -> str:
+    """Garante que o URL tenha ?...&page=N (substitui se já existir)."""
+    p = urlparse(url)
+    q = parse_qs(p.query, keep_blank_values=True)
+    q["page"] = [str(page)]
+    new_query = urlencode(q, doseq=True)
+    return urlunparse(p._replace(query=new_query))
+
 def buscar_cartas_colecao(url):
     try:
+        base = "https://mypcards.com"
         dados_links = []
         cartas = []
+        vistos = set()
 
-        # 🔍 Requisição inicial
-        response = SCRAPER.get(url, headers=HEADERS)
-        soup = BeautifulSoup(response.content, "html.parser")
+        # headers opcionais úteis quando o endpoint é de "load more" (ajax)
+        ajax_headers = dict(HEADERS)
+        ajax_headers.update({
+            "X-Requested-With": "XMLHttpRequest",
+            "Referer": url,
+            "Accept": "text/html, */*;q=0.1",
+        })
 
-        # 🔗 Coleta URLs reais da paginação
-        paginas = []
-        paginacao = soup.find("ul", class_="pagination")
-        if paginacao:
-            for li in paginacao.find_all("li"):
-                a = li.find("a")
-                if a and "href" in a.attrs:
-                    href = urljoin("https://mypcards.com", a["href"])
-                    if href not in paginas:
-                        paginas.append(href)
+        page = 1
+        max_pages = 500  # proteção contra loop infinito
 
-        # Sempre inclua a primeira página (caso não haja paginação)
-        if not paginas:
-            paginas.append(url)
+        while page <= max_pages:
+            page_url = _set_page(url, page)
+            log_info(f"Carregando página via endpoint: page={page} -> {page_url}")
 
-        # 🔁 Itera sobre cada página real
-        for i, pagina_url in enumerate(paginas, start=1):
-            log_info(f"Buscando página {i} de {len(paginas)}")
+            resp = SCRAPER.get(page_url, headers=ajax_headers)
+            if resp.status_code != 200:
+                log_info(f"Parando: status {resp.status_code} em page={page}")
+                break
 
-            response = SCRAPER.get(pagina_url, headers=HEADERS)
-            soup = BeautifulSoup(response.content, "html.parser")
-
+            soup = BeautifulSoup(resp.text, "html.parser")
             itens = soup.find_all("a", class_="card-img-link")
+
+            # condição de parada pedida: quando a página retornar 0 cartas
+            if not itens or len(itens) == 0:
+                log_info(f"Nenhuma carta encontrada em page={page}. Encerrando paginação.")
+                break
+
+            novos = 0
             for item in itens:
-                href = item.get("href", "")
-                
-                # ❌ Ignora links que contenham "outros"
+                href = item.get("href", "") or ""
                 if "outros" in href.lower():
                     continue
-
-                link_completo = urljoin("https://mypcards.com", href)
+                link_completo = urljoin(base, href)
+                if link_completo in vistos:
+                    continue
+                vistos.add(link_completo)
                 dados_links.append({
                     "id": len(dados_links) + 1,
                     "link": link_completo
                 })
+                novos += 1
+
+            log_info(f"page={page}: {len(itens)} cartas no HTML, {novos} links novos.")
+
+            page += 1  # próxima página
 
         # 📥 Coleta os dados de cada carta
         for link in dados_links:
-            carta = buscar_carta_myp(link["link"])
-            if carta:
-                cartas.append(carta[0])  # pega a primeira variação (ou a com raridade desejada)
-            # print(link)
-        log_info(f"Total de cartas encontradas em buscar_cartas_colecao: {len(cartas)}")
+            try:
+                carta = buscar_carta_myp(link["link"])
+                if carta:
+                    cartas.append(carta[0])  # pega a primeira variação (ou ajuste sua regra)
+            except Exception as e:
+                registrar_erro(f"Erro ao buscar carta: {link['link']}", e)
+
+        log_info(f"Total de cartas encontradas em buscar_cartas_colecao: {len(cartas)} "
+                 f"(links únicos coletados: {len(dados_links)})")
         return cartas
 
     except Exception as e:
         registrar_erro("Erro ao fazer a requisição em buscar_cartas_colecao", e)
         return []
-
