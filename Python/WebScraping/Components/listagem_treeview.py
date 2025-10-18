@@ -89,12 +89,24 @@ class ListagemTreeview(ttk.Frame):
     - Ordenação clicando no cabeçalho
     """
 
-    def __init__(self, parent, headers, fetch_func, on_edit, row_formatter=None, **kwargs):
+    def __init__(self, parent, headers, fetch_func, on_edit,
+                 row_formatter=None,
+                 money_columns=None,          # <= NOVO
+                 integer_columns=None,        # <= NOVO
+                 **kwargs):
         super().__init__(parent, **kwargs)
         self.headers = headers
         self.fetch_func = fetch_func
         self.on_edit = on_edit
         self.row_formatter = row_formatter
+
+        def _autodetect_money(cols):
+            import re
+            padrao = re.compile(r"(preço|preco|valor|total|lucro|custo|pago|atual)", re.I)
+            return {c for c in cols if padrao.search(c)}
+
+        self._money_cols = set(money_columns) if money_columns is not None else _autodetect_money(headers)
+        self._int_cols   = set(integer_columns or ())
 
         # dimensões da coluna da imagem
         self.img_w = 80
@@ -113,13 +125,102 @@ class ListagemTreeview(ttk.Frame):
         self._font = tkFont.nametofont("TkDefaultFont")
         self._col_widths = {col: self._font.measure(col) + 30 for col in self.headers}
 
+        self._totals_labels = {}     # 🔧 NOVO: labels por coluna
+        self._image_header_label = None  
+
         self._criar_widgets()
         self._ativar_mousewheel()
 
         # remove binds ao destruir
         self.bind("<Destroy>", self._on_destroy, add="+")
 
+        
+
     # ----------------------------------------------------------------------
+        # 🔧 NOVO
+    def _parse_num(self, val):
+        """Tenta converter o texto exibido em número (suporta 'R$ 1.234,56')."""
+        s = str(val).strip()
+        if not s:
+            return None
+        s = s.replace("R$", "").replace(" ", "")
+        # trata separadores estilo BR
+        if s.count(",") == 1 and s.count(".") >= 1:
+            s = s.replace(".", "").replace(",", ".")
+        else:
+            s = s.replace(",", ".")
+        try:
+            return float(s)
+        except Exception:
+            return None
+
+    # 🔧 NOVO
+    def _format_brl(self, num):
+        if num is None:
+            return ""
+        # formata como R$ x.xxx,xx
+        s = f"{num:,.2f}"
+        return "R$ " + s.replace(",", "X").replace(".", ",").replace("X", ".")
+
+    # 🔧 NOVO
+    def _atualizar_totais(self):
+        """Computa totais por coluna (apenas colunas numéricas) sobre o result_cache filtrado."""
+        if not self.result_cache:
+            for col, lbl in self._totals_labels.items():
+                lbl.config(text="")
+            if self._image_header_label:
+                self._image_header_label.config(text="")
+            return
+
+        # Pega os valores que REALMENTE são exibidos nas colunas (respeitando row_formatter)
+        def valores_visiveis(item):
+            if self.row_formatter:
+                vals = self.row_formatter(item)[0]
+                return {col: vals[i] for i, col in enumerate(self.headers)}
+            return {col: item.get(col, "") for col in self.headers}
+
+        # soma por coluna
+        somas = {col: 0.0 for col in self.headers}
+        eh_numerica = {col: True for col in self.headers}
+
+        for item in self.result_cache:
+            vis = valores_visiveis(item)
+            for col in self.headers:
+                n = self._parse_num(vis.get(col, ""))
+                if n is None:
+                    eh_numerica[col] = False  # achou algo não-numérico => não soma essa coluna
+                else:
+                    somas[col] += n
+
+        # Atualiza labels: só mostra onde a coluna é numérica
+        for col, lbl in self._totals_labels.items():
+            if eh_numerica.get(col):
+                total = somas[col]
+                # Escolhe o formato:
+                if col in self._money_cols:
+                    lbl.config(text=self._format_brl(total))
+                elif col in self._int_cols:
+                    lbl.config(text=f"{int(round(total))}")
+                else:
+                    # número sem R$ (duas casas, estilo BR)
+                    s = f"{total:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+                    lbl.config(text=s)
+            else:
+                lbl.config(text="")
+
+    # 🔧 NOVO
+    def _sync_totals_widths(self):
+        """Sincroniza larguras dos rótulos de totais com as colunas da Treeview."""
+        # imagem (#0)
+        if self._image_header_label:
+            w0 = self.tree.column("#0", option="width")
+            self._image_header_label.configure(width=w0 // 7)  # width em chars aprox.
+
+        for idx, col in enumerate(self.headers):
+            w = self.tree.column(col, option="width")
+            # grid_columnconfigure controla o espaço; Label usa width em "chars" (aprox).
+            self.totals_frame.grid_columnconfigure(idx + 1, minsize=w)
+
 
     def _calc_rowheight(self):
         """Calcula a altura mínima da linha considerando imagem + texto abaixo."""
@@ -128,7 +229,7 @@ class ListagemTreeview(ttk.Frame):
         self.rowheight = self.img_h + h_texto + 8
 
     def _criar_widgets(self):
-        # campo de busca
+        # campo de busca (igual ao seu)
         busca_frame = ttk.Frame(self)
         busca_frame.grid(row=0, column=0, sticky="ew", padx=5, pady=5)
         self.columnconfigure(0, weight=1)
@@ -143,16 +244,33 @@ class ListagemTreeview(ttk.Frame):
         style.configure("Treeview", rowheight=self.rowheight)
         style.configure("Treeview.Heading", font=("Segoe UI", 10, "bold"))
 
-        # container tabela
+        # 🔧 NOVO: container principal
         container = ttk.Frame(self)
         container.grid(row=1, column=0, sticky="nsew")
         self.rowconfigure(1, weight=1)
-        container.rowconfigure(0, weight=1)
         container.columnconfigure(0, weight=1)
+        container.rowconfigure(1, weight=1)  # a linha 1 será a árvore
 
+        # 🔧 NOVO: barra de totais (linha 0 do container)
+        self.totals_frame = ttk.Frame(container)
+        self.totals_frame.grid(row=0, column=0, sticky="ew", padx=(0, 12))
+        # primeira “coluna” da barra corresponde à coluna de imagem
+        self._image_header_label = ttk.Label(self.totals_frame, anchor="center", foreground="#333")
+        self._image_header_label.grid(row=0, column=0, sticky="ew")
+        self.totals_frame.grid_columnconfigure(0, minsize=self.img_w + 20)
+
+        # cria labels para cada coluna
+        for i, col in enumerate(self.headers, start=1):
+            lbl = ttk.Label(self.totals_frame, anchor="center", foreground="#333", font=("Segoe UI", 9, "bold"))
+            lbl.grid(row=0, column=i, sticky="ew", padx=1, pady=(0, 2))
+            self._totals_labels[col] = lbl
+            self.totals_frame.grid_columnconfigure(i, weight=1)
+
+        # Scrollbars
         self.vsb = ttk.Scrollbar(container, orient="vertical")
         self.hsb = ttk.Scrollbar(container, orient="horizontal")
 
+        # Treeview (linha 1 do container)
         self.tree = ttk.Treeview(
             container,
             columns=self.headers,
@@ -168,14 +286,14 @@ class ListagemTreeview(ttk.Frame):
             self.tree.column(col, anchor="center", width=largura_inicial, stretch=True)
             self.tree.heading(col, text=col, command=lambda c=col: self._ordenar_por_coluna(c))
 
-        self.tree.grid(row=0, column=0, sticky="nsew")
-        self.vsb.grid(row=0, column=1, sticky="ns")
-        self.hsb.grid(row=1, column=0, sticky="ew")
+        self.tree.grid(row=1, column=0, sticky="nsew")     # 🔧 linha 1 (abaixo dos totais)
+        self.vsb.grid(row=1, column=1, sticky="ns")
+        self.hsb.grid(row=2, column=0, sticky="ew")
 
         self.vsb.config(command=lambda *args: self._yview_and_check(*args))
         self.hsb.config(command=self.tree.xview)
 
-        # zebra + hover
+        # zebra + hover (igual ao seu)
         self.tree.tag_configure("oddrow", background="#f9f9f9")
         self.tree.tag_configure("evenrow", background="#ffffff")
         self.tree.tag_configure("hover", background="#e0e0e0")
@@ -184,6 +302,9 @@ class ListagemTreeview(ttk.Frame):
         self.tree.bind("<Button-1>", self._on_click)
         self.tree.bind("<Motion>", self._on_hover)
         self.tree.bind("<Leave>", self._on_leave)
+
+        # 🔧 NOVO: re-sincroniza tamanhos em mudanças de layout
+        self.tree.bind("<Configure>", lambda e: self._sync_totals_widths())
 
     # ----------------------------------------------------------------------
 
@@ -220,6 +341,9 @@ class ListagemTreeview(ttk.Frame):
         self.pagina = 0
         self.tree.delete(*self.tree.get_children())
         self._carregar_pagina()
+
+        self._atualizar_totais()
+        self._sync_totals_widths()
 
         # atualiza estado da coluna
         self._sort_state[col] = not reverse
@@ -295,6 +419,9 @@ class ListagemTreeview(ttk.Frame):
         self.pagina = 0
         self.tree.delete(*self.tree.get_children())
 
+        self._atualizar_totais()
+        self._sync_totals_widths()
+
         if not self.result_cache:
             # Esconde colunas temporariamente
             for col in self.headers:
@@ -311,6 +438,9 @@ class ListagemTreeview(ttk.Frame):
                 tags=("empty",)                
             )
             self.tree['show'] = ''  # esconde cabeçalhos
+
+            self._atualizar_totais()      # 🔧 NOVO (vai zerar labels)
+            self._sync_totals_widths()    
             return
 
         # Caso tenha dados, restaura colunas
@@ -374,7 +504,7 @@ class ListagemTreeview(ttk.Frame):
             self.tree.insert("", "end", image=img, values=valores, iid=iid, tags=(tag,))
 
         self.pagina += 1
-
+        self._sync_totals_widths()
 
     # ----------------------------------------------------------------------
 
