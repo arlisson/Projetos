@@ -1,6 +1,8 @@
 Python/WebScraping/imagens/imagens_produtos
 Python/WebScraping/imagens/imagens_cartas
 Python/WebScraping/logs
+python/WebScraping/dist
+python/WebScraping/build
 Node/Arli
 Node/Exportador/models
 Node/Exportador/node_modules
