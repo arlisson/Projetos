@@ -129,3 +129,53 @@ Call log:
 
 2025-10-10 11:18:07,510 [ERROR] - [buscar_carta_myp] Erro inesperado ao processar página de carta: | Exceção: list index out of range
 2025-10-10 11:18:15,513 [ERROR] - [buscar_carta_myp] Erro inesperado ao processar página de carta: | Exceção: list index out of range
+2025-10-17 20:35:29,843 [ERROR] - [buscar_carta_myp] Erro ao fazer a requisição buscar carta MyPCards: | Exceção: ('Connection aborted.', ConnectionResetError(10054, 'Foi forçado o cancelamento de uma conexão existente pelo host remoto', None, 10054, None))
+2025-10-17 20:40:37,734 [ERROR] - [buscar_produto_liga] Erro ao fazer a requisição buscar produto Liga Yu-Gi-Oh: | Exceção: BrowserType.launch: Executable doesn't exist at D:\Repositorios\Projetos\Python\WebScraping\_internal\playwright\driver\package\.local-browsers\chromium_headless_shell-1187\chrome-win\headless_shell.exe
+╔════════════════════════════════════════════════════════════╗
+║ Looks like Playwright was just installed or updated.       ║
+║ Please run the following command to download new browsers: ║
+║                                                            ║
+║     playwright install                                     ║
+║                                                            ║
+║ <3 Playwright Team                                         ║
+╚════════════════════════════════════════════════════════════╝
+2025-10-17 20:40:39,359 [ERROR] - [buscar_produto_liga] Erro ao fazer a requisição buscar produto Liga Yu-Gi-Oh: | Exceção: BrowserType.launch: Executable doesn't exist at D:\Repositorios\Projetos\Python\WebScraping\_internal\playwright\driver\package\.local-browsers\chromium_headless_shell-1187\chrome-win\headless_shell.exe
+╔════════════════════════════════════════════════════════════╗
+║ Looks like Playwright was just installed or updated.       ║
+║ Please run the following command to download new browsers: ║
+║                                                            ║
+║     playwright install                                     ║
+║                                                            ║
+║ <3 Playwright Team                                         ║
+╚════════════════════════════════════════════════════════════╝
+2025-10-17 20:40:40,955 [ERROR] - [buscar_produto_liga] Erro ao fazer a requisição buscar produto Liga Yu-Gi-Oh: | Exceção: BrowserType.launch: Executable doesn't exist at D:\Repositorios\Projetos\Python\WebScraping\_internal\playwright\driver\package\.local-browsers\chromium_headless_shell-1187\chrome-win\headless_shell.exe
+╔════════════════════════════════════════════════════════════╗
+║ Looks like Playwright was just installed or updated.       ║
+║ Please run the following command to download new browsers: ║
+║                                                            ║
+║     playwright install                                     ║
+║                                                            ║
+║ <3 Playwright Team                                         ║
+╚════════════════════════════════════════════════════════════╝
+2025-10-17 20:40:42,489 [ERROR] - [buscar_produto_liga] Erro ao fazer a requisição buscar produto Liga Yu-Gi-Oh: | Exceção: BrowserType.launch: Executable doesn't exist at D:\Repositorios\Projetos\Python\WebScraping\_internal\playwright\driver\package\.local-browsers\chromium_headless_shell-1187\chrome-win\headless_shell.exe
+╔════════════════════════════════════════════════════════════╗
+║ Looks like Playwright was just installed or updated.       ║
+║ Please run the following command to download new browsers: ║
+║                                                            ║
+║     playwright install                                     ║
+║                                                            ║
+║ <3 Playwright Team                                         ║
+╚════════════════════════════════════════════════════════════╝
+2025-10-17 20:40:44,036 [ERROR] - [buscar_produto_liga] Erro ao fazer a requisição buscar produto Liga Yu-Gi-Oh: | Exceção: BrowserType.launch: Executable doesn't exist at D:\Repositorios\Projetos\Python\WebScraping\_internal\playwright\driver\package\.local-browsers\chromium_headless_shell-1187\chrome-win\headless_shell.exe
+╔════════════════════════════════════════════════════════════╗
+║ Looks like Playwright was just installed or updated.       ║
+║ Please run the following command to download new browsers: ║
+║                                                            ║
+║     playwright install                                     ║
+║                                                            ║
+║ <3 Playwright Team                                         ║
+╚════════════════════════════════════════════════════════════╝
+2025-10-18 10:12:54,724 [ERROR] - [buscar_produto_liga] Erro ao fazer a requisição buscar produto Liga Yu-Gi-Oh: | Exceção: Page.goto: Timeout 30000ms exceeded.
+Call log:
+  - navigating to "https://www.ligayugioh.com.br/?view=prod/view&pcode=118544&prod=Collectors%20Set%20-%20Ghosts%20from%20the%20Past:%20The%202nd%20Haunting", waiting until "load"
+

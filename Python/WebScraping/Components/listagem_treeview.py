@@ -10,6 +10,30 @@ import textwrap
 # cache global de imagens
 _image_cache = {}
 
+def _reset_col_widths(self):
+    # volta ao mínimo baseado no título de cada coluna
+    self._col_widths = {col: max(80, self._font.measure(col) + 30) for col in self.headers}
+    for col in self.headers:
+        self.tree.column(col, width=self._col_widths[col], stretch=True)
+
+def _fill_columns_to_container(self):
+    # distribui espaço sobrando para que as colunas ocupem toda a largura
+    self.update_idletasks()
+    total_w = self.tree.winfo_width()
+    w_img = self.tree.column("#0", option="width")
+    available = max(0, total_w - w_img)
+
+    cur = sum(self.tree.column(c, option="width") for c in self.headers)
+    if cur < available and self.headers:
+        delta = available - cur
+        per = delta // len(self.headers)
+        rem = delta % len(self.headers)
+        for i, c in enumerate(self.headers):
+            w = self.tree.column(c, option="width")
+            self.tree.column(c, width=w + per + (1 if i < rem else 0))
+
+    # manter a barra de totais alinhada
+    self._sync_totals_widths()
 
 def _medir_tamanho_texto(texto: str, fonte: ImageFont.ImageFont):
     """Retorna (largura, altura) do texto para a fonte informada usando textbbox."""
@@ -138,6 +162,32 @@ class ListagemTreeview(ttk.Frame):
 
     # ----------------------------------------------------------------------
         # 🔧 NOVO
+
+    def _reset_col_widths(self):
+        # volta ao mínimo baseado no título de cada coluna
+        self._col_widths = {col: max(80, self._font.measure(col) + 30) for col in self.headers}
+        for col in self.headers:
+            self.tree.column(col, width=self._col_widths[col], stretch=True)
+
+    def _fill_columns_to_container(self):
+        # distribui espaço sobrando para que as colunas ocupem toda a largura
+        self.update_idletasks()
+        total_w = self.tree.winfo_width()
+        w_img = self.tree.column("#0", option="width")
+        available = max(0, total_w - w_img)
+
+        cur = sum(self.tree.column(c, option="width") for c in self.headers)
+        if cur < available and self.headers:
+            delta = available - cur
+            per = delta // len(self.headers)
+            rem = delta % len(self.headers)
+            for i, c in enumerate(self.headers):
+                w = self.tree.column(c, option="width")
+                self.tree.column(c, width=w + per + (1 if i < rem else 0))
+
+        # manter a barra de totais alinhada
+        self._sync_totals_widths()
+
     def _parse_num(self, val):
         """Tenta converter o texto exibido em número (suporta 'R$ 1.234,56')."""
         s = str(val).strip()
@@ -304,7 +354,8 @@ class ListagemTreeview(ttk.Frame):
         self.tree.bind("<Leave>", self._on_leave)
 
         # 🔧 NOVO: re-sincroniza tamanhos em mudanças de layout
-        self.tree.bind("<Configure>", lambda e: self._sync_totals_widths())
+        self.tree.bind("<Configure>", lambda e: self._fill_columns_to_container())
+
 
     # ----------------------------------------------------------------------
 
@@ -419,6 +470,7 @@ class ListagemTreeview(ttk.Frame):
         self.pagina = 0
         self.tree.delete(*self.tree.get_children())
 
+        self._reset_col_widths()  
         self._atualizar_totais()
         self._sync_totals_widths()
 
@@ -504,6 +556,7 @@ class ListagemTreeview(ttk.Frame):
             self.tree.insert("", "end", image=img, values=valores, iid=iid, tags=(tag,))
 
         self.pagina += 1
+        self._fill_columns_to_container()
         self._sync_totals_widths()
 
     # ----------------------------------------------------------------------
