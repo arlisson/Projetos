@@ -62,8 +62,8 @@ def _atualizar_precos_e_lucro(callback_status=None):
             id_carta = carta.get("id_carta")
             url = carta.get("link_site")           
             raridade = carta.get("raridade_nome", "")
-
-            
+            preco_old = carta.get("preco_atual", 0.0)
+            codigo_carta = carta.get("codigo", "")    
 
             if not id_carta or not url:
                 continue
@@ -78,8 +78,10 @@ def _atualizar_precos_e_lucro(callback_status=None):
                         atualizar_status(f"🔄 Atualizando carta ({i}/{total_cartas}): {nome}")
                         carta_atual["preco_atual"] = limpar_preco(nova.get("preco_atual", 0.0))
                         carta_atual["data_scraping"] = datetime.now().strftime("%Y-%m-%d")
+                        if preco_old != carta_atual["preco_atual"]:
+                            log_info(f"Preço alterado para carta {carta_atual.get('nome', 'Carta')} - {codigo_carta}: de {preco_old} para {carta_atual['preco_atual']}")
                         atualizar_carta(carta_atual)
-                        log_info(f"Atualizada carta {id_carta} - {nome}")
+                        #log_info(f"Atualizada carta {id_carta} - {nome}")
             except Exception as e:
                 registrar_erro(f"Erro ao atualizar carta ID {id_carta}: {e}")
 
@@ -91,6 +93,8 @@ def _atualizar_precos_e_lucro(callback_status=None):
         for i, produto in enumerate(produtos, start=1):
             id_produto = produto.get("id_produto")
             url = produto.get("link")
+            preco_old_produto = produto.get("preco_atual", 0.0)
+           
 
             if not id_produto or not url:
                 continue
@@ -104,8 +108,12 @@ def _atualizar_precos_e_lucro(callback_status=None):
                         atualizar_status(f"🔄 Atualizando produto ({i}/{total_produtos}): {nome}")
                         produto_atual["preco_atual"] = limpar_preco(nova_info.get("preco_atual", 0.0))
                         produto_atual["data_scraping"] = datetime.now().strftime("%Y-%m-%d")
+
+                        if preco_old_produto != produto_atual["preco_atual"]:
+                            log_info(f"Preço alterado para produto {produto_atual.get('nome_produto', 'Produto')}: de {preco_old_produto} para {produto_atual['preco_atual']}")
                         atualizar_produto(produto_atual)
-                        log_info(f"Atualizado produto {id_produto} - {nome}")
+                        
+                        #log_info(f"Atualizado produto {id_produto} - {nome}")
             except Exception as e:
                 registrar_erro(f"Erro ao atualizar produto ID {id_produto}: {e}")
 

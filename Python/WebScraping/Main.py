@@ -18,6 +18,9 @@ from View.listar_venda_cartas import abrir_tela_listagem_venda
 from View.listar_venda_produtos import abrir_tela_listagem_venda_produtos
 from Components.thread_com_modal import executar_em_thread
 
+import os, sys
+from pathlib import Path
+
 from DAO.database import (
     apagar_todos_os_dados,
     calcula_total_gasto,
@@ -28,6 +31,18 @@ from DAO.database import (
 from Components.grafico_historico import GraficoHistorico
 from Components.scrollable_frame import ScrollableFrame
 
+def _config_playwright_browsers_path():
+    if getattr(sys, "frozen", False):  # executável PyInstaller
+        exe_dir = Path(sys.executable).parent
+        os.environ["PLAYWRIGHT_BROWSERS_PATH"] = str(exe_dir / "playwright-browsers")
+    else:
+        # em dev, se a pasta existir, usa ela (opcional)
+        here = Path(__file__).resolve().parent
+        local = here / "playwright-browsers"
+        if local.exists():
+            os.environ["PLAYWRIGHT_BROWSERS_PATH"] = str(local)
+
+_config_playwright_browsers_path()
 
 def criar_tela_principal():
     root = tk.Tk()

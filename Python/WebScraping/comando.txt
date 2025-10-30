@@ -1,1 +1,1 @@
-py -m PyInstaller --noconsole --clean --name YugiohApp Main.py
+py -m PyInstaller --noconsole --clean --name YugiohApp Main.py --add-data "playwright-browsers;playwright-browsers" --collect-submodules playwright --collect-data playwright --hidden-import=playwright._impl._driver

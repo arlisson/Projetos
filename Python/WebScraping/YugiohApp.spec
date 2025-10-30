@@ -1,12 +1,19 @@
 # -*- mode: python ; coding: utf-8 -*-
+from PyInstaller.utils.hooks import collect_data_files
+from PyInstaller.utils.hooks import collect_submodules
+
+datas = [('playwright-browsers', 'playwright-browsers')]
+hiddenimports = ['playwright._impl._driver']
+datas += collect_data_files('playwright')
+hiddenimports += collect_submodules('playwright')
 
 
 a = Analysis(
     ['Main.py'],
     pathex=[],
     binaries=[],
-    datas=[],
-    hiddenimports=[],
+    datas=datas,
+    hiddenimports=hiddenimports,
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
