@@ -16,6 +16,7 @@ from View.cadastrar_produtos import criar_tela_cadastro_produto
 from View.listar_produtos import abrir_tela_listagem_produtos
 from View.listar_venda_cartas import abrir_tela_listagem_venda
 from View.listar_venda_produtos import abrir_tela_listagem_venda_produtos
+from View.logs import abrir_tela_logs
 from Components.thread_com_modal import executar_em_thread
 
 import os, sys
@@ -185,6 +186,11 @@ def criar_tela_principal():
     menu_opcoes.add_command(label="Criar banco", command=confirmar_e_criar)
     menu_opcoes.add_command(label="Exportar banco de dados", command=exportar_banco_completo)
     menu_bar.add_cascade(label="Opções", menu=menu_opcoes)
+
+    
+    menu_logs = tk.Menu(menu_bar, tearoff=0)
+    menu_logs.add_command(label="Ver Logs", command=lambda: abrir_tela_logs(root, "logs/log_info.txt", "logs/log_erros.txt"))
+    menu_bar.add_cascade(label="Logs", menu=menu_logs)
 
     menu_bar.add_command(label="Sair", command=root.quit)
     root.config(menu=menu_bar)
