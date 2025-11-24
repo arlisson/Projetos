@@ -434,46 +434,52 @@ def buscar_carta_por_texto(texto):
 
 
 def calcular_lucro_total_cartas_em_posse():
-    '''
-    Calcula o lucro total das cartas (em posse + vendidas).
-    Returns:
-        float: O lucro total combinado, ou 0.0 se não houver dados.
-    '''
+    """
+    Lucro total = lucro em posse (quantidade > 0) + lucro de vendas (snapshot da venda;
+    se faltar custo na venda, usa custo da carta).
+    """
+    conn, cursor = None, None
     try:
         conn = conectar()
         cursor = conn.cursor()
 
-        # Lucro das cartas em posse
-        query_posse = """
-            SELECT SUM((preco_atual - preco_da_compra) * quantidade) AS lucro_posse
+        # Lucro em posse: só itens com quantidade > 0
+        cursor.execute("""
+            SELECT COALESCE(SUM(
+                     (COALESCE(preco_atual,0) - COALESCE(preco_da_compra,0))
+                     * COALESCE(quantidade,0)
+                   ), 0)
             FROM carta
-            WHERE preco_atual IS NOT NULL AND preco_da_compra IS NOT NULL;
-        """
-        cursor.execute(query_posse)
-        resultado_posse = cursor.fetchone()
-        lucro_posse = resultado_posse[0] if resultado_posse[0] is not None else 0.0
+            WHERE COALESCE(quantidade,0) > 0
+        """)
+        lucro_posse = cursor.fetchone()[0] or 0.0
 
-        # Lucro das cartas vendidas
-        query_vendas = """
-            SELECT SUM((preco_da_venda - preco_da_compra) * quantidade) AS lucro_vendas
-            FROM venda
-            WHERE preco_da_venda IS NOT NULL
-              AND preco_da_compra IS NOT NULL;
-        """
-        cursor.execute(query_vendas)
-        resultado_vendas = cursor.fetchone()
-        lucro_vendas = resultado_vendas[0] if resultado_vendas[0] is not None else 0.0
+        # Lucro de vendas:
+        # usa preco_da_compra da venda; se NULL, usa o da carta.
+        cursor.execute("""
+            SELECT COALESCE(SUM(
+                     (COALESCE(v.preco_da_venda,0) - COALESCE(v.preco_da_compra, c.preco_da_compra, 0))
+                     * COALESCE(v.quantidade, 0)
+                   ), 0)
+            FROM venda v
+            LEFT JOIN carta c ON c.id_carta = v.id_carta
+        """)
+        lucro_vendas = cursor.fetchone()[0] or 0.0
 
-        return lucro_posse + lucro_vendas
+        return float(lucro_posse) + float(lucro_vendas)
 
     except Exception as e:
-        messagebox.showerror("Erro", f"Erro ao calcular lucro total de cartas: {e}")
-        registrar_erro("Erro ao calcular lucro total de cartas", e)
+        registrar_erro(f"[calcular_lucro_total_cartas_em_posse] {e}")
         return 0.0
-
     finally:
-        if conn:
-            conn.close()
+        try:
+            if cursor: cursor.close()
+        except Exception:
+            pass
+        try:
+            if conn: conn.close()
+        except Exception:
+            pass
 
 
  
@@ -745,29 +751,56 @@ def calcular_lucro_total_produtos_vendidos():
 
 
 def calcular_total_gasto_produtos():
-    '''
-    Calcula o total gasto em produtos em posse.
-    returns:
-        float: O total gasto em produtos, ou 0.0 se não houver produtos.
-    '''
-    query = """
-        SELECT SUM(preco_compra * quantidade) AS valor_total
-        FROM produto
-        WHERE preco_compra IS NOT NULL;
     """
+    Calcula o total gasto em produtos (estoque + vendidos).
+    Retorna:
+        float: total gasto.
+    """
+    conn, cursor = None, None
     try:
         conn = conectar()
         cursor = conn.cursor()
-        cursor.execute(query)
-        resultado = cursor.fetchone()
-        return resultado[0] if resultado[0] is not None else 0.0
+
+        # 1) Gasto no estoque (inclui itens com quantidade = 0; não perde histórico)
+        cursor.execute("""
+            SELECT COALESCE(SUM(COALESCE(preco_compra,0) * COALESCE(quantidade,0)), 0)
+            FROM produto
+        """)
+        gasto_estoque = cursor.fetchone()[0] or 0.0
+
+        # 2) Gasto dos vendidos (preferindo snapshot do custo na venda_produto)
+        #    Se a coluna v.preco_compra não existir, faz fallback para p.preco_compra.
+        try:
+            cursor.execute("""
+                SELECT COALESCE(SUM(COALESCE(v.preco_compra,0) * COALESCE(v.quantidade,0)), 0)
+                FROM venda_produto v
+            """)
+            gasto_vendidos = cursor.fetchone()[0] or 0.0
+        except Exception:
+            # Fallback: usa custo do produto no momento conhecido (se não houver snapshot na venda)
+            cursor.execute("""
+                SELECT COALESCE(SUM(COALESCE(p.preco_compra,0) * COALESCE(v.quantidade,0)), 0)
+                FROM venda_produto v
+                LEFT JOIN produto p ON p.id_produto = v.id_produto
+            """)
+            gasto_vendidos = cursor.fetchone()[0] or 0.0
+
+        return float(gasto_estoque) + float(gasto_vendidos)
+
     except Exception as e:
-        messagebox.showerror("Erro", f"Erro ao calcular valor total de produtos: {e}")
-        conn.close()
-        registrar_erro("Erro ao calcular valor total de produtos", e)
-        return None
+        messagebox.showerror("Erro", f"Erro ao calcular total gasto em produtos: {e}")
+        registrar_erro(f"[calcular_total_gasto_produtos] {e}")
+        return 0.0
     finally:
-        conn.close()
+        try:
+            if cursor: cursor.close()
+        except Exception:
+            pass
+        try:
+            if conn: conn.close()
+        except Exception:
+            pass
+
 
 
 def calcular_total_vendido_produtos():
@@ -1120,11 +1153,9 @@ def inserir_venda_generica(id_item, quantidade_vendida, preco_venda, tipo="carta
             ))
 
             # Atualizar estoque
-            nova_quantidade = carta["quantidade"] - quantidade_vendida
-            if nova_quantidade > 0:
-                cursor.execute("UPDATE carta SET quantidade = ? WHERE id_carta = ?", (nova_quantidade, id_item))
-            else:
-                cursor.execute("DELETE FROM carta WHERE id_carta = ?", (id_item,))
+            nova_quantidade = carta["quantidade"] - quantidade_vendida            
+            cursor.execute("UPDATE carta SET quantidade = ? WHERE id_carta = ?", (nova_quantidade, id_item))
+            
 
         elif tipo == "produto":
             cursor.execute("SELECT * FROM produto WHERE id_produto = ?", (id_item,))
@@ -1162,11 +1193,9 @@ def inserir_venda_generica(id_item, quantidade_vendida, preco_venda, tipo="carta
             ))
 
             # Atualizar estoque
-            nova_quantidade = produto["quantidade"] - quantidade_vendida
-            if nova_quantidade > 0:
-                cursor.execute("UPDATE produto SET quantidade = ? WHERE id_produto = ?", (nova_quantidade, id_item))
-            else:
-                cursor.execute("DELETE FROM produto WHERE id_produto = ?", (id_item,))
+            nova_quantidade = produto["quantidade"] - quantidade_vendida           
+            cursor.execute("UPDATE produto SET quantidade = ? WHERE id_produto = ?", (nova_quantidade, id_item))
+          
 
         else:
             registrar_erro("Tipo inválido para venda:", tipo)
@@ -1234,7 +1263,7 @@ def listar_vendas(tipo='carta'):
 
     finally:
         conn.close()
-        cursor.close()
+        
 
 
 def listar_venda_por_id(id, tipo='carta'):
@@ -1458,45 +1487,49 @@ def buscar_historico_precos(tipo=None, id=None, resumo=False):
         return [dict(zip(colunas, row)) for row in rows]
 
     try:
-        # =============== RESUMO (usado no dados_resumo) ===============
+        # =================== RESUMO (em posse) ===================
         if resumo:
             resultados = {}
 
-            # Lucro (em posse) de cartas: (preco_atual - preco_da_compra) * quantidade
+            # Lucro (em posse) de cartas: (preco_atual - preco_da_compra) * quantidade, apenas quantidade > 0
             cursor.execute("""
-                SELECT COALESCE(SUM((COALESCE(preco_atual,0) - COALESCE(preco_da_compra,0)) * COALESCE(quantidade,1)), 0)
+                SELECT COALESCE(SUM( (COALESCE(preco_atual,0) - COALESCE(preco_da_compra,0))
+                                     * COALESCE(quantidade,0) ), 0)
                 FROM carta
+                WHERE COALESCE(quantidade,0) > 0
             """)
             resultados["lucro_cartas"] = cursor.fetchone()[0] or 0.0
 
-            # Lucro (em posse) de produtos: (preco_atual - preco_compra) * quantidade
+            # Lucro (em posse) de produtos: (preco_atual - preco_compra) * quantidade, apenas quantidade > 0
             cursor.execute("""
-                SELECT COALESCE(SUM((COALESCE(preco_atual,0) - COALESCE(preco_compra,0)) * COALESCE(quantidade,1)), 0)
+                SELECT COALESCE(SUM( (COALESCE(preco_atual,0) - COALESCE(preco_compra,0))
+                                     * COALESCE(quantidade,0) ), 0)
                 FROM produto
+                WHERE COALESCE(quantidade,0) > 0
             """)
             resultados["lucro_produtos"] = cursor.fetchone()[0] or 0.0
 
-            # Vendas (realizadas) de cartas
+            # Vendas realizadas de cartas (histórico de vendas não muda)
             cursor.execute("""
-                SELECT COALESCE(SUM(COALESCE(preco_da_venda,0) * COALESCE(quantidade,1)), 0)
+                SELECT COALESCE(SUM(COALESCE(preco_da_venda,0) * COALESCE(quantidade,0)), 0)
                 FROM venda
             """)
             resultados["total_vendas_cartas"] = cursor.fetchone()[0] or 0.0
 
-            # Vendas (realizadas) de produtos
+            # Vendas realizadas de produtos
             cursor.execute("""
-                SELECT COALESCE(SUM(COALESCE(preco_venda,0) * COALESCE(quantidade,1)), 0)
+                SELECT COALESCE(SUM(COALESCE(preco_venda,0) * COALESCE(quantidade,0)), 0)
                 FROM venda_produto
             """)
             resultados["total_vendas_produtos"] = cursor.fetchone()[0] or 0.0
 
-            # Lucro total (em posse) = cartas + produtos
+            # Lucro total em posse (cartas + produtos)
             resultados["lucro_total"] = (resultados.get("lucro_cartas", 0.0)
                                          + resultados.get("lucro_produtos", 0.0))
 
             return resultados
 
-        # =============== HISTÓRICO POR ID (inalterado) ===============
+        # =================== HISTÓRICO POR ID (inalterado) ===================
         if tipo and id is not None:
             if tipo == "carta":
                 cursor.execute("""
@@ -1517,7 +1550,7 @@ def buscar_historico_precos(tipo=None, id=None, resumo=False):
             rows = cursor.fetchall()
             return rows_como_dict(cursor, rows)
 
-        # =============== HISTÓRICO GERAL (inalterado) ===============
+        # =================== HISTÓRICO GERAL (inalterado) ===================
         if tipo == "lucro":
             cursor.execute("""
                 SELECT id_lucro, data, lucro_cartas, lucro_produtos, lucro_total
@@ -1538,33 +1571,103 @@ def buscar_historico_precos(tipo=None, id=None, resumo=False):
         return []
     finally:
         try:
+            cursor.close()
+        except Exception:
+            pass
+        try:
             conn.close()
-        except:
+        except Exception:
             pass
 
+
 def calcula_total_gasto():
+    conn, cursor = None, None
     try:
         conn = conectar()
         cursor = conn.cursor()
 
+        # --- Gasto em cartas que ainda estão no estoque (podem ter quantidade 0, não há problema) ---
         cursor.execute("""
-            SELECT SUM(preco_da_compra * quantidade) FROM carta WHERE preco_da_compra IS NOT NULL
+            SELECT COALESCE(SUM(COALESCE(preco_da_compra,0) * COALESCE(quantidade,0)), 0)
+            FROM carta
         """)
-        total_cartas = cursor.fetchone()[0] or 0.0
+        gasto_cartas_estoque = cursor.fetchone()[0] or 0.0
 
+        # --- Gasto em cartas já vendidas (usa snapshot salvo na tabela de vendas) ---
+        # Requer coluna preco_da_compra na tabela de 'venda'
         cursor.execute("""
-            SELECT SUM(preco_compra * quantidade) FROM produto WHERE preco_compra IS NOT NULL
+            SELECT COALESCE(SUM(COALESCE(preco_da_compra,0) * COALESCE(quantidade,0)), 0)
+            FROM venda
         """)
-        total_produtos = cursor.fetchone()[0] or 0.0
+        gasto_cartas_vendidas = cursor.fetchone()[0] or 0.0
 
-        total_gasto = total_cartas + total_produtos
-        conn.close()
+        # --- Gasto em produtos no estoque ---
+        cursor.execute("""
+            SELECT COALESCE(SUM(COALESCE(preco_compra,0) * COALESCE(quantidade,0)), 0)
+            FROM produto
+        """)
+        gasto_produtos_estoque = cursor.fetchone()[0] or 0.0
+
+        # --- Gasto em produtos vendidos (se houver coluna de custo na venda_produto) ---
+        # Ajuste o nome da coluna caso seja diferente (ex.: preco_da_compra_produto).
+        try:
+            cursor.execute("""
+                SELECT COALESCE(SUM(COALESCE(preco_compra,0) * COALESCE(quantidade,0)), 0)
+                FROM venda_produto
+            """)
+            gasto_produtos_vendidos = cursor.fetchone()[0] or 0.0
+        except Exception:
+            # Caso sua tabela de vendas de produto não guarde o custo, considere 0
+            gasto_produtos_vendidos = 0.0
+
+        total_gasto = (
+            gasto_cartas_estoque + gasto_cartas_vendidas +
+            gasto_produtos_estoque + gasto_produtos_vendidos
+        )
         return total_gasto
 
     except Exception as e:
-        messagebox.showerror("Erro", f"Erro ao calcular total gasto: {e}")
-        conn.close()
-        registrar_erro("Erro ao calcular total gasto", e)
+        registrar_erro(f"Erro ao calcular total gasto: {e}")
         return 0.0
     finally:
-        conn.close()
+        try:
+            if cursor: cursor.close()
+        except Exception:
+            pass
+        try:
+            if conn: conn.close()
+        except Exception:
+            pass
+
+
+
+def buscar_cartas_em_estoque():
+    try:
+        with conectar() as conn:
+            cur = conn.cursor()
+            cur.execute("""
+                SELECT c.*, r.nome AS raridade_nome
+                FROM carta c
+                LEFT JOIN raridade r ON r.id_raridade = c.raridade
+                WHERE IFNULL(c.quantidade, 0) > 0
+            """)
+            cols = [d[0] for d in cur.description]
+            return [dict(zip(cols, row)) for row in cur.fetchall()]
+    finally:
+        try: cur.close()
+        except: pass
+
+def buscar_produtos_em_estoque():
+    try:
+        with conectar() as conn:
+            cur = conn.cursor()
+            cur.execute("""
+                SELECT p.*
+                FROM produto p
+                WHERE IFNULL(p.quantidade, 0) > 0
+            """)
+            cols = [d[0] for d in cur.description]
+            return [dict(zip(cols, r)) for r in cur.fetchall()]
+    finally:
+        try: cur.close()
+        except: pass

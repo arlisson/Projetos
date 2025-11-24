@@ -12,7 +12,9 @@ from DAO.database import (
     atualizar_carta,
     atualizar_produto,
     registrar_historico_lucro,
-    listar_todos_produtos
+    listar_todos_produtos,
+    buscar_cartas_em_estoque,
+    buscar_produtos_em_estoque
 )
 from Utils.limpar_preco import limpar_preco
 from scraping.scraping_cartas import buscar_carta_myp, buscar_produto_liga
@@ -53,7 +55,7 @@ def _atualizar_precos_e_lucro(callback_status=None):
                 pass  # Silencia erros da UI
 
     try:
-        cartas = buscar_todas_cartas()
+        cartas = buscar_cartas_em_estoque()
         total_cartas = len(cartas)
 
         atualizar_status("🔄 Atualizando cartas...")
@@ -85,7 +87,7 @@ def _atualizar_precos_e_lucro(callback_status=None):
             except Exception as e:
                 registrar_erro(f"Erro ao atualizar carta ID {id_carta}: {e}")
 
-        produtos = listar_todos_produtos()
+        produtos = buscar_produtos_em_estoque()
         total_produtos = len(produtos)
         
         atualizar_status("🔄 Atualizando produtos...")

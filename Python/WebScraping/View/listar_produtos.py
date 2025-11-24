@@ -25,7 +25,8 @@ def abrir_tela_listagem_produtos(app):
     def row_formatter(produto):
         preco_compra = produto['preco_compra'] or 0.0
         preco_atual = produto['preco_atual'] or 0.0
-        quantidade = produto.get('quantidade', 1) or 1
+        qtd_raw = produto.get('quantidade')
+        quantidade = int(qtd_raw) if (qtd_raw is not None and str(qtd_raw) != "") else 0
         total_pago = preco_compra * quantidade
         total_atual = preco_atual * quantidade
         lucro_unit = preco_atual - preco_compra

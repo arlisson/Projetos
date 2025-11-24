@@ -20143,3 +20143,242 @@ Total de cartas encontradas em buscar_cartas_colecao: 49
 2025-10-20 09:49:13,202 [INFO] - Atualizada carta 620 - DESTINY BOARD
 2025-10-20 09:49:13,706 [INFO] - Atualizada carta 621 - SPIRIT MESSAGE A
 2025-10-20 09:49:14,243 [INFO] - Atualizada carta 622 - INJECTION FAIRY LILY
+2025-11-11 10:40:53,196 [INFO] - Preço alterado para carta AMAZONESS QUEEN - SGX3-END01: de 4.89 para 4.5
+2025-11-11 10:40:56,590 [INFO] - Preço alterado para carta AMAZONESS SWORDS WOMAN - SGX3-END02: de 3.48 para 2.99
+2025-11-11 10:40:57,220 [INFO] - Preço alterado para carta BOOK OF MOON - SGX3-ENI31: de 2.4 para 1.99
+2025-11-11 10:40:57,769 [INFO] - Preço alterado para carta BANISHER OF THE RADIANCE - SGX3-ENF09: de 2.5 para 1.99
+2025-11-11 10:40:59,978 [INFO] - Preço alterado para carta TOTEM DRAGON - SGX3-ENB12: de 7.89 para 6.9
+2025-11-11 10:41:00,967 [INFO] - Preço alterado para carta RED-EYES BLACK DRAGON - SGX3-ENB02: de 4.49 para 3.9
+2025-11-11 10:41:01,939 [INFO] - Preço alterado para carta FOG KING - SGX3-ENH01: de 2.98 para 2.9
+2025-11-11 10:41:03,802 [INFO] - Preço alterado para carta RED-EYES WYVERN - SGX3-ENB06: de 15.0 para 9.9
+2025-11-11 10:41:06,033 [INFO] - Preço alterado para carta EVIL HERO DARK GAIA - SGX3-ENA24: de 1.9 para 1.95
+2025-11-11 10:41:06,499 [INFO] - Preço alterado para carta WALL OF DISRUPTION - SGX3-ENH20: de 1.49 para 0.99
+2025-11-11 10:41:08,692 [INFO] - Preço alterado para carta AMAZONESS HEIRLOOM - SGX3-END12: de 1.23 para 0.99
+2025-11-11 10:41:09,174 [INFO] - Preço alterado para carta CLOUDIAN - ACID CLOUD - SGX3-ENH03: de 1.19 para 0.99
+2025-11-11 10:41:12,626 [INFO] - Preço alterado para carta ELEMENTAL HERO CLAYMAN - SGX3-ENA04: de 1.49 para 1.9
+2025-11-11 10:41:15,454 [INFO] - Preço alterado para carta NEGATE ATTACK - SGX3-ENB18: de 1.49 para 0.99
+2025-11-11 10:41:17,809 [INFO] - Preço alterado para carta FOOLISH BURIAL - SGX3-ENE13: de 1.5 para 1.49
+2025-11-11 10:41:22,976 [INFO] - Preço alterado para carta VAMPIRE SORCERER - SGX3-ENC07: de 0.99 para 0.9
+2025-11-11 10:41:31,739 [INFO] - Preço alterado para carta LUSTER DRAGON - SGX3-ENB03: de 0.79 para 0.5
+2025-11-11 10:41:37,013 [INFO] - Preço alterado para carta MOTHER GRIZZLY - SGX3-ENH12: de 0.69 para 0.5
+2025-11-11 10:41:39,296 [INFO] - Preço alterado para carta D.D. DESTROYER - SGX3-ENF11: de 0.59 para 0.5
+2025-11-11 10:41:44,272 [INFO] - Preço alterado para carta CALL OF THE MUMMY - SGX3-ENC14: de 0.5 para 0.4
+2025-11-11 10:41:51,469 [INFO] - Preço alterado para carta FORGED STEEL - SGX3-ENS02: de 0.49 para 0.5
+2025-11-11 10:41:52,350 [INFO] - Preço alterado para carta WELCOME TO THE JUNGLE - SGX3-ENS04: de 0.49 para 0.5
+2025-11-11 10:41:52,817 [INFO] - Preço alterado para carta ARCHFIEND'S CONSCRIPTION - SGX3-ENS05: de 0.49 para 0.5
+2025-11-11 10:41:53,312 [INFO] - Preço alterado para carta PROFESSOR OF ALCHEMY - SGX3-ENS06: de 0.49 para 0.5
+2025-11-11 10:41:53,886 [INFO] - Preço alterado para carta DRAGON FORCE - SGX3-ENS10: de 0.49 para 0.5
+2025-11-11 10:41:54,837 [INFO] - Preço alterado para carta ORDER OF THE QUEEN - SGX3-ENS12: de 0.49 para 0.5
+2025-11-11 10:41:55,352 [INFO] - Preço alterado para carta ARCHFIEND'S PROMOTION - SGX3-ENS13: de 0.49 para 0.5
+2025-11-11 10:41:56,380 [INFO] - Preço alterado para carta VICTORY OF THE SHADOW RIDERS - SGX3-ENS15: de 0.49 para 0.5
+2025-11-11 10:41:56,830 [INFO] - Preço alterado para carta CLOUDY SKIES OF GREY - SGX3-ENS16: de 0.49 para 0.5
+2025-11-11 10:42:14,875 [INFO] - Preço alterado para carta RAGING CLOUDIAN - SGX3-ENH18: de 0.49 para 0.5
+2025-11-11 10:42:15,344 [INFO] - Preço alterado para carta RAIN STORM - SGX3-ENH19: de 0.49 para 0.5
+2025-11-11 10:42:39,964 [INFO] - Preço alterado para carta EN SHUFFLE - SGX4_ENA16: de 5.0 para 5.98
+2025-11-11 10:42:44,347 [INFO] - Preço alterado para carta DANDYLION - SGX4_ENA05: de 1.4 para 1.5
+2025-11-11 10:42:47,382 [INFO] - Preço alterado para carta POT OF AVARICE - SGX4_END12: de 0.9 para 3.0
+2025-11-11 10:42:52,256 [INFO] - Preço alterado para carta DIVINE WRATH - SGX4_ENB18: de 0.79 para 1.0
+2025-11-11 10:42:59,454 [INFO] - Preço alterado para carta CONVERT CONTACT - SGX4_ENA15: de 0.59 para 0.75
+2025-11-11 10:43:00,911 [INFO] - Preço alterado para carta FOSSIL DIG - SGX4_ENC14: de 7.99 para 7.0
+2025-11-11 10:43:01,980 [INFO] - Preço alterado para carta ULTIMATE TYRANNO - SGX4_ENC01: de 9.99 para 9.0
+2025-11-11 10:43:17,789 [INFO] - Preço alterado para carta HERO BLAST - SGX4_ENA19: de 0.45 para 0.69
+2025-11-11 10:43:19,695 [INFO] - Preço alterado para carta CONTACT GATE - SGX4_ENA14: de 0.4 para 0.45
+2025-11-11 10:43:22,613 [INFO] - Preço alterado para carta CYBERDARK CANNON - SGX4_ENE02: de 0.4 para 0.49
+2025-11-11 10:43:23,636 [INFO] - Preço alterado para carta RELEASE FROM STONE - SGX4_END17: de 0.39 para 0.49
+2025-11-11 10:43:26,367 [INFO] - Preço alterado para carta CARD TROOPER - SGX4_ENA03: de 0.4 para 0.49
+2025-11-11 10:43:36,572 [INFO] - Preço alterado para carta WARRIOR OF ATLANTIS - SBC1_ENI12: de 4.99 para 4.9
+2025-11-11 10:43:45,557 [INFO] - Preço alterado para carta TIME WIZARD - SBC1_ENB03: de 2.0 para 1.99
+2025-11-11 10:43:48,664 [INFO] - Preço alterado para carta UNITED WE STAND - SBC1_ENB16: de 1.0 para 0.99
+2025-11-11 10:43:54,091 [INFO] - Preço alterado para carta REFLECT BOUNDER - SBC1_ENE04: de 0.8 para 0.9
+2025-11-11 10:43:57,006 [INFO] - Preço alterado para carta MIND CRUSH - SBC1_ENE19: de 8.9 para 8.0
+2025-11-11 10:43:58,988 [INFO] - Preço alterado para carta COMMAND KNIGHT - SBC1_ENB06: de 0.5 para 0.49
+2025-11-11 10:44:01,446 [INFO] - Preço alterado para carta KUNAI WITH CHAIN - SBC1_ENB19: de 0.5 para 0.49
+2025-11-11 10:44:03,277 [INFO] - Preço alterado para carta UMI - SBC1_ENC13: de 0.5 para 0.49
+2025-11-11 10:44:08,302 [INFO] - Preço alterado para carta THE LEGENDARY FISHERMAN - SBC1_ENC01: de 8.0 para 6.99
+2025-11-11 10:44:16,893 [INFO] - Preço alterado para carta GEAR GOLEM THE MOVING FORTRESS - SBC1_ENF02: de 0.5 para 0.49
+2025-11-11 10:44:18,469 [INFO] - Preço alterado para carta INFINITE CARDS - SBC1_ENH13: de 0.5 para 0.49
+2025-11-11 10:44:49,562 [INFO] - Preço alterado para carta EXCHANGE - SBC1_ENI16: de 6.75 para 4.9
+2025-11-11 10:45:04,536 [INFO] - Preço alterado para carta LIGHTNING BLADE - SBC1_ENB15: de 0.5 para 0.49
+2025-11-11 10:45:15,786 [INFO] - Preço alterado para carta MIND CRUSH - SBC1_ENE19: de 0.5 para 0.49
+2025-11-11 10:45:17,442 [INFO] - Preço alterado para carta LAVA GOLEM - SBC2_END09: de 4.99 para 5.0
+2025-11-11 10:45:22,280 [INFO] - Preço alterado para carta THE WINGED DRAGON OF RA - IMMORTAL PHOENIX - SBC2_END02: de 2.5 para 2.0
+2025-11-11 10:45:30,586 [INFO] - Preço alterado para carta HARPIE CHANNELER - SBC2_ENH04: de 8.49 para 8.0
+2025-11-11 10:45:36,691 [INFO] - Preço alterado para carta SHINATO, KING OF A HIGHER PLANE - SBC2_ENI01: de 0.99 para 1.0
+2025-11-11 10:45:56,096 [INFO] - Preço alterado para carta DARK NECROFEAR - SBC2_ENE01: de 6.99 para 5.0
+2025-11-11 10:46:10,986 [INFO] - Preço alterado para carta ZOMA THE SPIRIT - SBC2_ENE24: de 0.5 para 0.25
+2025-11-11 10:46:24,020 [INFO] - Preço alterado para carta D.D. WARRIOR - SBC2_ENC08: de 8.99 para 8.5
+2025-11-11 10:46:27,146 [INFO] - Preço alterado para carta GILFORD THE LIGHTNING - SBC2_ENC01: de 11.99 para 11.5
+2025-11-11 10:46:31,671 [INFO] - Preço alterado para carta SHRINK - SBC2_ENB11: de 7.99 para 7.5
+2025-11-11 10:47:08,602 [INFO] - Preço alterado para carta THE WINGED DRAGON OF RA - SPHERE MODE - SBC2_END03: de 8.9 para 8.0
+2025-11-11 10:47:22,348 [INFO] - Preço alterado para carta HAMON, LORD OF STRIKING THUNDER - SDCB_EN011: de 0.15 para 0.05
+2025-11-11 10:47:27,592 [INFO] - Preço alterado para carta CONTACT C - SDCB_EN013: de 0.1 para 0.05
+2025-11-11 10:47:33,189 [INFO] - Preço alterado para carta COSMIC CYCLONE - SDCB_EN031: de 0.3 para 0.2
+2025-11-11 10:47:41,675 [INFO] - Preço alterado para carta INFINITE IMPERMANENCE - SDWD_EN031: de 14.0 para 9.99
+2025-11-11 10:47:42,435 [INFO] - Preço alterado para carta ASH BLOSSOM & JOYOUS SPRING - SDWD_EN017: de 8.99 para 7.0
+2025-11-11 10:47:43,459 [INFO] - Preço alterado para carta NIBIRU, THE PRIMAL BEING - SDWD_EN016: de 8.0 para 7.0
+2025-11-11 10:47:44,629 [INFO] - Preço alterado para carta WISHES FOR EYES OF BLUE - SDWD_EN042: de 3.99 para 4.0
+2025-11-11 10:47:46,400 [INFO] - Preço alterado para carta INDIGO-EYES SILVER DRAGON - SDWD_EN032: de 0.5 para 0.99
+2025-11-11 10:47:47,159 [INFO] - Preço alterado para carta EFFECT VEILER - SDWD_EN018: de 0.99 para 1.0
+2025-11-11 10:47:47,856 [INFO] - Preço alterado para carta NEO KAISER SEA HORSE - SDWD_EN004: de 0.9 para 0.89
+2025-11-11 10:47:51,088 [INFO] - Preço alterado para carta CALLED BY THE GRAVE - SDWD_EN026: de 0.2 para 0.25
+2025-11-11 10:48:07,532 [INFO] - Preço alterado para carta MAIDEN OF WHITE - SDWD_EN041: de 2.99 para 3.0
+2025-11-11 10:48:11,327 [INFO] - Preço alterado para carta UPSTART GOBLIN - RP01_EN056: de 12.0 para 15.0
+2025-11-11 10:48:11,941 [INFO] - Preço alterado para carta DARK MAGICIAN - RP01R-EN003: de 39.0 para 35.0
+2025-11-11 10:48:12,562 [INFO] - Preço alterado para carta CYBER HARPIE LADY - RP01_EN096: de 370.0 para 350.0
+2025-11-11 10:48:13,183 [INFO] - Preço alterado para carta LA JINN THE MYSTICAL GENIE OF THE LAMP - RP01_EN085: de 4.76 para 4.5
+2025-11-11 10:48:29,239 [INFO] - Encontrada 1 carta em buscar_carta_myp: Heavy Storm
+2025-11-11 10:48:34,072 [INFO] - Preço alterado para carta RIGHT LEG OF THE FORBIDDEN ONE - RP01_EN017: de 12.5 para 12.0
+2025-11-11 10:48:34,594 [INFO] - Preço alterado para carta LA JINN THE MYSTICAL GENIE OF THE LAMP - RP01_EN085: de 4.76 para 4.5
+2025-11-11 10:48:36,066 [INFO] - Preço alterado para carta MESSENGER OF PEACE - RP01_EN082: de 16.0 para 15.0
+2025-11-11 10:48:50,541 [INFO] - Preço alterado para carta ADVANCED RITUAL ART - GFP2_EN153: de 2.0 para 2.75
+2025-11-11 10:48:58,872 [INFO] - Preço alterado para carta FOSSIL MACHINE SKULL CONVOY - GFP2_EN019: de 0.49 para 0.5
+2025-11-11 10:49:01,951 [INFO] - Preço alterado para carta YANG ZING PRANA - GFP2_EN158: de 0.3 para 0.35
+2025-11-11 10:49:12,824 [INFO] - Preço alterado para carta MAJU GARZETT - DCR-25-EN024: de 1.0 para 0.99
+2025-11-11 10:49:15,050 [INFO] - Encontrada 1 carta em buscar_carta_myp: Token Thanksgiving
+2025-11-11 10:49:23,686 [INFO] - Preço alterado para carta CHAIN DESTRUCTION - PSV-25-EN006: de 25.0 para 20.0
+2025-11-11 10:49:27,779 [INFO] - Preço alterado para carta FLYING KAMAKIRI 1 - SRL-25-EN091: de 3.5 para 1.0
+2025-11-11 10:49:33,882 [INFO] - Preço alterado para carta DARK MAGICIAN - LC01-25-EN005: de 32.99 para 35.0
+2025-11-11 10:49:34,560 [INFO] - Preço alterado para carta RED-EYES B. DRAGON - LC01-25-EN006: de 5.98 para 5.21
+2025-11-11 10:49:40,072 [INFO] - Preço alterado para carta LINKURIBOH - MAGO_EN135: de 5.99 para 6.5
+2025-11-11 10:49:47,491 [INFO] - Preço alterado para carta POT OF GREED - SD2_016: de 9.99 para 10.0
+2025-11-11 10:49:51,725 [INFO] - Preço alterado para carta DOUBLE ATTACK! WIND AND THUNDER!! - MAZE-EN008: de 0.2 para 0.15
+2025-11-11 10:49:53,629 [INFO] - Preço alterado para carta SUIJIN - MAZE_EN034: de 0.49 para 0.5
+2025-11-11 10:50:00,018 [INFO] - Preço alterado para carta ELEMENTAL HERO PRISMA - BLC1_EN152: de 4.5 para 4.49
+2025-11-11 10:50:19,696 [INFO] - Preço alterado para carta MAGICALIZED FUSION - RA01_EN058: de 0.25 para 0.2
+2025-11-11 10:50:22,722 [INFO] - Preço alterado para carta THE WICKED ERASER - KICO_EN062: de 0.3 para 0.25
+2025-11-11 10:50:33,088 [INFO] - Preço alterado para carta MAGIC CYLINDER - YSYR_EN043: de 0.2 para 0.3
+2025-11-11 10:50:34,291 [INFO] - Preço alterado para carta DRAGON SHRINE - SDBE_014: de 0.5 para 0.4
+2025-11-11 10:50:36,369 [INFO] - Preço alterado para carta LEFT LEG OF THE FORBIDDEN ONE - MP24_EN003: de 16.0 para 17.0
+2025-11-11 10:50:49,100 [INFO] - Preço alterado para carta HAMON, LORD OF STRIKING THUNDER - SDCB_EN011: de 0.15 para 0.05
+2025-11-11 10:50:58,706 [INFO] - Produto encontrado em buscar_produto_liga: Deck Estrutural - Destino Branco de Olhos Azuis
+2025-11-11 10:51:03,870 [INFO] - Produto encontrado em buscar_produto_liga: Deck Inicial - Kit para dois jogadores
+2025-11-11 10:51:03,872 [INFO] - Preço alterado para produto DECK INICIAL - KIT PARA DOIS JOGADORES: de 59.0 para 58.0
+2025-11-11 10:51:08,785 [INFO] - Produto encontrado em buscar_produto_liga: Edição de Colecionador - Fantasmas do Passado: A 2 Assombração
+2025-11-11 10:51:13,093 [INFO] - Produto encontrado em buscar_produto_liga: Caixa Colecionável Yu-Gi-Oh! - Speed Duel GX: Duelistas das Sombras
+2025-11-11 10:51:17,263 [INFO] - Produto encontrado em buscar_produto_liga: Caixa Colecionável Yu-Gi-Oh! - Speed Duel: Ruas da Batalha da Cidade
+2025-11-11 11:05:51,146 [INFO] - Atualização já feita hoje: 2025-11-11 11:05:51. Pulando.
+2025-11-11 11:08:57,255 [INFO] - Atualização já feita hoje: 2025-11-11 11:08:57. Pulando.
+2025-11-11 11:14:41,381 [INFO] - Atualização já feita hoje: 2025-11-11 11:14:41. Pulando.
+2025-11-11 11:28:48,963 [INFO] - Atualização já feita hoje: 2025-11-11 11:28:48. Pulando.
+2025-11-11 11:31:26,577 [INFO] - Atualização já feita hoje: 2025-11-11 11:31:26. Pulando.
+2025-11-11 11:35:41,860 [INFO] - Atualização já feita hoje: 2025-11-11 11:35:41. Pulando.
+2025-11-11 12:42:30,493 [INFO] - Atualização já feita hoje: 2025-11-11 12:42:30. Pulando.
+2025-11-11 13:13:37,605 [INFO] - Atualização já feita hoje: 2025-11-11 13:13:37. Pulando.
+2025-11-11 13:14:28,657 [INFO] - Atualização já feita hoje: 2025-11-11 13:14:28. Pulando.
+2025-11-20 10:34:20,519 [INFO] - Preço alterado para carta AMAZONESS QUEEN - SGX3-END01: de 4.5 para 4.25
+2025-11-20 10:34:22,642 [INFO] - Preço alterado para carta GREN MAJU DA EIZA - SGX3-ENF12: de 4.99 para 3.33
+2025-11-20 10:34:26,249 [INFO] - Preço alterado para carta HAMON, LORD OF STRIKING THUNDER - SGX3-ENG02: de 6.99 para 7.5
+2025-11-20 10:34:34,950 [INFO] - Preço alterado para carta RED-EYES BLACK DRAGON - SGX3-ENB02: de 3.9 para 4.5
+2025-11-20 10:34:38,914 [INFO] - Preço alterado para carta CYBER DRAGON - SGX3-ENI28: de 8.0 para 6.8
+2025-11-20 10:34:42,679 [INFO] - Preço alterado para carta ELEMENTAL HERO SHINING FLARE WINGMAN - SGX3-ENI25: de 14.9 para 12.75
+2025-11-20 10:34:55,163 [INFO] - Preço alterado para carta ELEMENTAL HERO BURSTINATRIX - SGX3-ENA03: de 1.99 para 1.75
+2025-11-20 10:35:02,825 [INFO] - Preço alterado para carta VAMPIRE BABY - SGX3-ENC02: de 0.98 para 0.95
+2025-11-20 10:35:11,358 [INFO] - Preço alterado para carta LUSTER DRAGON #2 - SGX3-ENB04: de 0.9 para 0.75
+2025-11-20 10:35:12,329 [INFO] - Preço alterado para carta VAMPIRE FAMILIAR - SGX3-ENC03: de 0.9 para 0.85
+2025-11-20 10:35:13,500 [INFO] - Preço alterado para carta VAMPIRE LADY - SGX3-ENC04: de 0.9 para 0.85
+2025-11-20 10:35:18,147 [INFO] - Preço alterado para carta D.D. SURVIVOR - SGX3-ENF06: de 0.9 para 0.85
+2025-11-20 10:35:21,689 [INFO] - Preço alterado para carta BLACK DRAGON'S CHICK - SGX3-ENB05: de 0.89 para 0.8
+2025-11-20 10:35:22,686 [INFO] - Preço alterado para carta VAMPIRES CURSE - SGX3-ENC08: de 0.89 para 0.85
+2025-11-20 10:35:23,813 [INFO] - Preço alterado para carta AMAZONESS CHAIN MASTER - SGX3-END05: de 0.89 para 0.85
+2025-11-20 10:35:24,901 [INFO] - Preço alterado para carta AMAZONESS SAGE - SGX3-END08: de 0.89 para 0.85
+2025-11-20 10:35:26,028 [INFO] - Preço alterado para carta AMAZONESS SCOUTS - SGX3-END09: de 0.89 para 0.85
+2025-11-20 10:35:27,008 [INFO] - Preço alterado para carta AMAZONESS WILLPOWER - SGX3-END17: de 0.89 para 0.85
+2025-11-20 10:35:28,127 [INFO] - Preço alterado para carta HERO SIGNAL - SGX3-ENA18: de 0.8 para 0.75
+2025-11-20 10:35:30,991 [INFO] - Preço alterado para carta ARCHFIEND SOLDIER - SGX3-ENE02: de 0.8 para 0.75
+2025-11-20 10:35:33,610 [INFO] - Preço alterado para carta VANGUARD OF THE DRAGON - SGX3-ENB11: de 0.79 para 0.75
+2025-11-20 10:35:38,099 [INFO] - Preço alterado para carta VAMPIRE RETAINER - SGX3-ENC06: de 0.98 para 0.95
+2025-11-20 10:35:53,108 [INFO] - Preço alterado para carta EVIL HERO INFERNAL GAINER - SGX3-ENA07: de 0.8 para 0.75
+2025-11-20 10:36:17,280 [INFO] - Preço alterado para carta ORDER OF THE QUEEN - SGX3-ENS12: de 0.5 para 0.49
+2025-11-20 10:36:18,262 [INFO] - Preço alterado para carta ARCHFIEND'S PROMOTION - SGX3-ENS13: de 0.5 para 0.49
+2025-11-20 10:36:21,059 [INFO] - Preço alterado para carta CLOUDY SKIES OF GREY - SGX3-ENS16: de 0.5 para 0.49
+2025-11-20 10:36:45,671 [INFO] - Preço alterado para carta THE THIRD SARCOPHAGUS - SGX3-ENI08: de 0.49 para 0.4
+2025-11-20 10:36:47,563 [INFO] - Preço alterado para carta SWING OF MEMORIES - SGX3-ENB16: de 0.39 para 0.35
+2025-11-20 10:37:03,725 [INFO] - Preço alterado para carta ELEMENTAL HERO SHINING FLARE WINGMAN - SGX3-ENI25: de 1.99 para 1.7
+2025-11-20 10:37:08,551 [INFO] - Preço alterado para carta NEO-SPACIAN AIR HUMMINGBIRD - SGX4_ENA06: de 2.49 para 2.32
+2025-11-20 11:02:22,542 [INFO] - Preço alterado para carta MR. VOLCANO - PSV-25-EN044: de 0.97 para 0.89
+2025-11-20 11:02:35,891 [INFO] - Preço alterado para carta SUPERDREADNOUGHT RAIL CANNON GUSTAV MAX - LED4_EN039: de 0.5 para 0.79
+2025-11-20 11:02:36,545 [INFO] - Preço alterado para carta ONE FOR ONE - SDPL_EN029: de 0.5 para 0.25
+2025-11-20 11:02:42,850 [INFO] - Preço alterado para carta POT OF GREED - SD2_016: de 10.0 para 8.0
+2025-11-20 11:02:53,098 [INFO] - Preço alterado para carta MASTER WITH EYES OF BLUE - SHVI_069: de 0.09 para 0.05
+2025-11-20 11:02:53,897 [INFO] - Preço alterado para carta CARDS OF CONSONANCE - SDBE-EN025: de 0.15 para 0.05
+2025-11-20 11:02:54,546 [INFO] - Preço alterado para carta CARDS OF CONSONANCE - SDBE-EN025: de 0.15 para 0.05
+2025-11-20 11:02:57,323 [INFO] - Preço alterado para carta RIRYOKU GUARDIAN - MAZE_EN009: de 0.15 para 0.25
+2025-11-20 11:03:06,523 [INFO] - Preço alterado para carta MAIDEN WITH EYES OF BLUE - LED3_EN008: de 0.35 para 0.25
+2025-11-20 11:03:15,447 [INFO] - Preço alterado para carta MAGICALIZED FUSION - RA01_EN058: de 0.2 para 0.25
+2025-11-20 11:03:16,023 [INFO] - Preço alterado para carta GADARLA, THE MYSTERY DUST KAIJU - SDBT_EN009: de 0.15 para 0.05
+2025-11-20 11:03:16,537 [INFO] - Preço alterado para carta SACRED SWORD OF SEVEN STARS - OP21_EN021: de 0.98 para 0.88
+2025-11-20 11:03:30,863 [INFO] - Preço alterado para carta STARVING VENOM FUSION DRAGON - LED5_EN052: de 2.0 para 1.99
+2025-11-20 11:03:57,137 [INFO] - Preço alterado para carta GADARLA, THE MYSTERY DUST KAIJU - SDBT_EN009: de 0.15 para 0.05
+2025-11-20 11:03:59,472 [INFO] - Preço alterado para carta EXODIA THE FORBIDDEN ONE - TN23_EN002: de 39.0 para 35.0
+2025-11-20 11:04:04,061 [INFO] - Preço alterado para carta RED-EYES BLACK DRAGON - TN23_EN003: de 29.9 para 30.0
+2025-11-20 11:04:15,410 [INFO] - Preço alterado para carta RAVIEL, LORD OF PHANTASMS - SDSA_EN044: de 2.75 para 3.59
+2025-11-20 11:04:26,398 [INFO] - Produto encontrado em buscar_produto_liga: Caixa Colecionável Yu-Gi-Oh! - Speed Duel GX: Duelistas das Sombras
+2025-11-20 11:04:26,399 [INFO] - Preço alterado para produto CAIXA COLECIONÁVEL YU-GI-OH! - SPEED DUEL GX: DUELISTAS DAS SOMBRAS: de 239.9 para 198.99
+2025-11-20 11:04:31,032 [INFO] - Produto encontrado em buscar_produto_liga: Edição de Colecionador - Fantasmas do Passado: A 2 Assombração
+2025-11-20 11:04:34,997 [INFO] - Produto encontrado em buscar_produto_liga: Deck Inicial - Kit para dois jogadores
+2025-11-20 11:20:27,326 [INFO] - Produto encontrado em buscar_produto_liga: Caixa Colecionável Yu-Gi-Oh! - Speed Duel GX: Duelistas das Sombras
+2025-11-20 11:20:31,597 [INFO] - Produto encontrado em buscar_produto_liga: Edição de Colecionador - Fantasmas do Passado: A 2 Assombração
+2025-11-20 11:20:35,553 [INFO] - Produto encontrado em buscar_produto_liga: Deck Inicial - Kit para dois jogadores
+2025-11-20 11:20:39,761 [INFO] - Produto encontrado em buscar_produto_liga: Deck Estrutural - Destino Branco de Olhos Azuis
+2025-11-20 11:41:26,261 [INFO] - Atualização já feita hoje: 2025-11-20 11:41:26. Pulando.
+2025-11-24 10:15:22,407 [INFO] - Preço alterado para carta AMAZONESS QUEEN - SGX3-END01: de 4.25 para 4.0
+2025-11-24 10:15:37,701 [INFO] - Preço alterado para carta CYBER DRAGON - SGX3-ENI28: de 6.8 para 6.4
+2025-11-24 10:15:39,735 [INFO] - Preço alterado para carta ELEMENTAL HERO SHINING FLARE WINGMAN - SGX3-ENI25: de 12.75 para 12.0
+2025-11-24 10:15:48,601 [INFO] - Preço alterado para carta COSMIC CYCLONE - SGX3-ENB15: de 0.99 para 1.0
+2025-11-24 10:15:51,790 [INFO] - Preço alterado para carta AXE OF DESPAIR - SGX3-ENE16: de 0.99 para 0.95
+2025-11-24 10:16:34,233 [INFO] - Preço alterado para carta DRAGONS GUNFIRE - SGX3-ENB14: de 0.49 para 0.5
+2025-11-24 10:16:35,671 [INFO] - Preço alterado para carta PLAGUE WOLF - SGX3-ENC11: de 0.49 para 0.5
+2025-11-24 10:16:45,455 [INFO] - Preço alterado para carta GOBLIN KING - SGX3-ENG08: de 0.49 para 0.5
+2025-11-24 10:17:10,662 [INFO] - Preço alterado para carta ELEMENTAL HERO SHINING FLARE WINGMAN - SGX3-ENI25: de 1.7 para 1.6
+2025-11-24 10:17:18,149 [INFO] - Preço alterado para carta FOSSIL DYNA PACHYCEPHALO - SGX4_END02: de 14.0 para 13.0
+2025-11-24 10:17:47,387 [INFO] - Preço alterado para carta GILASAURUS - SGX4_ENC11: de 0.49 para 0.5
+2025-11-24 10:17:48,984 [INFO] - Preço alterado para carta JURASSIC WORLD - SGX4_ENC15: de 0.49 para 0.6
+2025-11-24 10:18:15,780 [INFO] - Preço alterado para carta WARRIOR OF ATLANTIS - SBC1_ENI12: de 4.9 para 4.8
+2025-11-24 10:18:37,127 [INFO] - Preço alterado para carta MIND CRUSH - SBC1_ENE19: de 7.57 para 7.12
+2025-11-24 10:19:55,795 [INFO] - Preço alterado para carta FLAME SWORDSMAN - SBC1_ENB22: de 0.89 para 0.99
+2025-11-24 10:20:01,824 [INFO] - Preço alterado para carta SLIFER THE SKY DRAGON - SBC2_ENA01: de 9.0 para 10.0
+2025-11-24 10:20:02,692 [INFO] - Preço alterado para carta THE WINGED DRAGON OF RA - SBC2_END01: de 15.0 para 19.99
+2025-11-24 10:20:15,240 [INFO] - Preço alterado para carta BLUE-EYES WHITE DRAGON - SBC2_ENB02: de 1.0 para 1.2
+2025-11-24 10:20:16,846 [INFO] - Preço alterado para carta GRAVEKEEPERS RECRUITER - SBC2_ENF12: de 1.0 para 1.5
+2025-11-24 10:20:24,346 [INFO] - Preço alterado para carta HINO-KAGU-TSUCHI - SBC2_ENI03: de 0.75 para 0.79
+2025-11-24 10:21:05,734 [INFO] - Preço alterado para carta ORDEAL OF A TRAVELER - SBC2_ENG17: de 0.5 para 0.74
+2025-11-24 10:21:07,988 [INFO] - Preço alterado para carta D.D. WARRIOR - SBC2_ENC08: de 7.65 para 7.2
+2025-11-24 10:21:08,623 [INFO] - Preço alterado para carta KINGS KNIGHT - SBC2_ENA02: de 0.49 para 0.5
+2025-11-24 10:21:09,509 [INFO] - Preço alterado para carta QUEENS KNIGHT - SBC2_ENA03: de 0.49 para 0.5
+2025-11-24 10:21:10,550 [INFO] - Preço alterado para carta DARK SPIRITS MASTERY - SBC2_ENE18: de 0.5 para 1.0
+2025-11-24 10:21:11,097 [INFO] - Preço alterado para carta JUDGMENT OF ANUBIS - SBC2_ENG19: de 0.49 para 0.5
+2025-11-24 10:21:11,851 [INFO] - Preço alterado para carta GILFORD THE LIGHTNING - SBC2_ENC01: de 11.05 para 10.4
+2025-11-24 10:21:16,034 [INFO] - Preço alterado para carta SHRINK - SBC2_ENB11: de 7.5 para 7.2
+2025-11-24 10:21:57,285 [INFO] - Preço alterado para carta THE WINGED DRAGON OF RA - SPHERE MODE - SBC2_END03: de 8.0 para 8.9
+2025-11-24 10:22:02,537 [INFO] - Preço alterado para carta ASH BLOSSOM & JOYOUS SPRING - SDCB_EN014: de 11.89 para 8.0
+2025-11-24 10:22:11,000 [INFO] - Preço alterado para carta HAMON, LORD OF STRIKING THUNDER - SDCB_EN011: de 0.05 para 0.15
+2025-11-24 10:22:21,700 [INFO] - Preço alterado para carta COSMIC CYCLONE - SDCB_EN031: de 0.2 para 0.15
+2025-11-24 10:22:29,554 [INFO] - Preço alterado para carta INFINITE IMPERMANENCE - SDWD_EN031: de 13.9 para 9.99
+2025-11-24 10:22:30,235 [INFO] - Preço alterado para carta ASH BLOSSOM & JOYOUS SPRING - SDWD_EN017: de 7.0 para 5.99
+2025-11-24 10:22:31,279 [INFO] - Preço alterado para carta NIBIRU, THE PRIMAL BEING - SDWD_EN016: de 6.9 para 5.99
+2025-11-24 10:22:35,091 [INFO] - Preço alterado para carta EFFECT VEILER - SDWD_EN018: de 0.9 para 0.8
+2025-11-24 10:22:42,571 [INFO] - Preço alterado para carta BLUE-EYES TYRANT DRAGON - SDWD_EN037: de 0.05 para 0.1
+2025-11-24 10:22:44,674 [INFO] - Preço alterado para carta BLUE-EYES ULTIMATE DRAGON - SDWD_EN034: de 0.1 para 0.15
+2025-11-24 10:22:59,069 [INFO] - Preço alterado para carta BLUE-EYES ULTIMATE SPIRIT DRAGON - SDWD_EN043: de 1.5 para 0.99
+2025-11-24 10:23:04,980 [INFO] - Preço alterado para carta SANGAN - RP01_EN036: de 11.59 para 10.0
+2025-11-24 10:23:21,797 [INFO] - Preço alterado para carta MASK OF DARKNESS - RP01_EN027: de 0.6 para 0.75
+2025-11-24 10:24:27,030 [INFO] - Preço alterado para carta OBELISK THE TORMENTOR - LC01-25-EN001: de 7.0 para 7.5
+2025-11-24 10:24:27,691 [INFO] - Preço alterado para carta SLIFER THE SKY DRAGON - LC01-25-EN002: de 7.0 para 7.99
+2025-11-24 10:24:29,602 [INFO] - Preço alterado para carta RED-EYES B. DRAGON - LC01-25-EN006: de 5.21 para 5.98
+2025-11-24 10:24:35,850 [INFO] - Preço alterado para carta SUPERDREADNOUGHT RAIL CANNON GUSTAV MAX - LED4_EN039: de 0.79 para 0.75
+2025-11-24 10:24:36,496 [INFO] - Preço alterado para carta ONE FOR ONE - SDPL_EN029: de 0.25 para 0.5
+2025-11-24 10:24:48,671 [INFO] - Preço alterado para carta SANGA OF THE THUNDER - MAZE_EN032: de 0.25 para 0.2
+2025-11-24 10:24:56,537 [INFO] - Preço alterado para carta LABYRINTH HEAVY TANK - MAZE_EN001: de 1.0 para 0.99
+2025-11-24 10:25:07,993 [INFO] - Preço alterado para carta MAIDEN WITH EYES OF BLUE - LED3_EN008: de 0.25 para 0.35
+2025-11-24 10:25:09,232 [INFO] - Preço alterado para carta THE WHITE STONE OF LEGEND - LDK2_ENK04: de 0.15 para 0.2
+2025-11-24 10:25:09,906 [INFO] - Preço alterado para carta THE WHITE STONE OF LEGEND - LDK2_ENK04: de 0.15 para 0.2
+2025-11-24 10:25:48,683 [INFO] - Preço alterado para carta HAMON, LORD OF STRIKING THUNDER - SDCB_EN011: de 0.05 para 0.15
+2025-11-24 10:26:00,455 [INFO] - Produto encontrado em buscar_produto_liga: Caixa Colecionável Yu-Gi-Oh! - Speed Duel GX: Duelistas das Sombras
+2025-11-24 10:26:04,432 [INFO] - Produto encontrado em buscar_produto_liga: Edição de Colecionador - Fantasmas do Passado: A 2 Assombração
+2025-11-24 10:26:08,392 [INFO] - Produto encontrado em buscar_produto_liga: Deck Inicial - Kit para dois jogadores
+2025-11-24 10:26:08,393 [INFO] - Preço alterado para produto DECK INICIAL - KIT PARA DOIS JOGADORES: de 58.0 para 55.0
+2025-11-24 10:26:12,851 [INFO] - Produto encontrado em buscar_produto_liga: Deck Estrutural - Destino Branco de Olhos Azuis
+2025-11-24 10:28:20,478 [INFO] - Atualização já feita hoje: 2025-11-24 10:28:20. Pulando.
+2025-11-24 10:36:05,072 [INFO] - Atualização já feita hoje: 2025-11-24 10:36:05. Pulando.
+2025-11-24 10:38:14,806 [INFO] - Atualização já feita hoje: 2025-11-24 10:38:14. Pulando.
+2025-11-24 10:41:24,969 [INFO] - Atualização já feita hoje: 2025-11-24 10:41:24. Pulando.

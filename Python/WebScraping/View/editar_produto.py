@@ -15,7 +15,7 @@ from Components.thread_com_modal import executar_em_thread
 from Utils.baixar_carta import salvar_imagem_local
 from Utils.log import registrar_erro
 from scraping.scraping_cartas import buscar_produto_liga
-from DAO.database import atualizar_produto, buscar_historico_precos, buscar_produto_por_id, deletar, inserir_venda_generica
+from DAO.database import atualizar_produto, buscar_historico_precos, buscar_produto_por_id, deletar, inserir_produto, inserir_venda_generica
 
 import threading
 
@@ -370,7 +370,7 @@ def criar_tela_editar_produto(app, id_produto):
                     "data_scraping": campos["data_scraping"].get() or datetime.today().strftime("%Y-%m-%d"),
                     "imagem_salva": campos["imagem_salva"].get() or "",
                 }
-                atualizar_produto(novo_produto, novo=True)
+                inserir_produto(novo_produto)
                 messagebox.showinfo("Sucesso", "Produto clonado com sucesso!", parent=root)
                 ao_fechar()
             except Exception as e:
@@ -398,7 +398,10 @@ def criar_tela_editar_produto(app, id_produto):
     campos["preco_compra"].insert(0, str(produto["preco_compra"] or ""))
     campos["preco_atual"].insert(0, str(produto["preco_atual"] or ""))
     campos["data_compra"].insert(0, produto["data_compra"] or "")
-    campos["quantidade"].insert(0, str(produto["quantidade"] or "1"))
+
+    qtd = produto.get("quantidade")
+    campos["quantidade"].insert(0, "0" if qtd in (None, "") else str(int(qtd)))
+
     campos["origem"].insert(0, produto["origem"] or "Liga Yugioh")
     campos["imagem_salva"].insert(0, produto["imagem_salva"] or "")
     campos["data_scraping"].insert(0, produto.get("data_scraping", ""))
