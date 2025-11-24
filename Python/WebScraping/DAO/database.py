@@ -695,34 +695,53 @@ def listar_todos_produtos(filtro=""):
         conn.close()
 
 
-
 def calcular_lucro_total_produtos_em_posse():
-    '''
-    Calcula o lucro total dos produtos em posse.
-    returns:
-        float: O lucro total dos produtos em posse, ou 0.0 se não houver produtos.
-    '''
-    query = """
-        SELECT SUM((preco_atual - preco_compra) * quantidade) AS lucro_total
-        FROM produto
-        WHERE preco_atual IS NOT NULL AND preco_compra IS NOT NULL;
     """
+    Lucro total = lucro em posse (quantidade > 0) + lucro de vendas (snapshot da venda_produto;
+    se faltar custo na venda, usa custo do produto).
+    """
+    conn, cursor = None, None
     try:
         conn = conectar()
         cursor = conn.cursor()
-        cursor.execute(query)
-        resultado = cursor.fetchone()
-        conn.close()
-        return resultado[0] if resultado[0] is not None else 0.0
+
+        # Lucro em posse: apenas itens com quantidade > 0
+        cursor.execute("""
+            SELECT COALESCE(SUM(
+                     (COALESCE(preco_atual,0) - COALESCE(preco_compra,0))
+                     * COALESCE(quantidade,0)
+                   ), 0)
+            FROM produto
+            WHERE COALESCE(quantidade,0) > 0
+        """)
+        lucro_posse = cursor.fetchone()[0] or 0.0
+
+        # Lucro de vendas (venda_produto):
+        # usa preco_compra da venda; se NULL, usa o preco_compra do produto.
+        cursor.execute("""
+            SELECT COALESCE(SUM(
+                     (COALESCE(v.preco_venda,0) - COALESCE(v.preco_compra, p.preco_compra, 0))
+                     * COALESCE(v.quantidade, 0)
+                   ), 0)
+            FROM venda_produto v
+            LEFT JOIN produto p ON p.id_produto = v.id_produto
+        """)
+        lucro_vendas = cursor.fetchone()[0] or 0.0
+
+        return float(lucro_posse) + float(lucro_vendas)
+
     except Exception as e:
-        messagebox.showerror("Erro", f"Erro ao calcular lucro de produtos em posse: {e}")
-        conn.close()
-        registrar_erro("Erro ao calcular lucro de produtos em posse", e)
-        return None
+        registrar_erro(f"[calcular_lucro_total_produtos_em_posse] {e}")
+        return 0.0
     finally:
-        conn.close()
-
-
+        try:
+            if cursor: cursor.close()
+        except Exception:
+            pass
+        try:
+            if conn: conn.close()
+        except Exception:
+            pass
 
 def calcular_lucro_total_produtos_vendidos():
     '''
