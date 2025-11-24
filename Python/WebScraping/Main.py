@@ -89,8 +89,8 @@ def criar_tela_principal():
         # ---- Resumo financeiro ----
         resumo = buscar_historico_precos(resumo=True)
         dados_resumo = [
-            {"emoji": "🃏", "texto": "Lucro Cartas", "valor": resumo.get("lucro_cartas", 0.0), "row": 0, "column": 0, "anchor": "w"},
-            {"emoji": "📦", "texto": "Lucro Produtos", "valor": resumo.get("lucro_produtos", 0.0), "row": 0, "column": 1, "anchor": "e"},
+            {"emoji": "🃏", "texto": "Lucro Cartas", "valor": resumo.get("lucro_cartas", 0.0) + resumo.get("total_vendas_cartas", 0.0), "row": 0, "column": 0, "anchor": "w"},
+            {"emoji": "📦", "texto": "Lucro Produtos", "valor": resumo.get("lucro_produtos", 0.0) + resumo.get("total_vendas_produtos", 0.0), "row": 0, "column": 1, "anchor": "e"},
             {"emoji": "💰", "texto": "Lucro Total", "valor": resumo.get("lucro_total", 0.0), "row": 1, "column": 0, "anchor": "w"},
             {"emoji": "💵", "texto": "Vendas Cartas", "valor": resumo.get("total_vendas_cartas", 0.0), "row": 1, "column": 1, "anchor": "e"},
             {"emoji": "📊", "texto": "Vendas Produtos", "valor": resumo.get("total_vendas_produtos", 0.0), "row": 2, "column": 0, "anchor": "w"},

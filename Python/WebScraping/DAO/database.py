@@ -76,17 +76,18 @@ def update_historico_generico(tipo="carta", id=None, preco=None, data=None, orig
 def registrar_historico_lucro():
     conn = conectar()
     cursor = conn.cursor()
+    resumo = buscar_historico_precos(resumo=True)
     try:
-        # Calcula lucro total
-        cursor.execute("""
-            SELECT SUM((preco_atual - preco_da_compra) * quantidade) FROM carta
-        """)
-        lucro_cartas = cursor.fetchone()[0] or 0.0
+        # # Calcula lucro total
+        # cursor.execute("""
+        #     SELECT SUM((preco_atual - preco_da_compra) * quantidade) FROM carta
+        # """)
+        lucro_cartas = resumo.get("lucro_cartas", 0.0) + resumo.get("total_vendas_cartas", 0.0)
 
-        cursor.execute("""
-            SELECT SUM((preco_atual - preco_compra) * quantidade) FROM produto
-        """)
-        lucro_produtos = cursor.fetchone()[0] or 0.0
+        # cursor.execute("""
+        #     SELECT SUM((preco_atual - preco_compra) * quantidade) FROM produto
+        # """)
+        lucro_produtos = resumo.get("lucro_produtos", 0.0) + resumo.get("total_vendas_produtos", 0.0)
 
         total = lucro_cartas + lucro_produtos
 
@@ -1525,7 +1526,9 @@ def buscar_historico_precos(tipo=None, id=None, resumo=False):
 
             # Lucro total em posse (cartas + produtos)
             resultados["lucro_total"] = (resultados.get("lucro_cartas", 0.0)
-                                         + resultados.get("lucro_produtos", 0.0))
+                                         + resultados.get("lucro_produtos", 0.0)
+                                         + resultados.get("total_vendas_cartas", 0.0)
+                                         + resultados.get("total_vendas_produtos", 0.0))
 
             return resultados
 
