@@ -1,0 +1,583 @@
+:root {
+  --color-bg: #020617;
+  --color-bg-elevated: #020617;
+  --color-primary: #3b82f6;
+  --color-primary-hover: #2563eb;
+  --color-border: #1f2937;
+  --color-text: #e5e7eb;
+  --color-text-muted: #9ca3af;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.45);
+}
+
+html,
+body {
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* Shell geral */
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* TOPBAR / MENU SUPERIOR */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1.6rem;
+  border-bottom: 1px solid var(--color-border);
+  background: radial-gradient(circle at top, #111827, #020617);
+  box-shadow: var(--shadow-soft);
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.app-logo {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.app-title {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.topbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.topbar-nav-item {
+  position: relative;
+}
+
+.topbar-nav-button {
+  background: none;
+  border: none;
+  color: var(--color-text);
+  font-size: 0.9rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.topbar-nav-button:hover {
+  background-color: rgba(148, 163, 184, 0.16);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 180px;
+  background-color: #020617;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  padding: 0.35rem 0;
+  box-shadow: var(--shadow-soft);
+  display: none;
+  z-index: 20;
+}
+
+.topbar-nav-item:hover .dropdown-menu {
+  display: block;
+}
+
+.dropdown-item {
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--color-text);
+  text-align: left;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(148, 163, 184, 0.16);
+}
+
+/* CONTEÚDO PRINCIPAL */
+
+.dashboard-content {
+  flex: 1;
+  padding: 1.4rem 1.6rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Banner informativo (scraping) */
+
+.info-banner {
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--color-border);
+  padding: 0.75rem 1rem;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  background: rgba(59, 130, 246, 0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.info-banner-title {
+  font-weight: 500;
+}
+
+.info-banner-text {
+  color: var(--color-text-muted);
+}
+
+/* Títulos / seções */
+
+.section-title {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.section-subtitle {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0.8rem;
+}
+
+.section-block {
+  margin-top: 1.2rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.section-header-caption {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+/* Resumo financeiro (topo) */
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.9rem;
+}
+
+.summary-card {
+  background: radial-gradient(circle at top left, #111827, #020617);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  padding: 0.9rem 1rem;
+  box-shadow: var(--shadow-soft);
+  margin-bottom: 0.9rem;
+}
+
+.summary-label {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.summary-value {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.summary-footer {
+  margin-top: 0.35rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/* Gráficos empilhados */
+
+.chart-stack {
+  margin-top: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.chart-card {
+  width: 100%;
+  background-color: var(--color-bg-elevated);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  padding: 0.8rem 0.9rem;
+}
+
+.chart-title {
+  font-size: 0.85rem;
+  margin-bottom: 0.4rem;
+}
+
+.chart-placeholder {
+  margin-top: 0.3rem;
+  height: 220px;
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--color-border);
+  background: linear-gradient(
+    135deg,
+    rgba(30, 64, 175, 0.18),
+    rgba(15, 23, 42, 0.9)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+/* Carrossel logo abaixo do header */
+
+.carousel-wrapper {
+  margin-top: 1.2rem;
+}
+
+.carousel-track {
+  margin-top: 0.7rem;
+  display: flex;
+  gap: 0.9rem;
+  overflow-x: auto;
+  padding-bottom: 0.4rem;
+}
+
+.carousel-item {
+  min-width: 230px;
+  max-width: 260px;
+  background-color: var(--color-bg-elevated);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  padding: 0.8rem 0.9rem;
+  flex-shrink: 0;
+}
+
+.carousel-item-title {
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 0.4rem;
+}
+
+.carousel-item-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  margin-bottom: 0.2rem;
+}
+
+.badge-kind {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  background-color: rgba(148, 163, 184, 0.18);
+  color: var(--color-text-muted);
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+
+  background-color: var(--color-primary);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 500;
+
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    transform 0.1s ease,
+    box-shadow 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.btn:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-soft);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Variações */
+.btn-outline {
+  background-color: transparent;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.btn-danger {
+  background-color: #ef4444;
+  border-color: #b91c1c;
+}
+
+.btn-ghost {
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--color-text-muted);
+}
+
+/* Largura total opcional */
+.btn-full {
+  width: 100%;
+}
+
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* o main já está com flex: 1; na sua dashboard-content, isso garante que o footer fique embaixo */
+.dashboard-content {
+  flex: 1;
+}
+
+/* FOOTER */
+
+.app-footer {
+  margin-top: auto;
+  padding: 0.75rem 1.6rem;
+  border-top: 1px solid var(--color-border);
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  max-width: 1200px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.app-footer-main {
+  font-weight: 500;
+}
+
+.app-footer-secondary {
+  opacity: 0.9;
+}
+
+@media (max-width: 640px) {
+  .app-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.form-field-label {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.form-field-required {
+  color: #ef4444;
+  margin-left: 4px;
+}
+
+.form-field-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.form-field-input {
+  flex: 1;
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background-color: #020617;
+  color: var(--color-text);
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.form-field-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.4);
+}
+
+.form-field-date-button {
+  padding: 0.4rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-primary);
+  background: transparent;
+  color: var(--color-primary);
+  font-size: 0.8rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.form-field-date-button:hover {
+  background-color: rgba(59, 130, 246, 0.12);
+}
+
+/* Layout específico para páginas de formulário */
+.form-page-content {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
+  padding: 1.4rem 1.6rem 2rem;
+
+  /* limita a largura total e centraliza como o footer */
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+
+  box-sizing: border-box;
+}
+
+
+/* Coluna esquerda: formulário */
+.form-page-left,
+.form-page-right {
+  min-width: 0;
+}
+
+/* coluna esquerda: formulário */
+.form-page-left {
+  flex: 2;  
+}
+
+/* Títulos do formulário, aproveitando seu padrão */
+.form-page-left .section-title {
+  margin-bottom: 0.25rem;
+}
+
+.form-page-left .section-subtitle {
+  margin-bottom: 1rem;
+}
+
+/* Coluna direita: imagem / preview da carta/produto */
+.form-page-right {
+  flex: 1;
+  max-width: 320px;
+  border-left: 1px solid var(--color-border);
+  padding-left: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+
+.form-image-label {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.form-image-placeholder {
+  border-radius: 12px;
+  border: 1px dashed var(--color-border);
+  background: radial-gradient(circle at top left, #111827, #020617);
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: 0.75rem;
+}
+
+/* Responsivo: empilha em telas menores */
+@media (max-width: 1100px) {
+  .form-page-content {
+    flex-direction: column;
+  }
+
+  .form-page-right {
+    max-width: none;
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid var(--color-border);
+    padding-left: 0;
+    padding-top: 1rem;
+  }
+}
+
+.form-row-inline {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.form-row-inline .form-field {
+  flex: 1;
+  margin-bottom: 0; /* já controla o espaçamento pela row */
+}
+
+.form-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-start;
+}
+
+.form-select-input {
+  flex: 1;
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background-color: #020617;
+  color: var(--color-text);
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.form-select-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.4);
+}
+
+
