@@ -27,9 +27,19 @@ export function FormField({
     let val = e.target.value
 
     if (kind === 'numero') {
-      // permite apenas dígitos (e esvaziar o campo)
-      val = val.replace(/\D/g, '')
+    // Permite apenas dígitos e ponto
+    val = val.replace(/[^0-9.]/g, '')
+
+    // Garante no máximo um ponto decimal
+    const firstDotIndex = val.indexOf('.')
+    if (firstDotIndex !== -1) {
+      // Mantém o primeiro ponto e remove os demais
+      const before = val.slice(0, firstDotIndex + 1)
+      const after = val.slice(firstDotIndex + 1).replace(/\./g, '')
+      val = before + after
     }
+  }
+
 
     onChange(val)
   }

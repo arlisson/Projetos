@@ -1,11 +1,23 @@
-import { useState } from 'react'
-import { Topbar } from '../components/topBar'
-import { Footer } from '../components/footer'
-import { FormField } from '../components/formField'
-import { FormSelect } from '../components/formSelect'
-import { Button } from '../components/botao'
+import { useEffect, useState } from 'react'
+import { Topbar } from '../../components/topBar'
+import { Footer } from '../../components/footer'
+import { FormField } from '../../components/formField'
+import { FormSelect } from '../../components/formSelect'
+import { Button } from '../../components/botao'
+import { testDbConnection } from '../../Database/db'
 
 export function CadastrarCarta() {
+
+  useEffect(() => {
+      
+    
+  
+      testDbConnection().then((res) => {
+        console.log(res.message)
+      })
+    }, [])
+
+
   const [linkCarta, setLinkCarta] = useState('')
   const [nome, setNome] = useState('')
   const [codigo, setCodigo] = useState('')
@@ -85,6 +97,7 @@ export function CadastrarCarta() {
                 value={linkCarta}
                 onChange={setLinkCarta}
                 placeholder="URL da página da carta"
+                required
               />
               <Button
                 type="button"
@@ -113,6 +126,7 @@ export function CadastrarCarta() {
               kind="texto"
               value={codigo}
               onChange={setCodigo}
+              required
             />
 
             {/* Preços */}
@@ -124,6 +138,7 @@ export function CadastrarCarta() {
                 value={precoPago}
                 onChange={setPrecoPago}
                 placeholder="Somente números"
+                required
               />
               <FormField
                 label="Preço atual"
@@ -132,6 +147,7 @@ export function CadastrarCarta() {
                 value={precoAtual}
                 onChange={setPrecoAtual}
                 placeholder="Somente números"
+                required
               />
             </div>
 
@@ -143,6 +159,7 @@ export function CadastrarCarta() {
                 kind="data"
                 value={dataCompra}
                 onChange={setDataCompra}
+                required
               />
               <FormField
                 label="Quantidade comprada"
@@ -150,6 +167,7 @@ export function CadastrarCarta() {
                 kind="numero"
                 value={quantidade}
                 onChange={setQuantidade}
+                required
               />
             </div>
 
@@ -181,6 +199,7 @@ export function CadastrarCarta() {
                 onChange={setOrigem}
                 options={opcoesOrigem}
                 placeholder="Selecione a origem"
+                required
               />
               <FormSelect
                 label="Raridade"
@@ -189,6 +208,7 @@ export function CadastrarCarta() {
                 onChange={setRaridade}
                 options={opcoesRaridade}
                 placeholder="Selecione a raridade"
+                required
               />
             </div>
 
@@ -208,6 +228,7 @@ export function CadastrarCarta() {
                 onChange={setColecao}
                 options={opcoesColecao}
                 placeholder="Selecione a coleção"
+                required
               />
             </div>
 

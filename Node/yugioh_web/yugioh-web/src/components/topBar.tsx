@@ -22,8 +22,8 @@ export function Topbar({ pageTitle = 'YU-GI-OH! Manager' }: TopbarProps) {
     {
       label: 'Cartas',
       items: [
-        { label: 'Cadastrar Cartas', path: 'cartas/cadastrar' },
-        { label: 'Listar Cartas', path: 'cartas/listar' },
+        { label: 'Cadastrar Cartas', path:'/cartas/cadastrar' },
+        { label: 'Listar Cartas', path: '/cartas/listar' },
         {
           label: 'Cadastrar Cartas de Coleção',
           path: 'cartas/colecao/cadastrar',
@@ -33,8 +33,8 @@ export function Topbar({ pageTitle = 'YU-GI-OH! Manager' }: TopbarProps) {
     {
       label: 'Produtos',
       items: [
-        { label: 'Cadastrar Produtos', path: 'produtos/cadastrar' },
-        { label: 'Listar Produtos', path: 'produtos/listar' },
+        { label: 'Cadastrar Produtos', path: '/produtos/cadastrar' },
+        { label: 'Listar Produtos', path: '/produtos/listar' },
       ],
     },
     {

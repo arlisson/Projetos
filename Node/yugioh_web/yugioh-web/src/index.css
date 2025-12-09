@@ -101,6 +101,7 @@ body {
   box-shadow: var(--shadow-soft);
   display: none;
   z-index: 20;
+  box-sizing: border-box; 
 }
 
 .topbar-nav-item:hover .dropdown-menu {
@@ -116,6 +117,8 @@ body {
   padding: 0.45rem 0.9rem;
   font-size: 0.85rem;
   cursor: pointer;
+  white-space: normal;      /* permite quebra de linha */
+  word-break: break-word;
 }
 
 .dropdown-item:hover {
@@ -580,4 +583,120 @@ body {
   box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.4);
 }
 
+/* Header clicável / ordenável */
+.table-header-sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.table-header-sortable:hover {
+  background-color: rgba(30, 64, 175, 0.3);
+}
+
+.table-header-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  justify-content: center;
+  width: 100%;
+}
+
+.table-header-indicator {
+  font-size: 0.7rem;
+  opacity: 0.9;
+}
+
+.table-summary-row th {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  background: rgba(15, 23, 42, 0.9);
+  border-bottom: 1px solid rgba(30, 41, 59, 0.9);
+  text-align: center;
+}
+
+.table th,
+.table td {
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid rgba(30, 41, 59, 0.8);
+  font-size: 0.85rem;
+  text-align: center; /* centraliza tudo */
+}
+
+/* As colunas que não têm soma ficam “vazias”, já está tratado no componente */
+
+/* Barra de ferramentas da tabela (filtro de busca) */
+.table-toolbar {
+  margin-bottom: 0.75rem;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.search-input {
+  flex:1;
+  min-width: 260px;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background-color: #020617;
+  color: var(--color-text);
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.4);
+}
+
+/* Célula da primeira coluna: imagem + nome + raridade */
+.card-table-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.card-table-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.card-table-image-wrapper {
+  width: 96px;
+  height: 140px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: radial-gradient(circle at top left, #111827, #020617);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-table-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-table-image-placeholder {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  text-align: center;
+  padding: 0.25rem;
+}
+
+.card-table-rarity {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+/* Opcional: alinhar a primeira coluna ao centro */
+.table td:first-child,
+.table th:first-child {
+  text-align: center;
+}
 
