@@ -207,6 +207,11 @@ export async function buscarTodosProdutos(): Promise<ProdutoDetalhado[]> {
   }
 }
 
+/**
+ * 
+ * @param filtro 
+ * @returns 
+ */
 export async function buscarProdutosPorFiltro(
   filtro: string,
 ): Promise<ProdutoDetalhado[]> {
