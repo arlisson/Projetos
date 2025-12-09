@@ -28,6 +28,7 @@ export function Topbar({ pageTitle = 'YU-GI-OH! Manager' }: TopbarProps) {
           label: 'Cadastrar Cartas de Coleção',
           path: 'cartas/colecao/cadastrar',
         },
+        {label: 'Listar Vendas de Cartas', path: '/cartas/vendas/listar' },
       ],
     },
     {
@@ -35,6 +36,7 @@ export function Topbar({ pageTitle = 'YU-GI-OH! Manager' }: TopbarProps) {
       items: [
         { label: 'Cadastrar Produtos', path: '/produtos/cadastrar' },
         { label: 'Listar Produtos', path: '/produtos/listar' },
+        { label: 'Listar Vendas de Produtos', path: '/produtos/vendas/listar' },
       ],
     },
     {
@@ -45,6 +47,7 @@ export function Topbar({ pageTitle = 'YU-GI-OH! Manager' }: TopbarProps) {
         { label: 'Logs / diagnósticos', path: '/logs' },
       ],
     },
+    
   ]
 
   return (

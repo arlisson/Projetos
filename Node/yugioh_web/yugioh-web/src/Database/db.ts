@@ -114,6 +114,57 @@ export interface ProdutoDetalhado {
     data_scraping?: string | null
 }
 
+  export interface VendaCartaDetalhada {
+    id_carta: number
+    link_site?: string | null
+    nome: string
+    codigo?: string | null
+    preco_da_compra?: number | null
+    data_da_compra?: string | null
+    preco_da_venda?: number | null
+    data_da_venda?: string | null
+    preco_atual?: number | null
+    quantidade?: number | null
+    imagem?: string | null
+    imagem_salva?: string | null
+    origem?: string | null
+    data_scraping?: string | null
+    colecao_nome?: string | null
+    colecao_codigo?: string | null
+    raridade_nome?: string | null
+    qualidade_nome?: string | null
+  }
+
+  /**
+   * p.id_produto,
+  p.nome_produto,
+  p.link,
+  p.imagem,
+  p.imagem_salva,
+  p.preco_compra,
+  p.data_compra,
+  p.preco_atual,
+  p.quantidade,
+  p.origem,
+  p.data_scraping
+   */
+
+  export interface VendaProdutoDetalhado {
+    id_produto: number
+    nome_produto: string
+    link?: string | null
+    imagem?: string | null
+    preco_compra?: number | null
+    data_compra?: string | null     // YYYY-MM-DD
+    preco_venda?: number | null
+    data_venda?: string | null
+    preco_atual?: number | null
+    quantidade?: number | null
+    imagem_salva?: string | null
+    origem?: string | null
+    data_scraping?: string | null
+  }
+
 // ------------------------------------------
 // Histórico genérico (tabela historico_precos)
 // registrar_historico_generico do Python
@@ -237,6 +288,102 @@ export async function buscarProdutosPorFiltro(
   } catch (err) {
     console.error('Erro ao buscar produtos com filtro:', err)
     await logError('Erro ao buscar produtos com filtro: ' + String(err))
+    return []
+  }
+}
+
+/**
+ * 
+ * @returns 
+ */
+export async function listarVendasCartas(): Promise<VendaCartaDetalhada[]> {
+  try {
+    const db = await getDb()  
+    const rows = await db.select<VendaCartaDetalhada[]>(
+      'SELECT * FROM vw_vendas_detalhadas',
+    )  
+    return rows
+  } catch (err) {
+    console.error('Erro ao buscar vendas de cartas:', err)
+    await logError('Erro ao buscar vendas de cartas: ' + String(err))
+    return []
+  }
+}
+
+export async function buscarVendasCartasPorFiltro(
+  filtro: string,
+): Promise<VendaCartaDetalhada[]> {
+  const termo = filtro.trim()
+  if (!termo) {
+    return listarVendasCartas()
+  }
+  try {
+    const db = await getDb()
+    const like = `%${termo.toUpperCase()}%`
+    const rows = await db.select<VendaCartaDetalhada[]>(
+      `
+      SELECT *
+      FROM vw_vendas_detalhadas
+      WHERE
+        UPPER(nome) LIKE ?
+        OR UPPER(codigo) LIKE ?
+        OR UPPER(origem) LIKE ?
+        OR UPPER(colecao_nome) LIKE ?
+        OR UPPER(raridade_nome) LIKE ?
+        OR UPPER(qualidade_nome) LIKE ?
+      ORDER BY id_carta DESC
+    `,
+      [like, like, like, like, like, like],
+    )
+    return rows
+  }
+    catch (err) {
+    console.error('Erro ao buscar vendas de cartas com filtro:', err)
+    await logError('Erro ao buscar vendas de cartas com filtro: ' + String(err))
+    return []
+  } 
+}
+
+export async function listarVendasProdutos(): Promise<VendaProdutoDetalhado[]> {
+  try {
+    const db = await getDb()  
+    const rows = await db.select<VendaProdutoDetalhado[]>(
+      'SELECT * FROM vw_venda_produto_detalhado',
+    )  
+    return rows
+  } catch (err) {
+    console.error('Erro ao buscar vendas de produtos:', err)
+    await logError('Erro ao buscar vendas de produtos: ' + String(err))
+    return []
+  } 
+}
+
+export async function buscarVendasProdutosPorFiltro(
+  filtro: string,
+): Promise<VendaProdutoDetalhado[]> {
+  const termo = filtro.trim()
+  if (!termo) {
+    return listarVendasProdutos()
+  }
+  try {
+    const db = await getDb()
+    const like = `%${termo.toUpperCase()}%`
+    const rows = await db.select<VendaProdutoDetalhado[]>(
+      `
+      SELECT *
+      FROM vw_venda_produto_detalhado
+      WHERE
+        UPPER(nome_produto) LIKE ?
+        OR UPPER(origem) LIKE ?
+      ORDER BY id_produto DESC
+    `,
+      [like, like],
+    )
+    return rows
+  }
+    catch (err) {
+    console.error('Erro ao buscar vendas de produtos com filtro:', err)
+    await logError('Erro ao buscar vendas de produtos com filtro: ' + String(err))
     return []
   }
 }

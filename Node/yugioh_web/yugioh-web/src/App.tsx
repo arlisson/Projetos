@@ -8,6 +8,8 @@ import { useEffect } from 'react'
 import { ListarCartas } from './views/Cartas/ListarCartas'
 import { testDbConnection } from './Database/db'
 import { ListarProdutos } from './views/Produtos/ListarProdutos'
+import { ListarVendasCartas } from './views/Cartas/ListarVendasCartas'
+import { ListarVendasProdutos } from './views/Produtos/ListarVendasProdutos'
 
 export default function App() {
 
@@ -28,10 +30,12 @@ export default function App() {
       {/* Cartas */}
       <Route path="/cartas/cadastrar" element={<CadastrarCarta />} />
       <Route path="/cartas/listar" element={<ListarCartas />} />
+      <Route path="/cartas/vendas/listar" element={<ListarVendasCartas />} />
 
       {/* Produtos */}
       <Route path="/produtos/cadastrar" element={<CadastrarProduto />} />
       <Route path="/produtos/listar" element={<ListarProdutos />} />
+      <Route path='/produtos/vendas/listar' element={<ListarVendasProdutos />} />
 
     </Routes>
   )
