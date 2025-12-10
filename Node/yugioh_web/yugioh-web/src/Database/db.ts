@@ -45,10 +45,19 @@ async function singleNumber(
   params: unknown[] = [],
 ): Promise<number> {
   const db = await getDb()
-  const rows = await db.select<{ value: number }[]>(query, params)
-  const raw = rows[0]?.value
-  return typeof raw === 'number' && !Number.isNaN(raw) ? raw : 0
+  const rows = await db.select<{ value: number | string | null }[]>(query, params)
+
+  if (!rows.length) return 0
+
+  const raw = rows[0]?.value ?? 0
+  const num =
+    typeof raw === 'number'
+      ? raw
+      : Number(raw)
+
+  return Number.isNaN(num) ? 0 : num
 }
+
 
 // ------------------------------------------
 // Tipos (cartas / produtos)
@@ -134,20 +143,6 @@ export interface ProdutoDetalhado {
     raridade_nome?: string | null
     qualidade_nome?: string | null
   }
-
-  /**
-   * p.id_produto,
-  p.nome_produto,
-  p.link,
-  p.imagem,
-  p.imagem_salva,
-  p.preco_compra,
-  p.data_compra,
-  p.preco_atual,
-  p.quantidade,
-  p.origem,
-  p.data_scraping
-   */
 
   export interface VendaProdutoDetalhado {
     id_produto: number
@@ -435,26 +430,42 @@ export async function buscarHistoricoPrecos(
     // =================== RESUMO (em posse) ===================
     if (resumo) {
       const lucroCarta = await singleNumber(`
-        SELECT COALESCE(SUM((COALESCE(preco_atual, 0) - COALESCE(preco_da_compra, 0))
-                           * COALESCE(quantidade, 0)), 0)
+        SELECT COALESCE(
+                SUM(
+                  (COALESCE(preco_atual, 0) - COALESCE(preco_da_compra, 0))
+                  * COALESCE(quantidade, 0)
+                ),
+                0
+              ) AS value
         FROM carta
         WHERE COALESCE(quantidade, 0) > 0
       `)
 
       const lucroProduto = await singleNumber(`
-        SELECT COALESCE(SUM((COALESCE(preco_atual, 0) - COALESCE(preco_compra, 0))
-                           * COALESCE(quantidade, 0)), 0)
+        SELECT COALESCE(
+                SUM(
+                  (COALESCE(preco_atual, 0) - COALESCE(preco_compra, 0))
+                  * COALESCE(quantidade, 0)
+                ),
+                0
+              ) AS value
         FROM produto
         WHERE COALESCE(quantidade, 0) > 0
       `)
 
       const totalVendasCartas = await singleNumber(`
-        SELECT COALESCE(SUM(COALESCE(preco_da_venda, 0) * COALESCE(quantidade, 0)), 0)
+        SELECT COALESCE(
+                SUM(COALESCE(preco_da_venda, 0) * COALESCE(quantidade, 0)),
+                0
+              ) AS value
         FROM venda
       `)
 
       const totalVendasProdutos = await singleNumber(`
-        SELECT COALESCE(SUM(COALESCE(preco_venda, 0) * COALESCE(quantidade, 0)), 0)
+        SELECT COALESCE(
+                SUM(COALESCE(preco_venda, 0) * COALESCE(quantidade, 0)),
+                0
+              ) AS value
         FROM venda_produto
       `)
 
@@ -521,5 +532,74 @@ export async function buscarHistoricoPrecos(
     console.error('Erro ao buscar histórico:', err)
     await logError('Erro ao buscar histórico: ' + String(err))
     return []
+  }
+}
+
+/**
+ * Calcula o total gasto em cartas e produtos
+ * (estoque + já vendidos), com base nas tabelas:
+ * - carta
+ * - venda
+ * - produto
+ * - venda_produto
+ */
+export async function calculaTotalGasto(): Promise<number> {
+  try {
+    // Gasto em cartas que ainda estão no estoque
+    const gastoCartasEstoque = await singleNumber(`
+      SELECT COALESCE(
+               SUM(COALESCE(preco_da_compra, 0) * COALESCE(quantidade, 0)),
+               0
+             ) AS value
+      FROM carta
+    `)
+
+    // Gasto em cartas já vendidas (snapshot salvo na tabela de venda)
+    const gastoCartasVendidas = await singleNumber(`
+      SELECT COALESCE(
+               SUM(COALESCE(preco_da_compra, 0) * COALESCE(quantidade, 0)),
+               0
+             ) AS value
+      FROM venda
+    `)
+
+    // Gasto em produtos no estoque
+    const gastoProdutosEstoque = await singleNumber(`
+      SELECT COALESCE(
+               SUM(COALESCE(preco_compra, 0) * COALESCE(quantidade, 0)),
+               0
+             ) AS value
+      FROM produto
+    `)
+
+    // Gasto em produtos vendidos
+    // Se a coluna de custo não existir em venda_produto, tratamos como 0
+    let gastoProdutosVendidos = 0
+
+    try {
+      gastoProdutosVendidos = await singleNumber(`
+        SELECT COALESCE(
+                 SUM(COALESCE(preco_compra, 0) * COALESCE(quantidade, 0)),
+                 0
+               ) AS value
+        FROM venda_produto
+      `)
+    } catch (err) {
+      // Se der erro (ex.: coluna não existe), mantemos 0
+      console.warn('Coluna de custo em venda_produto não encontrada ou erro na query:', err)
+      gastoProdutosVendidos = 0
+    }
+
+    const totalGasto =
+      gastoCartasEstoque +
+      gastoCartasVendidas +
+      gastoProdutosEstoque +
+      gastoProdutosVendidos
+
+    return totalGasto
+  } catch (err) {
+    console.error('Erro ao calcular total gasto:', err)
+    await logError('Erro ao calcular total gasto: ' + String(err))
+    return 0
   }
 }

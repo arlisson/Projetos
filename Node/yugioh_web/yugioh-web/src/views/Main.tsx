@@ -6,7 +6,8 @@ import  { Footer } from '../components/footer'
 import { buscarHistoricoPrecos,
   type HistoricoPrecos,
   type HistoricoLucro,
-  type ResumoLucro, } from '../Database/db'
+  type ResumoLucro,
+calculaTotalGasto } from '../Database/db'
 import { useEffect, useState } from 'react'
 
 
@@ -44,6 +45,7 @@ export function Main() {
   const [historicoProdutos, setHistoricoProdutos] = useState<HistoricoPrecos[]>([])
   const [historicoLucro, setHistoricoLucro] = useState<HistoricoLucro[]>([])
   const [resumoLucro, setResumoLucro] = useState<ResumoLucro | null>(null)
+  const [total_gasto, setTotalGasto] = useState<number>(0)
 
   const {
   lucro_cartas = 0,
@@ -55,22 +57,26 @@ export function Main() {
   useEffect(() => {
     async function carregarDados() {
       // 1) Resumo (objeto único)
-      const resumo = (await buscarHistoricoPrecos(undefined,undefined,true
+      const resumo = (await buscarHistoricoPrecos(undefined, undefined, true
         )) as ResumoLucro
       setResumoLucro(resumo)
-
+      
       // 2) Histórico de lucro (array)
       const histLucro = (await buscarHistoricoPrecos(
         'lucro',
       )) as HistoricoLucro[]
       setHistoricoLucro(histLucro)
-
+      
       // 3) Histórico geral de preços (array)
       const histGeral = (await buscarHistoricoPrecos()) as HistoricoPrecos[]
 
       // Separa cartas x produtos
       setHistoricoCartas(histGeral.filter((h) => h.id_carta != null))
       setHistoricoProdutos(histGeral.filter((h) => h.id_produto != null))
+
+      const totalGasto = await calculaTotalGasto()
+      setTotalGasto(totalGasto)
+      
     }
 
     carregarDados()
@@ -123,7 +129,7 @@ export function Main() {
             />
             <Financeiro
               label="Lucro em cartas"
-              value={lucro_cartas}
+              value={lucro_cartas+total_vendas_cartas}
               isCurrency
               footer="Considerando apenas operações com cartas."
             />
@@ -136,17 +142,17 @@ export function Main() {
             <div className="summary-grid">
             <Financeiro
               label="Lucro em produtos"
-              value={0}
+              value={lucro_produtos+total_vendas_produtos}
               footer="Considerando apenas operações com produtos."
             />
             <Financeiro
               label="Total gasto (cartas + produtos)"
-              value={0}
+              value={total_gasto}
               footer="Soma do total gasto em cartas e produtos."
             />
             <Financeiro
               label="Lucro total"
-              value={0}
+              value={lucro_total}
               footer="Lucro combinado de cartas + produtos."
             />
           </div>
