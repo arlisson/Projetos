@@ -99,6 +99,7 @@ export function ListarProdutos() {
       const atual = row.preco_atual ?? 0
       return atual - compra
     },
+      formatSum: (sum) => `R$ ${sum.toFixed(2)}`,
     render: (value) =>
       value != null ? `R$ ${Number(value).toFixed(2)}` : '—',
   },
@@ -146,15 +147,27 @@ export function ListarProdutos() {
             <div className="summary-grid">
               <Financeiro
                 label="Total gasto Produtos"
-                value="R$ 0,00"
+                value={0}
                 footer="Soma de todos os valores investidos em produtos."
               />
               <Financeiro
                 label="Lucro em produtos"
-                value="R$ 0,00"
+                value={0}
                 footer="Considerando apenas operações com produtos."
               />                    
-              </div>                   
+              </div>   
+               <div className="summary-grid">
+              <Financeiro
+                label="Total Produtos Cadastrados"
+                value={0}
+                footer="Total de produtos cadastrados no sistema."
+              />
+              <Financeiro
+                label="Total Produtos Vendidos"
+                value={0}
+                footer="Total de produtos vendidos no sistema."
+              />                    
+              </div>                                  
         </section>
         
         <section className="section-block">

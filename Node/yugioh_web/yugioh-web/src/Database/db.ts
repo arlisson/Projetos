@@ -386,4 +386,140 @@ export async function buscarVendasProdutosPorFiltro(
     await logError('Erro ao buscar vendas de produtos com filtro: ' + String(err))
     return []
   }
+
+}
+
+// ------------------------------------------
+// Histórico de Preços e Lucro
+// ------------------------------------------
+
+export interface HistoricoPrecos {
+  id_historico_precos: number
+  id_carta?: number | null
+  id_produto?: number | null
+  data: string
+  preco: number | null
+  origem?: string | null
+}
+
+export interface HistoricoLucro {
+  id_lucro: number
+  data: string
+  lucro_cartas: number
+  lucro_produtos: number
+  lucro_total: number
+}
+
+export interface ResumoLucro {
+  lucro_cartas: number
+  lucro_produtos: number
+  total_vendas_cartas: number
+  total_vendas_produtos: number
+  lucro_total: number
+}
+
+/**
+ * Busca histórico de preços ou resumo de lucro.
+ * Se resumo=true, retorna cálculo de lucro em posse.
+ * Se tipo e id fornecidos, retorna histórico específico.
+ * Caso contrário, retorna histórico geral.
+ */
+export async function buscarHistoricoPrecos(
+  tipo?: 'carta' | 'produto' | 'lucro',
+  id?: number,
+  resumo: boolean = false,
+): Promise<ResumoLucro | HistoricoPrecos[] | HistoricoLucro[]> {
+  try {
+    const db = await getDb()
+
+    // =================== RESUMO (em posse) ===================
+    if (resumo) {
+      const lucroCarta = await singleNumber(`
+        SELECT COALESCE(SUM((COALESCE(preco_atual, 0) - COALESCE(preco_da_compra, 0))
+                           * COALESCE(quantidade, 0)), 0)
+        FROM carta
+        WHERE COALESCE(quantidade, 0) > 0
+      `)
+
+      const lucroProduto = await singleNumber(`
+        SELECT COALESCE(SUM((COALESCE(preco_atual, 0) - COALESCE(preco_compra, 0))
+                           * COALESCE(quantidade, 0)), 0)
+        FROM produto
+        WHERE COALESCE(quantidade, 0) > 0
+      `)
+
+      const totalVendasCartas = await singleNumber(`
+        SELECT COALESCE(SUM(COALESCE(preco_da_venda, 0) * COALESCE(quantidade, 0)), 0)
+        FROM venda
+      `)
+
+      const totalVendasProdutos = await singleNumber(`
+        SELECT COALESCE(SUM(COALESCE(preco_venda, 0) * COALESCE(quantidade, 0)), 0)
+        FROM venda_produto
+      `)
+
+      return {
+        lucro_cartas: lucroCarta,
+        lucro_produtos: lucroProduto,
+        total_vendas_cartas: totalVendasCartas,
+        total_vendas_produtos: totalVendasProdutos,
+        lucro_total:
+          lucroCarta + lucroProduto + totalVendasCartas + totalVendasProdutos,
+      }
+    }
+
+    // =================== HISTÓRICO POR ID ===================
+    if (tipo && id !== undefined) {
+      if (tipo === 'carta') {
+        const rows = await db.select<HistoricoPrecos[]>(
+          `
+          SELECT id_historico_precos, id_carta, data, preco, origem
+          FROM historico_precos
+          WHERE id_carta = ?
+          ORDER BY data
+        `,
+          [id],
+        )
+        return rows
+      } else if (tipo === 'produto') {
+        const rows = await db.select<HistoricoPrecos[]>(
+          `
+          SELECT id_historico_precos, id_produto, data, preco, origem
+          FROM historico_precos
+          WHERE id_produto = ?
+          ORDER BY data
+        `,
+          [id],
+        )
+        return rows
+      } else {
+        throw new Error("Tipo inválido. Use 'carta', 'produto' ou 'lucro'.")
+      }
+    }
+
+    // =================== HISTÓRICO GERAL ===================
+    if (tipo === 'lucro') {
+      const rows = await db.select<HistoricoLucro[]>(
+        `
+        SELECT id_lucro, data, lucro_cartas, lucro_produtos, lucro_total
+        FROM historico_lucro
+        ORDER BY data
+      `,
+      )
+      return rows
+    } else {
+      const rows = await db.select<HistoricoPrecos[]>(
+        `
+        SELECT id_historico_precos, id_carta, id_produto, data, preco, origem
+        FROM historico_precos
+        ORDER BY data
+      `,
+      )
+      return rows
+    }
+  } catch (err) {
+    console.error('Erro ao buscar histórico:', err)
+    await logError('Erro ao buscar histórico: ' + String(err))
+    return []
+  }
 }

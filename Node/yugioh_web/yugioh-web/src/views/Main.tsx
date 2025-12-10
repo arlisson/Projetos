@@ -3,6 +3,11 @@ import { Financeiro } from '../components/financeiro'
 import { Grafico } from '../components/grafico' 
 import { CarrosselItem } from '../components/carrosselItem'
 import  { Footer } from '../components/footer'
+import { buscarHistoricoPrecos,
+  type HistoricoPrecos,
+  type HistoricoLucro,
+  type ResumoLucro, } from '../Database/db'
+import { useEffect, useState } from 'react'
 
 
 // Dados estáticos de exemplo para o carrossel
@@ -30,7 +35,48 @@ const destaqueItems = [
   },
 ]
 
+  
+  
+
 export function Main() {
+
+  const [historicoCartas, setHistoricoCartas] = useState<HistoricoPrecos[]>([])
+  const [historicoProdutos, setHistoricoProdutos] = useState<HistoricoPrecos[]>([])
+  const [historicoLucro, setHistoricoLucro] = useState<HistoricoLucro[]>([])
+  const [resumoLucro, setResumoLucro] = useState<ResumoLucro | null>(null)
+
+  const {
+  lucro_cartas = 0,
+  lucro_produtos = 0,
+  total_vendas_cartas = 0,
+  total_vendas_produtos = 0,
+  lucro_total = 0,
+} = resumoLucro ?? {}
+  useEffect(() => {
+    async function carregarDados() {
+      // 1) Resumo (objeto único)
+      const resumo = (await buscarHistoricoPrecos(undefined,undefined,true
+        )) as ResumoLucro
+      setResumoLucro(resumo)
+
+      // 2) Histórico de lucro (array)
+      const histLucro = (await buscarHistoricoPrecos(
+        'lucro',
+      )) as HistoricoLucro[]
+      setHistoricoLucro(histLucro)
+
+      // 3) Histórico geral de preços (array)
+      const histGeral = (await buscarHistoricoPrecos()) as HistoricoPrecos[]
+
+      // Separa cartas x produtos
+      setHistoricoCartas(histGeral.filter((h) => h.id_carta != null))
+      setHistoricoProdutos(histGeral.filter((h) => h.id_produto != null))
+    }
+
+    carregarDados()
+  }, [])
+
+
   return (
     <div className="app-shell">
       {/* HEADER / MENU SUPERIOR COMPONENTIZADO */}
@@ -72,34 +118,35 @@ export function Main() {
           <div className="summary-grid">
             <Financeiro
               label="Total gasto Cartas"
-              value="R$ 0,00"
+              value={0}
               footer="Soma de todos os valores investidos em cartas."
             />
             <Financeiro
               label="Lucro em cartas"
-              value="R$ 0,00"
+              value={lucro_cartas}
+              isCurrency
               footer="Considerando apenas operações com cartas."
             />
             <Financeiro
               label="Total gasto Produtos"
-              value="R$ 0,00"
+              value={0}
               footer='Considerando apenas operações com Produtos'
             />
             </div>
             <div className="summary-grid">
             <Financeiro
               label="Lucro em produtos"
-              value="R$ 0,00"
+              value={0}
               footer="Considerando apenas operações com produtos."
             />
             <Financeiro
               label="Total gasto (cartas + produtos)"
-              value="R$ 0,00"
+              value={0}
               footer="Soma do total gasto em cartas e produtos."
             />
             <Financeiro
               label="Lucro total"
-              value="R$ 0,00"
+              value={0}
               footer="Lucro combinado de cartas + produtos."
             />
           </div>
@@ -121,10 +168,10 @@ export function Main() {
           </div>
         </section>
 
-        {/* 3) HISTÓRICO DE PREÇOS – GRÁFICOS EMPILHADOS EM LARGURA TOTAL */}
+        {/* 3) HISTÓRICO DE LUCROS – GRÁFICOS EMPILHADOS EM LARGURA TOTAL */}
         <section className="section-block">
           <div className="section-header">
-            <h2 className="section-title">Histórico de preços</h2>
+            <h2 className="section-title">Histórico de Lucros</h2>
             <span className="section-header-caption">
               Gráficos de cartas, produtos e total, um abaixo do outro.
             </span>
@@ -132,17 +179,33 @@ export function Main() {
 
           <div className="chart-stack">
             <Grafico
-              title="Cartas"
-              placeholderText="Gráfico de histórico de preços das cartas"
+              title="Lucro total (cartas + produtos)"
+              data={historicoLucro}
+              dateKey="data"
+              series={[
+                { key: 'lucro_total', label: 'Lucro total' },
+              ]}
             />
+
+            {/* Lucro apenas de cartas */}
             <Grafico
-              title="Produtos"
-              placeholderText="Gráfico de histórico de preços dos produtos"
+              title="Lucro em cartas"
+              data={historicoLucro}
+              dateKey="data"
+              series={[
+                { key: 'lucro_cartas', label: 'Lucro cartas' },
+              ]}
             />
+
+            {/* Lucro apenas de produtos */}
             <Grafico
-              title="Total (cartas + produtos)"
-              placeholderText="Gráfico consolidado de histórico de preços"
-            />
+              title="Lucro em produtos"
+              data={historicoLucro}
+              dateKey="data"
+              series={[
+                { key: 'lucro_produtos', label: 'Lucro produtos' },
+              ]}
+            />    
           </div>
         </section>
       </main>

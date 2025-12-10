@@ -103,6 +103,7 @@ export function ListarCartas() {
       const atual = row.preco_atual ?? 0
       return atual - compra
     },
+    formatSum: (sum) => `R$ ${sum.toFixed(2)}`,
     render: (value) =>
       value != null ? `R$ ${Number(value).toFixed(2)}` : '—',
   },
@@ -150,15 +151,27 @@ export function ListarCartas() {
             <div className="summary-grid">
               <Financeiro
                 label="Total gasto Cartas"
-                value="R$ 0,00"
+                value={0}
                 footer="Soma de todos os valores investidos em cartas."
               />
               <Financeiro
                 label="Lucro em cartas"
-                value="R$ 0,00"
+                value={0}
                 footer="Considerando apenas operações com cartas."
               />                    
-              </div>                   
+              </div>   
+               <div className="summary-grid">
+              <Financeiro
+                label="Total Cartas"
+                value={0}
+                footer="Total de cartas cadastradas no sistema."
+              />
+              <Financeiro
+                label="Total Cartas Vendidas"
+                value={0}
+                footer="Total de cartas vendidas no sistema."
+              />                    
+              </div>                                  
         </section>
         
         <section className="section-block">
