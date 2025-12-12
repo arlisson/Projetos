@@ -1,5 +1,5 @@
 // src/views/Cartas/ListarCartas.tsx
-import { useEffect, useState } from 'react'
+import { use, useEffect, useState } from 'react'
 import { Topbar } from '../../components/topBar'
 import { Footer } from '../../components/footer'
 import { DataTable, type Column } from '../../components/dataTable'
@@ -7,16 +7,37 @@ import {
   type CartaDetalhada,
   buscarTodasCartas,
   buscarCartasPorFiltro,
+  calculaTotalGasto,
+  type TotalGastoResult,
+  type ResumoLucro,
+  buscarHistoricoPrecos,
+  calculaQuantidade
+
 } from '../../Database/db'
 import { Financeiro } from '../../components/financeiro'
+
 
 
 
 export function ListarCartas() {
   const [cartas, setCartas] = useState<CartaDetalhada[]>([])
   const [busca, setBusca] = useState('')
-
+  const [totalGasto, setTotalGasto] = useState<number|TotalGastoResult>(0)
+  const [resumoLucro, setResumoLucro] = useState<ResumoLucro | null>(null)
+  const [quantidadeCartas, setQuantidadeCartas] = useState<number>(0)
   
+  const{       
+      gastoCartasEstoque = 0,
+      gastoCartasVendidas = 0,      
+    } = (typeof totalGasto === 'object' ? totalGasto : {}) ?? {}
+
+  const {
+    lucro_cartas = 0,
+    lucro_produtos = 0,
+    total_vendas_cartas = 0,
+    total_vendas_produtos = 0,
+    lucro_total = 0,
+  } = resumoLucro ?? {}
   
 
   // Carrega e filtra ao digitar (com debounce simples)
@@ -41,6 +62,22 @@ export function ListarCartas() {
 
 
   }, [busca])
+
+  useEffect(() => {
+    async function carregarTotal() {
+      const total_gasto = await calculaTotalGasto()
+      setTotalGasto(total_gasto)
+
+      // Carregar resumo de lucro
+      const resumo = (await buscarHistoricoPrecos(undefined, undefined, true
+              )) as ResumoLucro
+            setResumoLucro(resumo)
+
+      const quantidade = await calculaQuantidade('carta')
+
+    }
+    carregarTotal()
+  }, [])  
 
   // Colunas da tabela
   const columns: Column<CartaDetalhada>[] = [
@@ -151,26 +188,27 @@ export function ListarCartas() {
             <div className="summary-grid">
               <Financeiro
                 label="Total gasto Cartas"
-                value={0}
+                value={gastoCartasEstoque + gastoCartasVendidas}
                 footer="Soma de todos os valores investidos em cartas."
               />
               <Financeiro
                 label="Lucro em cartas"
-                value={0}
+                value={lucro_cartas + total_vendas_cartas}
                 footer="Considerando apenas operações com cartas."
               />                    
               </div>   
-               <div className="summary-grid">
-              <Financeiro
-                label="Total Cartas"
-                value={0}
-                footer="Total de cartas cadastradas no sistema."
-              />
-              <Financeiro
-                label="Total Cartas Vendidas"
-                value={0}
-                footer="Total de cartas vendidas no sistema."
-              />                    
+              <div className="summary-grid">
+                <Financeiro
+                  label="Total Cartas Vendidas"
+                  value={total_vendas_cartas}
+                  footer="Valor total de cartas vendidas no sistema."
+                />     
+                <Financeiro
+                  label="Total Cartas"
+                  value={cartas.length}
+                  footer="Quantidade unitária de cartas cadastradas no sistema."
+                  isCurrency={false}
+                />                              
               </div>                                  
         </section>
         

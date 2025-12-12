@@ -535,6 +535,13 @@ export async function buscarHistoricoPrecos(
   }
 }
 
+export interface TotalGastoResult {
+  totalGasto: number
+  gastoCartasEstoque: number
+  gastoCartasVendidas: number
+  gastoProdutosEstoque: number
+  gastoProdutosVendidos: number
+}
 /**
  * Calcula o total gasto em cartas e produtos
  * (estoque + já vendidos), com base nas tabelas:
@@ -543,7 +550,7 @@ export async function buscarHistoricoPrecos(
  * - produto
  * - venda_produto
  */
-export async function calculaTotalGasto(): Promise<number> {
+export async function calculaTotalGasto(): Promise<TotalGastoResult> {
   try {
     // Gasto em cartas que ainda estão no estoque
     const gastoCartasEstoque = await singleNumber(`
@@ -596,10 +603,78 @@ export async function calculaTotalGasto(): Promise<number> {
       gastoProdutosEstoque +
       gastoProdutosVendidos
 
-    return totalGasto
+    return {
+      totalGasto: totalGasto,
+      gastoCartasEstoque: gastoCartasEstoque,
+      gastoCartasVendidas: gastoCartasVendidas,
+      gastoProdutosEstoque: gastoProdutosEstoque,
+      gastoProdutosVendidos: gastoProdutosVendidos
+    }
   } catch (err) {
     console.error('Erro ao calcular total gasto:', err)
     await logError('Erro ao calcular total gasto: ' + String(err))
+    return null as any
+  }
+}
+
+/**
+ * Calcula a soma da coluna `quantidade` de uma tabela.
+ * ATENÇÃO: para evitar SQL injection, use apenas nomes de tabela conhecidos.
+ */
+export async function calculaQuantidade(tabela: string): Promise<number> {
+  // Opcional: whitelist de tabelas permitidas
+  const tabelasPermitidas = new Set(['carta', 'produto', 'venda', 'venda_produto'])
+  if (!tabelasPermitidas.has(tabela)) {
+    await logError(`Tabela inválida em calculaQuantidade: ${tabela}`)
+    return 0
+  }
+
+  const query = `SELECT SUM(quantidade) AS value FROM ${tabela};`
+
+  try {
+    const db = await getDb()
+    const rows = await db.select<{ value: number | string | null }[]>(query)
+
+    if (!rows.length) return 0
+
+    const raw = rows[0]?.value ?? 0
+    const num = typeof raw === 'number' ? raw : Number(raw)
+
+    return Number.isNaN(num) ? 0 : num
+  } catch (e) {
+    console.error('Erro ao calcular quantidade:', e)
+    await logError('Erro ao calcular quantidade: ' + String(e))
+    return 0
+  }
+}
+/**
+ * Calcula o lucro total das cartas vendidas.
+ * @returns Lucro total das cartas vendidas ou 0 em caso de erro/ausência de dados.
+ */
+export async function calcularLucroTotalCartasVendidas(): Promise<number> {
+  const query = `
+    SELECT
+      SUM((preco_da_venda - preco_da_compra) * quantidade) AS lucro_total
+    FROM venda
+    WHERE preco_da_venda IS NOT NULL
+      AND preco_da_compra IS NOT NULL;
+  `
+
+  try {
+    const db = await getDb()
+    const rows = await db.select<{ lucro_total: number | string | null }[]>(query)
+
+    if (!rows.length) {
+      return 0
+    }
+
+    const raw = rows[0]?.lucro_total ?? 0
+    const num = typeof raw === 'number' ? raw : Number(raw)
+
+    return Number.isNaN(num) ? 0 : num
+  } catch (e) {
+    console.error('Erro ao calcular lucro de cartas vendidas:', e)
+    await logError('Erro ao calcular lucro de cartas vendidas: ' + String(e))
     return 0
   }
 }

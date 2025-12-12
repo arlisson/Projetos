@@ -4,10 +4,11 @@ import { Grafico } from '../components/grafico'
 import { CarrosselItem } from '../components/carrosselItem'
 import  { Footer } from '../components/footer'
 import { buscarHistoricoPrecos,
-  type HistoricoPrecos,
+  calculaTotalGasto,  
   type HistoricoLucro,
   type ResumoLucro,
-calculaTotalGasto } from '../Database/db'
+  buscarTodasCartas,
+  buscarTodosProdutos } from '../Database/db'
 import { useEffect, useState } from 'react'
 
 
@@ -41,11 +42,14 @@ const destaqueItems = [
 
 export function Main() {
 
-  const [historicoCartas, setHistoricoCartas] = useState<HistoricoPrecos[]>([])
-  const [historicoProdutos, setHistoricoProdutos] = useState<HistoricoPrecos[]>([])
+  
   const [historicoLucro, setHistoricoLucro] = useState<HistoricoLucro[]>([])
   const [resumoLucro, setResumoLucro] = useState<ResumoLucro | null>(null)
   const [total_gasto, setTotalGasto] = useState<number>(0)
+  const [totalGastoCartas, setTotalGastoCartas] = useState<number>(0)
+  const [totalGastoProdutos, setTotalGastoProdutos] = useState<number>(0)
+  const [quantidadeCartas, setQuantidadeCartas] = useState<number>(0)
+  const [quantidadeProdutos, setQuantidadeProdutos] = useState<number>(0)
 
   const {
   lucro_cartas = 0,
@@ -54,8 +58,10 @@ export function Main() {
   total_vendas_produtos = 0,
   lucro_total = 0,
 } = resumoLucro ?? {}
+
   useEffect(() => {
     async function carregarDados() {
+
       // 1) Resumo (objeto único)
       const resumo = (await buscarHistoricoPrecos(undefined, undefined, true
         )) as ResumoLucro
@@ -67,15 +73,22 @@ export function Main() {
       )) as HistoricoLucro[]
       setHistoricoLucro(histLucro)
       
-      // 3) Histórico geral de preços (array)
-      const histGeral = (await buscarHistoricoPrecos()) as HistoricoPrecos[]
-
-      // Separa cartas x produtos
-      setHistoricoCartas(histGeral.filter((h) => h.id_carta != null))
-      setHistoricoProdutos(histGeral.filter((h) => h.id_produto != null))
-
+     
+    
       const totalGasto = await calculaTotalGasto()
-      setTotalGasto(totalGasto)
+      setTotalGasto(totalGasto.totalGasto)
+
+      const gastoCartas = totalGasto.gastoCartasEstoque + totalGasto.gastoCartasVendidas
+      setTotalGastoCartas(gastoCartas)
+
+      const gastoProdutos = totalGasto.gastoProdutosEstoque + totalGasto.gastoProdutosVendidos
+      setTotalGastoProdutos(gastoProdutos)
+
+      const quantidadeC = await buscarTodasCartas()   
+      setQuantidadeCartas(quantidadeC.length)
+
+      const quantidadeP = await buscarTodosProdutos()
+      setQuantidadeProdutos(quantidadeP.length)
       
     }
 
@@ -121,10 +134,18 @@ export function Main() {
             separados e lucro total. (Apenas layout; dados reais virão do banco.)
           </p>
 
+           <div className="summary-grid">
+           <Financeiro
+              label="Total gasto (cartas + produtos)"
+              value={total_gasto}
+              footer="Soma do total gasto em cartas e produtos."
+            />        
+          </div>
+
           <div className="summary-grid">
             <Financeiro
               label="Total gasto Cartas"
-              value={0}
+              value={totalGastoCartas}
               footer="Soma de todos os valores investidos em cartas."
             />
             <Financeiro
@@ -134,21 +155,41 @@ export function Main() {
               footer="Considerando apenas operações com cartas."
             />
             <Financeiro
-              label="Total gasto Produtos"
-              value={0}
-              footer='Considerando apenas operações com Produtos'
+              label="Total Cartas Cadastradas"
+              value={quantidadeCartas}
+              footer='Total unitário de cartas cadastradas no sistema.'
+              isCurrency={false}
             />
             </div>
             <div className="summary-grid">
+            <Financeiro
+              label="Total gasto Produtos"
+              value={totalGastoProdutos}
+              footer='Considerando apenas operações com Produtos'
+            />
             <Financeiro
               label="Lucro em produtos"
               value={lucro_produtos+total_vendas_produtos}
               footer="Considerando apenas operações com produtos."
             />
             <Financeiro
-              label="Total gasto (cartas + produtos)"
-              value={total_gasto}
-              footer="Soma do total gasto em cartas e produtos."
+              label="Total Produtos Cadastrados"
+              value={quantidadeProdutos}
+              footer='Total unitário de produtos cadastrados no sistema.'
+              isCurrency={false}
+            />
+            
+          </div>
+          <div className="summary-grid">
+            <Financeiro
+              label="Vendas em Cartas"
+              value={total_vendas_cartas}
+              footer="Considerando apenas operações com cartas."
+            />            
+            <Financeiro
+              label="Vendas em Produtos"
+              value={total_vendas_produtos}
+              footer="Considerando apenas operações com produtos."
             />
             <Financeiro
               label="Lucro total"
@@ -156,6 +197,8 @@ export function Main() {
               footer="Lucro combinado de cartas + produtos."
             />
           </div>
+         
+
 
           {/* Banner sobre atualização automática via scraping */}
           <div className="info-banner">

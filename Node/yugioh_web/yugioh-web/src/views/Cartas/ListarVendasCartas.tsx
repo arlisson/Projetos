@@ -5,10 +5,13 @@ import { Footer } from '../../components/footer'
 import { DataTable, type Column } from '../../components/dataTable'
 import {
    
-  type VendaCartaDetalhada,
-  
+  type ResumoLucro,
+  type VendaCartaDetalhada,  
+  buscarHistoricoPrecos,  
   buscarVendasCartasPorFiltro,
+  calculaTotalGasto,
   listarVendasCartas,
+  calcularLucroTotalCartasVendidas
 } from '../../Database/db'
 import { Financeiro } from '../../components/financeiro'
 
@@ -17,6 +20,9 @@ import { Financeiro } from '../../components/financeiro'
 export function ListarVendasCartas() {
   const [cartas, setCartas] = useState<VendaCartaDetalhada[]>([])
   const [busca, setBusca] = useState('')
+  const [totalGastoCartas, setTotalGastoCartas] = useState<number>(0)  
+  const [resumoLucro, setResumoLucro] = useState<ResumoLucro | null>(null)
+  const [lucroTotalCartasVendidas, setLucroTotalCartasVendidas] = useState<number>(0)
 
   
   
@@ -43,6 +49,28 @@ export function ListarVendasCartas() {
 
 
   }, [busca])
+
+  useEffect(() => {
+    async function carregarResumo() {
+      const resumo = (await buscarHistoricoPrecos(undefined, undefined, true
+              )) as ResumoLucro
+            setResumoLucro(resumo)
+      const totalGasto = await calculaTotalGasto()
+          
+            
+      const gastoCartas = totalGasto.gastoCartasEstoque + totalGasto.gastoCartasVendidas
+      setTotalGastoCartas(gastoCartas)     
+      
+      const lucroTotal = await calcularLucroTotalCartasVendidas()
+      setLucroTotalCartasVendidas(lucroTotal)
+    } 
+    carregarResumo()
+  }, [])
+
+  const {
+    
+    total_vendas_cartas = 0,    
+  } = resumoLucro ?? {}
 
   // Colunas da tabela
   const columns: Column<VendaCartaDetalhada>[] = [
@@ -160,27 +188,30 @@ export function ListarVendasCartas() {
             <div className="summary-grid">
               <Financeiro
                 label="Total gasto Cartas"
-                value={0}
+                value={totalGastoCartas}
                 footer="Soma de todos os valores investidos em cartas."
               />
               <Financeiro
-                label="Lucro em vendas de cartas"
-                value={0}
-                footer="Considerando apenas operações com cartas."
-              />                    
-              </div>    
-               <div className="summary-grid">
-              <Financeiro
-                label="Total Cartas"
-                value={0}
-                footer="Total de cartas cadastradas no sistema."
-              />
-              <Financeiro
                 label="Total Cartas Vendidas"
-                value={0}
-                footer="Total de cartas vendidas no sistema."
-              />                    
-              </div>                                 
+                value={cartas.length}
+                footer="Total unitário de cartas vendidas no sistema."
+                isCurrency={false}
+              />                             
+              </div>    
+              <div className="summary-grid">
+                <Financeiro
+                  label="Valor total Cartas vendidas"
+                  value={total_vendas_cartas}
+                  footer="Soma do total gasto em cartas e produtos."
+                />     
+                <Financeiro
+                label="Lucro em vendas de cartas"
+                value={lucroTotalCartasVendidas}
+                footer="Considerando apenas operações com cartas."
+              />       
+
+              </div>
+                                         
         </section>
         
         <section className="section-block">
