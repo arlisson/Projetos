@@ -1,5 +1,5 @@
 // src/views/Cartas/ListarCartas.tsx
-import { use, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Topbar } from '../../components/topBar'
 import { Footer } from '../../components/footer'
 import { DataTable, type Column } from '../../components/dataTable'
@@ -10,8 +10,7 @@ import {
   calculaTotalGasto,
   type TotalGastoResult,
   type ResumoLucro,
-  buscarHistoricoPrecos,
-  calculaQuantidade
+  buscarHistoricoPrecos,  
 
 } from '../../Database/db'
 import { Financeiro } from '../../components/financeiro'
@@ -24,7 +23,7 @@ export function ListarCartas() {
   const [busca, setBusca] = useState('')
   const [totalGasto, setTotalGasto] = useState<number|TotalGastoResult>(0)
   const [resumoLucro, setResumoLucro] = useState<ResumoLucro | null>(null)
-  const [quantidadeCartas, setQuantidadeCartas] = useState<number>(0)
+  
   
   const{       
       gastoCartasEstoque = 0,
@@ -32,11 +31,8 @@ export function ListarCartas() {
     } = (typeof totalGasto === 'object' ? totalGasto : {}) ?? {}
 
   const {
-    lucro_cartas = 0,
-    lucro_produtos = 0,
-    total_vendas_cartas = 0,
-    total_vendas_produtos = 0,
-    lucro_total = 0,
+    lucro_cartas = 0,   
+    total_vendas_cartas = 0,   
   } = resumoLucro ?? {}
   
 
@@ -73,8 +69,7 @@ export function ListarCartas() {
               )) as ResumoLucro
             setResumoLucro(resumo)
 
-      const quantidade = await calculaQuantidade('carta')
-
+     
     }
     carregarTotal()
   }, [])  

@@ -7,6 +7,11 @@ import {
   listarVendasProdutos,
     buscarVendasProdutosPorFiltro,
   type VendaProdutoDetalhado,
+  type ResumoLucro,
+  calculaTotalGasto,  
+  buscarHistoricoPrecos,
+  type TotalGastoResult,
+  
 } from '../../Database/db'
 import { Financeiro } from '../../components/financeiro'
 
@@ -15,7 +20,19 @@ import { Financeiro } from '../../components/financeiro'
 export function ListarVendasProdutos() {
   const [produtos, setProdutos] = useState<VendaProdutoDetalhado[]>([])
   const [busca, setBusca] = useState('')
+  const [totalGastoProdutos, setTotalGastoProdutos] = useState<number|TotalGastoResult>(0)  
+  const [resumoLucro, setResumoLucro] = useState<ResumoLucro | null>(null)
+  
 
+  const {
+    lucro_produtos = 0,
+    total_vendas_produtos = 0,
+  } = resumoLucro ?? {}
+  
+  const{       
+      gastoProdutosEstoque = 0,
+      gastoProdutosVendidos = 0,      
+    } = (typeof totalGastoProdutos === 'object' ? totalGastoProdutos : {}) ?? {}
   
   
 
@@ -41,6 +58,21 @@ export function ListarVendasProdutos() {
 
 
   }, [busca])
+
+  useEffect(() => {
+      async function carregarTotal() {
+        const totalGasto = await calculaTotalGasto()
+        setTotalGastoProdutos(totalGasto)      
+  
+        // Carregar resumo de lucro
+        const resumo = (await buscarHistoricoPrecos(undefined, undefined, true
+                )) as ResumoLucro
+              setResumoLucro(resumo)
+        
+        
+      }
+      carregarTotal()
+    }, [])
 
   // Colunas da tabela
   const columns: Column<VendaProdutoDetalhado>[] = [
@@ -154,25 +186,26 @@ export function ListarVendasProdutos() {
             <div className="summary-grid">
               <Financeiro
                 label="Total gasto Produtos"
-                value={0}
+                value={gastoProdutosEstoque + gastoProdutosVendidos}
                 footer="Soma de todos os valores investidos em produtos."
               />
               <Financeiro
                 label="Lucro em vendas de produtos"
-                value={0}
+                value={lucro_produtos + total_vendas_produtos}
                 footer="Considerando apenas operações com produtos."
               />                    
               </div> 
                <div className="summary-grid">
               <Financeiro
-                label="Total Produtos Cadastrados"
-                value={0}
-                footer="Total de produtos cadastrados no sistema."
+                label="Valor vendidos em produtos"
+                value={total_vendas_produtos}
+                footer="Valor total de produtos vendidos."
               />
               <Financeiro
                 label="Total Produtos Vendidos"
-                value={0}
+                value={produtos.length}
                 footer="Total de produtos vendidos no sistema."
+                isCurrency={false}
               />                    
               </div>                   
                      

@@ -1,5 +1,5 @@
 // src/views/Cartas/ListarCartas.tsx
-import { useEffect, useState } from 'react'
+import { use, useEffect, useState } from 'react'
 import { Topbar } from '../../components/topBar'
 import { Footer } from '../../components/footer'
 import { DataTable, type Column } from '../../components/dataTable'
@@ -7,6 +7,11 @@ import {
     buscarTodosProdutos,
   buscarProdutosPorFiltro,
   type ProdutoDetalhado,
+  type TotalGastoResult,
+  calculaTotalGasto,
+  buscarHistoricoPrecos,
+  type ResumoLucro,
+  
 } from '../../Database/db'
 import { Financeiro } from '../../components/financeiro'
 
@@ -15,8 +20,19 @@ import { Financeiro } from '../../components/financeiro'
 export function ListarProdutos() {
   const [produtos, setProdutos] = useState<ProdutoDetalhado []>([])
   const [busca, setBusca] = useState('')
+  const [totalGasto, setTotalGasto] = useState<number|TotalGastoResult>(0)
+  const [resumoLucro, setResumoLucro] = useState<ResumoLucro | null>(null)
+ 
 
+  const{       
+      gastoProdutosEstoque = 0,
+      gastoProdutosVendidos = 0,      
+    } = (typeof totalGasto === 'object' ? totalGasto : {}) ?? {}
   
+  const{
+      lucro_produtos = 0,   
+      total_vendas_produtos = 0,   
+    } = resumoLucro ?? { }
   
 
   // Carrega e filtra ao digitar (com debounce simples)
@@ -41,6 +57,20 @@ export function ListarProdutos() {
 
 
   }, [busca])
+
+  useEffect(() => {
+    async function carregarTotal() {
+      const totalGasto = await calculaTotalGasto()
+      setTotalGasto(totalGasto)      
+
+      // Carregar resumo de lucro
+      const resumo = (await buscarHistoricoPrecos(undefined, undefined, true
+              )) as ResumoLucro
+            setResumoLucro(resumo)
+      
+    }
+    carregarTotal()
+  }, [])
 
   // Colunas da tabela
   const columns: Column<ProdutoDetalhado>[] = [
@@ -147,24 +177,25 @@ export function ListarProdutos() {
             <div className="summary-grid">
               <Financeiro
                 label="Total gasto Produtos"
-                value={0}
+                value={gastoProdutosEstoque + gastoProdutosVendidos}
                 footer="Soma de todos os valores investidos em produtos."
               />
               <Financeiro
                 label="Lucro em produtos"
-                value={0}
+                value={lucro_produtos + total_vendas_produtos}
                 footer="Considerando apenas operações com produtos."
               />                    
               </div>   
                <div className="summary-grid">
               <Financeiro
                 label="Total Produtos Cadastrados"
-                value={0}
+                value={produtos.length}
                 footer="Total de produtos cadastrados no sistema."
+                isCurrency={false}
               />
               <Financeiro
                 label="Total Produtos Vendidos"
-                value={0}
+                value={total_vendas_produtos}
                 footer="Total de produtos vendidos no sistema."
               />                    
               </div>                                  

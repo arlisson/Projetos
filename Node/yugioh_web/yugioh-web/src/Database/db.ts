@@ -678,3 +678,35 @@ export async function calcularLucroTotalCartasVendidas(): Promise<number> {
     return 0
   }
 }
+
+/**
+ * Calcula o lucro total dos produtos vendidos.
+ * @returns Lucro total dos produtos vendidos ou 0 em caso de erro/ausência de dados.
+ */
+export async function calcularLucroTotalProdutosVendidos(): Promise<number> {
+  const query = `
+    SELECT
+      SUM((preco_venda - preco_compra) * quantidade) AS lucro_total
+    FROM venda_produto
+    WHERE preco_venda IS NOT NULL
+      AND preco_compra IS NOT NULL;
+  `
+
+  try {
+    const db = await getDb()
+    const rows = await db.select<{ lucro_total: number | string | null }[]>(query)
+
+    if (!rows.length) {
+      return 0
+    }
+
+    const raw = rows[0]?.lucro_total ?? 0
+    const num = typeof raw === 'number' ? raw : Number(raw)
+
+    return Number.isNaN(num) ? 0 : num
+  } catch (e) {
+    console.error('Erro ao calcular lucro de produtos vendidos:', e)
+    await logError('Erro ao calcular lucro de produtos vendidos: ' + String(e))
+    return 0
+  }
+}
