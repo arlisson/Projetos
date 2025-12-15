@@ -1,5 +1,5 @@
 // src/views/Cartas/ListarCartas.tsx
-import { use, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Topbar } from '../../components/topBar'
 import { Footer } from '../../components/footer'
 import { DataTable, type Column } from '../../components/dataTable'

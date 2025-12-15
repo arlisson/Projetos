@@ -11,7 +11,10 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@tauri-apps/plugin-http": "^2.5.4",
     "@tauri-apps/plugin-sql": "^2.3.1",
+    "axios": "^1.13.2",
+    "cheerio": "^1.1.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.10.1",

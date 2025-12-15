@@ -4,18 +4,72 @@ import { Footer } from '../../components/footer'
 import { FormField } from '../../components/formField'
 import { FormSelect } from '../../components/formSelect'
 import { Button } from '../../components/botao'
-import { testDbConnection } from '../../Database/db'
+import { listarRaridadeQualidade, listarColecoes } from '../../Database/db'
+import { buscarCartaMyp, type CartaMyP } from '../../../scraping/webScraping'
+
+
+async function buscarCarta(url: string, chave?: string): Promise<CartaMyP[]> {
+  const carta = await buscarCartaMyp(url, chave)
+  return carta
+}
+
+interface QualidadeDB {
+  id_qualidade: number
+  nome: string
+}
+
+interface RaridadeDB {
+  id_raridade: number
+  nome: string
+}
+
+type OpcaoSelect = {
+  value: string
+  label: string
+}
 
 export function CadastrarCarta() {
 
-  useEffect(() => {
-      
-    
-  
-      testDbConnection().then((res) => {
-        console.log(res.message)
-      })
+    useEffect(() => {
+      async function carregarQualidades() {
+        const dados_qualidade = (await listarRaridadeQualidade(
+          'qualidade'
+        )) as unknown as QualidadeDB[]
+
+        
+
+        console.log('Qualidades disponíveis:', dados_qualidade)
+
+        const opcoes = dados_qualidade.map((q) => ({
+          value: String(q.id_qualidade), // ou q.nome, se preferir
+          label: q.nome,
+        }))
+
+        setOpcoesQualidade(opcoes)
+
+        const dados_raridade = (await listarRaridadeQualidade(
+          'raridade'
+        )) as unknown as RaridadeDB[]
+        const opcoes_raridade = dados_raridade.map((r) => ({
+          value: String(r.id_raridade), // ou r.nome, se preferir
+          label: r.nome,
+        }))
+        setOpcoesRaridade(opcoes_raridade)
+
+        const dados_colecao = (await listarColecoes()) as unknown as {
+          id_colecao: number
+          nome: string
+        }[]
+        const opcoes_colecao = dados_colecao.map((c) => ({
+          value: String(c.id_colecao), // ou c.nome, se preferir
+          label: c.nome,
+        }))
+        setOpcoesColecao(opcoes_colecao)
+      }
+
+      void carregarQualidades()
     }, [])
+
 
 
   const [linkCarta, setLinkCarta] = useState('')
@@ -32,43 +86,30 @@ export function CadastrarCarta() {
   const [raridade, setRaridade] = useState('')
   const [qualidade, setQualidade] = useState('')
   const [colecao, setColecao] = useState('')
+  const [opcoesRaridade, setOpcoesRaridade] = useState<OpcaoSelect[]>([])
+  const [opcoesQualidade, setOpcoesQualidade] = useState<OpcaoSelect[]>([])
+  const [opcoesColecao, setOpcoesColecao] = useState<OpcaoSelect[]>([])
+
 
   // Estes arrays futuramente virão do banco de dados
   const opcoesOrigem = [
-    { value: 'compra', label: 'Compra' },
-    { value: 'troca', label: 'Troca' },
-    { value: 'presente', label: 'Presente' },
+    { value: 'myp', label: 'MYPCards' },
+    { value: 'liga', label: 'Liga Yugioh' },   
   ]
 
-  const opcoesRaridade = [
-    { value: 'comum', label: 'Comum' },
-    { value: 'rara', label: 'Rara' },
-    { value: 'sr', label: 'Super Rara' },
-    { value: 'ur', label: 'Ultra Rara' },
-    { value: 'secret', label: 'Secret' },
-  ]
+  
 
-  const opcoesQualidade = [
-    { value: 'nm', label: 'Near Mint' },
-    { value: 'lp', label: 'Lightly Played' },
-    { value: 'mp', label: 'Moderately Played' },
-    { value: 'hp', label: 'Heavily Played' },
-  ]
-
-  const opcoesColecao = [
-    { value: 'lob', label: 'LOB' },
-    { value: 'mrd', label: 'MRD' },
-    { value: 'sd', label: 'Structure Deck' },
-    // etc. – depois você carrega do banco
-  ]
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     // lógica de salvar carta
   }
 
-  function handleScraping() {
+  async function handleScraping() {
     // lógica de scraping
+   
+    
+    
   }
 
   function handleCancelar() {

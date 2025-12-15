@@ -7,9 +7,9 @@ const DB_URL = 'sqlite:yugioh.db'
 
 
 // data scraping no formato YYYY-MM-DD (mesmo do Python)
-function todayStr(): string {
-  return new Date().toISOString().slice(0, 10)
-}
+// function todayStr(): string {
+//   return new Date().toISOString().slice(0, 10)
+// }
 
 let dbPromise: Promise<Database> | null = null
 
@@ -17,7 +17,7 @@ async function getDb(): Promise<Database> {
   if (!dbPromise) {
     dbPromise = Database.load(DB_URL)
   }
-  console.log('Conectado ao banco de dados.')
+  logInfo('Conectado ao banco de dados.')
   return dbPromise
 }
 
@@ -30,7 +30,7 @@ export async function testDbConnection(): Promise<{ ok: boolean; message: string
     await logInfo('Conexão com o banco de dados bem-sucedida.')
     return { ok: true, message: 'Conexão com o banco OK.' }
   } catch (err) {
-    console.error('Erro ao conectar no banco:', err)
+    //console.error('Erro ao conectar no banco:', err)
     await logError('Erro ao conectar no banco: ' + String(err))
     return { ok: false, message: String(err) }
   }
@@ -709,4 +709,38 @@ export async function calcularLucroTotalProdutosVendidos(): Promise<number> {
     await logError('Erro ao calcular lucro de produtos vendidos: ' + String(e))
     return 0
   }
+}
+
+export async function listarRaridadeQualidade(nome_tabela: string): Promise<
+  { id: number; nome: string }[]
+> {
+  try {
+    const db = await getDb()
+    const rows = await db.select<{ id: number; nome: string }[]>(
+      `SELECT * FROM ${nome_tabela};`,
+    )
+    return rows
+  } catch (err) {
+    console.error(`Erro ao listar ${nome_tabela}:`, err)
+    await logError(`Erro ao listar ${nome_tabela}: ` + String(err))
+    return []
+  }
+}
+export interface ColecaoDB {
+  id_colecao: number
+  nome: string
+  codigo: string
+}
+export async function listarColecoes() {
+  try {
+    const db = await getDb()
+    const rows = await db.select<ColecaoDB[]>(
+      `SELECT * FROM colecao;`,
+    )
+    return rows
+  } catch (err) {
+    console.error(`Erro ao listar coleções:`, err)
+    await logError(`Erro ao listar coleções: ` + String(err))
+    return []
+  }  
 }

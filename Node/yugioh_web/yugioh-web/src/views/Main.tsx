@@ -37,8 +37,7 @@ const destaqueItems = [
   },
 ]
 
-  
-  
+
 
 export function Main() {
 
@@ -93,6 +92,8 @@ export function Main() {
     }
 
     carregarDados()
+    
+    
   }, [])
 
 
