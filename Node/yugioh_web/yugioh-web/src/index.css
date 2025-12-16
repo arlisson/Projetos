@@ -566,9 +566,16 @@ body {
   gap: 0.5rem;
   justify-content: flex-start;
 }
+.form-field-input-wrapper {
+  position: relative;
+}
+
+.form-field-input-wrapper {
+  position: relative;
+}
 
 .form-select-input {
-  flex: 1;
+  width: 100%;
   padding: 0.45rem 0.6rem;
   border-radius: 8px;
   border: 1px solid var(--color-border);
@@ -582,6 +589,54 @@ body {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.4);
 }
+
+.form-select-dropdown {
+  position: absolute;
+  z-index: 20;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 220px;
+  margin-top: 4px;
+  background-color: #020617;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  overflow-y: auto;
+}
+
+.form-select-option {
+  padding: 0.4rem 0.6rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.form-select-option:hover {
+  background-color: rgba(59, 130, 246, 0.2);
+}
+
+.form-select-empty {
+  padding: 0.4rem 0.6rem;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+/* Botão "Limpar seleção" */
+.form-select-clear {
+  position: absolute;
+  right: 0.4rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 0.7rem;
+  cursor: pointer;
+}
+
+.form-select-clear:hover {
+  text-decoration: underline;
+}
+
 
 /* Header clicável / ordenável */
 .table-header-sortable {

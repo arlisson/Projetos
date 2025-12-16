@@ -4,7 +4,14 @@ import { Footer } from '../../components/footer'
 import { FormField } from '../../components/formField'
 import { FormSelect } from '../../components/formSelect'
 import { Button } from '../../components/botao'
-import { listarRaridadeQualidade, listarColecoes, type QualidadeDB, type RaridadeDB, type OpcaoSelect, buscarQualidadeRaridadeId } from '../../Database/db'
+import { listarRaridadeQualidade,
+   listarColecoes,
+   type QualidadeDB, 
+   type RaridadeDB, 
+   type OpcaoSelect, 
+   buscarQualidadeRaridadeId,
+   buscarColecao,
+   inserirColecao } from '../../Database/db'
 import { buscarCartaMyp, type CartaMyP } from '../../../scraping/webScraping'
 
 
@@ -21,11 +28,9 @@ export function CadastrarCarta() {
       async function carregarQualidades() {
         const dados_qualidade = (await listarRaridadeQualidade(
           'qualidade'
-        )) as unknown as QualidadeDB[]
+        )) as unknown as QualidadeDB[]      
 
         
-
-        console.log('Qualidades disponíveis:', dados_qualidade)
 
         const opcoes = dados_qualidade.map((q) => ({
           value: String(q.id_qualidade), // ou q.nome, se preferir
@@ -102,6 +107,31 @@ export function CadastrarCarta() {
       const cartas = await buscarCarta(linkCarta, raridadeNome || undefined)
       if (cartas.length > 0) {
         const carta = cartas[0]
+        const colecaoEncontrada = await buscarColecao(carta.colecao)
+
+      if (colecaoEncontrada) {
+        // Já existe no banco: só seleciona
+        setColecao(String(colecaoEncontrada.id_colecao))
+      } else {
+        // Insere nova coleção
+        const novoId = await inserirColecao(carta.colecao, '')
+
+        // Recarrega todas as coleções para atualizar as opções
+        const dados_colecao = (await listarColecoes()) as {
+          id_colecao: number
+          nome: string
+        }[]
+
+        const opcoes_colecao: OpcaoSelect[] = dados_colecao.map((c) => ({
+          value: String(c.id_colecao),
+          label: c.nome,
+        }))
+
+        setOpcoesColecao(opcoes_colecao)
+
+        // Seleciona a nova coleção (id recém inserido)
+        setColecao(String(novoId))
+      }
         setNome(carta.nome || '')
         setCodigo(carta.codigo || '')
         setUrlImagem(carta.imagem || '')
@@ -245,6 +275,7 @@ export function CadastrarCarta() {
                 options={opcoesOrigem}
                 placeholder="Selecione a origem"
                 required
+                
               />
               <FormSelect
                 label="Raridade"

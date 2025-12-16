@@ -774,3 +774,37 @@ export async function buscarQualidadeRaridadeId(id: number, tabela: 'qualidade' 
     return null
   }
 }
+
+export async function inserirColecao(nome: string, codigo: string): Promise<number | null> {
+  try {
+    const db = await getDb()
+    await db.execute(
+      `INSERT INTO colecao (nome, codigo) VALUES (?, ?)`,
+      [nome.toUpperCase(), codigo]
+    )
+    const result = await db.select<{ id_colecao: number }[]>(
+      `SELECT last_insert_rowid() as id_colecao`
+    )
+    return result.length > 0 ? result[0].id_colecao : null
+  } catch (err) {
+    console.error(`Erro ao inserir coleção:`, err)
+    await logError(`Erro ao inserir coleção: ` + String(err))
+    return null
+  }
+}
+
+export async function buscarColecao(nome:String) {
+
+  try { 
+    const db = await getDb()
+    const rows = await db.select<ColecaoDB[]>(
+      `SELECT * FROM colecao WHERE nome = ?`,
+      [nome.toUpperCase()]
+    )
+    return rows.length > 0 ? rows[0] : null
+  } catch (err) {
+    console.error(`Erro ao buscar coleção:`, err)
+    await logError(`Erro ao buscar coleção: ` + String(err))
+    return null    
+  }
+}
