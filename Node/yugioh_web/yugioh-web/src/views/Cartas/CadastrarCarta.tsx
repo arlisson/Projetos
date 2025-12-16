@@ -4,7 +4,7 @@ import { Footer } from '../../components/footer'
 import { FormField } from '../../components/formField'
 import { FormSelect } from '../../components/formSelect'
 import { Button } from '../../components/botao'
-import { listarRaridadeQualidade, listarColecoes } from '../../Database/db'
+import { listarRaridadeQualidade, listarColecoes, type QualidadeDB, type RaridadeDB, type OpcaoSelect, buscarQualidadeRaridadeId } from '../../Database/db'
 import { buscarCartaMyp, type CartaMyP } from '../../../scraping/webScraping'
 
 
@@ -13,20 +13,7 @@ async function buscarCarta(url: string, chave?: string): Promise<CartaMyP[]> {
   return carta
 }
 
-interface QualidadeDB {
-  id_qualidade: number
-  nome: string
-}
 
-interface RaridadeDB {
-  id_raridade: number
-  nome: string
-}
-
-type OpcaoSelect = {
-  value: string
-  label: string
-}
 
 export function CadastrarCarta() {
 
@@ -106,10 +93,27 @@ export function CadastrarCarta() {
   }
 
   async function handleScraping() {
-    // lógica de scraping
-   
-    
-    
+    if (raridade === '') {
+      alert('Por favor, selecione a raridade antes de buscar via scraping.')
+      return
+    }
+    try {
+      const raridadeNome = await buscarQualidadeRaridadeId(parseInt(raridade, 10), 'raridade')
+      const cartas = await buscarCarta(linkCarta, raridadeNome || undefined)
+      if (cartas.length > 0) {
+        const carta = cartas[0]
+        setNome(carta.nome || '')
+        setCodigo(carta.codigo || '')
+        setUrlImagem(carta.imagem || '')
+        setPrecoAtual(carta.preco_atual ? String(carta.preco_atual) : '')
+
+      } else {
+        alert('Nenhuma carta encontrada no link fornecido.')
+      }
+    } catch (error) {
+      console.error('Erro ao buscar carta:', error)
+      alert('Erro ao buscar carta.')
+    }
   }
 
   function handleCancelar() {
@@ -283,15 +287,27 @@ export function CadastrarCarta() {
           </form>
         </section>
 
-        {/* Coluna direita – imagem da carta */}
+        {/* Coluna direita – imagem da carta */}        
         <aside className="form-page-right">
           <div className="form-image-label">Imagem da carta</div>
+
           <div className="form-image-placeholder">
-            Pré-visualização da imagem da carta.
-            <br />
-            (Componente de upload / preview será implementado aqui.)
+            {urlImagem ? (
+              <img
+                src={urlImagem}
+                alt={nome ? `Imagem da carta ${nome}` : 'Imagem da carta'}
+                className="card-image-preview"
+              />
+            ) : (
+              <>
+                Pré-visualização da imagem da carta.
+                <br />
+                (Componente de upload / preview será implementado aqui.)
+              </>
+            )}
           </div>
         </aside>
+
       </main>
 
       <Footer  />

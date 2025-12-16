@@ -44,7 +44,7 @@ export async function buscarCartaMyp(
     // Imagem
     const imagens = $('img').toArray()
     const imagem =
-      (imagens[3] && $(imagens[3]).attr('src')) || IMAGEM_PADRAO
+      (imagens[2] && $(imagens[2]).attr('src')) || IMAGEM_PADRAO
 
     // Preço mínimo
     const precoTag = $('span.moeda').first()
@@ -101,8 +101,8 @@ export async function buscarCartaMyp(
             imagem: imagem || IMAGEM_PADRAO,
             nome,
             raridade,
-            preco_atual: preco || precoMinimo,
-            codigo: codigoCarta,
+            preco_atual: (preco.split('R$')[1] || precoMinimo.split('R$')[1] || '0,00').trim().replace(/\s+/g, ' ').replace(',','.'),
+            codigo: codigoCarta.replace('_','-'),
             colecao: colecaoCarta,
             origem: 'MyPCards',
             link_site: url,

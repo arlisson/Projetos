@@ -726,6 +726,21 @@ export async function listarRaridadeQualidade(nome_tabela: string): Promise<
     return []
   }
 }
+
+export interface QualidadeDB {
+  id_qualidade: number
+  nome: string
+}
+
+export interface RaridadeDB {
+  id_raridade: number
+  nome: string
+}
+
+export type OpcaoSelect = {
+  value: string
+  label: string
+}
 export interface ColecaoDB {
   id_colecao: number
   nome: string
@@ -743,4 +758,19 @@ export async function listarColecoes() {
     await logError(`Erro ao listar coleções: ` + String(err))
     return []
   }  
+}
+
+export async function buscarQualidadeRaridadeId(id: number, tabela: 'qualidade' | 'raridade'): Promise<string | null> {
+  try {
+    const db = await getDb()
+    const rows = await db.select<{ nome: string }[]>(
+      `SELECT nome FROM ${tabela} WHERE id_${tabela} = ?;`,
+      [id]
+    )
+    return rows.length > 0 ? rows[0].nome : null
+  } catch (err) {
+    console.error(`Erro ao buscar ${tabela}:`, err)
+    await logError(`Erro ao buscar ${tabela}: ` + String(err))
+    return null
+  }
 }
