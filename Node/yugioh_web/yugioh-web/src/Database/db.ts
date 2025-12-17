@@ -808,3 +808,35 @@ export async function buscarColecao(nome:String) {
     return null    
   }
 }
+
+export async function inserirCarta(carta: InserirCartaPayload): Promise<boolean> {
+  
+    try {
+      const db = await getDb()
+      await db.execute(
+        `INSERT INTO carta (link_site, nome, codigo, preco_da_compra, preco_atual, data_da_compra, quantidade, imagem, imagem_salva, origem, raridade, qualidade, colecao, data_scraping) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          carta.link_site,
+          carta.nome.toUpperCase(),
+          carta.codigo?.toUpperCase(),
+          carta.preco_da_compra,
+          carta.preco_atual,
+          carta.data_da_compra,
+          carta.quantidade,
+          carta.imagem,
+          carta.imagem_salva,
+          carta.origem?.toUpperCase(),
+          carta.raridade,
+          carta.qualidade,
+          carta.colecao,
+          new Date().toISOString().slice(0, 10), // data_scraping YYYY-MM-DD
+        ]
+      )
+      return true;
+    } catch (err) {
+      console.error('Erro ao inserir a carta:', err)
+      await logError('Erro ao inserir a carta: ' + String(err))
+      return false;
+    }
+  
+}

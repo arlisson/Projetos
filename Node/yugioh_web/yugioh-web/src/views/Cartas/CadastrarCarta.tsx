@@ -11,7 +11,9 @@ import { listarRaridadeQualidade,
    type OpcaoSelect, 
    buscarQualidadeRaridadeId,
    buscarColecao,
-   inserirColecao } from '../../Database/db'
+   inserirColecao,
+   type InserirCartaPayload,
+   inserirCarta } from '../../Database/db'
 import { buscarCartaMyp, type CartaMyP } from '../../../scraping/webScraping'
 
 
@@ -72,7 +74,7 @@ export function CadastrarCarta() {
   const [dataCompra, setDataCompra] = useState('')
   const [quantidade, setQuantidade] = useState('')
   const [urlImagem, setUrlImagem] = useState('')
-  const [localImagem, setLocalImagem] = useState('')
+  //const [localImagem, setLocalImagem] = useState('')
 
   const [origem, setOrigem] = useState('')
   const [raridade, setRaridade] = useState('')
@@ -94,7 +96,50 @@ export function CadastrarCarta() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    // lógica de salvar carta
+    // Validar campos obrigatórios
+    if (!nome || !codigo || !precoPago || !precoAtual || !dataCompra || !quantidade || !origem || !raridade || !colecao) {
+      alert('Por favor, preencha todos os campos obrigatórios.')
+      return
+    }
+    // Preparar dados para inserção
+    const novaCarta: InserirCartaPayload = {
+      link_site: linkCarta,
+      nome: nome,
+      codigo: codigo,
+      preco_da_compra: parseFloat(precoPago),
+      preco_atual: parseFloat(precoAtual),
+      data_da_compra: dataCompra,
+      quantidade: parseInt(quantidade, 10),
+      imagem: urlImagem,
+      //local_imagem: localImagem,
+      origem: origem,
+      raridade: parseInt(raridade, 10),
+      qualidade: qualidade ? parseInt(qualidade, 10) : null,
+      colecao: String(parseInt(colecao, 10)),
+    }
+    // Inserir no banco de dados
+    confirm('Confirma o cadastro desta carta?') && inserirCarta(novaCarta)
+      .then(() => {
+        alert('Carta cadastrada com sucesso!')
+        // Limpar formulário
+        setLinkCarta('')
+        setNome('')
+        setCodigo('')
+        setPrecoPago('')
+        setPrecoAtual('')
+        setDataCompra('')
+        setQuantidade('')
+        setUrlImagem('')
+        //setLocalImagem('')
+        setOrigem('')
+        setRaridade('')
+        setQualidade('')
+        setColecao('')
+      })
+      .catch((err) => {
+        console.error('Erro ao cadastrar carta:', err)
+        alert('Erro ao cadastrar carta. Verifique o console para mais detalhes.')
+      })
   }
 
   async function handleScraping() {
@@ -256,14 +301,14 @@ export function CadastrarCarta() {
               placeholder="Link direto para a imagem, se houver"
             />
 
-            <FormField
+            {/* <FormField
               label="Local da imagem baixada"
               name="localImagem"
               kind="texto"
               value={localImagem}
               onChange={setLocalImagem}
               placeholder="Caminho/local no disco após download"
-            />
+            /> */}
 
             {/* Dropdowns: origem, raridade, qualidade, coleção */}
             <div className="form-row-inline">
@@ -331,9 +376,7 @@ export function CadastrarCarta() {
               />
             ) : (
               <>
-                Pré-visualização da imagem da carta.
-                <br />
-                (Componente de upload / preview será implementado aqui.)
+                Pré-visualização da imagem da carta.                               
               </>
             )}
           </div>
