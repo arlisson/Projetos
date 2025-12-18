@@ -1014,3 +1014,18 @@ export async function buscarCartaId( id: number ): Promise<CartaDetalhada | null
     return null
   }
 }
+
+export async function buscarProdutoId(id: number): Promise<ProdutoDetalhado | null> {
+  try {
+    const db = await getDb()
+    const rows = await db.select<ProdutoDetalhado[]>(
+      `SELECT * FROM produto WHERE id_produto = ?`,
+      [id]
+    )
+    return rows.length > 0 ? rows[0] : null
+  } catch (err) {
+    //console.error(`Erro ao buscar produto:`, err)
+    await logError(`Erro ao buscar produto: ` + String(err))
+    return null
+  }
+}

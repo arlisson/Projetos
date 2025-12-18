@@ -1,11 +1,13 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Topbar } from '../../components/topBar'
 import { Footer } from '../../components/footer'
 import { FormField } from '../../components/formField'
 import { FormSelect } from '../../components/formSelect'
 import { Button } from '../../components/botao'
+import { useSearchParams } from 'react-router-dom'
+import { buscarProdutoId } from '../../Database/db'
 
-export function CadastrarProduto() {
+export function EditarProduto() {
   const [link, setLink] = useState('')
   const [nome, setNome] = useState('')
   const [urlImagem, setUrlImagem] = useState('')
@@ -17,11 +19,49 @@ export function CadastrarProduto() {
   const [origem, setOrigem] = useState('')
 
   // Futuramente estes valores virão do banco
-   const opcoesOrigem = [
+  const opcoesOrigem = [
     { value: 'myp', label: 'MyPCards' },
     { value: 'liga', label: 'Liga Yugioh' },
     
   ]
+
+  const [searchParams] = useSearchParams()
+    const idParam = searchParams.get('id')
+    const idProduto = idParam ? Number(idParam) : null
+
+  useEffect(() => {
+    // Carregar dados do produto pelo idProduto
+    if (!idProduto) return
+    async function carregarProduto() {
+      try {
+        const produtoDetalhado = await buscarProdutoId(idProduto!)
+        if (produtoDetalhado) {
+          setLink(produtoDetalhado.link || '')
+          setNome(produtoDetalhado.nome_produto || '')
+          setUrlImagem(produtoDetalhado.imagem || '')
+          // setCaminhoImagemLocal(produtoDetalhado.imagem_salva || '')
+          setPrecoCompra(produtoDetalhado.preco_compra?.toString() || '')
+          setPrecoAtual(produtoDetalhado.preco_atual?.toString() || '')
+          setDataCompra(produtoDetalhado.data_compra || '')
+          setQuantidade(produtoDetalhado.quantidade?.toString() || '')
+          if(produtoDetalhado.origem === 'MyPCards' || produtoDetalhado.origem === 'MYPCARDS') {
+              setOrigem('myp')
+          }else if(produtoDetalhado.origem === 'LIGA YUGIOH') {
+              setOrigem('liga')
+          }else{
+              setOrigem('')
+          }
+
+        }
+      } catch (err) {
+        //console.error('Erro ao carregar produto:', err)
+      }
+    }
+
+    carregarProduto()
+  }, [idProduto])
+
+
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -38,12 +78,12 @@ export function CadastrarProduto() {
 
   return (
     <div className="app-shell">
-      <Topbar pageTitle="Cadastrar produto" />
+      <Topbar pageTitle="Editar produto" />
 
       <main className="form-page-content">
         {/* Coluna esquerda – formulário */}
         <section className="form-page-left">
-          <h2 className="section-title">Cadastrar novo produto</h2>
+          <h2 className="section-title">Editar {nome}</h2>
           <p className="section-subtitle">
             Preencha os dados básicos do produto antes de salvar.
           </p>

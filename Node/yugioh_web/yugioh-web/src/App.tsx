@@ -8,6 +8,7 @@ import { ListarProdutos } from './views/Produtos/ListarProdutos'
 import { ListarVendasCartas } from './views/Cartas/ListarVendasCartas'
 import { ListarVendasProdutos } from './views/Produtos/ListarVendasProdutos'
 import { EditarCarta } from './views/Cartas/EditarCarta'
+import { EditarProduto } from './views/Produtos/EditarProduto'
 
 export default function App() {
 
@@ -28,6 +29,7 @@ export default function App() {
       <Route path="/produtos/cadastrar" element={<CadastrarProduto />} />
       <Route path="/produtos/listar" element={<ListarProdutos />} />
       <Route path='/produtos/vendas/listar' element={<ListarVendasProdutos />} />
+      <Route path="/produtos/editar" element={<EditarProduto />} />
 
     </Routes>
   )
