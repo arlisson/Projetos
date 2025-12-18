@@ -2,7 +2,7 @@ use std::{
     fs::{self, OpenOptions},
     io::Write,
     path::{Path, PathBuf},
-    time::{Duration, SystemTime},
+    time::{Duration},
 };
 
 fn logs_dir() -> PathBuf {

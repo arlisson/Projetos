@@ -53,8 +53,16 @@ export function Topbar({ pageTitle = 'YU-GI-OH! Manager' }: TopbarProps) {
   return (
     <header className="topbar">
       <div className="topbar-left">
+         <span className="app-title">
+          <button
+            className="dropdown-item"
+            key={'back'}
+            onClick={() => navigate(-1)}
+          >
+            ←
+          </button>
+        </span>
         
-        <span className="app-title">{pageTitle}</span>
         <span className="app-title">
           <button
             className="dropdown-item"
@@ -64,6 +72,7 @@ export function Topbar({ pageTitle = 'YU-GI-OH! Manager' }: TopbarProps) {
             Home
           </button>
         </span>
+        <span className="app-title">{pageTitle}</span>
       </div>
 
       <nav className="topbar-nav">

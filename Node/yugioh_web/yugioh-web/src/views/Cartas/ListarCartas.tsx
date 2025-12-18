@@ -14,11 +14,14 @@ import {
 
 } from '../../Database/db'
 import { Financeiro } from '../../components/financeiro'
-
+import { useNavigate } from 'react-router-dom'
 
 
 
 export function ListarCartas() {
+
+  const navigate = useNavigate()
+
   const [cartas, setCartas] = useState<CartaDetalhada[]>([])
   const [busca, setBusca] = useState('')
   const [totalGasto, setTotalGasto] = useState<number|TotalGastoResult>(0)
@@ -229,6 +232,9 @@ export function ListarCartas() {
             columns={columns}
             data={cartas}
             rowKey="id_carta"
+            onRowClick={(row) => {
+              navigate(`/cartas/editar/?id=${row.id_carta}`)
+            }}
           />
         </section>
       </main>

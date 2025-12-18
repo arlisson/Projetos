@@ -60,6 +60,7 @@ body {
 .app-title {
   font-size: 1rem;
   font-weight: 500;
+  align-self: center;
 }
 
 .topbar-nav {
@@ -687,6 +688,15 @@ body {
   justify-content: flex-end;
   align-items: center;
 }
+
+.table-row-clickable {
+  cursor: pointer;
+}
+
+.table-row-clickable:hover {
+  background-color: rgba(148, 163, 184, 0.12); /* ajuste à sua paleta */
+}
+
 
 .search-input {
   flex:1;

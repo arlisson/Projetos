@@ -12,10 +12,10 @@ import { listarRaridadeQualidade,
    buscarQualidadeRaridadeId,
    buscarColecao,
    inserirColecao,
-   type InserirCartaPayload,
-   inserirCarta } from '../../Database/db'
+   buscarCartaId
+   } from '../../Database/db'
 import { buscarCartaMyp, type CartaMyP } from '../../../scraping/webScraping'
-
+import { useSearchParams } from 'react-router-dom'
 
 async function buscarCarta(url: string, chave?: string): Promise<CartaMyP[]> {
   const carta = await buscarCartaMyp(url, chave)
@@ -24,13 +24,47 @@ async function buscarCarta(url: string, chave?: string): Promise<CartaMyP[]> {
 
 
 
-export function CadastrarCarta() {
+export function EditarCarta() {
 
+    const [searchParams] = useSearchParams()
+    const idParam = searchParams.get('id')
+    const idCarta = idParam ? Number(idParam) : null
+
+  
     useEffect(() => {
-      async function carregarQualidades() {
-        const dados_qualidade = (await listarRaridadeQualidade(
-          'qualidade'
-        )) as unknown as QualidadeDB[]      
+        if (!idCarta) return
+        async function carregarDadosCarta() {
+            const carta = await buscarCartaId(idCarta!)
+            if (carta) {
+                setLinkCarta(carta.link_site || '')
+                setNome(carta.nome || '')
+                setCodigo(carta.codigo || '')
+                setPrecoPago(carta.preco_da_compra ? String(carta.preco_da_compra) : '')
+                setPrecoAtual(carta.preco_atual ? String(carta.preco_atual) : '')
+                setDataCompra(carta.data_da_compra ? carta.data_da_compra.toString().split('T')[0] : '')
+                setQuantidade(carta.quantidade ? String(carta.quantidade) : '')
+                setUrlImagem(carta.imagem || '')
+                if(carta.origem === 'MyPCards') {
+                    setOrigem('myp')
+                }else if(carta.origem === 'Liga Yugioh') {
+                    setOrigem('liga')
+                }else{
+                    setOrigem('')
+                }
+                
+                setRaridade(carta.raridade ? String(carta.raridade) : '')
+                setQualidade(carta.qualidade ? String(carta.qualidade) : '')
+                setColecao(carta.colecao ? String(carta.colecao) : '')
+            }
+        }
+
+
+
+
+        async function carregarQualidades() {
+            const dados_qualidade = (await listarRaridadeQualidade(
+            'qualidade'
+            )) as unknown as QualidadeDB[]      
 
         
 
@@ -61,8 +95,9 @@ export function CadastrarCarta() {
         setOpcoesColecao(opcoes_colecao)
       }
 
-      void carregarQualidades()
-    }, [])
+        void carregarQualidades()
+        void carregarDadosCarta()
+    }, [idCarta])
 
 
 
@@ -100,45 +135,8 @@ export function CadastrarCarta() {
       alert('Por favor, preencha todos os campos obrigatórios.')
       return
     }
-    // Preparar dados para inserção
-    const novaCarta: InserirCartaPayload = {
-      link_site: linkCarta,
-      nome: nome,
-      codigo: codigo,
-      preco_da_compra: parseFloat(precoPago),
-      preco_atual: parseFloat(precoAtual),
-      data_da_compra: dataCompra,
-      quantidade: parseInt(quantidade, 10),
-      imagem: urlImagem,
-      //local_imagem: localImagem,
-      origem: origem,
-      raridade: parseInt(raridade, 10),
-      qualidade: qualidade ? parseInt(qualidade, 10) : null,
-      colecao: String(parseInt(colecao, 10)),
-    }
-    // Inserir no banco de dados
-    confirm('Confirma o cadastro desta carta?') && inserirCarta(novaCarta)
-      .then(() => {
-        alert('Carta cadastrada com sucesso!')
-        // Limpar formulário
-        setLinkCarta('')
-        setNome('')
-        setCodigo('')
-        setPrecoPago('')
-        setPrecoAtual('')
-        setDataCompra('')
-        setQuantidade('')
-        setUrlImagem('')
-        //setLocalImagem('')
-        setOrigem('')
-        setRaridade('')
-        setQualidade('')
-        setColecao('')
-      })
-      .catch((err) => {
-        console.error('Erro ao cadastrar carta:', err)
-        alert('Erro ao cadastrar carta. Verifique o console para mais detalhes.')
-      })
+    alert('Ainda não implementado: salvar carta no banco de dados.')
+    
   }
 
   async function handleScraping() {
@@ -186,22 +184,26 @@ export function CadastrarCarta() {
       }
     } catch (error) {
       console.error('Erro ao buscar carta:', error)
-      alert('Erro ao buscar carta.')
+      alert('Erro ao buscar carta.' + String(error))
     }
   }
 
   function handleCancelar() {
-    // limpar ou navegar de volta
+    alert('Ainda não implementado: voltar para a lista de cartas.')
   }
+
+    function handleExcluir(): void {
+        alert('Ainda não implementado: excluir carta do banco de dados.')
+    }
 
   return (
     <div className="app-shell">
-      <Topbar pageTitle="Cadastrar carta" />
+      <Topbar pageTitle="Editar carta" />
 
       <main className="form-page-content">
         {/* Coluna esquerda – formulário */}
         <section className="form-page-left">
-          <h2 className="section-title">Cadastrar nova carta</h2>
+          <h2 className="section-title">Editar {nome}</h2>
           <p className="section-subtitle">
             Preencha os dados básicos da carta antes de salvar.
           </p>
@@ -357,6 +359,9 @@ export function CadastrarCarta() {
               <Button type="submit">Salvar carta</Button>
               <Button type="button" variant="outline" onClick={handleCancelar}>
                 Cancelar
+              </Button>
+              <Button type="button" variant="danger" onClick={handleExcluir}>
+                Excluir carta
               </Button>
             </div>
           </form>

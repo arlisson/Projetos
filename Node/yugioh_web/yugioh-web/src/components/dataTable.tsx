@@ -1,33 +1,28 @@
 // src/components/ui/DataTable.tsx
 import React, { useMemo, useState } from 'react'
 
+
+
+
 export type Column<T> = {
-  /** Chave do campo no objeto de dados (quando não usar valueGetter) */
   key: keyof T | string
-  /** Texto exibido no header */
   label: string
-  /** Largura opcional da coluna (ex.: "120px", "20%") */
   width?: string
-  /** Renderização customizada da célula (opcional) */
   render?: (value: any, row: T, rowIndex: number) => React.ReactNode
-  /** Se true, a tabela soma os valores dessa coluna (numéricos) */
   sum?: boolean
-  /** Formatação customizada da soma (opcional) */
   formatSum?: (sum: number) => React.ReactNode
-  /** Se false, desativa ordenação nessa coluna (default: true) */
   sortable?: boolean
-  /** Função para obter o valor bruto a partir da linha (para campos derivados, como lucro) */
   valueGetter?: (row: T) => any
 }
 
 export interface DataTableProps<T> {
   columns: Column<T>[]
   data: T[]
-  rowKey?:
-    | keyof T
-    | ((row: T, index: number) => string | number)
+  rowKey?: keyof T | ((row: T, index: number) => string | number)
   emptyMessage?: string
   className?: string
+  /** Callback ao clicar em uma linha */
+  onRowClick?: (row: T, index: number) => void
 }
 
 type SortDirection = 'asc' | 'desc' | null
@@ -43,6 +38,7 @@ export function DataTable<T>({
   rowKey,
   emptyMessage = 'Nenhum registro encontrado.',
   className,
+  onRowClick,
 }: DataTableProps<T>) {
   const [sortState, setSortState] = useState<SortState>({
     key: null,
@@ -62,18 +58,12 @@ export function DataTable<T>({
     return index
   }
 
-  // Função central para obter o valor bruto da célula
   const getCellRaw = (row: T, col: Column<T>) => {
-    if (col.valueGetter) {
-      return col.valueGetter(row)
-    }
-    if (typeof col.key === 'string') {
-      return (row as any)[col.key]
-    }
+    if (col.valueGetter) return col.valueGetter(row)
+    if (typeof col.key === 'string') return (row as any)[col.key]
     return (row as any)[col.key as keyof T]
   }
 
-  // Cálculo das somas por coluna
   const sums: Record<string, number> = {}
   const hasAnySum = columns.some((c) => c.sum)
 
@@ -85,7 +75,6 @@ export function DataTable<T>({
 
       for (const row of data) {
         const raw = getCellRaw(row, col)
-
         const num =
           typeof raw === 'number'
             ? raw
@@ -97,21 +86,16 @@ export function DataTable<T>({
               )
             : 0
 
-        if (!Number.isNaN(num)) {
-          total += num
-        }
+        if (!Number.isNaN(num)) total += num
       }
 
       sums[key] = total
     }
   }
 
-  // Ordenação com base em getCellRaw
   const sortedData = useMemo(() => {
     const { key, direction } = sortState
-    if (!key || !direction) {
-      return data
-    }
+    if (!key || !direction) return data
 
     const dirFactor = direction === 'asc' ? 1 : -1
     const col = columns.find((c) => String(c.key) === key)
@@ -238,17 +222,18 @@ export function DataTable<T>({
         <tbody>
           {sortedData.length === 0 && (
             <tr>
-              <td
-                colSpan={columns.length}
-                className="table-empty"
-              >
+              <td colSpan={columns.length} className="table-empty">
                 {emptyMessage}
               </td>
             </tr>
           )}
 
           {sortedData.map((row, rowIndex) => (
-            <tr key={getRowKey(row, rowIndex)}>
+            <tr
+              key={getRowKey(row, rowIndex)}
+              className={onRowClick ? 'table-row-clickable' : undefined}
+              onClick={onRowClick ? () => onRowClick(row, rowIndex) : undefined}
+            >
               {columns.map((col) => {
                 const rawValue = getCellRaw(row, col)
 

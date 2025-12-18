@@ -6,10 +6,15 @@ import { logError, logInfo } from '../services/logger'
 const DB_URL = 'sqlite:yugioh.db'
 
 
-// data scraping no formato YYYY-MM-DD (mesmo do Python)
-// function todayStr(): string {
-//   return new Date().toISOString().slice(0, 10)
-// }
+
+// Aqui deixo uma função auxiliar para gerar a data AAAA-MM-DD.
+function todayStr(): string {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
 
 let dbPromise: Promise<Database> | null = null
 
@@ -22,19 +27,19 @@ async function getDb(): Promise<Database> {
 }
 
 
-export async function testDbConnection(): Promise<{ ok: boolean; message: string }> {
-  try {
-    const db = await getDb()
-    await db.select('SELECT 1 as value')
+// export async function testDbConnection(): Promise<{ ok: boolean; message: string }> {
+//   try {
+//     const db = await getDb()
+//     await db.select('SELECT 1 as value')
 
-    await logInfo('Conexão com o banco de dados bem-sucedida.')
-    return { ok: true, message: 'Conexão com o banco OK.' }
-  } catch (err) {
-    //console.error('Erro ao conectar no banco:', err)
-    await logError('Erro ao conectar no banco: ' + String(err))
-    return { ok: false, message: String(err) }
-  }
-}
+//     await logInfo('Conexão com o banco de dados bem-sucedida.')
+//     return { ok: true, message: 'Conexão com o banco OK.' }
+//   } catch (err) {
+//     ////console.error('Erro ao conectar no banco:', err)
+//     await logError('Erro ao conectar no banco: ' + String(err))
+//     return { ok: false, message: String(err) }
+//   }
+// }
 
 // ------------------------------------------
 // Helpers genéricos
@@ -160,6 +165,154 @@ export interface ProdutoDetalhado {
     data_scraping?: string | null
   }
 
+
+export async function registrarHistoricoLucro(): Promise<void> {
+  const db = await getDb()
+
+  try {
+    // resumo = buscar_historico_precos(resumo=True)
+    const resumo = (await buscarHistoricoPrecos(
+      undefined,
+      undefined,
+      true,
+    )) as ResumoLucro
+
+    const lucroCartas =
+      (resumo.lucro_cartas ?? 0) + (resumo.total_vendas_cartas ?? 0)
+
+    const lucroProdutos =
+      (resumo.lucro_produtos ?? 0) + (resumo.total_vendas_produtos ?? 0)
+
+    const total = lucroCartas + lucroProdutos
+
+    // Data atual sem hora (equivalente ao DATA_SCRAPING)
+    const dataHoje = todayStr()
+
+    // Verifica se já existe registro hoje
+    const existentes = await db.select<{ id_lucro: number }[]>(
+      `
+      SELECT id_lucro
+      FROM historico_lucro
+      WHERE DATE(data) = ?
+    `,
+      [dataHoje],
+    )
+
+    const existente = existentes[0]
+
+    if (existente) {
+      // Atualiza registro existente
+      await db.execute(
+        `
+        UPDATE historico_lucro
+        SET lucro_cartas = ?, lucro_produtos = ?, lucro_total = ?
+        WHERE id_lucro = ?
+      `,
+        [lucroCartas, lucroProdutos, total, existente.id_lucro],
+      )
+    } else {
+      // Insere novo registro
+      await db.execute(
+        `
+        INSERT INTO historico_lucro (lucro_cartas, lucro_produtos, lucro_total, data)
+        VALUES (?, ?, ?, ?)
+      `,
+        [lucroCartas, lucroProdutos, total, dataHoje],
+      )
+    }
+  } catch (err) {
+    //console.error('Erro ao registrar histórico de lucro:', err)
+    await logError('Erro ao registrar histórico de lucro: ' + String(err))
+  }
+}
+
+export async function registrarHistoricoGenerico(
+  tipo: 'carta' | 'produto' = 'carta',
+  id?: number | null,
+  preco?: number | null,
+  data?: string | null,
+  origem: string = 'MYPCards',
+): Promise<void> {
+  if (tipo !== 'carta' && tipo !== 'produto') {
+    throw new Error("Tipo inválido. Use 'carta' ou 'produto'.")
+  }
+
+  try {
+    const db = await getDb()
+
+    if (tipo === 'carta') {
+      await db.execute(
+        `
+        INSERT INTO historico_precos (id_carta, id_produto, data, preco, origem)
+        VALUES (?, NULL, ?, ?, ?)
+      `,
+        [id ?? null, data ?? null, preco ?? null, origem],
+      )
+    } else {
+      await db.execute(
+        `
+        INSERT INTO historico_precos (id_carta, id_produto, data, preco, origem)
+        VALUES (NULL, ?, ?, ?, ?)
+      `,
+        [id ?? null, data ?? null, preco ?? null, origem],
+      )
+    }
+  } catch (err) {
+    //console.error('Erro ao registrar histórico:', err)
+    await logError('Erro ao registrar histórico: ' + String(err))
+  }
+}
+
+export async function updateHistoricoGenerico(
+  tipo: 'carta' | 'produto' = 'carta',
+  id?: number | null,
+  preco?: number | null,
+  data?: string | null,
+  origem: string = 'MYPCards',
+): Promise<void> {
+  if (tipo !== 'carta' && tipo !== 'produto') {
+    throw new Error("Tipo inválido. Use 'carta' ou 'produto'.")
+  }
+
+  try {
+    const db = await getDb()
+
+    if (tipo === 'carta') {
+      await db.execute(
+        `
+        UPDATE historico_precos
+        SET data = ?, preco = ?, origem = ?
+        WHERE id_carta = ?
+          AND data = (
+            SELECT MAX(data)
+            FROM historico_precos
+            WHERE id_carta = ?
+          )
+      `,
+        [data ?? null, preco ?? null, origem, id ?? null, id ?? null],
+      )
+    } else {
+      await db.execute(
+        `
+        UPDATE historico_precos
+        SET data = ?, preco = ?, origem = ?
+        WHERE id_produto = ?
+          AND data = (
+            SELECT MAX(data)
+            FROM historico_precos
+            WHERE id_produto = ?
+          )
+      `,
+        [data ?? null, preco ?? null, origem, id ?? null, id ?? null],
+      )
+    }
+  } catch (err) {
+    //console.error('Erro ao atualizar histórico:', err)
+    await logError('Erro ao atualizar histórico: ' + String(err))
+  }
+}
+
+
 // ------------------------------------------
 // Histórico genérico (tabela historico_precos)
 // registrar_historico_generico do Python
@@ -187,7 +340,7 @@ export async function buscarTodasCartas(): Promise<CartaDetalhada[]> {
 
     return rows
   } catch (err) {
-    console.error('Erro ao buscar todas as cartas:', err)
+    //console.error('Erro ao buscar todas as cartas:', err)
     // Se quiser integrar com seu logger em Rust:
     await logError('Erro ao buscar todas as cartas: ' + String(err))
     return []
@@ -226,7 +379,7 @@ export async function buscarCartasPorFiltro(
 
     return rows
   } catch (err) {
-    console.error('Erro ao buscar cartas com filtro:', err)
+    //console.error('Erro ao buscar cartas com filtro:', err)
     await logError('Erro ao buscar cartas com filtro: ' + String(err))
     return []
   }
@@ -246,7 +399,7 @@ export async function buscarTodosProdutos(): Promise<ProdutoDetalhado[]> {
 
     return rows
   } catch (err) {
-    console.error('Erro ao buscar todos os produtos:', err)
+    //console.error('Erro ao buscar todos os produtos:', err)
     // Se quiser integrar com seu logger em Rust:
     await logError('Erro ao buscar todos os produtos: ' + String(err))
     return []
@@ -281,7 +434,7 @@ export async function buscarProdutosPorFiltro(
     )
     return rows
   } catch (err) {
-    console.error('Erro ao buscar produtos com filtro:', err)
+    //console.error('Erro ao buscar produtos com filtro:', err)
     await logError('Erro ao buscar produtos com filtro: ' + String(err))
     return []
   }
@@ -299,7 +452,7 @@ export async function listarVendasCartas(): Promise<VendaCartaDetalhada[]> {
     )  
     return rows
   } catch (err) {
-    console.error('Erro ao buscar vendas de cartas:', err)
+    //console.error('Erro ao buscar vendas de cartas:', err)
     await logError('Erro ao buscar vendas de cartas: ' + String(err))
     return []
   }
@@ -333,7 +486,7 @@ export async function buscarVendasCartasPorFiltro(
     return rows
   }
     catch (err) {
-    console.error('Erro ao buscar vendas de cartas com filtro:', err)
+    //console.error('Erro ao buscar vendas de cartas com filtro:', err)
     await logError('Erro ao buscar vendas de cartas com filtro: ' + String(err))
     return []
   } 
@@ -347,7 +500,7 @@ export async function listarVendasProdutos(): Promise<VendaProdutoDetalhado[]> {
     )  
     return rows
   } catch (err) {
-    console.error('Erro ao buscar vendas de produtos:', err)
+    //console.error('Erro ao buscar vendas de produtos:', err)
     await logError('Erro ao buscar vendas de produtos: ' + String(err))
     return []
   } 
@@ -377,7 +530,7 @@ export async function buscarVendasProdutosPorFiltro(
     return rows
   }
     catch (err) {
-    console.error('Erro ao buscar vendas de produtos com filtro:', err)
+    //console.error('Erro ao buscar vendas de produtos com filtro:', err)
     await logError('Erro ao buscar vendas de produtos com filtro: ' + String(err))
     return []
   }
@@ -529,7 +682,7 @@ export async function buscarHistoricoPrecos(
       return rows
     }
   } catch (err) {
-    console.error('Erro ao buscar histórico:', err)
+    //console.error('Erro ao buscar histórico:', err)
     await logError('Erro ao buscar histórico: ' + String(err))
     return []
   }
@@ -611,7 +764,7 @@ export async function calculaTotalGasto(): Promise<TotalGastoResult> {
       gastoProdutosVendidos: gastoProdutosVendidos
     }
   } catch (err) {
-    console.error('Erro ao calcular total gasto:', err)
+    //console.error('Erro ao calcular total gasto:', err)
     await logError('Erro ao calcular total gasto: ' + String(err))
     return null as any
   }
@@ -642,7 +795,7 @@ export async function calculaQuantidade(tabela: string): Promise<number> {
 
     return Number.isNaN(num) ? 0 : num
   } catch (e) {
-    console.error('Erro ao calcular quantidade:', e)
+    //console.error('Erro ao calcular quantidade:', e)
     await logError('Erro ao calcular quantidade: ' + String(e))
     return 0
   }
@@ -673,7 +826,7 @@ export async function calcularLucroTotalCartasVendidas(): Promise<number> {
 
     return Number.isNaN(num) ? 0 : num
   } catch (e) {
-    console.error('Erro ao calcular lucro de cartas vendidas:', e)
+    //console.error('Erro ao calcular lucro de cartas vendidas:', e)
     await logError('Erro ao calcular lucro de cartas vendidas: ' + String(e))
     return 0
   }
@@ -705,7 +858,7 @@ export async function calcularLucroTotalProdutosVendidos(): Promise<number> {
 
     return Number.isNaN(num) ? 0 : num
   } catch (e) {
-    console.error('Erro ao calcular lucro de produtos vendidos:', e)
+    //console.error('Erro ao calcular lucro de produtos vendidos:', e)
     await logError('Erro ao calcular lucro de produtos vendidos: ' + String(e))
     return 0
   }
@@ -721,7 +874,7 @@ export async function listarRaridadeQualidade(nome_tabela: string): Promise<
     )
     return rows
   } catch (err) {
-    console.error(`Erro ao listar ${nome_tabela}:`, err)
+    //console.error(`Erro ao listar ${nome_tabela}:`, err)
     await logError(`Erro ao listar ${nome_tabela}: ` + String(err))
     return []
   }
@@ -754,7 +907,7 @@ export async function listarColecoes() {
     )
     return rows
   } catch (err) {
-    console.error(`Erro ao listar coleções:`, err)
+    //console.error(`Erro ao listar coleções:`, err)
     await logError(`Erro ao listar coleções: ` + String(err))
     return []
   }  
@@ -769,7 +922,7 @@ export async function buscarQualidadeRaridadeId(id: number, tabela: 'qualidade' 
     )
     return rows.length > 0 ? rows[0].nome : null
   } catch (err) {
-    console.error(`Erro ao buscar ${tabela}:`, err)
+    //console.error(`Erro ao buscar ${tabela}:`, err)
     await logError(`Erro ao buscar ${tabela}: ` + String(err))
     return null
   }
@@ -787,7 +940,7 @@ export async function inserirColecao(nome: string, codigo: string): Promise<numb
     )
     return result.length > 0 ? result[0].id_colecao : null
   } catch (err) {
-    console.error(`Erro ao inserir coleção:`, err)
+    //console.error(`Erro ao inserir coleção:`, err)
     await logError(`Erro ao inserir coleção: ` + String(err))
     return null
   }
@@ -803,7 +956,7 @@ export async function buscarColecao(nome:String) {
     )
     return rows.length > 0 ? rows[0] : null
   } catch (err) {
-    console.error(`Erro ao buscar coleção:`, err)
+    //console.error(`Erro ao buscar coleção:`, err)
     await logError(`Erro ao buscar coleção: ` + String(err))
     return null    
   }
@@ -829,14 +982,35 @@ export async function inserirCarta(carta: InserirCartaPayload): Promise<boolean>
           carta.raridade,
           carta.qualidade,
           carta.colecao,
-          new Date().toISOString().slice(0, 10), // data_scraping YYYY-MM-DD
+          todayStr()
         ]
       )
+      const last_id = await db.select<{ last_insert_rowid: number }[]>(
+        `SELECT last_insert_rowid() as last_insert_rowid`
+      )
+      registrarHistoricoLucro();
+      registrarHistoricoGenerico('carta', last_id[0].last_insert_rowid, carta.preco_atual ?? null, todayStr(), carta.origem ?? 'MYPCards');
+
       return true;
     } catch (err) {
-      console.error('Erro ao inserir a carta:', err)
+      //console.error('Erro ao inserir a carta:', err)
       await logError('Erro ao inserir a carta: ' + String(err))
       return false;
     }
   
+}
+
+export async function buscarCartaId( id: number ): Promise<CartaDetalhada | null> {
+  try {
+    const db = await getDb()
+    const rows = await db.select<CartaDetalhada[]>(
+      `SELECT * FROM carta WHERE id_carta = ?`,
+      [id]
+    )
+    return rows.length > 0 ? rows[0] : null
+  } catch (err) {
+    //console.error(`Erro ao buscar carta:`, err)
+    await logError(`Erro ao buscar carta: ` + String(err))
+    return null
+  }
 }
