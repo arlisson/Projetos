@@ -22,7 +22,7 @@ async function getDb(): Promise<Database> {
   if (!dbPromise) {
     dbPromise = Database.load(DB_URL)
   }
-  logInfo('Conectado ao banco de dados.')
+  // logInfo('Conectado ao banco de dados.')
   return dbPromise
 }
 

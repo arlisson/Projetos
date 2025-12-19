@@ -4,6 +4,7 @@ import { Footer } from '../../components/footer'
 import { FormField } from '../../components/formField'
 import { FormSelect } from '../../components/formSelect'
 import { Button } from '../../components/botao'
+import { type ProdutoLiga, buscarProdutoLiga } from '../../../scraping/webScraping'
 
 export function CadastrarProduto() {
   const [link, setLink] = useState('')
@@ -25,15 +26,32 @@ export function CadastrarProduto() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    // lógica de salvar produto
+    alert('Ação de salvar produto ainda não implementada.')
   }
 
   function handleScraping() {
-    // lógica de scraping para o produto
+    if (!link) {
+      alert('Por favor, insira uma URL para buscar o produto.')
+      return
+    }
+    try {
+      buscarProdutoLiga(link).then((produto: ProdutoLiga | null) => {
+        if (produto) {
+          setNome(produto.nome)
+          setUrlImagem(produto.imagem)
+          setPrecoAtual(produto.preco_atual.replace('R$ ', '').replace('.', '').replace(',', '.'))
+          setOrigem('liga')
+        } else {
+          alert('Produto não encontrado ou erro ao buscar.')
+        }
+      })  
+    } catch (error) {
+      alert('Erro ao buscar o produto: ' + error)
+    }
   }
 
   function handleCancelar() {
-    // limpar ou navegar de volta
+    alert('Ação de cancelar ainda não implementada.')
   }
 
   return (

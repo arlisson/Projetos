@@ -44,9 +44,9 @@ export function EditarCarta() {
                 setDataCompra(carta.data_da_compra ? carta.data_da_compra.toString().split('T')[0] : '')
                 setQuantidade(carta.quantidade ? String(carta.quantidade) : '')
                 setUrlImagem(carta.imagem || '')
-                if(carta.origem === 'MyPCards') {
+                if(carta.origem?.toUpperCase() === 'MYPCARDS') {
                     setOrigem('myp')
-                }else if(carta.origem === 'Liga Yugioh') {
+                }else if(carta.origem?.toUpperCase() === 'LIGA YUGIOH') {
                     setOrigem('liga')
                 }else{
                     setOrigem('')

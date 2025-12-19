@@ -1,6 +1,8 @@
 import * as cheerio from 'cheerio'
 import {  fetch } from '@tauri-apps/plugin-http'
 import { logInfo, logError } from '../src/services/logger' // ajuste o caminho
+import { invoke } from '@tauri-apps/api/core'
+
 
 const HEADERS = {
   'User-Agent':
@@ -17,6 +19,14 @@ export interface CartaMyP {
   preco_atual: string
   codigo: string
   colecao: string
+  origem: string
+  link_site: string
+}
+
+export interface ProdutoLiga {
+  imagem: string
+  nome: string
+  preco_atual: string
   origem: string
   link_site: string
 }
@@ -163,4 +173,10 @@ export async function buscarCartaMyp(
     logError('Erro ao fazer a requisição buscar carta MyPCards:'+e)
     return []
   }
+}
+
+
+export async function buscarProdutoLiga(url: string): Promise<ProdutoLiga | null> {
+  const result = await invoke<ProdutoLiga | null>('buscar_produto_liga_cmd', { url })
+  return result
 }

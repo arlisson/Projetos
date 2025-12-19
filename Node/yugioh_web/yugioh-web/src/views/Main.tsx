@@ -12,6 +12,7 @@ import { buscarHistoricoPrecos,
 import { useEffect, useState } from 'react'
 
 
+
 // Dados estáticos de exemplo para o carrossel
 const destaqueItems = [
   {
@@ -60,7 +61,7 @@ export function Main() {
 
   useEffect(() => {
     async function carregarDados() {
-
+      
       // 1) Resumo (objeto único)
       const resumo = (await buscarHistoricoPrecos(undefined, undefined, true
         )) as ResumoLucro
