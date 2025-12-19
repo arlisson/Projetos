@@ -100,6 +100,7 @@ export function CadastrarCarta() {
       alert('Por favor, preencha todos os campos obrigatórios.')
       return
     }
+    const origemMapeada = origem === 'liga' ? 'Liga Yugioh' : origem === 'myp' ? 'MyPCards' : origem
     // Preparar dados para inserção
     const novaCarta: InserirCartaPayload = {
       link_site: linkCarta,
@@ -111,7 +112,7 @@ export function CadastrarCarta() {
       quantidade: parseInt(quantidade, 10),
       imagem: urlImagem,
       //local_imagem: localImagem,
-      origem: origem,
+      origem: origemMapeada,
       raridade: parseInt(raridade, 10),
       qualidade: qualidade ? parseInt(qualidade, 10) : null,
       colecao: String(parseInt(colecao, 10)),
@@ -136,8 +137,8 @@ export function CadastrarCarta() {
         setColecao('')
       })
       .catch((err) => {
-        console.error('Erro ao cadastrar carta:', err)
-        alert('Erro ao cadastrar carta. Verifique o console para mais detalhes.')
+        //console.error('Erro ao cadastrar carta:', err)
+        alert('Erro ao cadastrar carta. Verifique o console para mais detalhes.' + err)
       })
   }
 
@@ -147,40 +148,65 @@ export function CadastrarCarta() {
       return
     }
     try {
-      const raridadeNome = await buscarQualidadeRaridadeId(parseInt(raridade, 10), 'raridade')
+      const raridadeNome = await buscarQualidadeRaridadeId(
+        parseInt(raridade, 10),
+        'raridade',
+      )
+
       const cartas = await buscarCarta(linkCarta, raridadeNome || undefined)
+
       if (cartas.length > 0) {
         const carta = cartas[0]
+
         const colecaoEncontrada = await buscarColecao(carta.colecao)
 
-      if (colecaoEncontrada) {
-        // Já existe no banco: só seleciona
-        setColecao(String(colecaoEncontrada.id_colecao))
-      } else {
-        // Insere nova coleção
-        const novoId = await inserirColecao(carta.colecao, '')
+        if (colecaoEncontrada) {
+          // Já existe no banco: apenas seleciona
+          setColecao(String(colecaoEncontrada.id_colecao))
+        } else {
+          // Insere nova coleção
+          await inserirColecao(carta.colecao, '')
 
-        // Recarrega todas as coleções para atualizar as opções
-        const dados_colecao = (await listarColecoes()) as {
-          id_colecao: number
-          nome: string
-        }[]
+          // Recarrega todas as coleções
+          const dados_colecao = (await listarColecoes()) as {
+            id_colecao: number
+            nome: string
+          }[]
 
-        const opcoes_colecao: OpcaoSelect[] = dados_colecao.map((c) => ({
-          value: String(c.id_colecao),
-          label: c.nome,
-        }))
+          const opcoes_colecao: OpcaoSelect[] = dados_colecao.map((c) => ({
+            value: String(c.id_colecao),
+            label: c.nome,
+          }))
 
-        setOpcoesColecao(opcoes_colecao)
+          setOpcoesColecao(opcoes_colecao)
 
-        // Seleciona a nova coleção (id recém inserido)
-        setColecao(String(novoId))
-      }
+          // Descobre o ID da coleção recém inserida pelo nome
+          const novaColecao = dados_colecao.find(
+            (c) =>
+              c.nome.trim().toLowerCase() ===
+              carta.colecao.trim().toLowerCase(),
+          )
+
+          if (novaColecao) {
+            setColecao(String(novaColecao.id_colecao))
+          } else {
+            console.warn(
+              'Coleção inserida, mas não encontrada na listagem:',
+              carta.colecao,
+            )
+          }
+        }
+
+        if(carta.origem.toUpperCase()==='MYPCARDS'){
+          setOrigem('myp')
+        }else{
+          setOrigem(carta.origem || '')
+        }
+
         setNome(carta.nome || '')
         setCodigo(carta.codigo || '')
         setUrlImagem(carta.imagem || '')
         setPrecoAtual(carta.preco_atual ? String(carta.preco_atual) : '')
-
       } else {
         alert('Nenhuma carta encontrada no link fornecido.')
       }
@@ -188,6 +214,7 @@ export function CadastrarCarta() {
       console.error('Erro ao buscar carta:', error)
       alert('Erro ao buscar carta.')
     }
+
   }
 
   function handleCancelar() {

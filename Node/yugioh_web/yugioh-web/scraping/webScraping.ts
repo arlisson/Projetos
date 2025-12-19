@@ -127,14 +127,13 @@ export async function buscarCartaMyp(
         preco_atual: precoMinimo,
         codigo: codigoCarta,
         colecao: colecaoCarta,
-        origem: 'MYPCards',
+        origem: 'MyPCards',
         link_site: url,
       })
     }
 
     logInfo(
-      `DEBUG buscarCartaMyp – nome: ${nome}, registros: ${dados.length}, raridades: ${dados
-        .map((d) => d.raridade)
+      `DEBUG buscarCartaMyp – nome: ${nome}, registros: ${dados.length},coleção: ${colecaoCarta}
         .join(' | ')}`,
     )
 

@@ -12,10 +12,12 @@ import { listarRaridadeQualidade,
    buscarQualidadeRaridadeId,
    buscarColecao,
    inserirColecao,
-   buscarCartaId
+   buscarCartaId,
+   deletar
    } from '../../Database/db'
 import { buscarCartaMyp, type CartaMyP } from '../../../scraping/webScraping'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams,useNavigate } from 'react-router-dom'
+import { logError } from '../../services/logger'
 
 async function buscarCarta(url: string, chave?: string): Promise<CartaMyP[]> {
   const carta = await buscarCartaMyp(url, chave)
@@ -25,7 +27,7 @@ async function buscarCarta(url: string, chave?: string): Promise<CartaMyP[]> {
 
 
 export function EditarCarta() {
-
+    const navigate = useNavigate()
     const [searchParams] = useSearchParams()
     const idParam = searchParams.get('id')
     const idCarta = idParam ? Number(idParam) : null
@@ -178,6 +180,11 @@ export function EditarCarta() {
         setCodigo(carta.codigo || '')
         setUrlImagem(carta.imagem || '')
         setPrecoAtual(carta.preco_atual ? String(carta.preco_atual) : '')
+        if(carta.origem.toUpperCase()==='MYPCARDS'){
+          setOrigem('myp')
+        }else{
+          setOrigem(carta.origem || '')
+        }
 
       } else {
         alert('Nenhuma carta encontrada no link fornecido.')
@@ -192,9 +199,18 @@ export function EditarCarta() {
     alert('Ainda não implementado: voltar para a lista de cartas.')
   }
 
-    function handleExcluir(): void {
-        alert('Ainda não implementado: excluir carta do banco de dados.')
-    }
+  async function handleExcluir(): Promise<void> {
+      try{
+        if (confirm('Confirma a exclusão de "'+nome+'"? Esta ação não pode ser desfeita.')) {
+          await deletar('carta', idCarta!)
+          alert('Carta "'+nome+'" excluída com sucesso.')
+          navigate(-1)
+        }
+      } catch (error) {
+        alert('Erro ao excluir carta: ' + error)
+        logError('Erro ao excluir carta: ' + error)
+      }
+  }
 
   return (
     <div className="app-shell">

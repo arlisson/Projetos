@@ -1029,3 +1029,49 @@ export async function buscarProdutoId(id: number): Promise<ProdutoDetalhado | nu
     return null
   }
 }
+
+export async function inserirProduto(produto: InserirProdutoPayload): Promise<boolean> {
+  try {
+    const db = await getDb()
+    await db.execute(
+      `INSERT INTO produto (nome_produto, link, imagem, preco_compra, preco_atual, data_compra, quantidade, imagem_salva, origem, data_scraping) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        produto.nome_produto.toUpperCase(),
+        produto.link,
+        produto.imagem,
+        produto.preco_compra,
+        produto.preco_atual,
+        produto.data_compra,
+        produto.quantidade,
+        produto.imagem_salva,
+        produto.origem?.toUpperCase(),
+        todayStr()
+      ]
+    )
+    const last_id = await db.select<{ last_insert_rowid: number }[]>(
+      `SELECT last_insert_rowid() as last_insert_rowid`
+    )
+    registrarHistoricoLucro();
+    registrarHistoricoGenerico('produto', last_id[0].last_insert_rowid, produto.preco_atual ?? null, todayStr(), produto.origem ?? 'MYPCards');
+    return true;
+  }catch (err) {
+    //console.error('Erro ao inserir o produto:', err)
+    await logError('Erro ao inserir o produto: ' + String(err))
+    return false;
+  }
+}
+
+export async function deletar(tipo: 'carta' | 'produto', id: number): Promise<boolean> {
+  try {
+    const db = await getDb()
+    await db.execute(
+      `DELETE FROM ${tipo} WHERE id_${tipo} = ?`,
+      [id]
+    )
+    return true;
+  } catch (err) {
+    //console.error(`Erro ao deletar ${tipo}:`, err)
+    await logError(`Erro ao deletar ${tipo}: ` + String(err))
+    return false;
+  }
+}

@@ -4,7 +4,12 @@ import { Footer } from '../../components/footer'
 import { FormField } from '../../components/formField'
 import { FormSelect } from '../../components/formSelect'
 import { Button } from '../../components/botao'
-import { type ProdutoLiga, buscarProdutoLiga } from '../../../scraping/webScraping'
+import { type ProdutoLiga, 
+  buscarProdutoLiga, 
+  } from '../../../scraping/webScraping'
+
+import {inserirProduto,
+  type InserirProdutoPayload } from '../../Database/db'
 
 export function CadastrarProduto() {
   const [link, setLink] = useState('')
@@ -26,7 +31,37 @@ export function CadastrarProduto() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    alert('Ação de salvar produto ainda não implementada.')
+    const origemMapeada = origem === 'liga' ? 'Liga Yugioh' : origem === 'myp' ? 'MyPCards' : origem
+    const novoProduto: InserirProdutoPayload = {
+      link,
+      nome_produto: nome,
+      imagem: urlImagem,
+      //imagem_salva: '', // caminhoImagemLocal,
+      preco_compra: parseFloat(precoCompra),
+      preco_atual: parseFloat(precoAtual),
+      data_compra: dataCompra,
+      quantidade: parseInt(quantidade),
+      origem: origemMapeada,
+    }
+    try {
+      confirm('Deseja realmente cadastrar este produto?') &&
+      inserirProduto(novoProduto).then(() => {
+        alert('Produto cadastrado com sucesso!')
+        // Limpar o formulário após o cadastro
+        setLink('')
+        setNome('')
+        setUrlImagem('')
+        // setCaminhoImagemLocal('')
+        setPrecoCompra('')
+        setPrecoAtual('')
+        setDataCompra('')
+        setQuantidade('')
+        setOrigem('')
+      })
+     
+    } catch (error) {
+      alert('Erro ao cadastrar produto: ' + error)
+    }
   }
 
   function handleScraping() {
