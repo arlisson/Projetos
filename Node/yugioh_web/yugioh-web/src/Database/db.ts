@@ -1075,3 +1075,61 @@ export async function deletar(tipo: 'carta' | 'produto', id: number): Promise<bo
     return false;
   }
 }
+
+export async function atualizarCarta(id: number, carta: InserirCartaPayload): Promise<boolean> {
+  try {
+    const db = await getDb()  
+    await db.execute(
+      `UPDATE carta SET link_site = ?, nome = ?, codigo = ?, preco_da_compra = ?, preco_atual = ?, data_da_compra = ?, quantidade = ?, imagem = ?, imagem_salva = ?, origem = ?, raridade = ?, qualidade = ?, colecao = ? WHERE id_carta = ?`,
+      [
+        carta.link_site,
+        carta.nome.toUpperCase(),
+        carta.codigo?.toUpperCase(),
+        carta.preco_da_compra,
+        carta.preco_atual,
+        carta.data_da_compra,
+        carta.quantidade,
+        carta.imagem,
+        carta.imagem_salva,
+        carta.origem?.toUpperCase(),
+        carta.raridade,
+        carta.qualidade,
+        carta.colecao,
+        id
+      ]
+    )
+    registrarHistoricoGenerico('carta', id, carta.preco_atual ?? null, todayStr(), carta.origem ?? 'MYPCards');
+    return true;
+  } catch (err) {
+    //console.error('Erro ao atualizar a carta:', err)
+    await logError('Erro ao atualizar a carta: ' + String(err))
+    return false;
+  } 
+}
+
+export async function atualizarProduto(id: number, produto: InserirProdutoPayload): Promise<boolean> {
+  try {
+    const db = await getDb()  
+    await db.execute(
+      `UPDATE produto SET nome_produto = ?, link = ?, imagem = ?, preco_compra = ?, preco_atual = ?, data_compra = ?, quantidade = ?, imagem_salva = ?, origem = ? WHERE id_produto = ?`,
+      [
+        produto.nome_produto.toUpperCase(),
+        produto.link,
+        produto.imagem,
+        produto.preco_compra,
+        produto.preco_atual,
+        produto.data_compra,
+        produto.quantidade,
+        produto.imagem_salva,
+        produto.origem?.toUpperCase(),
+        id
+      ]
+    )
+    registrarHistoricoGenerico('produto', id, produto.preco_atual ?? null, todayStr(), produto.origem ?? 'MYPCards');
+    return true;
+  } catch (err) {
+    //console.error('Erro ao atualizar o produto:', err)
+    await logError('Erro ao atualizar o produto: ' + String(err))
+    return false;
+  } 
+}

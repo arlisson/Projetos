@@ -4,11 +4,18 @@ import { Footer } from '../../components/footer'
 import { FormField } from '../../components/formField'
 import { FormSelect } from '../../components/formSelect'
 import { Button } from '../../components/botao'
-import { useSearchParams } from 'react-router-dom'
-import { buscarProdutoId } from '../../Database/db'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { buscarProdutoId,
+  deletar,
+  type InserirProdutoPayload,
+  atualizarProduto
+ } from '../../Database/db'
 import { type ProdutoLiga, buscarProdutoLiga } from '../../../scraping/webScraping'
+import { logError } from '../../services/logger'
 
 export function EditarProduto() {
+  const navigate = useNavigate()
+
   const [link, setLink] = useState('')
   const [nome, setNome] = useState('')
   const [urlImagem, setUrlImagem] = useState('')
@@ -66,7 +73,31 @@ export function EditarProduto() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    alert('Ação de salvar produto ainda não implementada.')
+    if(!nome || !precoCompra || !precoAtual || !dataCompra || !quantidade){
+      alert('Por favor, preencha todos os campos obrigatórios.')
+      return
+    }
+    try {
+      const origemFormatada = origem === 'myp' ? 'MyPCards' : origem === 'liga' ? 'Liga Yugioh' : ''
+      const payload: InserirProdutoPayload = {
+        link,
+        nome_produto: nome,
+        imagem: urlImagem,
+        preco_compra: parseFloat(precoCompra),
+        preco_atual: parseFloat(precoAtual),
+        data_compra: dataCompra,
+        quantidade: parseInt(quantidade, 10),
+        origem: origemFormatada
+      }
+      confirm('Salvar alterações do produto "'+nome+'"?') && atualizarProduto(idProduto!, payload)
+      .then(() => {
+        alert('Produto "'+nome+'" atualizado com sucesso.')
+        
+      })
+    } catch (error) {
+      alert('Erro ao salvar produto: ' + error)
+      logError('Erro ao salvar produto: ' + error)
+    }
   }
 
   function handleScraping() {
@@ -91,8 +122,21 @@ export function EditarProduto() {
   }
 
   function handleCancelar() {
-    alert('Ação de cancelar ainda não implementada.')
+    navigate(-1)
   }
+
+  async function handleExcluir(): Promise<void> {
+        try{
+          if (confirm('Confirma a exclusão de "'+nome+'"? Esta ação não pode ser desfeita.')) {
+            await deletar('produto', idProduto!)
+            alert('Produto "'+nome+'" excluído com sucesso.')
+            navigate(-1)
+          }
+        } catch (error) {
+          alert('Erro ao excluir produto: ' + error)
+          logError('Erro ao excluir produto: ' + error)
+        }
+    }
 
   return (
     <div className="app-shell">
@@ -215,6 +259,9 @@ export function EditarProduto() {
               <Button type="submit">Salvar produto</Button>
               <Button type="button" variant="outline" onClick={handleCancelar}>
                 Cancelar
+              </Button>
+               <Button type="button" variant="danger" onClick={handleExcluir}>
+                Excluir Produto
               </Button>
             </div>
           </form>

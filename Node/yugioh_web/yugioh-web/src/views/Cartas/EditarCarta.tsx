@@ -13,7 +13,9 @@ import { listarRaridadeQualidade,
    buscarColecao,
    inserirColecao,
    buscarCartaId,
-   deletar
+   deletar,
+   atualizarCarta,
+   type InserirCartaPayload
    } from '../../Database/db'
 import { buscarCartaMyp, type CartaMyP } from '../../../scraping/webScraping'
 import { useSearchParams,useNavigate } from 'react-router-dom'
@@ -137,7 +139,33 @@ export function EditarCarta() {
       alert('Por favor, preencha todos os campos obrigatórios.')
       return
     }
-    alert('Ainda não implementado: salvar carta no banco de dados.')
+    try {
+      const origemFormatada = origem === 'myp' ? 'MyPCards' : origem === 'liga' ? 'Liga Yugioh' : ''
+      const payload: InserirCartaPayload = {
+        link_site: linkCarta,
+        imagem: urlImagem,
+        nome,
+        codigo,
+        preco_da_compra: precoPago ? parseFloat(precoPago) : null,
+        preco_atual: precoAtual ? parseFloat(precoAtual) : null,
+        data_da_compra: dataCompra,
+        quantidade: quantidade ? parseInt(quantidade, 10) : null,
+        origem: origemFormatada,
+        raridade: raridade ? parseInt(raridade, 10) : null,
+        qualidade: qualidade ? parseInt(qualidade, 10) : null,
+        colecao: colecao || null
+      }
+      confirm('Salvar alterações da carta "'+nome+'"?') && atualizarCarta(idCarta!, payload)
+      .then(() => {
+        alert('Carta "'+nome+'" atualizada com sucesso.')
+        
+      })       
+        
+     
+    } catch (error) {
+      alert('Erro ao salvar carta: ' + error)
+      logError('Erro ao salvar carta: ' + error)
+    }
     
   }
 
@@ -196,7 +224,7 @@ export function EditarCarta() {
   }
 
   function handleCancelar() {
-    alert('Ainda não implementado: voltar para a lista de cartas.')
+    navigate(-1)
   }
 
   async function handleExcluir(): Promise<void> {
