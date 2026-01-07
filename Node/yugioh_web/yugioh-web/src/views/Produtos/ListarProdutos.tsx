@@ -23,6 +23,7 @@ export function ListarProdutos() {
   const navigate = useNavigate()
 
   const [produtos, setProdutos] = useState<ProdutoDetalhado []>([])
+  const [totalProdutos, setTotalProdutos] = useState<ProdutoDetalhado[]>([])
   const [busca, setBusca] = useState('')
   const [totalGasto, setTotalGasto] = useState<number|TotalGastoResult>(0)
   const [resumoLucro, setResumoLucro] = useState<ResumoLucro | null>(null)
@@ -52,7 +53,7 @@ export function ListarProdutos() {
       if (!cancelado) {
         setProdutos(resultado)
       }
-    }, 300) // 300ms de debounce
+    }, 500) // 300ms de debounce
 
     return () => {
       cancelado = true
@@ -64,6 +65,8 @@ export function ListarProdutos() {
 
   useEffect(() => {
     async function carregarTotal() {
+      const totalProdutosSalvos = await buscarTodosProdutos()
+      setTotalProdutos(totalProdutosSalvos)
       const totalGasto = await calculaTotalGasto()
       setTotalGasto(totalGasto)      
 
@@ -193,7 +196,7 @@ export function ListarProdutos() {
                <div className="summary-grid">
               <Financeiro
                 label="Total Produtos Cadastrados"
-                value={produtos.length}
+                value={totalProdutos.length}
                 footer="Total de produtos cadastrados no sistema."
                 isCurrency={false}
               />

@@ -15,7 +15,10 @@ import { listarRaridadeQualidade,
    buscarCartaId,
    deletar,
    atualizarCarta,
-   type InserirCartaPayload
+   type InserirCartaPayload,
+   type InserirVendaCartaPayload,
+   venderCarta,
+   todayStr
    } from '../../Database/db'
 import { buscarCartaMyp, type CartaMyP } from '../../../scraping/webScraping'
 import { useSearchParams,useNavigate } from 'react-router-dom'
@@ -33,6 +36,9 @@ export function EditarCarta() {
     const [searchParams] = useSearchParams()
     const idParam = searchParams.get('id')
     const idCarta = idParam ? Number(idParam) : null
+    const [quantidadeVenda, setQuantidadeVenda] = useState('');
+    const [valorVenda, setValorVenda] = useState('');
+    const [modalVenderAberto, setModalVenderAberto] = useState(false)
 
   
     useEffect(() => {
@@ -240,6 +246,65 @@ export function EditarCarta() {
       }
   }
 
+   function handleVender(): void {
+    setQuantidadeVenda('')
+    setModalVenderAberto(true)
+  }
+
+  async function confirmarVenda(): Promise<void> {
+    const qtd = Number(quantidadeVenda)
+
+    if (!Number.isFinite(qtd) || qtd <= 0) {
+      alert('Informe uma quantidade válida.')
+      return
+    }else if (qtd > Number(quantidade)) {
+      alert('Quantidade a vender não pode ser maior que a quantidade em estoque.')
+      return
+    }
+
+    if (valorVenda){
+      const valor = Number(valorVenda)
+      if (!Number.isFinite(valor) || valor <= 0) {
+        alert('Informe um valor de venda válido.')
+        return
+      }
+    }
+
+    try {
+      const payload: InserirVendaCartaPayload = {
+        id_carta: idCarta!,
+        preco_da_venda: valorVenda ? parseFloat(valorVenda) : null,
+        data_da_venda: todayStr(),
+      }
+      const origemFormatada = origem === 'myp' ? 'MyPCards' : origem === 'liga' ? 'Liga Yugioh' : ''
+      const payloadCarta: InserirCartaPayload = {
+        link_site: linkCarta,
+        imagem: urlImagem,
+        nome,
+        codigo,
+        preco_da_compra: precoPago ? parseFloat(precoPago) : null,
+        preco_atual: precoAtual ? parseFloat(precoAtual) : null,
+        data_da_compra: dataCompra,
+        quantidade: quantidade ? parseInt(quantidade, 10) : null,
+        origem: origemFormatada,
+        raridade: raridade ? parseInt(raridade, 10) : null,
+        qualidade: qualidade ? parseInt(qualidade, 10) : null,
+        colecao: colecao || null
+      }
+
+      await venderCarta(payloadCarta, payload, qtd)
+      alert(`${qtd} unidade(s) de ${nome} vendida(s).`)
+      setModalVenderAberto(false)
+      setQuantidade(String(Number(quantidade) - qtd))
+    } catch (err) {
+      alert(`Erro ao registrar venda da carta:${nome}\n ${err}`)
+    }
+  }
+
+  function cancelarVenda(): void {
+    setModalVenderAberto(false)
+  }
+
   return (
     <div className="app-shell">
       <Topbar pageTitle="Editar carta" />
@@ -404,12 +469,55 @@ export function EditarCarta() {
               <Button type="button" variant="outline" onClick={handleCancelar}>
                 Cancelar
               </Button>
+              <Button type="button" variant="outline" onClick={handleVender}>
+                Vender Carta
+              </Button>
               <Button type="button" variant="danger" onClick={handleExcluir}>
                 Excluir carta
               </Button>
             </div>
           </form>
         </section>
+
+        {modalVenderAberto && (
+        <div className="modal-backdrop">
+          <div className="modal-card">
+            <div className="modal-title">Vender carta</div>
+            <div className="modal-body">
+              <label className="modal-label">
+                Quantidade a vender:
+                <input
+                  type="number"
+                  min={1}
+                  className="modal-input"
+                  value={quantidadeVenda}
+                  onChange={(e) => setQuantidadeVenda(e.target.value)}
+                  autoFocus
+                />
+              </label>
+              <label className="modal-label">
+                Valor da venda:
+                <input
+                  type="number"
+                  min={1}
+                  className="modal-input"
+                  value={valorVenda}
+                  onChange={(e) => setValorVenda(e.target.value)}
+                  
+                />
+              </label>
+            </div>
+            <div className="modal-actions">
+              <button type="button" onClick={confirmarVenda}>
+                Confirmar
+              </button>
+              <button type="button" onClick={cancelarVenda}>
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
         {/* Coluna direita – imagem da carta */}        
         <aside className="form-page-right">

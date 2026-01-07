@@ -1,5 +1,5 @@
 // src/views/Cartas/ListarCartas.tsx
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useDeferredValue } from 'react'
 import { Topbar } from '../../components/topBar'
 import { Footer } from '../../components/footer'
 import { DataTable, type Column } from '../../components/dataTable'
@@ -23,7 +23,9 @@ export function ListarCartas() {
   const navigate = useNavigate()
 
   const [cartas, setCartas] = useState<CartaDetalhada[]>([])
+  const [totalCartas, setTotalCartas] = useState<CartaDetalhada[]>([])
   const [busca, setBusca] = useState('')
+  const buscaDeferida = useDeferredValue(busca)
   const [totalGasto, setTotalGasto] = useState<number|TotalGastoResult>(0)
   const [resumoLucro, setResumoLucro] = useState<ResumoLucro | null>(null)
   
@@ -44,10 +46,10 @@ export function ListarCartas() {
     let cancelado = false
     const timeout = setTimeout(async () => {
       let resultado: CartaDetalhada[]
-      if (busca.trim() === '') {
+      if (buscaDeferida.trim() === '') {
         resultado = await buscarTodasCartas()
       } else {
-        resultado = await buscarCartasPorFiltro(busca)
+        resultado = await buscarCartasPorFiltro(buscaDeferida)
       }
       if (!cancelado) {
         setCartas(resultado)
@@ -60,10 +62,12 @@ export function ListarCartas() {
     }
 
 
-  }, [busca])
+  }, [buscaDeferida])
 
   useEffect(() => {
     async function carregarTotal() {
+      const totalCartasSalvas = await buscarTodasCartas()
+      setTotalCartas(totalCartasSalvas)
       const total_gasto = await calculaTotalGasto()
       setTotalGasto(total_gasto)
 
@@ -203,7 +207,7 @@ export function ListarCartas() {
                 />     
                 <Financeiro
                   label="Total Cartas"
-                  value={cartas.length}
+                  value={totalCartas.length}
                   footer="Quantidade unitária de cartas cadastradas no sistema."
                   isCurrency={false}
                 />                              

@@ -774,3 +774,66 @@ body {
   text-align: center;
 }
 
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.modal-card {
+  background: #020617;
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--color-border);
+  min-width: 280px;
+}
+
+.modal-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+}
+
+.modal-body {
+  margin-bottom: 0.8rem;
+}
+
+.modal-label {
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.modal-input {
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  background-color: #020617;
+  color: var(--color-text);
+  font-size: 0.85rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.modal-actions button {
+  padding: 0.35rem 0.7rem;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  background-color: #0f172a;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.modal-actions button:hover {
+  background-color: #1e293b;
+}

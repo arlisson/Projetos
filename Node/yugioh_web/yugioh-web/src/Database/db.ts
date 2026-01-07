@@ -8,7 +8,7 @@ const DB_URL = 'sqlite:yugioh.db'
 
 
 // Aqui deixo uma função auxiliar para gerar a data AAAA-MM-DD.
-function todayStr(): string {
+export function todayStr(): string {
   const now = new Date()
   const year = now.getFullYear()
   const month = String(now.getMonth() + 1).padStart(2, '0')
@@ -1132,4 +1132,32 @@ export async function atualizarProduto(id: number, produto: InserirProdutoPayloa
     await logError('Erro ao atualizar o produto: ' + String(err))
     return false;
   } 
+}
+
+export interface InserirVendaCartaPayload {
+  id_carta: number
+  preco_da_venda: number | null
+  data_da_venda: string | null // "YYYY-MM-DD"
+}
+
+export function venderCarta(inserirCarta: InserirCartaPayload, inserirVenda: InserirVendaCartaPayload, quantidade: number): Promise<boolean> {
+  return new Promise(async (resolve) => {
+    try {
+      const db = await getDb()
+      await db.execute(
+        `UPDATE carta SET quantidade = quantidade - ? WHERE id_carta = ?`,
+        [quantidade, inserirVenda.id_carta]
+      )
+      await db.execute(
+        `INSERT INTO venda ( link_site, nome, codigo, preco_da_compra, preco_atual, data_da_compra, quantidade, imagem, imagem_salva, origem, raridade, qualidade, colecao, data_scraping, preco_da_venda, data_da_venda) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [ inserirCarta.link_site, inserirCarta.nome, inserirCarta.codigo, inserirCarta.preco_da_compra, inserirCarta.preco_atual, inserirCarta.data_da_compra, quantidade, inserirCarta.imagem, inserirCarta.imagem_salva, inserirCarta.origem, inserirCarta.raridade, inserirCarta.qualidade, inserirCarta.colecao, todayStr(), inserirVenda.preco_da_venda, inserirVenda.data_da_venda]
+      )
+      registrarHistoricoLucro();
+      resolve(true);
+    } catch (err) {
+      //console.error('Erro ao registrar venda da carta:', err)
+      await logError('Erro ao registrar venda da carta: ' + String(err))
+      resolve(false);
+    } 
+  });
 }
