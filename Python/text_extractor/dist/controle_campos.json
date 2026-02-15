@@ -1,0 +1,36 @@
+{
+  "arquivo_padrao": "leads.xlsx",
+  "aba": "Leads",
+  "campos": [
+    {
+      "id": "nome",
+      "titulo": "Nome",
+      "tipo": "texto",
+      "fixo": true
+    },
+    {
+      "id": "telefone",
+      "titulo": "Telefone",
+      "tipo": "telefone",
+      "fixo": true
+    },
+    {
+      "id": "email",
+      "titulo": "Email",
+      "tipo": "email",
+      "fixo": true
+    },
+    {
+      "id": "cnpj",
+      "titulo": "CNPJ",
+      "tipo": "texto",
+      "fixo": false
+    },
+    {
+      "id": "nome_da_empresa",
+      "titulo": "Nome da empresa",
+      "tipo": "texto",
+      "fixo": false
+    }
+  ]
+}
