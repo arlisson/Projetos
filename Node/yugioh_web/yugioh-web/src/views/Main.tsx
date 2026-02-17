@@ -14,35 +14,56 @@ import { useEffect, useState } from 'react'
 
 
 // Dados estáticos de exemplo para o carrossel
-const destaqueItems = [
-  {
-    name: 'Nome da carta de exemplo',
-    kind: 'Carta' as const,
-    currentPrice: 'R$ 0,00',
-    maxPrice: 'R$ 0,00',
-    minPrice: 'R$ 0,00',
-  },
-  {
-    name: 'Nome do produto de exemplo',
-    kind: 'Produto' as const,
-    currentPrice: 'R$ 0,00',
-    maxPrice: 'R$ 0,00',
-    minPrice: 'R$ 0,00',
-  },
-  {
-    name: 'Outro item em destaque',
-    kind: 'Carta' as const,
-    currentPrice: 'R$ 0,00',
-    maxPrice: 'R$ 0,00',
-    minPrice: 'R$ 0,00',
-  },
-]
+// const destaqueItems = [
+//   {
+//     name: 'Nome da carta de exemplo',
+//     kind: 'Carta' as const,
+//     currentPrice: 'R$ 0,00',
+//     maxPrice: 'R$ 0,00',
+//     minPrice: 'R$ 0,00',
+//   },
+//   {
+//     name: 'Nome do produto de exemplo',
+//     kind: 'Produto' as const,
+//     currentPrice: 'R$ 0,00',
+//     maxPrice: 'R$ 0,00',
+//     minPrice: 'R$ 0,00',
+//   },
+//   {
+//     name: 'Outro item em destaque',
+//     kind: 'Carta' as const,
+//     currentPrice: 'R$ 0,00',
+//     maxPrice: 'R$ 0,00',
+//     minPrice: 'R$ 0,00',
+//   },
+// ]
+
+type ItemKind = 'Carta' | 'Produto'
+type DestaqueItem = {
+  id: string | number
+  name: string
+  kind: ItemKind
+  imageUrl?: string | null
+  currentPrice: string
+  maxPrice: string
+  minPrice: string
+}
+
+function formatBRL(value: number) {
+  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+}
+
 
 
 
 export function Main() {
 
-  
+  const ITEM_W = 260
+  const GAP_PX = 14 // ~0.9rem (se 1rem=16px). Ajuste se necessário.
+  const INTERVAL_MS = 2500
+  const [index, setIndex] = useState(0)
+  const [paused, setPaused] = useState(false)
+
   const [historicoLucro, setHistoricoLucro] = useState<HistoricoLucro[]>([])
   const [resumoLucro, setResumoLucro] = useState<ResumoLucro | null>(null)
   const [total_gasto, setTotalGasto] = useState<number>(0)
@@ -50,6 +71,7 @@ export function Main() {
   const [totalGastoProdutos, setTotalGastoProdutos] = useState<number>(0)
   const [quantidadeCartas, setQuantidadeCartas] = useState<number>(0)
   const [quantidadeProdutos, setQuantidadeProdutos] = useState<number>(0)
+  const [destaqueItems, setDestaqueItems] = useState<DestaqueItem[]>([])
 
   const {
   lucro_cartas = 0,
@@ -89,14 +111,53 @@ export function Main() {
 
       const quantidadeP = await buscarTodosProdutos()
       setQuantidadeProdutos(quantidadeP.length)
+
+      const cartasMap = quantidadeC.map((c: any) => ({
+      id: c.id_carta,
+      name: c.nome,
+      kind: 'Carta' as const,
+      imageUrl: c.imagem,
+      currentPrice: formatBRL(Number(c.preco_atual ?? 0)),
+      maxPrice: formatBRL(Number(c.precoMax ?? c.precoAtual ?? c.preco ?? 0)),
+      minPrice: formatBRL(Number(c.precoMin ?? c.precoAtual ?? c.preco ?? 0)),
+    }))
+
+    const produtosMap = quantidadeP.map((p: any) => ({
+      id: p.id_produto,
+      name: p.nome_produto,
+      kind: 'Produto' as const,
+      imageUrl: p.imagem,
+      currentPrice: formatBRL(Number(p.preco_atual ?? p.preco ?? 0)),
+      maxPrice: formatBRL(Number(p.precoMax ?? p.precoAtual ?? p.preco ?? 0)),
+      minPrice: formatBRL(Number(p.precoMin ?? p.precoAtual ?? p.preco ?? 0)),
+    }))
       
-    }
+    // Exemplo: pega os 10 “destaques” pelos mais caros (ajuste o critério)
+    const top = [...cartasMap, ...produtosMap]
+      .sort((a, b) => {
+        const pa = Number(String(a.currentPrice).replace(/[^\d,]/g, '').replace(',', '.')) || 0
+        const pb = Number(String(b.currentPrice).replace(/[^\d,]/g, '').replace(',', '.')) || 0
+        return pb - pa
+      })
+      
+    setDestaqueItems(top)
+  }
 
     carregarDados()
     
     
   }, [])
 
+  useEffect(() => {
+  if (destaqueItems.length <= 1) return
+
+  const t = window.setInterval(() => {
+    if (paused) return
+    setIndex((prev) => (prev + 1) % destaqueItems.length)
+  }, INTERVAL_MS)
+
+  return () => window.clearInterval(t)
+}, [paused, destaqueItems.length])
 
   return (
     <div className="app-shell">
@@ -114,18 +175,36 @@ export function Main() {
             </span>
           </div>
 
-          <div className="carousel-track">
-            {destaqueItems.map((item) => (
-              <CarrosselItem
-                key={item.name}
-                name={item.name}
-                kind={item.kind}
-                currentPrice={item.currentPrice}
-                maxPrice={item.maxPrice}
-                minPrice={item.minPrice}
-              />
-            ))}
+          <div
+            className="carousel-viewport"
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => setPaused(false)}
+          >
+            <div
+              className="carousel-track"
+              style={{
+                transform: `translateX(-${index * (ITEM_W + GAP_PX)}px)`,
+              }}
+            >
+              
+                <div className="carousel-track">
+                {destaqueItems.map((item) => (
+                  <CarrosselItem
+                    key={`${item.kind}-${item.id}`}
+                    name={item.name}
+                    kind={item.kind}
+                    imageUrl={item.imageUrl || null}
+                    currentPrice={item.currentPrice}
+                    maxPrice={item.maxPrice}
+                    minPrice={item.minPrice}
+                  />
+                ))}
+              </div>
+
+            
+            </div>
           </div>
+
         </section>
 
         {/* 2) DADOS FINANCEIROS (LUCROS NO TOPO) */}

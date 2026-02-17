@@ -6,6 +6,7 @@ interface CarrosselItemProps {
   currentPrice: string
   maxPrice: string
   minPrice: string
+  imageUrl: string | null
 }
 
 export function CarrosselItem({
@@ -14,6 +15,7 @@ export function CarrosselItem({
   currentPrice,
   maxPrice,
   minPrice,
+  imageUrl,
 }: CarrosselItemProps) {
   return (
     <div className="carousel-item">
@@ -21,6 +23,10 @@ export function CarrosselItem({
       <div className="badge-kind">{kind}</div>
 
       <div style={{ marginTop: 8 }}>
+        <div className="carousel-item-media">
+          <img className="carrousel-item-image" src={imageUrl || ''} alt={name} />
+        </div>
+              
         <div className="carousel-item-row">
           <span>Preço atual</span>
           <strong>{currentPrice}</strong>
