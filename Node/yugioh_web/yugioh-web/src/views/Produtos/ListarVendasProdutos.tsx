@@ -14,6 +14,7 @@ import {
   
 } from '../../Database/db'
 import { Financeiro } from '../../components/financeiro'
+import { useNavigate } from 'react-router-dom'
 
 
 
@@ -22,7 +23,7 @@ export function ListarVendasProdutos() {
   const [busca, setBusca] = useState('')
   const [totalGastoProdutos, setTotalGastoProdutos] = useState<number|TotalGastoResult>(0)  
   const [resumoLucro, setResumoLucro] = useState<ResumoLucro | null>(null)
-  
+  const navigate = useNavigate()
 
   const {
     lucro_produtos = 0,
@@ -233,6 +234,9 @@ export function ListarVendasProdutos() {
             columns={columns}
             data={produtos}
             rowKey="id_produto"
+            onRowClick={(row) => {
+              navigate(`/produtos/vendas/editar?id=${row.id_produto}`)
+            }}
           />
         </section>
       </main>

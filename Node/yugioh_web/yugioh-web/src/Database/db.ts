@@ -113,7 +113,21 @@ export interface InserirProdutoPayload {
   quantidade?: number | null
   imagem_salva?: string | null
 }
-
+export interface VendaProduto{
+  id_produto: number
+  nome_produto: string
+  link?: string | null
+  imagem?: string | null
+  preco_compra?: number | null
+  data_compra?: string | null     // YYYY-MM-DD
+  origem?: string | null
+  preco_atual?: number | null
+  quantidade?: number | null
+  imagem_salva?: string | null
+  data_scraping?: string | null
+  data_venda?: string | null
+  preco_venda?: number | null
+}
 export interface ProdutoDetalhado {
     id_produto: number
     nome_produto: string
@@ -1113,6 +1127,20 @@ export async function deletarVendaCarta(id: number): Promise<boolean> {
   }
 }
 
+export async function deletarVendaProduto(id: number): Promise<boolean> {
+  try {
+    const db = await getDb()  
+    await db.execute(
+      `DELETE FROM venda_produto WHERE id_produto = ?`,
+      [id]
+    )
+    return true;
+  } catch (err) {
+    //console.error(`Erro ao deletar venda:`, err)
+    await logError(`Erro ao deletar venda: ` + String(err))
+    return false;
+  }
+}
 
 export async function atualizarCarta(id: number, carta: InserirCartaPayload): Promise<boolean> {
   try {
@@ -1201,6 +1229,35 @@ export function venderCarta(inserirCarta: InserirCartaPayload, inserirVenda: Ins
   });
 }
 
+export interface InserirVendaProdutoPayload {
+  id_produto: number
+  preco_venda: number | null
+  data_venda: string | null // "YYYY-MM-DD"
+  quantidade: number | null
+}
+
+export async function venderProduto(inserirProduto: InserirProdutoPayload, inserirVenda: InserirVendaProdutoPayload, quantidade: number): Promise<boolean> {
+  return new Promise(async (resolve) => {
+    try {
+      const db = await getDb()
+      await db.execute(
+        `INSERT INTO venda_produto (nome_produto, link, imagem, preco_compra, preco_atual, data_compra, quantidade, imagem_salva, origem, data_scraping, preco_venda, data_venda) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [ inserirProduto.nome_produto, inserirProduto.link, inserirProduto.imagem, inserirProduto.preco_compra, inserirProduto.preco_atual, inserirProduto.data_compra, quantidade, inserirProduto.imagem_salva, inserirProduto.origem, todayStr(), inserirVenda.preco_venda, inserirVenda.data_venda]
+      )
+      await db.execute(
+        `UPDATE produto SET quantidade = quantidade - ? WHERE id_produto = ?`,
+        [quantidade, inserirVenda.id_produto]
+      )
+      registrarHistoricoLucro();
+      resolve(true);
+    } catch (err) {
+      console.error('Erro ao registrar venda do produto:', err)
+      await logError('Erro ao registrar venda do produto: ' + String(err))
+      resolve(false);
+    }
+  });
+}
+
 export function precoMaximoMinimo(tipo: 'carta' | 'produto', id: number): Promise<{ preco_maximo: number | null; preco_minimo: number | null }> {
   return new Promise(async (resolve) => {
     try {
@@ -1261,4 +1318,44 @@ export async function atualizarVendaCarta(id: number, venda: InserirVendaCartaPa
     await logError('Erro ao atualizar a venda da carta: ' + String(err))
     return false;
   } 
+}
+
+export function buscarVendaProdutoId(id: number): Promise<VendaProduto | null> {
+  return new Promise(async (resolve) => {
+    try { 
+      const db = await getDb()
+      const rows = await db.select<VendaProduto[]>(
+        `SELECT * FROM venda_produto WHERE id_produto = ?`,
+        [id]
+      )
+      resolve(rows.length > 0 ? rows[0] : null)
+    } catch (err) {
+      //console.error(`Erro ao buscar venda de produto:`, err)
+      await logError(`Erro ao buscar venda de produto: ` + String(err))
+      resolve(null)    
+    }
+  });
+}
+
+export interface AtualizarVendaProdutoPayload {
+  id_produto: number  
+  preco_venda: number | null
+  data_venda: string | null // "YYYY-MM-DD"
+  quantidade: number | null
+}
+
+export async function atualizarVendaProduto(id: number, venda: AtualizarVendaProdutoPayload): Promise<boolean> {
+  try {
+    const db = await getDb()
+    await db.execute(
+      `UPDATE venda_produto SET preco_venda = ?, data_venda = ?, quantidade = ? WHERE id_produto = ?`,
+      [venda.preco_venda, venda.data_venda, venda.quantidade, id]
+    )
+    registrarHistoricoLucro();
+    return true;
+  } catch (err) {
+    //console.error('Erro ao atualizar a venda do produto:', err)
+    await logError('Erro ao atualizar a venda do produto: ' + String(err))
+    return false;
+  }
 }

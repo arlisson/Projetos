@@ -275,6 +275,7 @@ export function EditarCarta() {
         id_carta: idCarta!,
         preco_da_venda: valorVenda ? parseFloat(valorVenda) : null,
         data_da_venda: todayStr(),
+        quantidade: null
       }
       const origemFormatada = origem === 'myp' ? 'MyPCards' : origem === 'liga' ? 'Liga Yugioh' : ''
       const payloadCarta: InserirCartaPayload = {

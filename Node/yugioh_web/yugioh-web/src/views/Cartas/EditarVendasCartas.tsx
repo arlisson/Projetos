@@ -13,8 +13,7 @@ import { listarRaridadeQualidade,
    buscarColecao,
    inserirColecao,
    buscarVendaCartaId,  
-   atualizarVendaCarta,
-   type InserirCartaPayload,   
+   atualizarVendaCarta,   
    deletarVendaCarta,
    type InserirVendaCartaPayload
    } from '../../Database/db'

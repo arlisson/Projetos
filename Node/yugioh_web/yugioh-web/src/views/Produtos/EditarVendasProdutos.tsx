@@ -5,18 +5,16 @@ import { FormField } from '../../components/formField'
 import { FormSelect } from '../../components/formSelect'
 import { Button } from '../../components/botao'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { buscarProdutoId,
-  deletar,
-  type InserirProdutoPayload,
-  atualizarProduto,
-  todayStr,
-  type InserirVendaProdutoPayload,
-  venderProduto
+import { 
+  deletarVendaProduto,  
+  buscarVendaProdutoId, 
+  atualizarVendaProduto,
+  type AtualizarVendaProdutoPayload
  } from '../../Database/db'
 import { type ProdutoLiga, buscarProdutoLiga } from '../../../scraping/webScraping'
 import { logError } from '../../services/logger'
 
-export function EditarProduto() {
+export function EditarVendasProdutos() {
   const navigate = useNavigate()
 
   const [link, setLink] = useState('')
@@ -28,10 +26,8 @@ export function EditarProduto() {
   const [dataCompra, setDataCompra] = useState('')
   const [quantidade, setQuantidade] = useState('')
   const [origem, setOrigem] = useState('')
-
-  const [modalVenderAberto, setModalVenderAberto] = useState(false)
-  const [quantidadeVenda, setQuantidadeVenda] = useState('')
-  const [valorVenda, setValorVenda] = useState('');
+  const [dataVenda, setDataVenda] = useState('')
+  const [precoVenda, setPrecoVenda] = useState('')
 
   // Futuramente estes valores virão do banco
   const opcoesOrigem = [
@@ -49,7 +45,7 @@ export function EditarProduto() {
     if (!idProduto) return
     async function carregarProduto() {
       try {
-        const produtoDetalhado = await buscarProdutoId(idProduto!)
+        const produtoDetalhado = await buscarVendaProdutoId(idProduto!)
         if (produtoDetalhado) {
           setLink(produtoDetalhado.link || '')
           setNome(produtoDetalhado.nome_produto || '')
@@ -59,6 +55,11 @@ export function EditarProduto() {
           setPrecoAtual(produtoDetalhado.preco_atual?.toString() || '')
           setDataCompra(produtoDetalhado.data_compra || '')
           setQuantidade(produtoDetalhado.quantidade?.toString() || '')
+          setDataVenda(produtoDetalhado.data_venda || '')
+          setPrecoVenda(produtoDetalhado.preco_venda?.toString() || '')
+          setDataVenda(produtoDetalhado.data_venda || '')
+          setPrecoVenda(produtoDetalhado.preco_venda?.toString() || '')
+
           if(produtoDetalhado.origem?.toUpperCase() === 'MYPCARDS') {
               setOrigem('myp')
           }else if(produtoDetalhado.origem?.toUpperCase() === 'LIGA YUGIOH') {
@@ -85,18 +86,14 @@ export function EditarProduto() {
       return
     }
     try {
-      const origemFormatada = origem === 'myp' ? 'MyPCards' : origem === 'liga' ? 'Liga Yugioh' : ''
-      const payload: InserirProdutoPayload = {
-        link,
-        nome_produto: nome,
-        imagem: urlImagem,
-        preco_compra: parseFloat(precoCompra),
-        preco_atual: parseFloat(precoAtual),
-        data_compra: dataCompra,
-        quantidade: parseInt(quantidade, 10),
-        origem: origemFormatada
+      
+      const payload: AtualizarVendaProdutoPayload = {
+        id_produto: idProduto!,
+        preco_venda: precoVenda ? parseFloat(precoVenda) : null,
+        data_venda: dataVenda || null,
+        quantidade: quantidade ? parseInt(quantidade, 10) : null
       }
-      confirm('Salvar alterações do produto "'+nome+'"?') && atualizarProduto(idProduto!, payload)
+      confirm('Salvar alterações do produto "'+nome+'"?') && atualizarVendaProduto(idProduto!, payload)
       .then(() => {
         alert('Produto "'+nome+'" atualizado com sucesso.')
         
@@ -135,71 +132,14 @@ export function EditarProduto() {
   async function handleExcluir(): Promise<void> {
         try{
           if (confirm('Confirma a exclusão de "'+nome+'"? Esta ação não pode ser desfeita.')) {
-            await deletar('produto', idProduto!)
-            alert('Produto "'+nome+'" excluído com sucesso.')
+            await deletarVendaProduto(idProduto!)
+            alert('Venda "'+nome+'" excluído com sucesso.')
             navigate(-1)
           }
         } catch (error) {
-          alert('Erro ao excluir produto: ' + error)
-          logError('Erro ao excluir produto: ' + error)
+          alert('Erro ao excluir venda: ' + error)
+          logError('Erro ao excluir venda: ' + error)
         }
-    }
-
-   function handleVender(): void {
-    setQuantidadeVenda('')
-    setModalVenderAberto(true)
-  }
-
-  async function confirmarVenda(): Promise<void> {
-      const qtd = Number(quantidadeVenda)
-  
-      if (!Number.isFinite(qtd) || qtd <= 0) {
-        alert('Informe uma quantidade válida.')
-        return
-      }else if (qtd > Number(quantidade)) {
-        alert('Quantidade a vender não pode ser maior que a quantidade em estoque.')
-        return
-      }
-  
-      if (valorVenda){
-        const valor = Number(valorVenda)
-        if (!Number.isFinite(valor) || valor <= 0) {
-          alert('Informe um valor de venda válido.')
-          return
-        }
-      }
-  
-      try {
-        const payloadVenda: InserirVendaProdutoPayload = {
-          id_produto: idProduto!,
-          preco_venda: valorVenda ? parseFloat(valorVenda) : null,
-          data_venda: todayStr(),
-          quantidade: qtd
-        }
-        const origemFormatada = origem === 'myp' ? 'MyPCards' : origem === 'liga' ? 'Liga Yugioh' : ''
-        const payloadProduto: InserirProdutoPayload = {
-          link,
-          nome_produto: nome,
-          imagem: urlImagem,
-          preco_compra: parseFloat(precoCompra),
-          preco_atual: parseFloat(precoAtual),
-          data_compra: dataCompra,
-          quantidade: parseInt(quantidade, 10) - qtd,
-          origem: origemFormatada
-
-        }
-  
-        await venderProduto(payloadProduto, payloadVenda, qtd)
-        alert(`${qtd} unidade(s) de ${nome} vendida(s).`)
-        setModalVenderAberto(false)
-        setQuantidade(String(Number(quantidade) - qtd))
-      } catch (err) {
-        alert(`Erro ao registrar venda do produto:${nome}\n ${err}`)
-      }
-    }
-  
-    function cancelarVenda(): void {
-      setModalVenderAberto(false)
     }
 
   return (
@@ -243,7 +183,7 @@ export function EditarProduto() {
               kind="texto"
               value={nome}
               onChange={setNome}
-              required
+              readOnly
             />
 
             {/* URL da imagem */}
@@ -275,7 +215,7 @@ export function EditarProduto() {
                 value={precoCompra}
                 onChange={setPrecoCompra}
                 placeholder="Somente números"
-                required
+                readOnly
               />
               <FormField
                 label="Preço atual"
@@ -284,7 +224,7 @@ export function EditarProduto() {
                 value={precoAtual}
                 onChange={setPrecoAtual}
                 placeholder="Somente números"
-                required
+                readOnly
               />
             </div>
 
@@ -296,7 +236,7 @@ export function EditarProduto() {
                 kind="data"
                 value={dataCompra}
                 onChange={setDataCompra}
-                required
+                readOnly
               />
               <FormField
                 label="Quantidade"
@@ -304,6 +244,25 @@ export function EditarProduto() {
                 kind="numero"
                 value={quantidade}
                 onChange={setQuantidade}
+                required
+              />
+            </div>
+
+            <div className="form-row-inline">
+              <FormField
+                label="Data da Venda"
+                name="dataVenda"
+                kind="data"
+                value={dataVenda}
+                onChange={setDataVenda}
+                required
+              />
+              <FormField
+                label="Preço da Venda"
+                name="precoVenda"
+                kind="numero"
+                value={precoVenda}
+                onChange={setPrecoVenda}
                 required
               />
             </div>
@@ -316,6 +275,7 @@ export function EditarProduto() {
               onChange={setOrigem}
               options={opcoesOrigem}
               placeholder="Selecione a origem"
+              readonly
             />
 
             {/* Ações */}
@@ -324,54 +284,12 @@ export function EditarProduto() {
               <Button type="button" variant="outline" onClick={handleCancelar}>
                 Cancelar
               </Button>
-              <Button type="button" variant="outline" onClick={handleVender}>
-                Vender Produto
-              </Button>
                <Button type="button" variant="danger" onClick={handleExcluir}>
-                Excluir Produto
+                Excluir Venda
               </Button>
             </div>
           </form>
         </section>
-        {modalVenderAberto && (
-        <div className="modal-backdrop">
-          <div className="modal-card">
-            <div className="modal-title">Vender Produto</div>
-            <div className="modal-body">
-              <label className="modal-label">
-                Quantidade a vender:
-                <input
-                  type="number"
-                  min={1}
-                  className="modal-input"
-                  value={quantidadeVenda}
-                  onChange={(e) => setQuantidadeVenda(e.target.value)}
-                  autoFocus
-                />
-              </label>
-              <label className="modal-label">
-                Valor da venda:
-                <input
-                  type="number"
-                  min={1}
-                  className="modal-input"
-                  value={valorVenda}
-                  onChange={(e) => setValorVenda(e.target.value)}
-                  
-                />
-              </label>
-            </div>
-            <div className="modal-actions">
-              <button type="button" onClick={confirmarVenda}>
-                Confirmar
-              </button>
-              <button type="button" onClick={cancelarVenda}>
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
         {/* Coluna direita – imagem do produto */}
         <aside className="form-page-right">
