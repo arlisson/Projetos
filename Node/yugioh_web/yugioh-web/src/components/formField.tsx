@@ -10,6 +10,7 @@ interface FormFieldProps {
   onChange: (value: string) => void
   placeholder?: string
   required?: boolean
+  readOnly?: boolean
 }
 
 export function FormField({
@@ -20,10 +21,12 @@ export function FormField({
   onChange,
   placeholder,
   required = false,
+  readOnly = false,
 }: FormFieldProps) {
   const inputRef = useRef<HTMLInputElement | null>(null)
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (readOnly) return
     let val = e.target.value
 
     if (kind === 'numero') {
@@ -48,6 +51,7 @@ export function FormField({
     if (kind !== 'data') return
     const input = inputRef.current
     if (!input) return
+    if (readOnly) return
 
     // Em navegadores modernos, tenta abrir o date picker nativo
     // fallback: apenas foca o input
@@ -79,11 +83,12 @@ export function FormField({
           onChange={handleChange}
           placeholder={placeholder}
           required={required}
+          readOnly={readOnly}
           className="form-field-input"
           inputMode={kind === 'numero' ? 'numeric' : 'text'}
         />
 
-        {kind === 'data' && (
+        {kind === 'data' && !readOnly && (
           <button
             type="button"
             className="form-field-date-button"

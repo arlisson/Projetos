@@ -15,6 +15,7 @@ interface FormSelectProps {
   required?: boolean
   /** Se false, desativa o botão "Limpar seleção" */
   clearable?: boolean
+  readonly?: boolean
 }
 
 export function FormSelect({
@@ -26,6 +27,7 @@ export function FormSelect({
   placeholder,
   required = false,
   clearable = true,
+  readonly = false,
 }: FormSelectProps) {
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
@@ -57,13 +59,20 @@ export function FormSelect({
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
+  // Se virar readonly enquanto estiver aberto, fecha
+  useEffect(() => {
+    if (readonly && open) setOpen(false)
+  }, [readonly, open])
+
   function handleSelect(opt: Option) {
+    if (readonly) return
     onChange(opt.value)
     setQuery('')
     setOpen(false)
   }
 
   function handleClear() {
+    if (readonly) return
     onChange('')
     setQuery('')
     setOpen(false)
@@ -86,10 +95,18 @@ export function FormSelect({
           value={open ? query : selected?.label ?? ''}
           placeholder={placeholder}
           onChange={(e) => {
+            if (readonly) return
             setQuery(e.target.value)
             if (!open) setOpen(true)
           }}
-          onFocus={() => setOpen(true)}
+          onFocus={() => {
+            if (readonly) return
+            setOpen(true)
+          }}
+          onClick={() => {
+            if (readonly) return
+            setOpen(true)
+          }}
         />
 
         {/* Botão "Limpar seleção" */}

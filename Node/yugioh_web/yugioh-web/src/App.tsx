@@ -9,6 +9,7 @@ import { ListarVendasCartas } from './views/Cartas/ListarVendasCartas'
 import { ListarVendasProdutos } from './views/Produtos/ListarVendasProdutos'
 import { EditarCarta } from './views/Cartas/EditarCarta'
 import { EditarProduto } from './views/Produtos/EditarProduto'
+import { EditarVendasCartas } from './views/Cartas/EditarVendasCartas'
 
 export default function App() {
 
@@ -23,6 +24,7 @@ export default function App() {
       <Route path="/cartas/cadastrar" element={<CadastrarCarta />} />
       <Route path="/cartas/listar" element={<ListarCartas />} />
       <Route path="/cartas/vendas/listar" element={<ListarVendasCartas />} />
+      <Route path="/cartas/vendas/editar" element={<EditarVendasCartas />} />
       <Route path="/cartas/editar" element={<EditarCarta />} />
 
       {/* Produtos */}

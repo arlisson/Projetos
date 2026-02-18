@@ -14,6 +14,7 @@ import {
   calcularLucroTotalCartasVendidas
 } from '../../Database/db'
 import { Financeiro } from '../../components/financeiro'
+import { useNavigate } from 'react-router-dom'
 
 
 
@@ -23,7 +24,7 @@ export function ListarVendasCartas() {
   const [totalGastoCartas, setTotalGastoCartas] = useState<number>(0)  
   const [resumoLucro, setResumoLucro] = useState<ResumoLucro | null>(null)
   const [lucroTotalCartasVendidas, setLucroTotalCartasVendidas] = useState<number>(0)
-
+  const navigate = useNavigate()
   
   
 
@@ -236,6 +237,9 @@ export function ListarVendasCartas() {
             columns={columns}
             data={cartas}
             rowKey="id_carta"
+            onRowClick={(row) => {
+              navigate(`/cartas/vendas/editar?id=${row.id_carta}`)
+            }}
           />
         </section>
       </main>

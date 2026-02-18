@@ -128,6 +128,28 @@ export interface ProdutoDetalhado {
     data_scraping?: string | null
 }
 
+  //Com os IDs de coleção e raridade, para facilitar edição
+  export interface VendaCarta{
+     id_carta: number
+    link_site?: string | null
+    nome: string
+    codigo?: string | null
+    preco_da_compra?: number | null
+    data_da_compra?: string | null
+    preco_da_venda?: number | null
+    data_da_venda?: string | null
+    preco_atual?: number | null
+    quantidade?: number | null
+    imagem?: string | null
+    imagem_salva?: string | null
+    origem?: string | null
+    data_scraping?: string | null
+    colecao?: string | null    
+    raridade?: string | null
+    qualidade?: string | null
+
+  }
+  
   export interface VendaCartaDetalhada {
     id_carta: number
     link_site?: string | null
@@ -1076,6 +1098,22 @@ export async function deletar(tipo: 'carta' | 'produto', id: number): Promise<bo
   }
 }
 
+export async function deletarVendaCarta(id: number): Promise<boolean> {
+  try {
+    const db = await getDb()
+    await db.execute(
+      `DELETE FROM venda WHERE id_carta = ?`,
+      [id]
+    )
+    return true;
+  } catch (err) {
+    //console.error(`Erro ao deletar ${tipo}:`, err)
+    await logError(`Erro ao deletar venda: ` + String(err))
+    return false;
+  }
+}
+
+
 export async function atualizarCarta(id: number, carta: InserirCartaPayload): Promise<boolean> {
   try {
     const db = await getDb()  
@@ -1138,6 +1176,7 @@ export interface InserirVendaCartaPayload {
   id_carta: number
   preco_da_venda: number | null
   data_da_venda: string | null // "YYYY-MM-DD"
+  quantidade: number | null
 }
 
 export function venderCarta(inserirCarta: InserirCartaPayload, inserirVenda: InserirVendaCartaPayload, quantidade: number): Promise<boolean> {
@@ -1160,4 +1199,66 @@ export function venderCarta(inserirCarta: InserirCartaPayload, inserirVenda: Ins
       resolve(false);
     } 
   });
+}
+
+export function precoMaximoMinimo(tipo: 'carta' | 'produto', id: number): Promise<{ preco_maximo: number | null; preco_minimo: number | null }> {
+  return new Promise(async (resolve) => {
+    try {
+      const db = await getDb()
+      const colunaId = tipo === 'carta' ? 'id_carta' : 'id_produto'
+      const rows = await db.select<{ preco_maximo: number | null; preco_minimo: number | null }[]>(
+        `
+        SELECT
+          MAX(preco) AS preco_maximo,
+          MIN(preco) AS preco_minimo
+        FROM historico_precos
+        WHERE ${colunaId} = ?
+      `,
+        [id],
+      )
+      if (rows.length > 0) {
+        resolve({ preco_maximo: rows[0].preco_maximo, preco_minimo: rows[0].preco_minimo })
+      } else {
+        resolve({ preco_maximo: null, preco_minimo: null })
+      }
+
+    } catch (err) {
+      //console.error('Erro ao calcular preço máximo e mínimo:', err)
+      await logError('Erro ao calcular preço máximo e mínimo: ' + String(err))
+      resolve({ preco_maximo: null, preco_minimo: null })
+    } 
+  });
+} 
+
+export function buscarVendaCartaId(id: number): Promise<VendaCarta | null> {
+  return new Promise(async (resolve) => {
+    try {
+      const db = await getDb()
+      const rows = await db.select<VendaCarta[]>(
+        `SELECT * FROM venda WHERE id_carta = ?`,
+        [id]
+      )
+      resolve(rows.length > 0 ? rows[0] : null)
+    } catch (err) {
+      //console.error(`Erro ao buscar venda de carta:`, err)
+      await logError(`Erro ao buscar venda de carta: ` + String(err))
+      resolve(null)
+    }
+  });
+}
+
+export async function atualizarVendaCarta(id: number, venda: InserirVendaCartaPayload): Promise<boolean> {
+  try {
+    const db = await getDb()
+    await db.execute(
+      `UPDATE venda SET preco_da_venda = ?, data_da_venda = ?, quantidade = ? WHERE id_carta = ?`,
+      [venda.preco_da_venda, venda.data_da_venda, venda.quantidade, id]
+    )
+    registrarHistoricoLucro();
+    return true;
+  } catch (err) {
+    //console.error('Erro ao atualizar a venda da carta:', err)
+    await logError('Erro ao atualizar a venda da carta: ' + String(err))
+    return false;
+  } 
 }

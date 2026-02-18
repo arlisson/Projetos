@@ -8,7 +8,8 @@ import { buscarHistoricoPrecos,
   type HistoricoLucro,
   type ResumoLucro,
   buscarTodasCartas,
-  buscarTodosProdutos } from '../Database/db'
+  buscarTodosProdutos,
+  precoMaximoMinimo } from '../Database/db'
 import { useEffect, useState } from 'react'
 
 
@@ -47,6 +48,7 @@ type DestaqueItem = {
   currentPrice: string
   maxPrice: string
   minPrice: string
+  rarity?: string // Apenas para cartas
 }
 
 function formatBRL(value: number) {
@@ -112,25 +114,47 @@ export function Main() {
       const quantidadeP = await buscarTodosProdutos()
       setQuantidadeProdutos(quantidadeP.length)
 
-      const cartasMap = quantidadeC.map((c: any) => ({
-      id: c.id_carta,
-      name: c.nome,
-      kind: 'Carta' as const,
-      imageUrl: c.imagem,
-      currentPrice: formatBRL(Number(c.preco_atual ?? 0)),
-      maxPrice: formatBRL(Number(c.precoMax ?? c.precoAtual ?? c.preco ?? 0)),
-      minPrice: formatBRL(Number(c.precoMin ?? c.precoAtual ?? c.preco ?? 0)),
-    }))
+     const cartasMap = await Promise.all(
+        quantidadeC.map(async (c: any) => {
+          const { preco_maximo, preco_minimo } = await precoMaximoMinimo('carta', c.id_carta)
 
-    const produtosMap = quantidadeP.map((p: any) => ({
-      id: p.id_produto,
-      name: p.nome_produto,
-      kind: 'Produto' as const,
-      imageUrl: p.imagem,
-      currentPrice: formatBRL(Number(p.preco_atual ?? p.preco ?? 0)),
-      maxPrice: formatBRL(Number(p.precoMax ?? p.precoAtual ?? p.preco ?? 0)),
-      minPrice: formatBRL(Number(p.precoMin ?? p.precoAtual ?? p.preco ?? 0)),
-    }))
+          const atual = Number(c.preco_atual ?? 0)
+          const max = preco_maximo ?? atual
+          const min = preco_minimo ?? atual
+
+          return {
+            id: c.id_carta,
+            name: c.nome,
+            kind: 'Carta' as const,
+            imageUrl: c.imagem,
+            currentPrice: formatBRL(atual),
+            maxPrice: formatBRL(max),
+            minPrice: formatBRL(min),
+            rarity: c.raridade_nome
+          }
+        })
+      )
+
+      const produtosMap = await Promise.all(
+        quantidadeP.map(async (p: any) => {
+          const { preco_maximo, preco_minimo } = await precoMaximoMinimo('produto', p.id_produto)
+
+          const atual = Number(p.preco_atual ?? p.preco ?? 0)
+          const max = preco_maximo ?? atual
+          const min = preco_minimo ?? atual
+
+          return {
+            id: p.id_produto,
+            name: p.nome_produto,
+            kind: 'Produto' as const,
+            imageUrl: p.imagem,
+            currentPrice: formatBRL(atual),
+            maxPrice: formatBRL(max),
+            minPrice: formatBRL(min),
+          }
+        })
+      )
+
       
     // Exemplo: pega os 10 “destaques” pelos mais caros (ajuste o critério)
     const top = [...cartasMap, ...produtosMap]
@@ -197,6 +221,7 @@ export function Main() {
                     currentPrice={item.currentPrice}
                     maxPrice={item.maxPrice}
                     minPrice={item.minPrice}
+                    rarity={item.kind === 'Carta' ? item.rarity : undefined}
                   />
                 ))}
               </div>
