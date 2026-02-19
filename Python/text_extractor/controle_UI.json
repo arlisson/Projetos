@@ -1,0 +1,12 @@
+{
+  "window_icon": "assets/A.ico",
+  "background_image": "assets/backgrounds/sea.jpg",
+  "button_icons": {
+    "choose_file": "assets/icons/pasta.png",
+    "add_field": "assets/icons/adicionar.png",
+    "save_lead": "assets/icons/salvar.png",
+    "clear": "assets/icons/limpar.png",
+    "edit_title": "assets/icons/editar.png",
+    "delete_field": "assets/icons/lixeira.png"
+  }
+}
