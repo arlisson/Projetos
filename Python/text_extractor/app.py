@@ -19,6 +19,7 @@ Arquivos de controle:
 Dependências:
 pip install PySide6 openpyxl
 """
+from simple_lock import ensure_or_mark
 
 import json
 import sys
@@ -951,6 +952,19 @@ class App(QWidget):
 
 
 def main() -> None:
+    ok, reason = ensure_or_mark()
+    if not ok:
+        app = QApplication([])
+        QMessageBox.critical(
+            None,
+            "Acesso negado",
+            "Aplicativo bloqueado.\n\n"
+            f"Motivo: {reason}\n\n"
+            "Este aplicativo está vinculado a outra máquina.\n"
+            "Apague a pasta do programa e baixe diretamente do site."
+        )
+        return  
+
     app = QApplication([])
     w = App()
     w.show()
