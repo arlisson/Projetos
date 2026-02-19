@@ -1,14 +1,14 @@
 {
   "window_icon": "assets/A.ico",
   "theme": {
-    "background": "#0A111E",
-    "surface": "#191F2C",
-    "surface_alt": "#222934",
+    "background": "#161B32",
+    "surface": "#24293E",
+    "surface_alt": "#2D3246",
     "text": "#E6EDF7",
-    "muted_text": "#828993",
+    "muted_text": "#888D9D",
     "primary": "#3B82F6",
     "danger": "#EF4444",
-    "border": "#313742"
+    "border": "#3B3F53"
   },
   "button_icons": {
     "choose_file": "assets/icons/pasta.png",
@@ -20,8 +20,8 @@
     "settings": "assets/icons/engrenagem.png"
   },
   "background_hsl": {
-    "h": 219,
-    "s": 49,
-    "l": 8
+    "h": 228,
+    "s": 39,
+    "l": 14
   }
 }

@@ -21,6 +21,7 @@ pip install PySide6 openpyxl
 """
 
 import json
+import sys
 import os
 import colorsys
 from dataclasses import dataclass
@@ -62,7 +63,8 @@ def abs_path(p: str) -> str:
         return ""
     if os.path.isabs(p):
         return p
-    base = os.path.dirname(os.path.abspath(__file__))
+
+    base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
     return os.path.join(base, p)
 
 
@@ -237,7 +239,7 @@ def default_ui_config() -> dict:
     r, g, b = hex_to_rgb(bg)
     h, s, l = rgb_to_hsl(r, g, b)
     return {
-        "window_icon": "assets/app.ico",
+        "window_icon": "assets/A.ico",
         "button_icons": {
             "choose_file": "assets/icons/pasta.png",
             "add_field": "assets/icons/adicionar.png",
@@ -408,9 +410,9 @@ class ThemeDialog(QDialog):
         self.lbl_preview.setMinimumHeight(60)
 
         form = QFormLayout()
-        form.addRow("Hue", self.slider_h)
-        form.addRow("Saturation", self.slider_s)
-        form.addRow("Lightness", self.slider_l)
+        form.addRow("Tom da cor", self.slider_h)
+        form.addRow("Saturação", self.slider_s)
+        form.addRow("Brilho", self.slider_l)
 
         btns = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
 
