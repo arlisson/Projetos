@@ -1,12 +1,27 @@
 {
   "window_icon": "assets/A.ico",
-  "background_image": "assets/backgrounds/sea.jpg",
+  "theme": {
+    "background": "#0A111E",
+    "surface": "#191F2C",
+    "surface_alt": "#222934",
+    "text": "#E6EDF7",
+    "muted_text": "#828993",
+    "primary": "#3B82F6",
+    "danger": "#EF4444",
+    "border": "#313742"
+  },
   "button_icons": {
     "choose_file": "assets/icons/pasta.png",
     "add_field": "assets/icons/adicionar.png",
     "save_lead": "assets/icons/salvar.png",
     "clear": "assets/icons/limpar.png",
     "edit_title": "assets/icons/editar.png",
-    "delete_field": "assets/icons/lixeira.png"
+    "delete_field": "assets/icons/lixeira.png",
+    "settings": "assets/icons/engrenagem.png"
+  },
+  "background_hsl": {
+    "h": 219,
+    "s": 49,
+    "l": 8
   }
 }
