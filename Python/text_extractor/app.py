@@ -47,6 +47,7 @@ from PySide6.QtWidgets import (
     QSlider,
     QFormLayout,
     QDialogButtonBox,
+    QMessageBox
 )
 
 CONFIG_FIELDS_PATH = "controle_campos.json"
@@ -889,10 +890,12 @@ class App(QWidget):
             append_row(self.file_path, self.sheet_name, headers, row)
         except Exception as e:
             self.lbl_status.setText(f"Erro ao salvar: {e}")
+            QMessageBox.critical(None, "Erro", f"Erro ao salvar: {e}")
             return
 
         self.clear_fields()
         self.lbl_status.setText("Lead salvo (nova linha adicionada). Campos limpos automaticamente.")
+        QMessageBox.information("Lead salvo (nova linha adicionada). Campos limpos automaticamente.")
 
     # ---------- configurações (engrenagem) ----------
 
