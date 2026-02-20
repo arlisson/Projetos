@@ -74,7 +74,7 @@
  [],
  False,
  False,
- 1771604506,
+ 1771610319,
  [('runw.exe',
    'C:\\Users\\Basari\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\PyInstaller\\bootloader\\Windows-64bit-intel\\runw.exe',
    'EXECUTABLE')],

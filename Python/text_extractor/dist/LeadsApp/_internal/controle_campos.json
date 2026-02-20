@@ -11,7 +11,7 @@
     {
       "id": "telefone",
       "titulo": "Telefone",
-      "tipo": "telefone",
+      "tipo": "texto",
       "fixo": true
     },
     {
@@ -19,6 +19,18 @@
       "titulo": "Email",
       "tipo": "email",
       "fixo": true
+    },
+    {
+      "id": "data_do_pagamento",
+      "titulo": "Data do pagamento",
+      "tipo": "texto",
+      "fixo": false
+    },
+    {
+      "id": "salrio",
+      "titulo": "Salário",
+      "tipo": "moeda",
+      "fixo": false
     }
   ]
 }

@@ -43,7 +43,7 @@ from openpyxl import Workbook, load_workbook
 from openpyxl.worksheet.datavalidation import DataValidation
 from openpyxl.utils import get_column_letter
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QIcon, QPixmap, QColor, QPainter
 from PySide6.QtWidgets import (
     QApplication,
@@ -197,6 +197,14 @@ def derive_theme_from_background(bg_hex: str, base_theme: dict) -> dict:
     out["muted_text"] = rgb_to_hex(*muted_rgb)
     return out
 
+def digits_only(value: str) -> str:
+    # remove tudo que não é dígito (remove também _, espaços e símbolos da máscara)
+    return re.sub(r"\D+", "", value or "")
+
+def strip_mask_chars(value: str) -> str:
+    # remove apenas placeholders/sobras comuns, preserva o resto
+    # (útil se você quiser manter caracteres não numéricos em campos texto)
+    return (value or "").replace("_", "").strip()
 
 # =========================
 # Modelos / Configuração
@@ -681,6 +689,33 @@ class ThemeDialog(QDialog):
     def values(self) -> Tuple[int, int, int]:
         return self.slider_h.value(), self.slider_s.value(), self.slider_l.value()
 
+#Cursor sempre no início
+class CursorStartLineEdit(QLineEdit):
+    """
+    QLineEdit que força o cursor para o início ao receber foco/clique.
+    Útil para campos com inputMask (telefone, data) para facilitar colar.
+    """
+    def __init__(self, *args, force_cursor_start: bool = False, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._force_cursor_start = force_cursor_start
+
+    def set_force_cursor_start(self, enabled: bool) -> None:
+        self._force_cursor_start = bool(enabled)
+
+    def _move_cursor_to_start(self) -> None:
+        if self._force_cursor_start:
+            self.setCursorPosition(0)
+            self.deselect()
+
+    def focusInEvent(self, event):
+        super().focusInEvent(event)
+        if self._force_cursor_start:
+            QTimer.singleShot(0, self._move_cursor_to_start)
+
+    def mousePressEvent(self, event):
+        super().mousePressEvent(event)
+        if self._force_cursor_start:
+            QTimer.singleShot(0, self._move_cursor_to_start)
 
 # =========================
 # UI / Aplicação
@@ -931,6 +966,10 @@ class App(QWidget):
             self.lbl_file.setText(f"Arquivo: {self.file_path}")
 
     def _apply_input_mask(self, inp: QLineEdit, tipo: str) -> None:
+        # habilita cursor no início apenas para data/telefone
+        if isinstance(inp, CursorStartLineEdit):
+            inp.set_force_cursor_start(tipo in ("telefone", "data"))
+
         if tipo == "telefone":
             inp.setInputMask("(00) 00000-0000;_")
         elif tipo == "data":
@@ -939,12 +978,22 @@ class App(QWidget):
             inp.setInputMask("")
 
     def render_fields(self) -> None:
+        # 1) Snapshot dos valores atuais antes de destruir os widgets
+        previous_values: Dict[str, str] = {}
+        for cid, widget in self.inputs.items():
+            try:
+                previous_values[cid] = widget.text()
+            except Exception:
+                previous_values[cid] = ""
+
+        # 2) Limpa o layout e remove widgets
         while self.fields_layout.count():
             item = self.fields_layout.takeAt(0)
             w = item.widget()
             if w:
                 w.deleteLater()
 
+        # 3) Recria os campos
         self.inputs.clear()
         theme = getattr(self, "_last_theme_for_fields", dict(DEFAULT_THEME))
         text = theme.get("text", "#E6EDF7")
@@ -956,9 +1005,14 @@ class App(QWidget):
             lbl = QLabel(f"{campo.titulo}  [{campo.tipo}]")
             lbl.setMinimumWidth(160)
 
-            inp = QLineEdit()
+            inp = CursorStartLineEdit()  # ou QLineEdit(), conforme seu código
             inp.setPlaceholderText(f"Digite ou cole: {campo.titulo}")
+
+            # aplica máscara e comportamento do cursor (se você implementou)
             self._apply_input_mask(inp, campo.tipo)
+
+            # 4) Restaura o valor anterior do mesmo campo.id (principal fix)
+            inp.setText(previous_values.get(campo.id, ""))
 
             self.inputs[campo.id] = inp
 
@@ -1153,24 +1207,20 @@ class App(QWidget):
         if not campo:
             return
 
+        # CAPTURA estado atual do campo antes de mudar qualquer coisa
+        old_tipo = campo.tipo
+        old_value = self.inputs[field_id].text() if field_id in self.inputs else ""
+
         new_title, ok = QInputDialog.getText(self, "Editar campo", "Título:", text=campo.titulo)
         if not ok:
             return
-
         new_title = new_title.strip()
         if not new_title:
             QMessageBox.warning(self, "Atenção", "Título não pode ser vazio.")
             return
 
         idx = FIELD_TYPES.index(campo.tipo) if campo.tipo in FIELD_TYPES else 0
-        new_tipo, ok_tipo = QInputDialog.getItem(
-            self,
-            "Editar campo",
-            "Tipo:",
-            FIELD_TYPES,
-            idx,
-            False
-        )
+        new_tipo, ok_tipo = QInputDialog.getItem(self, "Editar campo", "Tipo:", FIELD_TYPES, idx, False)
         if not ok_tipo:
             return
         new_tipo = str(new_tipo)
@@ -1183,7 +1233,6 @@ class App(QWidget):
         old_title = campo.titulo
         campo.titulo = new_title
         campo.tipo = new_tipo
-
         self._persist_campos()
 
         try:
@@ -1194,7 +1243,24 @@ class App(QWidget):
         except Exception as e:
             self.lbl_status.setText(f"Atualizado no controle, mas falhou no Excel: {e}")
 
+        # Recria UI (isso mantém os dados dos outros campos, conforme o snapshot do render_fields)
         self.render_fields()
+
+        # LIMPA caracteres da máscara quando ela “sai”
+        masked = {"telefone", "data"}
+        inp = self.inputs.get(field_id)
+        if inp:
+            if old_tipo in masked and new_tipo not in masked:
+                # máscara removida -> remove símbolos
+                inp.setText(digits_only(old_value))
+            elif old_tipo not in masked and new_tipo in masked:
+                # máscara aplicada -> use apenas dígitos para preencher a máscara corretamente
+                inp.setText(digits_only(old_value))
+            else:
+                # tipos sem máscara: opcionalmente remove "_" caso exista
+                if new_tipo not in masked:
+                    inp.setText(strip_mask_chars(inp.text()))
+
         self.lbl_status.setText("Campo atualizado (título/tipo).")
 
     def delete_field(self, field_id: str) -> None:
