@@ -8,6 +8,8 @@ import ctypes
 import ctypes.wintypes as wt
 import winreg
 from typing import Optional, Tuple
+import shutil
+from datetime import datetime
 
 APP_NAME = "LeadsApp"
 
@@ -30,6 +32,30 @@ REG_STATE = "InstallState"
 REG_FIRSTSEEN = "FirstSeen"
 REG_MIDHASH = "MachineIdHash"
 
+
+def _atomic_write_text(path: str, text: str) -> None:
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        f.write(text)
+        f.flush()
+        os.fsync(f.fileno())
+    os.replace(tmp, path)
+
+def _backup_file(path: str, reason: str) -> Optional[str]:
+    if not os.path.exists(path):
+        return None
+    ts = datetime.now().strftime("%Y%m%d-%H%M%S")
+    bak = f"{path}.{reason}.{ts}.bak"
+    try:
+        shutil.copy2(path, bak)
+        return bak
+    except Exception:
+        return None
+
+def _file_write_bytes(path: str, blob: bytes) -> None:
+    s = base64.b64encode(blob).decode("ascii")
+    _atomic_write_text(path, s)
 
 # -------------------------
 # Paths
@@ -286,26 +312,54 @@ def ensure_or_mark(allow_create: bool = False) -> Tuple[bool, str]:
         _reg_set_if_missing(REG_FIRSTSEEN, str(int(time.time())))
         return True, "OK"
 
-    # 3) Validar marcador existente
+        # 3) Validar marcador existente
+    lp = license_path_programdata()  # caminho do arquivo em ProgramData
+
     try:
         payload = dpapi_unprotect(blob)  # falha em outro PC
     except Exception:
         _reg_set(REG_STATE, "MOVED_OR_COPIED")
         _reg_set(REG_MIDHASH, midh)
         _reg_set_if_missing(REG_FIRSTSEEN, str(int(time.time())))
-        return False, "Arquivo de controle não pode ser aberto neste computador (cópia detectada)."
+        return False, f"Arquivo de controle não pode ser aberto neste computador (cópia detectada).\n\nArquivo:\n{lp}"
 
     try:
         stored_midh, token, mac = _parse_payload(payload)
     except Exception:
-        return False, "Arquivo de controle corrompido."
+        # backup do arquivo problemático
+        bak = _backup_file(lp, "corrupted")
+        _reg_set(REG_STATE, "CORRUPTED")
+        _reg_set(REG_MIDHASH, midh)
+        _reg_set_if_missing(REG_FIRSTSEEN, str(int(time.time())))
+
+        # opcional: recriar automaticamente se allow_create=True (ou seja, após validação online)
+        if allow_create:
+            try:
+                token_new = os.urandom(32)
+                payload_new = _make_payload(mid, token_new)
+                protected_new = dpapi_protect_localmachine(payload_new)
+                _file_write_bytes(lp, protected_new)
+                _reg_set(REG_STATE, "OK")
+                return True, "OK"
+            except Exception:
+                pass
+
+        extra = f"\nBackup:\n{bak}" if bak else ""
+        return False, f"Arquivo de controle corrompido.\n\nArquivo:\n{lp}{extra}"
 
     expected_mac = hmac.new(APP_SECRET, stored_midh.encode("ascii") + token, hashlib.sha256).digest()
     if not hmac.compare_digest(mac, expected_mac):
-        return False, "Arquivo de controle adulterado."
+        bak = _backup_file(lp, "tampered")
+        _reg_set(REG_STATE, "TAMPERED")
+        extra = f"\nBackup:\n{bak}" if bak else ""
+        return False, f"Arquivo de controle adulterado.\n\nArquivo:\n{lp}{extra}"
 
     if stored_midh != midh:
-        return False, "Arquivo de controle pertence a outro computador."
+        bak = _backup_file(lp, "wrongpc")
+        _reg_set(REG_STATE, "WRONG_PC")
+        extra = f"\nBackup:\n{bak}" if bak else ""
+        return False, f"Arquivo de controle pertence a outro computador.\n\nArquivo:\n{lp}{extra}"
+
 
     _reg_set(REG_STATE, "OK")
     _reg_set(REG_MIDHASH, midh)
