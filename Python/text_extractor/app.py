@@ -20,6 +20,8 @@ Dependências:
 pip install PySide6 openpyxl
 """
 from simple_lock import ensure_or_mark
+from user_login import prompt_email_if_needed
+from online_license import ensure_online_license
 
 import json
 import sys
@@ -952,20 +954,24 @@ class App(QWidget):
 
 
 def main() -> None:
-    ok, reason = ensure_or_mark()
-    if not ok:
-        app = QApplication([])
-        QMessageBox.critical(
-            None,
-            "Acesso negado",
-            "Aplicativo bloqueado.\n\n"
-            f"Motivo: {reason}\n\n"
-            "Este aplicativo está vinculado a outra máquina.\n"
-            "Apague a pasta do programa e baixe diretamente do site."
-        )
-        return  
-
     app = QApplication([])
+    
+
+    email = prompt_email_if_needed()
+    if not email:
+        return
+
+    ok, msg = ensure_online_license(email)
+    if not ok:
+        QMessageBox.critical(None, "Acesso negado", msg)
+        return
+
+    ok, reason = ensure_or_mark(allow_create=True)
+    if not ok:
+        QMessageBox.critical(None, "Acesso negado", reason)
+        return
+    
+
     w = App()
     w.show()
     app.exec()
