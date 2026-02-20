@@ -33,9 +33,9 @@ ChangesAssociations=yes
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only).
 ;PrivilegesRequired=lowest
-OutputDir=C:\Projetos\Python\text_extractor\instalador
+OutputDir=C:\Repositorios\Projetos\Python\text_extractor\instalador
 OutputBaseFilename=LeadsSetup
-SetupIconFile=C:\Projetos\Python\text_extractor\assets\A.ico
+SetupIconFile=C:\Repositorios\Projetos\Python\text_extractor\assets\A.ico
 SolidCompression=yes
 WizardStyle=classic dynamic
 
@@ -46,9 +46,9 @@ Name: "portuguese"; MessagesFile: "compiler:Languages\Portuguese.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Projetos\Python\text_extractor\dist\LeadsApp\LeadsApp.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Projetos\Python\text_extractor\dist\LeadsApp\controle_*.json"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Projetos\Python\text_extractor\dist\LeadsApp\_internal\*"; DestDir: "{app}\_internal"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Repositorios\Projetos\Python\text_extractor\dist\LeadsApp\LeadsApp.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Repositorios\Projetos\Python\text_extractor\dist\LeadsApp\controle_*.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Repositorios\Projetos\Python\text_extractor\dist\LeadsApp\_internal\*"; DestDir: "{app}\_internal"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]
