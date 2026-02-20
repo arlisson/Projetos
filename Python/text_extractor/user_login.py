@@ -1,4 +1,3 @@
-# user_login.py
 import json
 import os
 import re
@@ -19,29 +18,50 @@ def _ensure_dir(path: str) -> str:
     return path
 
 
+def _try_dir(base: str) -> Optional[str]:
+    try:
+        d = os.path.join(base, APP_NAME)
+        os.makedirs(d, exist_ok=True)
+
+        # teste real de escrita (evita Roaming indisponível)
+        test_file = os.path.join(d, f".write_test_{int(time.time())}.tmp")
+        with open(test_file, "w", encoding="utf-8") as f:
+            f.write("ok")
+        os.remove(test_file)
+
+        return d
+    except Exception:
+        return None
+
+
 def app_state_dir() -> str:
     """
-    Diretório de estado com fallback:
+    Diretório de estado com fallback real:
     1) %APPDATA% (Roaming)
     2) %LOCALAPPDATA% (Local)
-    3) %PROGRAMDATA%\\LeadsApp\\user
+    3) %PROGRAMDATA%\\LeadsApp\\user_root\\LeadsApp
     """
     p1 = os.environ.get("APPDATA")
     if p1:
-        try:
-            return _ensure_dir(os.path.join(p1, APP_NAME))
-        except Exception:
-            pass
+        d = _try_dir(p1)
+        if d:
+            return d
 
     p2 = os.environ.get("LOCALAPPDATA")
     if p2:
-        try:
-            return _ensure_dir(os.path.join(p2, APP_NAME))
-        except Exception:
-            pass
+        d = _try_dir(p2)
+        if d:
+            return d
 
     p3 = os.environ.get("PROGRAMDATA") or r"C:\ProgramData"
-    return _ensure_dir(os.path.join(p3, APP_NAME, "user"))
+    d = _try_dir(os.path.join(p3, APP_NAME, "user_root"))
+    if d:
+        return d
+
+    # fallback final extremo
+    d = os.path.join(os.path.expanduser("~"), APP_NAME)
+    os.makedirs(d, exist_ok=True)
+    return d
 
 
 def login_path() -> str:
@@ -65,13 +85,19 @@ def load_login() -> Tuple[Optional[str], Optional[int]]:
 
 
 def save_login(email: str) -> None:
+    data = {"email": email.strip().lower(), "ts": _now_ts()}
+    with open(login_path(), "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+
+def clear_login() -> None:
     try:
-        data = {"email": email.strip().lower(), "ts": _now_ts()}
-        with open(login_path(), "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-    except Exception as e:
-        QMessageBox.critical(None, "Erro", f"Não foi possível salvar o login.\n\nDetalhe: {e}")
-        raise
+        p = login_path()
+        if os.path.exists(p):
+            os.remove(p)
+    except Exception:
+        # não bloquear o fluxo por isso
+        pass
 
 
 def is_login_expired(ts: Optional[int]) -> bool:
@@ -80,12 +106,13 @@ def is_login_expired(ts: Optional[int]) -> bool:
     return (_now_ts() - ts) > LOGIN_MAX_AGE_SECONDS
 
 
-def prompt_email_if_needed() -> Optional[str]:
+def prompt_email(force: bool = False) -> Optional[str]:
     """
-    Retorna email válido (salva em app_state_dir) ou None se cancelar.
+    force=True => pede e-mail mesmo que exista login válido salvo.
+    Retorna email válido (salva) ou None se cancelar.
     """
     saved_email, saved_ts = load_login()
-    if saved_email and not is_login_expired(saved_ts):
+    if (not force) and saved_email and not is_login_expired(saved_ts):
         return saved_email
 
     default_text = saved_email or ""

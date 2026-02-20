@@ -19,9 +19,12 @@ Arquivos de controle:
 Dependências:
 pip install PySide6 openpyxl
 """
+from user_login import prompt_email, clear_login
+from online_license import ensure_online_license, clear_cache
 from simple_lock import ensure_or_mark
-from user_login import prompt_email_if_needed
-from online_license import ensure_online_license
+
+# considere: device_limit, no_license, blocked, not_activated, revoked
+EMAIL_RETRY_CODES = {"no_license", "blocked", "device_limit", "not_activated", "revoked"}
 
 import json
 import sys
@@ -957,20 +960,37 @@ def main() -> None:
     app = QApplication([])
     
 
-    email = prompt_email_if_needed()
-    if not email:
-        return
+    while True:
+        email = prompt_email(force=False)
+        if not email:
+            return  # usuário cancelou
 
-    ok, msg = ensure_online_license(email)
-    if not ok:
+        ok, msg, code = ensure_online_license(email)
+        if ok:
+            break
+
+        # Se o erro está vinculado ao e-mail / limite de PCs / ativação do dispositivo:
+        if code in EMAIL_RETRY_CODES:
+            QMessageBox.warning(
+                None,
+                "Validação",
+                msg + "\n\nDigite um e-mail válido para continuar."
+            )
+            # limpa tudo que pode “prender” o usuário no mesmo e-mail
+            clear_login()
+            clear_cache()
+            # força pedir novamente (mesmo que exista login salvo)
+            continue
+
+        # Erros não relacionados ao e-mail (rede/servidor etc.)
         QMessageBox.critical(None, "Acesso negado", msg)
         return
 
-    ok, reason = ensure_or_mark(allow_create=True)
-    if not ok:
+    # Online OK: agora cria/verifica o marcador local por máquina
+    ok_local, reason = ensure_or_mark(allow_create=True)
+    if not ok_local:
         QMessageBox.critical(None, "Acesso negado", reason)
         return
-    
 
     w = App()
     w.show()
