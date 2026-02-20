@@ -19,6 +19,18 @@
       "titulo": "Email",
       "tipo": "email",
       "fixo": true
+    },
+    {
+      "id": "data_do_pagamento",
+      "titulo": "Data do pagamento",
+      "tipo": "data",
+      "fixo": false
+    },
+    {
+      "id": "salrio",
+      "titulo": "Salário",
+      "tipo": "moeda",
+      "fixo": false
     }
   ]
 }

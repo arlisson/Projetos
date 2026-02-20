@@ -3,15 +3,13 @@ Aplicativo desktop para cadastro de leads em planilha Excel (XLSX).
 
 Funcionalidades:
 - Campos fixos: Nome, Telefone, Email
-- Campos dinâmicos: criar, editar título e tipo e excluir (reflete em colunas do Excel)
-- Tipos fechados (lista): texto, telefone, email, numero, moeda, data, booleano
+- Campos dinâmicos: criar, editar título e excluir (reflete em colunas do Excel)
 - Planilha persistida: caminho salvo em controle_planilha.json
 - UI customizável: ícones e tema via controle_ui.json
 - Tema com sliders: usuário ajusta a cor de fundo (H/S/L); demais cores derivadas automaticamente
 - Ícones tintados: ícones originalmente pretos passam a seguir a cor do tema
 - Salvamento: adiciona linha nova (append) sem sobrescrever
 - Ao salvar: limpa automaticamente os campos
-- NOVO: ao selecionar uma planilha já existente, opção de substituir os campos do app pelos cabeçalhos (linha 1) da planilha
 
 Arquivos de controle:
 - controle_campos.json
@@ -21,7 +19,6 @@ Arquivos de controle:
 Dependências:
 pip install PySide6 openpyxl
 """
-
 from user_login import prompt_email, clear_login
 from online_license import ensure_online_license, clear_cache
 from simple_lock import ensure_or_mark
@@ -34,14 +31,10 @@ import json
 import sys
 import os
 import colorsys
-import re
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple, Any
-from datetime import datetime, date
+from typing import Dict, List, Optional, Tuple
 
 from openpyxl import Workbook, load_workbook
-from openpyxl.worksheet.datavalidation import DataValidation
-from openpyxl.utils import get_column_letter
 
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon, QPixmap, QColor, QPainter
@@ -61,35 +54,12 @@ from PySide6.QtWidgets import (
     QSlider,
     QFormLayout,
     QDialogButtonBox,
+    QMessageBox
 )
 
 CONFIG_FIELDS_PATH = "controle_campos.json"
 CONFIG_SHEET_PATH = "controle_planilha.json"
 CONFIG_UI_PATH = "controle_ui.json"
-
-# =========================
-# Tipos fechados (metadados)
-# =========================
-
-FIELD_TYPES: List[str] = [
-    "texto",
-    "telefone",
-    "email",
-    "numero",
-    "moeda",
-    "data",
-    "booleano",
-]
-
-EXCEL_NUMBER_FORMAT: Dict[str, str] = {
-    "texto": "@",
-    "telefone": "@",
-    "email": "@",
-    "numero": "0.00",
-    "moeda": '"R$" #,##0.00',
-    "data": "dd/mm/yyyy",
-    "booleano": "@",
-}
 
 
 # =========================
@@ -101,6 +71,7 @@ def abs_path(p: str) -> str:
         return ""
     if os.path.isabs(p):
         return p
+
     base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
     return os.path.join(base, p)
 
@@ -156,6 +127,7 @@ def hsl_to_rgb(h: int, s: int, l: int) -> Tuple[int, int, int]:
 
 def luminance(rgb: Tuple[int, int, int]) -> float:
     r, g, b = rgb
+    # luminância relativa simples
     return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255.0
 
 
@@ -169,12 +141,21 @@ def blend(a: Tuple[int, int, int], b: Tuple[int, int, int], t: float) -> Tuple[i
 
 
 def derive_theme_from_background(bg_hex: str, base_theme: dict) -> dict:
+    """
+    Deriva as demais cores a partir do background, preservando primary/danger.
+    Padrão:
+    - surface / surface_alt: pequenos increments/decrements em relação ao fundo
+    - border: mais contraste
+    - text: claro se fundo escuro, escuro se fundo claro
+    - muted_text: blend entre text e border
+    """
     bg_rgb = hex_to_rgb(bg_hex)
     is_dark = luminance(bg_rgb) < 0.5
 
     white = (255, 255, 255)
     black = (0, 0, 0)
 
+    # Ajustes suaves derivados do fundo
     if is_dark:
         surface_rgb = blend(bg_rgb, white, 0.06)
         surface_alt_rgb = blend(bg_rgb, white, 0.10)
@@ -184,7 +165,7 @@ def derive_theme_from_background(bg_hex: str, base_theme: dict) -> dict:
         surface_rgb = blend(bg_rgb, black, 0.06)
         surface_alt_rgb = blend(bg_rgb, black, 0.10)
         border_rgb = blend(bg_rgb, black, 0.16)
-        text_rgb = (15, 23, 42)
+        text_rgb = (15, 23, 42)  # escuro legível
 
     muted_rgb = blend(text_rgb, border_rgb, 0.55)
 
@@ -195,6 +176,7 @@ def derive_theme_from_background(bg_hex: str, base_theme: dict) -> dict:
     out["border"] = rgb_to_hex(*border_rgb)
     out["text"] = rgb_to_hex(*text_rgb)
     out["muted_text"] = rgb_to_hex(*muted_rgb)
+    # primary/danger preserva do base_theme
     return out
 
 
@@ -227,17 +209,8 @@ def load_fields_config() -> dict:
         cfg = default_fields_config()
         save_fields_config(cfg)
         return cfg
-
     with open(CONFIG_FIELDS_PATH, "r", encoding="utf-8") as f:
-        cfg = json.load(f)
-
-    for c in cfg.get("campos", []):
-        c.setdefault("tipo", "texto")
-        c.setdefault("fixo", False)
-        if c.get("tipo") not in FIELD_TYPES:
-            c["tipo"] = "texto"
-
-    return cfg
+        return json.load(f)
 
 
 def save_fields_config(cfg: dict) -> None:
@@ -269,6 +242,7 @@ def get_last_sheet_path() -> Optional[str]:
 
 
 def default_ui_config() -> dict:
+    # Mantém o tema padrão informado como base
     bg = DEFAULT_THEME["background"]
     r, g, b = hex_to_rgb(bg)
     h, s, l = rgb_to_hsl(r, g, b)
@@ -296,6 +270,7 @@ def load_ui_config() -> dict:
     try:
         with open(CONFIG_UI_PATH, "r", encoding="utf-8") as f:
             cfg = json.load(f)
+            # garante defaults mínimos
             cfg.setdefault("theme", dict(DEFAULT_THEME))
             cfg.setdefault("button_icons", {})
             if "background_hsl" not in cfg:
@@ -312,145 +287,6 @@ def load_ui_config() -> dict:
 def save_ui_config(cfg: dict) -> None:
     with open(CONFIG_UI_PATH, "w", encoding="utf-8") as f:
         json.dump(cfg, f, ensure_ascii=False, indent=2)
-
-
-# =========================
-# Helpers: importação de campos do Excel
-# =========================
-
-def sanitize_id(title: str) -> str:
-    s = (title or "").strip().lower()
-    s = s.replace(" ", "_")
-    s = re.sub(r"[^a-z0-9_]+", "", s)
-    s = re.sub(r"_+", "_", s).strip("_")
-    return s or "campo"
-
-
-def make_unique_id(base_id: str, used: set) -> str:
-    cid = base_id
-    i = 2
-    while cid in used:
-        cid = f"{base_id}_{i}"
-        i += 1
-    used.add(cid)
-    return cid
-
-
-def infer_type_from_title(header: str) -> str:
-    """
-    Inferência simples (opcional) para ajudar.
-    Você pode remover e retornar sempre "texto" se preferir.
-    """
-    h = (header or "").strip().lower()
-    if "email" in h or "e-mail" in h:
-        return "email"
-    if "tel" in h or "fone" in h or "whats" in h or "cel" in h:
-        return "telefone"
-    if "data" in h or "dt" == h:
-        return "data"
-    if "preço" in h or "preco" in h or "valor" in h or "custo" in h:
-        return "moeda"
-    if "qtd" in h or "quant" in h or "numero" in h or "número" in h:
-        return "numero"
-    if "ativo" in h or "status" in h:
-        return "booleano"
-    return "texto"
-
-
-def read_headers_from_excel(path: str, preferred_sheet: str) -> Tuple[str, List[str]]:
-    """
-    Lê a linha 1 e retorna (sheet_name_usado, headers).
-    - Se preferred_sheet não existir, usa a aba ativa.
-    """
-    wb = load_workbook(path)
-    if preferred_sheet in wb.sheetnames:
-        sheet_name = preferred_sheet
-    else:
-        sheet_name = wb.active.title
-
-    ws = wb[sheet_name]
-    if ws.max_row < 1:
-        return sheet_name, []
-
-    headers: List[str] = []
-    for cell in ws[1]:
-        v = cell.value
-        if v is None:
-            continue
-        h = str(v).strip()
-        if h and h not in headers:
-            headers.append(h)
-
-    return sheet_name, headers
-
-
-# =========================
-# Conversões por tipo (para salvar melhor no Excel)
-# =========================
-
-def parse_decimal_br(s: str) -> Optional[float]:
-    if s is None:
-        return None
-    s = str(s).strip()
-    if not s:
-        return None
-    s = re.sub(r"[^\d,\.\-]+", "", s)
-    if "," in s and "." in s:
-        s = s.replace(".", "").replace(",", ".")
-    else:
-        if "," in s:
-            s = s.replace(".", "")
-            s = s.replace(",", ".")
-    try:
-        return float(s)
-    except Exception:
-        return None
-
-
-def parse_date_any(s: str) -> Optional[date]:
-    if s is None:
-        return None
-    s = str(s).strip()
-    if not s:
-        return None
-    for fmt in ("%d/%m/%Y", "%d-%m-%Y", "%Y-%m-%d", "%Y/%m/%d"):
-        try:
-            return datetime.strptime(s, fmt).date()
-        except Exception:
-            pass
-    return None
-
-
-def normalize_bool_ptbr(s: str) -> Optional[str]:
-    if s is None:
-        return None
-    s0 = str(s).strip().lower()
-    if not s0:
-        return None
-    if s0 in {"sim", "s", "yes", "y", "true", "1"}:
-        return "Sim"
-    if s0 in {"não", "nao", "n", "no", "false", "0"}:
-        return "Não"
-    return str(s).strip()
-
-
-def cast_value_by_type(tipo: str, raw: str) -> Any:
-    raw = "" if raw is None else str(raw).strip()
-    if raw == "":
-        return ""
-    if tipo == "numero":
-        v = parse_decimal_br(raw)
-        return v if v is not None else raw
-    if tipo == "moeda":
-        v = parse_decimal_br(raw)
-        return v if v is not None else raw
-    if tipo == "data":
-        d = parse_date_any(raw)
-        return d if d is not None else raw
-    if tipo == "booleano":
-        b = normalize_bool_ptbr(raw)
-        return b if b is not None else ""
-    return raw
 
 
 # =========================
@@ -490,82 +326,8 @@ def ensure_workbook(path: str, sheet_name: str, headers: List[str]) -> None:
     wb.save(path)
 
 
-def apply_column_type_rules(path: str, sheet_name: str, campos: List[Campo]) -> None:
-    if not path or not os.path.exists(path):
-        return
-
-    wb = load_workbook(path)
-    ws = wb[sheet_name] if sheet_name in wb.sheetnames else wb.create_sheet(sheet_name)
-
-    if ws.max_row < 1:
-        wb.save(path)
-        return
-
-    headers = [c.value for c in ws[1]]
-    headers = [h for h in headers if h is not None]
-    header_to_col = {h: (headers.index(h) + 1) for h in headers}
-
-    try:
-        ws.data_validations.dataValidation = []
-    except Exception:
-        pass
-
-    max_row = max(ws.max_row, 2)
-
-    for c in campos:
-        if c.titulo not in header_to_col:
-            continue
-
-        col_idx = header_to_col[c.titulo]
-        col_letter = get_column_letter(col_idx)
-        fmt = EXCEL_NUMBER_FORMAT.get(c.tipo, "@")
-
-        for r in range(2, max_row + 1):
-            ws.cell(row=r, column=col_idx).number_format = fmt
-
-        rng = f"{col_letter}2:{col_letter}1048576"
-
-        if c.tipo == "numero":
-            dv = DataValidation(type="decimal", operator="greaterThanOrEqual", formula1="0", allow_blank=True)
-            dv.errorTitle = "Valor inválido"
-            dv.error = "Digite um número válido (>= 0)."
-            ws.add_data_validation(dv)
-            dv.add(rng)
-
-        elif c.tipo == "moeda":
-            dv = DataValidation(type="decimal", operator="greaterThanOrEqual", formula1="0", allow_blank=True)
-            dv.errorTitle = "Valor inválido"
-            dv.error = "Digite um valor válido (>= 0)."
-            ws.add_data_validation(dv)
-            dv.add(rng)
-
-        elif c.tipo == "data":
-            dv = DataValidation(
-                type="date",
-                operator="between",
-                formula1="DATE(1900,1,1)",
-                formula2="DATE(2099,12,31)",
-                allow_blank=True,
-            )
-            dv.errorTitle = "Data inválida"
-            dv.error = "Digite uma data válida."
-            ws.add_data_validation(dv)
-            dv.add(rng)
-
-        elif c.tipo == "booleano":
-            dv = DataValidation(type="list", formula1='"Sim,Não"', allow_blank=True)
-            dv.errorTitle = "Valor inválido"
-            dv.error = 'Use "Sim" ou "Não".'
-            ws.add_data_validation(dv)
-            dv.add(rng)
-
-    wb.save(path)
-
-
-def append_row_typed(path: str, sheet_name: str, campos: List[Campo], row_by_title: Dict[str, str]) -> None:
-    headers = [c.titulo for c in campos]
+def append_row(path: str, sheet_name: str, headers: List[str], row: Dict[str, str]) -> None:
     ensure_workbook(path, sheet_name, headers)
-
     wb = load_workbook(path)
     ws = wb[sheet_name]
 
@@ -574,15 +336,8 @@ def append_row_typed(path: str, sheet_name: str, campos: List[Campo], row_by_tit
     col_idx = {h: (existing.index(h) + 1) for h in existing}
 
     next_row = ws.max_row + 1
-
-    for c in campos:
-        h = c.titulo
-        if h not in col_idx:
-            continue
-
-        value = cast_value_by_type(c.tipo, row_by_title.get(h, ""))
-        cell = ws.cell(row=next_row, column=col_idx[h], value=value)
-        cell.number_format = EXCEL_NUMBER_FORMAT.get(c.tipo, "@")
+    for h in headers:
+        ws.cell(row=next_row, column=col_idx[h], value=row.get(h, ""))
 
     wb.save(path)
 
@@ -690,6 +445,7 @@ class App(QWidget):
     def __init__(self):
         super().__init__()
 
+        # configs
         self.cfg_fields = load_fields_config()
         self.cfg_ui = load_ui_config()
 
@@ -699,14 +455,20 @@ class App(QWidget):
         self.campos: List[Campo] = [Campo(**c) for c in self.cfg_fields.get("campos", [])]
         self.inputs: Dict[str, QLineEdit] = {}
 
+        # cache de pixmaps para tint (evita reler disco)
         self._pixmap_cache: Dict[str, QPixmap] = {}
 
+        # aplica ícone da janela
         self._apply_window_icon()
+
+        # monta UI
         self._build_ui()
+
+        # aplica tema padrão + estado persistido do slider
         self._apply_theme_from_config()
 
+        # se já existe planilha salva
         if self.file_path:
-            # Mantém o comportamento padrão ao abrir (não importa automaticamente os campos)
             self._apply_file_path(self.file_path, prepare=True, silent=True)
 
     # ---------- ícones / tint ----------
@@ -729,6 +491,9 @@ class App(QWidget):
         return pm
 
     def _tint_pixmap(self, pixmap: QPixmap, tint_hex: str) -> QPixmap:
+        """
+        Aplica tint usando o alpha do pixmap. Requer PNG com transparência para melhor resultado.
+        """
         tinted = QPixmap(pixmap.size())
         tinted.fill(Qt.transparent)
 
@@ -759,6 +524,7 @@ class App(QWidget):
 
     def _apply_theme_from_config(self) -> None:
         base_theme = dict(DEFAULT_THEME)
+        # se o json tiver theme, usa como base (mas garantindo defaults)
         base_theme.update(self.cfg_ui.get("theme", {}) or {})
 
         hsl = self.cfg_ui.get("background_hsl", {}) or {}
@@ -771,6 +537,7 @@ class App(QWidget):
 
         derived = derive_theme_from_background(bg_hex, base_theme)
 
+        # persiste tema derivado também (registro em arquivo)
         self.cfg_ui["theme"] = derived
         self.cfg_ui["background_hsl"] = {"h": h, "s": s, "l": l}
         save_ui_config(self.cfg_ui)
@@ -850,10 +617,12 @@ class App(QWidget):
             }}
         """)
 
+        # Após aplicar tema, retinta ícones
         self._retint_all_icons(theme)
 
     def _retint_all_icons(self, theme: dict) -> None:
         text = theme["text"]
+        # botões principais: ícone branco faz mais sentido
         white = "#FFFFFF"
 
         self._apply_button_icon(self.btn_file, "choose_file", text)
@@ -862,7 +631,10 @@ class App(QWidget):
         self._apply_button_icon(self.btn_save, "save_lead", white)
         self._apply_button_icon(self.btn_settings, "settings", text)
 
-        self._last_theme_for_fields = theme
+        # botões por campo são recriados; então retint ocorre no render_fields()
+        self._last_theme_for_fields = theme  # usado no render_fields()
+
+        # Força re-render para retint dos botões de linha
         self.render_fields()
 
     # ---------- build UI ----------
@@ -873,6 +645,7 @@ class App(QWidget):
 
         root = QVBoxLayout()
 
+        # Linha de arquivo + engrenagem
         file_row = QHBoxLayout()
 
         self.btn_file = QPushButton("Escolher planilha…")
@@ -890,6 +663,7 @@ class App(QWidget):
         file_row.addWidget(self.btn_settings)
         root.addLayout(file_row)
 
+        # Campos roláveis
         self.fields_container = QWidget()
         self.fields_layout = QVBoxLayout()
         self.fields_container.setLayout(self.fields_layout)
@@ -899,6 +673,7 @@ class App(QWidget):
         scroll.setWidget(self.fields_container)
         root.addWidget(scroll, 1)
 
+        # Ações
         actions = QHBoxLayout()
 
         self.btn_add_field = QPushButton("Adicionar Campo")
@@ -917,6 +692,7 @@ class App(QWidget):
 
         root.addLayout(actions)
 
+        # Status
         self.lbl_status = QLabel("Preencha os campos (copie/cole) e clique em Salvar.")
         self.lbl_status.setWordWrap(True)
         self.lbl_status.setObjectName("Status")
@@ -929,14 +705,6 @@ class App(QWidget):
 
         if self.file_path:
             self.lbl_file.setText(f"Arquivo: {self.file_path}")
-
-    def _apply_input_mask(self, inp: QLineEdit, tipo: str) -> None:
-        if tipo == "telefone":
-            inp.setInputMask("(00) 00000-0000;_")
-        elif tipo == "data":
-            inp.setInputMask("00/00/0000;_")
-        else:
-            inp.setInputMask("")
 
     def render_fields(self) -> None:
         while self.fields_layout.count():
@@ -953,13 +721,11 @@ class App(QWidget):
         for campo in self.campos:
             row = QHBoxLayout()
 
-            lbl = QLabel(f"{campo.titulo}  [{campo.tipo}]")
-            lbl.setMinimumWidth(160)
+            lbl = QLabel(campo.titulo)
+            lbl.setMinimumWidth(120)
 
             inp = QLineEdit()
             inp.setPlaceholderText(f"Digite ou cole: {campo.titulo}")
-            self._apply_input_mask(inp, campo.tipo)
-
             self.inputs[campo.id] = inp
 
             btn_edit = QPushButton("Editar")
@@ -968,7 +734,7 @@ class App(QWidget):
             self._apply_button_icon(btn_edit, "edit_title", text)
             self._apply_button_icon(btn_del, "delete_field", white)
 
-            btn_edit.clicked.connect(lambda _=False, cid=campo.id: self.edit_field(cid))
+            btn_edit.clicked.connect(lambda _=False, cid=campo.id: self.edit_field_title(cid))
             btn_del.clicked.connect(lambda _=False, cid=campo.id: self.delete_field(cid))
             btn_del.setProperty("variant", "danger")
 
@@ -987,7 +753,6 @@ class App(QWidget):
 
     def _persist_campos(self) -> None:
         self.cfg_fields["campos"] = [c.__dict__ for c in self.campos]
-        self.cfg_fields["aba"] = self.sheet_name
         save_fields_config(self.cfg_fields)
 
     def _apply_file_path(self, path: str, prepare: bool, silent: bool = False) -> None:
@@ -999,77 +764,10 @@ class App(QWidget):
             try:
                 headers = [c.titulo for c in self.campos]
                 ensure_workbook(self.file_path, self.sheet_name, headers)
-                apply_column_type_rules(self.file_path, self.sheet_name, self.campos)
                 if not silent:
                     self.lbl_status.setText("Planilha preparada e salva como padrão.")
             except Exception as e:
                 self.lbl_status.setText(f"Erro ao preparar planilha: {e}")
-
-    # ---------- NOVO: sincronizar campos do app com cabeçalhos da planilha ----------
-
-    def sync_fields_from_existing_excel(self, path: str) -> bool:
-        """
-        Lê a linha 1 da planilha e substitui os campos do app por esses cabeçalhos.
-        - Atualiza controle_campos.json
-        - Atualiza a aba utilizada (se a aba configurada não existir, usa a aba ativa)
-        - Reaplica regras de formatação/validação por tipo no Excel
-        """
-        try:
-            sheet_used, headers = read_headers_from_excel(path, self.sheet_name)
-        except Exception as e:
-            QMessageBox.critical(self, "Erro", f"Falha ao ler a planilha: {e}")
-            return False
-
-        if not headers:
-            QMessageBox.warning(
-                self,
-                "Sem cabeçalho",
-                "A planilha não possui cabeçalho na linha 1.\n\n"
-                "Para importar campos, a linha 1 deve conter os nomes das colunas."
-            )
-            return False
-
-        # Se a aba configurada não existe, muda para a aba ativa utilizada.
-        self.sheet_name = sheet_used
-        self.cfg_fields["aba"] = self.sheet_name
-
-        # Tenta preservar tipo quando o título já existe no app (comparação case-insensitive)
-        existing_by_title = {c.titulo.strip().lower(): c for c in self.campos}
-
-        used_ids: set = set()
-        new_campos: List[Campo] = []
-
-        for h in headers:
-            key = h.strip().lower()
-            old = existing_by_title.get(key)
-
-            if old:
-                cid = old.id
-                tipo = old.tipo if old.tipo in FIELD_TYPES else "texto"
-                fixo = old.fixo
-                used_ids.add(cid)
-            else:
-                cid = make_unique_id(sanitize_id(h), used_ids)
-                tipo = infer_type_from_title(h)
-                if tipo not in FIELD_TYPES:
-                    tipo = "texto"
-                fixo = False
-
-            new_campos.append(Campo(id=cid, titulo=h, tipo=tipo, fixo=fixo))
-
-        self.campos = new_campos
-        self._persist_campos()
-
-        # Reaplica regras no Excel (formato/validação)
-        try:
-            apply_column_type_rules(path, self.sheet_name, self.campos)
-        except Exception:
-            # não impede o uso, apenas não aplica validações
-            pass
-
-        self.render_fields()
-        self.lbl_status.setText("Campos importados da planilha e salvos no controle.")
-        return True
 
     def choose_file(self) -> None:
         path, _ = QFileDialog.getSaveFileName(
@@ -1080,30 +778,9 @@ class App(QWidget):
         )
         if not path:
             return
-
         if not path.lower().endswith(".xlsx"):
             path += ".xlsx"
 
-        existed = os.path.exists(path)
-
-        if existed:
-            resp = QMessageBox.question(
-                self,
-                "Planilha existente",
-                "Esta planilha já existe.\n\n"
-                "Deseja importar os campos do cabeçalho (linha 1) para o aplicativo?\n\n"
-                "Sim: substitui os campos do app pelos campos da planilha.\n"
-                "Não: mantém os campos atuais e apenas garante as colunas no Excel."
-            )
-            if resp == QMessageBox.Yes:
-                # Não prepara (não altera cabeçalho). Apenas salva o caminho e importa campos.
-                self._apply_file_path(path, prepare=False, silent=True)
-                ok = self.sync_fields_from_existing_excel(path)
-                if ok:
-                    self.lbl_file.setText(f"Arquivo: {path}  (aba: {self.sheet_name})")
-                return
-
-        # Comportamento padrão: prepara planilha para conter os campos atuais
         self._apply_file_path(path, prepare=True, silent=False)
 
     # ---------- ações de campos ----------
@@ -1119,22 +796,15 @@ class App(QWidget):
             QMessageBox.warning(self, "Atenção", "Já existe um campo com esse título.")
             return
 
-        tipo, ok_tipo = QInputDialog.getItem(
-            self,
-            "Tipo do campo",
-            "Selecione o tipo:",
-            FIELD_TYPES,
-            0,
-            False
-        )
-        if not ok_tipo:
-            return
-        tipo = str(tipo)
+        cid = title.lower().replace(" ", "_")
+        existing_ids = {c.id for c in self.campos}
+        base = cid
+        i = 2
+        while cid in existing_ids:
+            cid = f"{base}_{i}"
+            i += 1
 
-        used_ids = {c.id for c in self.campos}
-        cid = make_unique_id(sanitize_id(title), used_ids)
-
-        self.campos.append(Campo(id=cid, titulo=title, tipo=tipo, fixo=False))
+        self.campos.append(Campo(id=cid, titulo=title, tipo="texto", fixo=False))
         self._persist_campos()
 
         self.render_fields()
@@ -1144,16 +814,15 @@ class App(QWidget):
             try:
                 headers = [c.titulo for c in self.campos]
                 ensure_workbook(self.file_path, self.sheet_name, headers)
-                apply_column_type_rules(self.file_path, self.sheet_name, self.campos)
             except Exception as e:
                 self.lbl_status.setText(f"Campo criado, mas falhou ao atualizar Excel: {e}")
 
-    def edit_field(self, field_id: str) -> None:
+    def edit_field_title(self, field_id: str) -> None:
         campo = next((c for c in self.campos if c.id == field_id), None)
         if not campo:
             return
 
-        new_title, ok = QInputDialog.getText(self, "Editar campo", "Título:", text=campo.titulo)
+        new_title, ok = QInputDialog.getText(self, "Editar título", "Novo título:", text=campo.titulo)
         if not ok:
             return
 
@@ -1162,19 +831,6 @@ class App(QWidget):
             QMessageBox.warning(self, "Atenção", "Título não pode ser vazio.")
             return
 
-        idx = FIELD_TYPES.index(campo.tipo) if campo.tipo in FIELD_TYPES else 0
-        new_tipo, ok_tipo = QInputDialog.getItem(
-            self,
-            "Editar campo",
-            "Tipo:",
-            FIELD_TYPES,
-            idx,
-            False
-        )
-        if not ok_tipo:
-            return
-        new_tipo = str(new_tipo)
-
         existing_titles = {c.titulo for c in self.campos if c.id != field_id}
         if new_title in existing_titles:
             QMessageBox.warning(self, "Atenção", "Já existe um campo com esse título.")
@@ -1182,20 +838,16 @@ class App(QWidget):
 
         old_title = campo.titulo
         campo.titulo = new_title
-        campo.tipo = new_tipo
-
         self._persist_campos()
 
         try:
             if self.file_path:
-                if old_title != new_title:
-                    rename_column_header(self.file_path, self.sheet_name, old_title, new_title)
-                apply_column_type_rules(self.file_path, self.sheet_name, self.campos)
+                rename_column_header(self.file_path, self.sheet_name, old_title, new_title)
         except Exception as e:
-            self.lbl_status.setText(f"Atualizado no controle, mas falhou no Excel: {e}")
+            self.lbl_status.setText(f"Título atualizado no controle, mas falhou no Excel: {e}")
 
         self.render_fields()
-        self.lbl_status.setText("Campo atualizado (título/tipo).")
+        self.lbl_status.setText("Título do campo atualizado.")
 
     def delete_field(self, field_id: str) -> None:
         campo = next((c for c in self.campos if c.id == field_id), None)
@@ -1216,7 +868,6 @@ class App(QWidget):
         try:
             if self.file_path:
                 delete_column_by_header(self.file_path, self.sheet_name, campo.titulo)
-                apply_column_type_rules(self.file_path, self.sheet_name, self.campos)
         except Exception as e:
             self.lbl_status.setText(f"Campo removido do controle, mas falhou ao remover coluna no Excel: {e}")
 
@@ -1235,25 +886,23 @@ class App(QWidget):
             QMessageBox.warning(self, "Atenção", "Selecione uma planilha primeiro.")
             return
 
-        row_by_title: Dict[str, str] = {}
-        for c in self.campos:
-            txt = self.inputs[c.id].text().strip() if c.id in self.inputs else ""
-            row_by_title[c.titulo] = txt
+        headers = [c.titulo for c in self.campos]
+        row = {c.titulo: (self.inputs[c.id].text().strip() if c.id in self.inputs else "") for c in self.campos}
 
-        if all(not v for v in row_by_title.values()):
+        if all(not v for v in row.values()):
             QMessageBox.information(self, "Info", "Nada para salvar (todos os campos vazios).")
             return
 
         try:
-            append_row_typed(self.file_path, self.sheet_name, self.campos, row_by_title)
+            append_row(self.file_path, self.sheet_name, headers, row)
         except Exception as e:
             self.lbl_status.setText(f"Erro ao salvar: {e}")
-            QMessageBox.critical(self, "Erro", f"Erro ao salvar: {e}")
+            QMessageBox.critical(None, "Erro", f"Erro ao salvar: {e}")
             return
 
         self.clear_fields()
         self.lbl_status.setText("Lead salvo (nova linha adicionada). Campos limpos automaticamente.")
-        QMessageBox.information(self, "Info", "Lead salvo (nova linha adicionada). Campos limpos automaticamente.")
+        QMessageBox.information("Lead salvo (nova linha adicionada). Campos limpos automaticamente.")
 
     # ---------- configurações (engrenagem) ----------
 
@@ -1268,12 +917,13 @@ class App(QWidget):
 
         dlg = ThemeDialog(self, h, s, l)
 
+        # live update: ao mover slider, aplica imediatamente
         def on_change():
             hh, ss, ll = dlg.values()
             rr, gg, bb = hsl_to_rgb(hh, ss, ll)
             bg_hex = rgb_to_hex(rr, gg, bb)
             base = dict(DEFAULT_THEME)
-            base.update(before_theme)
+            base.update(before_theme)  # base do padrão
             derived = derive_theme_from_background(bg_hex, base)
             self._apply_theme(derived)
 
@@ -1281,10 +931,12 @@ class App(QWidget):
         dlg.slider_s.valueChanged.connect(on_change)
         dlg.slider_l.valueChanged.connect(on_change)
 
+        # primeira prévia
         on_change()
 
         if dlg.exec() == QDialog.Accepted:
             hh, ss, ll = dlg.values()
+            # recalcula e persiste
             rr, gg, bb = hsl_to_rgb(hh, ss, ll)
             bg_hex = rgb_to_hex(rr, gg, bb)
 
@@ -1299,6 +951,7 @@ class App(QWidget):
 
             self._apply_theme(derived)
         else:
+            # cancel: restaura
             self.cfg_ui = before_cfg
             save_ui_config(self.cfg_ui)
             self._apply_theme(before_theme)
@@ -1347,9 +1000,8 @@ def main() -> None:
     loader.update("Carregando interface...")
     w = App()
     w.show()
-    app.processEvents()
+    app.processEvents()  # importante: garante que a janela foi desenhada
 
-    # depende do seu módulo LoadingScreen ter finish_and_close()
     loader.finish_and_close(w)
     app.exec()
 
