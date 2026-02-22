@@ -79,10 +79,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (error) throw error;
 
-      // Ajuste conforme seu hub final:
-      // se o hub é principal.html, use "../principal.html"
-      // se o hub é index.html (raiz), use "../index.html"
-      window.location.href = "../index.html";
+      
+      window.location.href = "../hub/hub.html";
     } catch (error) {
       console.error(error);
       alert(`Erro: ${error?.message || "Falha no login."}`);
