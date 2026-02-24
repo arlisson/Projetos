@@ -61,6 +61,7 @@ from PySide6.QtWidgets import (
     QSlider,
     QFormLayout,
     QDialogButtonBox,
+    QFrame
 )
 
 CONFIG_FIELDS_PATH = "controle_campos.json"
@@ -220,8 +221,8 @@ class Campo:
 
 def default_fields_config() -> dict:
     return {
-        "arquivo_padrao": "leads.xlsx",
-        "aba": "Leads",
+        "arquivo_padrao": "PreencheFacil.xlsx",
+        "aba": "Preenche Fácil",
         "campos": [
             {"id": "nome", "titulo": "Nome", "tipo": "texto", "fixo": True},
             {"id": "telefone", "titulo": "Telefone", "tipo": "telefone", "fixo": True},
@@ -365,31 +366,33 @@ def infer_type_from_title(header: str) -> str:
     return "texto"
 
 
-def read_headers_from_excel(path: str, preferred_sheet: str) -> Tuple[str, List[str]]:
+def read_headers_from_excel(path: str, preferred_sheet: str) -> Tuple[str, List[str], bool]:
     """
-    Lê a linha 1 e retorna (sheet_name_usado, headers).
+    Lê a linha 1 e retorna (sheet_name_usado, headers, has_header).
+    has_header = True se encontrou pelo menos 1 valor não vazio na linha 1.
     - Se preferred_sheet não existir, usa a aba ativa.
     """
     wb = load_workbook(path)
-    if preferred_sheet in wb.sheetnames:
-        sheet_name = preferred_sheet
-    else:
-        sheet_name = wb.active.title
-
+    sheet_name = preferred_sheet if preferred_sheet in wb.sheetnames else wb.active.title
     ws = wb[sheet_name]
+
     if ws.max_row < 1:
-        return sheet_name, []
+        return sheet_name, [], False
 
     headers: List[str] = []
+    has_any = False
+
     for cell in ws[1]:
         v = cell.value
         if v is None:
             continue
-        h = str(v).strip()
-        if h and h not in headers:
-            headers.append(h)
+        s = str(v).strip()
+        if s:
+            has_any = True
+            if s not in headers:
+                headers.append(s)
 
-    return sheet_name, headers
+    return sheet_name, headers, has_any
 
 
 # =========================
@@ -642,7 +645,21 @@ def rename_column_header(path: str, sheet_name: str, old_header: str, new_header
     ws.cell(row=1, column=col, value=new_header)
     wb.save(path)
 
+def write_headers_from_campos(path: str, sheet_name: str, campos: List[Campo]) -> None:
+    """
+    Garante que a linha 1 tenha cabeçalhos (títulos) baseados em campos do app.
+    Se a aba não existir, cria.
+    """
+    headers = [c.titulo for c in campos]
 
+    wb = load_workbook(path)
+    ws = wb[sheet_name] if sheet_name in wb.sheetnames else wb.create_sheet(sheet_name)
+
+    # escreve cabeçalho a partir da coluna 1
+    for col_idx, h in enumerate(headers, start=1):
+        ws.cell(row=1, column=col_idx, value=h)
+
+    wb.save(path)
 # =========================
 # Dialog: Configuração de fundo (sliders)
 # =========================
@@ -728,7 +745,7 @@ class App(QWidget):
         self.cfg_fields = load_fields_config()
         self.cfg_ui = load_ui_config()
 
-        self.sheet_name: str = self.cfg_fields.get("aba", "Leads")
+        self.sheet_name: str = self.cfg_fields.get("aba", "Preenche Fácil")
         self.file_path: Optional[str] = get_last_sheet_path()
 
         self.campos: List[Campo] = [Campo(**c) for c in self.cfg_fields.get("campos", [])]
@@ -881,8 +898,13 @@ class App(QWidget):
             }}
 
             QLabel#Status {{
-                color: {muted};
+                color: {muted};          
+
+                
             }}
+
+                    
+
         """)
 
         self._retint_all_icons(theme)
@@ -903,7 +925,7 @@ class App(QWidget):
     # ---------- build UI ----------
 
     def _build_ui(self) -> None:
-        self.setWindowTitle("Cadastro de Leads (Local)")
+        self.setWindowTitle("Preenche Fácil - Avance")
         self.setMinimumWidth(490)
 
         root = QVBoxLayout()
@@ -937,7 +959,7 @@ class App(QWidget):
         actions = QHBoxLayout()
 
         self.btn_add_field = QPushButton("Adicionar Campo")
-        self.btn_save = QPushButton("Salvar lead (nova linha)")
+        self.btn_save = QPushButton("Salvar (nova linha)")
         self.btn_clear = QPushButton("Limpar")
 
         self.btn_save.setProperty("variant", "primary")
@@ -956,6 +978,37 @@ class App(QWidget):
         self.lbl_status.setWordWrap(True)
         self.lbl_status.setObjectName("Status")
         root.addWidget(self.lbl_status)
+
+                # --- Rodapé corporativo ---
+        sep = QFrame()
+        sep.setFrameShape(QFrame.HLine)
+        sep.setFrameShadow(QFrame.Plain)
+        sep.setFixedHeight(1)
+        root.addWidget(sep)
+
+        # --- Rodapé corporativo ---
+                # --- Rodapé corporativo ---
+        sep = QFrame()
+        sep.setFrameShape(QFrame.HLine)
+        sep.setFrameShadow(QFrame.Plain)
+        sep.setFixedHeight(1)
+        root.addWidget(sep)
+
+        footer_row = QHBoxLayout()
+
+        self.lbl_footer_left = QLabel("<b>AVANCE Telefonia Empresarial<b> • WhatsApp (22) 98812-4656")
+        # self.lbl_footer_right = QLabel("suporte@avance.com • (11) 99999-9999 • © 2026")
+
+        self.lbl_footer_left.setObjectName("Footer")
+        # self.lbl_footer_right.setObjectName("Footer")
+        # self.lbl_footer_right.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+
+        footer_row.addWidget(self.lbl_footer_left, 1)
+        # footer_row.addWidget(self.lbl_footer_right, 1)
+
+        footer_wrap = QWidget()
+        footer_wrap.setLayout(footer_row)
+        root.addWidget(footer_wrap)
 
         self.setLayout(root)
 
@@ -1064,30 +1117,42 @@ class App(QWidget):
     def sync_fields_from_existing_excel(self, path: str) -> bool:
         """
         Lê a linha 1 da planilha e substitui os campos do app por esses cabeçalhos.
-        - Atualiza controle_campos.json
-        - Atualiza a aba utilizada (se a aba configurada não existir, usa a aba ativa)
-        - Reaplica regras de formatação/validação por tipo no Excel
+        Se NÃO houver cabeçalho, escreve os campos atuais (controle_campos.json) na linha 1
+        e segue o fluxo sem importar.
         """
         try:
-            sheet_used, headers = read_headers_from_excel(path, self.sheet_name)
+            sheet_used, headers, has_header = read_headers_from_excel(path, self.sheet_name)
         except Exception as e:
             QMessageBox.critical(self, "Erro", f"Falha ao ler a planilha: {e}")
-            return False
-
-        if not headers:
-            QMessageBox.warning(
-                self,
-                "Sem cabeçalho",
-                "A planilha não possui cabeçalho na linha 1.\n\n"
-                "Para importar campos, a linha 1 deve conter os nomes das colunas."
-            )
             return False
 
         # Se a aba configurada não existe, muda para a aba ativa utilizada.
         self.sheet_name = sheet_used
         self.cfg_fields["aba"] = self.sheet_name
 
-        # Tenta preservar tipo quando o título já existe no app (comparação case-insensitive)
+        # NOVO: sem cabeçalho -> escreve os campos do controle na planilha e não substitui os campos do app
+        if not has_header:
+            try:
+                write_headers_from_campos(path, self.sheet_name, self.campos)
+                apply_column_type_rules(path, self.sheet_name, self.campos)
+            except Exception as e:
+                QMessageBox.critical(self, "Erro", f"Falha ao criar cabeçalho na planilha: {e}")
+                return False
+
+            self._persist_campos()
+            self.render_fields()
+            self.lbl_status.setText("Planilha sem cabeçalho: cabeçalhos foram criados a partir do controle_campos.json.")
+            return True
+
+        # fluxo atual: tem cabeçalho -> importa e substitui campos do app
+        if not headers:
+            QMessageBox.warning(
+                self,
+                "Sem cabeçalho",
+                "A planilha não possui cabeçalho válido na linha 1."
+            )
+            return False
+
         existing_by_title = {c.titulo.strip().lower(): c for c in self.campos}
 
         used_ids: set = set()
@@ -1114,11 +1179,9 @@ class App(QWidget):
         self.campos = new_campos
         self._persist_campos()
 
-        # Reaplica regras no Excel (formato/validação)
         try:
             apply_column_type_rules(path, self.sheet_name, self.campos)
         except Exception:
-            # não impede o uso, apenas não aplica validações
             pass
 
         self.render_fields()
@@ -1129,7 +1192,7 @@ class App(QWidget):
         path, _ = QFileDialog.getSaveFileName(
             self,
             "Escolher planilha",
-            self.cfg_fields.get("arquivo_padrao", "leads.xlsx"),
+            self.cfg_fields.get("arquivo_padrao", "PreencheFacil.xlsx"),
             "Planilha Excel (*.xlsx)",
         )
         if not path:
@@ -1146,8 +1209,9 @@ class App(QWidget):
                 "Planilha existente",
                 "Esta planilha já existe.\n\n"
                 "Deseja importar os campos do cabeçalho (linha 1) para o aplicativo?\n\n"
-                "Sim: substitui os campos do app pelos campos da planilha.\n"
-                "Não: mantém os campos atuais e apenas garante as colunas no Excel."
+                "Sim: substitui os campos do app pelos campos da planilha (linha 1).\n"
+                "Não: mantém os campos atuais e garante as colunas no Excel.\n\n"
+                "Obs.: se a planilha não tiver cabeçalho, o app criará os títulos automaticamente a partir do controle."
             )
             if resp == QMessageBox.Yes:
                 # Não prepara (não altera cabeçalho). Apenas salva o caminho e importa campos.
@@ -1318,8 +1382,8 @@ class App(QWidget):
             return
 
         self.clear_fields()
-        self.lbl_status.setText("Lead salvo (nova linha adicionada). Campos limpos automaticamente.")
-        QMessageBox.information(self, "Info", "Lead salvo (nova linha adicionada). Campos limpos automaticamente.")
+        self.lbl_status.setText("Dados salvos (nova linha adicionada). Campos limpos automaticamente.")
+        QMessageBox.information(self, "Info", "Dados salvos (nova linha adicionada). Campos limpos automaticamente.")
 
     # ---------- configurações (engrenagem) ----------
 

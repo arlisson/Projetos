@@ -1,0 +1,36 @@
+{
+  "arquivo_padrao": "leads.xlsx",
+  "aba": "Leads",
+  "campos": [
+    {
+      "id": "nome",
+      "titulo": "Nome",
+      "tipo": "texto",
+      "fixo": true
+    },
+    {
+      "id": "telefone",
+      "titulo": "Telefone",
+      "tipo": "texto",
+      "fixo": true
+    },
+    {
+      "id": "email",
+      "titulo": "Email",
+      "tipo": "email",
+      "fixo": true
+    },
+    {
+      "id": "data_do_pagamento",
+      "titulo": "Data do pagamento",
+      "tipo": "data",
+      "fixo": false
+    },
+    {
+      "id": "salrio",
+      "titulo": "Salário",
+      "tipo": "texto",
+      "fixo": false
+    }
+  ]
+}

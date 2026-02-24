@@ -2,10 +2,10 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 ; Non-commercial use only
 
-#define MyAppName "LeadsApp"
+#define MyAppName "PreencheFacil"
 #define MyAppVersion "0.0.1"
 #define MyAppPublisher "AVANCE"
-#define MyAppExeName "LeadsApp.exe"
+#define MyAppExeName "PreencheFacil.exe"
 #define MyAppAssocName MyAppName + ""
 #define MyAppAssocExt ".myp"
 #define MyAppAssocKey StringChange(MyAppAssocName, " ", "") + MyAppAssocExt
@@ -33,9 +33,9 @@ ChangesAssociations=yes
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only).
 ;PrivilegesRequired=lowest
-OutputDir=C:\Repositorios\Projetos\Python\text_extractor\instalador
-OutputBaseFilename=LeadsSetup
-SetupIconFile=C:\Repositorios\Projetos\Python\text_extractor\assets\A.ico
+OutputDir=C:\Projetos\Python\text_extractor\instalador
+OutputBaseFilename=PreencheFacil
+SetupIconFile=C:\Projetos\Python\text_extractor\assets\A.ico
 SolidCompression=yes
 WizardStyle=classic dynamic
 
@@ -46,9 +46,9 @@ Name: "portuguese"; MessagesFile: "compiler:Languages\Portuguese.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Repositorios\Projetos\Python\text_extractor\dist\LeadsApp\LeadsApp.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Repositorios\Projetos\Python\text_extractor\dist\LeadsApp\controle_*.json"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Repositorios\Projetos\Python\text_extractor\dist\LeadsApp\_internal\*"; DestDir: "{app}\_internal"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Projetos\Python\text_extractor\dist\PreencheFacil\PreencheFacil.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Projetos\Python\text_extractor\dist\PreencheFacil\controle_*.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Projetos\Python\text_extractor\dist\PreencheFacil\_internal\*"; DestDir: "{app}\_internal"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]

@@ -23,13 +23,13 @@
     {
       "id": "data_do_pagamento",
       "titulo": "Data do pagamento",
-      "tipo": "texto",
+      "tipo": "data",
       "fixo": false
     },
     {
       "id": "salrio",
       "titulo": "Salário",
-      "tipo": "moeda",
+      "tipo": "texto",
       "fixo": false
     }
   ]
