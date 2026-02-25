@@ -168,6 +168,80 @@ def blend(a: Tuple[int, int, int], b: Tuple[int, int, int], t: float) -> Tuple[i
         int(round(a[2] * (1 - t) + b[2] * t)),
     )
 
+def get_sheet_headers(xlsx_path: str, sheet_name: str) -> list[str]:
+    """
+    Extract the header row from an Excel worksheet.
+    
+    This function reads the first row of a specified worksheet in an Excel file
+    and returns a list of non-empty header values as strings.
+    
+    Args:
+        xlsx_path (str): The file path to the Excel workbook (.xlsx file).
+        sheet_name (str): The name of the worksheet to read headers from.
+            If the sheet name does not exist in the workbook, the active sheet is used.
+    
+    Returns:
+        list[str]: A list of header values from the first row, with whitespace stripped.
+            Only non-empty values are included in the returned list.
+    
+    Example:
+        >>> headers = get_sheet_headers('data.xlsx', 'Sheet1')
+        >>> print(headers)
+        ['Name', 'Email', 'Phone']
+    """
+    wb = load_workbook(xlsx_path)
+    ws = wb[sheet_name] if sheet_name in wb.sheetnames else wb.active
+    headers = []
+    for cell in ws[1]:
+        v = (cell.value or "")
+        v = str(v).strip()
+        if v:
+            headers.append(v)
+    return headers
+
+def normalize_masked_text(value: str) -> str:
+    """
+    Normalize and validate a masked text input by removing values that contain only separators or incomplete patterns.
+    This function processes text that may contain data entry masks (like date or phone number formats)
+    and returns an empty string if the input appears to be incomplete or contains only placeholder characters.
+    Args:
+        value (str): The input text to normalize, potentially containing masks or separators.
+    Returns:
+        str: The normalized input string if it contains meaningful data, or an empty string if it
+             consists only of separators, placeholders, or incomplete masked patterns.
+    Logic:
+        - Returns empty string if input contains only separators/placeholders (e.g., "//", "__/__/____").
+        - Returns empty string if input contains "/" but no digits (likely an incomplete date/mask).
+        - Returns empty string if input contains "/" but has fewer than 8 digits (incomplete date format like "12/__/____").
+        - Otherwise, returns the normalized (stripped) input value.
+    Examples:
+        >>> normalize_masked_text("  /  /  ")
+        ''
+        >>> normalize_masked_text("12/__/____")
+        ''
+        >>> normalize_masked_text("12/10/2023")
+        '12/10/2023'
+    """
+    v = (value or "").strip()
+
+    # Se ficar só com separadores/placeholder (ex.: "//", "__/__/____", "  /  /    "), considere vazio
+    only_separators = re.sub(r"[0-9A-Za-zÀ-ÿ]", "", v)  # remove letras e números
+    if v and only_separators and all(ch in " _-./()[]" for ch in only_separators):
+        # se não sobrou nenhum dígito/letra, é só máscara
+        if not re.search(r"[0-9A-Za-zÀ-ÿ]", v):
+            return ""
+
+    # Caso específico comum: contém "/" mas não tem dígito nenhum
+    if "/" in v and not re.search(r"\d", v):
+        return ""
+
+    # Se quiser ser mais estrito para data: se tiver menos de 8 dígitos, considere vazio
+    # (ddmmaaaa = 8). Isso evita salvar "12/__/____"
+    digits = re.sub(r"\D", "", v)
+    if "/" in v and digits and len(digits) < 8:
+        return ""
+
+    return v
 
 def derive_theme_from_background(bg_hex: str, base_theme: dict) -> dict:
     bg_rgb = hex_to_rgb(bg_hex)
@@ -343,6 +417,12 @@ def make_unique_id(base_id: str, used: set) -> str:
         i += 1
     used.add(cid)
     return cid
+
+def is_excel_lock_present(xlsx_path: str) -> bool:
+    folder = os.path.dirname(xlsx_path) or "."
+    name = os.path.basename(xlsx_path)
+    lock_name = "~$" + name
+    return os.path.exists(os.path.join(folder, lock_name))
 
 
 def infer_type_from_title(header: str) -> str:
@@ -1365,20 +1445,78 @@ class App(QWidget):
             QMessageBox.warning(self, "Atenção", "Selecione uma planilha primeiro.")
             return
 
+        # 1) Aviso antecipado: planilha provavelmente aberta no Excel (arquivo de lock "~$")
+        try:
+            
+            folder = os.path.dirname(self.file_path) or "."
+            name = os.path.basename(self.file_path)
+            if os.path.exists(os.path.join(folder, "~$" + name)):
+                msg = (
+                    "Não foi possível salvar porque a planilha parece estar aberta no Excel.\n\n"
+                    "Feche o arquivo no Excel e tente novamente."
+                )
+                self.lbl_status.setText("Planilha aberta no Excel (bloqueada).")
+                QMessageBox.warning(self, "Planilha em uso", msg)
+                return
+        except Exception:
+            # Se a checagem falhar por algum motivo, não bloqueia o salvamento
+            pass
+
         row_by_title: Dict[str, str] = {}
         for c in self.campos:
-            txt = self.inputs[c.id].text().strip() if c.id in self.inputs else ""
+            raw = self.inputs[c.id].text().strip() if c.id in self.inputs else ""
+            txt = normalize_masked_text(raw)
             row_by_title[c.titulo] = txt
 
         if all(not v for v in row_by_title.values()):
             QMessageBox.information(self, "Info", "Nada para salvar (todos os campos vazios).")
             return
 
-        try:
-            append_row_typed(self.file_path, self.sheet_name, self.campos, row_by_title)
-        except Exception as e:
-            self.lbl_status.setText(f"Erro ao salvar: {e}")
-            QMessageBox.critical(self, "Erro", f"Erro ao salvar: {e}")
+        # 2) Tenta salvar com retry simples para varredura inicial de antivírus (lock temporário)
+        import time
+        last_err = None
+        for attempt in range(6):  # ~0.2 + 0.4 + 0.8 + 1.6 + 3.2 + 6.4 = ~12.6s no pior caso
+            try:
+                append_row_typed(self.file_path, self.sheet_name, self.campos, row_by_title)
+                last_err = None
+                break
+            except PermissionError as e:
+                last_err = e
+                # Se o Excel abriu/fechou e o lock apareceu, avisa com mensagem específica
+                try:
+                    import os
+                    folder = os.path.dirname(self.file_path) or "."
+                    name = os.path.basename(self.file_path)
+                    if os.path.exists(os.path.join(folder, "~$" + name)):
+                        msg = (
+                            "Não foi possível salvar porque a planilha está aberta no Excel.\n\n"
+                            "Feche o arquivo no Excel e tente novamente."
+                        )
+                        self.lbl_status.setText("Planilha aberta no Excel (bloqueada).")
+                        QMessageBox.warning(self, "Planilha em uso", msg)
+                        return
+                except Exception:
+                    pass
+
+                # backoff
+                time.sleep(0.2 * (2 ** attempt))
+            except Exception as e:
+                self.lbl_status.setText(f"Erro ao salvar: {e}")
+                QMessageBox.critical(self, "Erro", f"Erro ao salvar: {e}")
+                return
+
+        if last_err is not None:
+            msg = (
+                "Não foi possível salvar a planilha.\n\n"
+                "Possíveis causas:\n"
+                "- O arquivo está aberto no Excel\n"
+                "- O antivírus está verificando/bloqueando a gravação\n"
+                "- A pasta/arquivo não permite escrita\n\n"
+                "Feche o Excel (se estiver aberto), aguarde alguns segundos e tente novamente.\n"
+                "Se o problema persistir, escolha outra pasta para a planilha."
+            )
+            self.lbl_status.setText(f"Erro ao salvar (arquivo bloqueado): {last_err}")
+            QMessageBox.critical(self, "Erro ao salvar", msg)
             return
 
         self.clear_fields()
