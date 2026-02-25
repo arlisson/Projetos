@@ -2,3 +2,11 @@ https://script.google.com/macros/s/AKfycbznxprQ97DT5cYK2AXKSDNOr8N_kzi-YvZYiipHR
 
 
 C:\Users\Basari\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Roaming\LeadsApp\user_login.json
+
+python -m PyInstaller --noconsole --name PreencheFacil `
+--icon assets/A.ico `
+--add-data "assets;assets" `
+--add-data "controle_ui.json;." `
+--add-data "controle_campos.json;." `
+--add-data "controle_planilha.json;." `
+  app.py

@@ -1076,7 +1076,7 @@ class App(QWidget):
 
         footer_row = QHBoxLayout()
 
-        self.lbl_footer_left = QLabel("<b>AVANCE Telefonia Empresarial<b> • WhatsApp (22) 98812-4656")
+        self.lbl_footer_left = QLabel("<b>Se precisar de telefonia para sua empresa -> WhatsApp (22) 98812-4656</b>")
         # self.lbl_footer_right = QLabel("suporte@avance.com • (11) 99999-9999 • © 2026")
 
         self.lbl_footer_left.setObjectName("Footer")
