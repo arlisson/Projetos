@@ -9,4 +9,6 @@ python -m PyInstaller --noconsole --name PreencheFacil `
 --add-data "controle_ui.json;." `
 --add-data "controle_campos.json;." `
 --add-data "controle_planilha.json;." `
-  app.py
+--add-data "LICENSE.txt;." `
+--add-data "LICENSE.pt-BR.txt;." `
+app.py

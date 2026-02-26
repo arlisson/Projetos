@@ -39,6 +39,10 @@ SetupIconFile=C:\Projetos\Python\text_extractor\assets\A.ico
 SolidCompression=yes
 WizardStyle=classic dynamic
 
+; ===== LICENÇA (exibida no assistente antes de instalar) =====
+; Aponte para o arquivo que EXISTE na hora de compilar o instalador.
+LicenseFile=C:\Projetos\Python\text_extractor\LICENSE.pt-BR.txt
+
 [Languages]
 Name: "portuguese"; MessagesFile: "compiler:Languages\Portuguese.isl"
 
@@ -48,6 +52,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "C:\Projetos\Python\text_extractor\dist\PreencheFacil\PreencheFacil.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Projetos\Python\text_extractor\dist\PreencheFacil\controle_*.json"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Projetos\Python\text_extractor\dist\PreencheFacil\LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Projetos\Python\text_extractor\dist\PreencheFacil\LICENSE.pt-BR.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Projetos\Python\text_extractor\dist\PreencheFacil\_internal\*"; DestDir: "{app}\_internal"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
@@ -63,4 +69,3 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: de
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
-

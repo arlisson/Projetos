@@ -21,7 +21,7 @@ Arquivos de controle:
 Dependências:
 pip install PySide6 openpyxl
 """
-
+from license_dialog import LicenseDialog, read_license_text
 from user_login import prompt_email, clear_login
 from online_license import ensure_online_license, clear_cache
 from simple_lock import ensure_or_mark
@@ -61,7 +61,7 @@ from PySide6.QtWidgets import (
     QSlider,
     QFormLayout,
     QDialogButtonBox,
-    QFrame
+    QFrame,
 )
 
 CONFIG_FIELDS_PATH = "controle_campos.json"
@@ -841,6 +841,20 @@ class App(QWidget):
             # Mantém o comportamento padrão ao abrir (não importa automaticamente os campos)
             self._apply_file_path(self.file_path, prepare=True, silent=True)
 
+
+    def open_license(self) -> None:
+        """
+        Open and display the license dialog.
+        
+        Retrieves the current UI theme configuration, reads the license text,
+        creates a LicenseDialog with the theme and license text, and displays
+        it as a modal dialog.
+        """
+        theme = (self.cfg_ui.get("theme") or dict(DEFAULT_THEME))
+        text = read_license_text()
+        dlg = LicenseDialog(self, theme=theme, license_text=text)
+        dlg.exec()
+
     # ---------- ícones / tint ----------
 
     def _apply_window_icon(self) -> None:
@@ -1076,6 +1090,7 @@ class App(QWidget):
 
         footer_row = QHBoxLayout()
 
+       
         self.lbl_footer_left = QLabel("<b>Se precisar de telefonia para sua empresa -> WhatsApp (22) 98812-4656</b>")
         # self.lbl_footer_right = QLabel("suporte@avance.com • (11) 99999-9999 • © 2026")
 
@@ -1085,6 +1100,10 @@ class App(QWidget):
 
         footer_row.addWidget(self.lbl_footer_left, 1)
         # footer_row.addWidget(self.lbl_footer_right, 1)
+
+        self.btn_license = QPushButton("Licença")
+        self.btn_license.clicked.connect(self.open_license)
+        footer_row.addWidget(self.btn_license, 0, Qt.AlignRight)
 
         footer_wrap = QWidget()
         footer_wrap.setLayout(footer_row)

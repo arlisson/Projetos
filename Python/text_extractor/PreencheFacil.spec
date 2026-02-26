@@ -5,7 +5,7 @@ a = Analysis(
     ['app.py'],
     pathex=[],
     binaries=[],
-    datas=[('assets', 'assets'), ('controle_ui.json', '.'), ('controle_campos.json', '.'), ('controle_planilha.json', '.')],
+    datas=[('assets', 'assets'), ('controle_ui.json', '.'), ('controle_campos.json', '.'), ('controle_planilha.json', '.'), ('LICENSE.txt', '.'), ('LICENSE.pt-BR.txt', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
