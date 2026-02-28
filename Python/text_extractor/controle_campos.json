@@ -10,14 +10,20 @@
     },
     {
       "id": "nome",
-      "titulo": "nome",
-      "tipo": "texto",
+      "titulo": "Email",
+      "tipo": "email",
       "fixo": true
     },
     {
       "id": "email",
       "titulo": "Data",
       "tipo": "data",
+      "fixo": false
+    },
+    {
+      "id": "possui_conta",
+      "titulo": "Possui conta",
+      "tipo": "booleano",
       "fixo": false
     }
   ]

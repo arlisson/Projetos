@@ -1,15 +1,5 @@
 {
   "window_icon": "assets/A.ico",
-  "theme": {
-    "background": "#161B32",
-    "surface": "#24293E",
-    "surface_alt": "#2D3246",
-    "text": "#E6EDF7",
-    "muted_text": "#888D9D",
-    "primary": "#3B82F6",
-    "danger": "#EF4444",
-    "border": "#3B3F53"
-  },
   "button_icons": {
     "choose_file": "assets/icons/pasta.png",
     "add_field": "assets/icons/adicionar.png",
@@ -19,9 +9,20 @@
     "delete_field": "assets/icons/lixeira.png",
     "settings": "assets/icons/engrenagem.png"
   },
+  "theme": {
+    "background": "#0A141E",
+    "surface": "#19222C",
+    "surface_alt": "#222C34",
+    "text": "#E6EDF7",
+    "muted_text": "#828B93",
+    "primary": "#3B82F6",
+    "danger": "#EF4444",
+    "border": "#313A42"
+  },
   "background_hsl": {
-    "h": 228,
-    "s": 39,
-    "l": 14
-  }
+    "h": 210,
+    "s": 49,
+    "l": 8
+  },
+  "footer_left_html": "<b>Se precisar de telefonia para sua empresa -> WhatsApp (22) 98812-4656</b>"
 }
