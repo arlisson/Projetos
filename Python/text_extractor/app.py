@@ -1,4 +1,4 @@
-# app.py (editado: footer via controle_ui.json e engrenagem abre tema + domínios)
+# app.py (editado: footer via controle_ui.json e engrenagem abre tema + domínios + abas com sync automático)
 from __future__ import annotations
 
 from license_dialog import LicenseDialog, read_license_text
@@ -7,7 +7,6 @@ from online_license import ensure_online_license, clear_cache
 from simple_lock import ensure_or_mark
 from loading_screen import LoadingScreen
 
-
 EMAIL_RETRY_CODES = {"no_license", "blocked", "device_limit", "not_activated", "revoked"}
 
 import json
@@ -15,7 +14,7 @@ import sys
 import os
 from typing import Dict, List, Optional, Any, Tuple
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
     QApplication,
@@ -53,6 +52,7 @@ from config import (
     load_email_domains_config,
     save_email_domains_config,
     set_sheet_campos,
+    rename_sheet_key,  # <-- necessário para refletir rename de abas no controle
 )
 
 from models import (
@@ -72,7 +72,7 @@ from formatters import (
 from excel_io import (
     ensure_sheet_exists,
     is_excel_lock_present,
-    list_sheets,
+    list_sheets_with_ids,
     read_headers_from_excel,
     write_headers_from_campos,
     ensure_workbook,
@@ -80,6 +80,7 @@ from excel_io import (
     append_row_typed,
     delete_column_by_header,
     rename_column_header,
+    list_sheets, 
 )
 
 from dialogs import (
@@ -117,8 +118,9 @@ class SettingsDialog(QDialog):
 
         self.lbl = QLabel("Escolha o que deseja editar:")
         self.btn_theme = QPushButton("Tema de cores")
+        self.btn_theme.setToolTip("Configurar o tema de cores do aplicativo")
         self.btn_domains = QPushButton("Domínios de e-mail")
-        # self.btn_domains.setEnabled(self.parent_app._has_email_fields())
+        self.btn_domains.setToolTip("Configurar a lista de domínios sugeridos para campos de email")
 
         self.btn_domains.setEnabled(True)
 
@@ -166,12 +168,20 @@ class App(QWidget):
 
         self.icon_mgr = IconManager(self.cfg_ui, abs_path=abs_path, file_exists=file_exists)
 
+        # monitor state
+        self._sheet_last_sig = None  # (mtime, size)
+        self._sheet_monitor_timer: Optional[QTimer] = None
+        self._last_sheets_meta: List[Tuple[int, str]] = []
+
         self._apply_window_icon()
         self._build_ui()
         self._apply_theme_from_config()
 
         if self.file_path:
             self._apply_file_path(self.file_path, prepare=True, silent=True)
+
+        # só começa o monitor depois da UI existir e depois de aplicar planilha
+        self._start_sheet_monitor()
 
     def open_license(self) -> None:
         theme = (self.cfg_ui.get("theme") or dict(DEFAULT_THEME))
@@ -307,6 +317,7 @@ class App(QWidget):
         self.icon_mgr.apply_button_icon(self.btn_clear, "clear", text)
         self.icon_mgr.apply_button_icon(self.btn_save, "save_lead", white)
         self.icon_mgr.apply_button_icon(self.btn_settings, "settings", text)
+        self.icon_mgr.apply_button_icon(self.btn_refresh_sheets, "refresh", text)
 
         self._last_theme_for_fields = theme
         self.render_fields()
@@ -319,12 +330,9 @@ class App(QWidget):
     def open_email_domains(self) -> None:
         dlg = EmailDomainsDialog(self, domains=list(self.email_domains))
         if dlg.exec() == QDialog.Accepted:
-            # sempre persiste, mesmo que não existam campos email
             self.email_domains = dlg.domains()
             self.cfg_email["dominios"] = list(self.email_domains)
             save_email_domains_config(self.cfg_email)
-
-            # se houver widgets de email renderizados, atualiza
             self._refresh_email_domain_widgets()
 
     def _refresh_email_domain_widgets(self) -> None:
@@ -334,34 +342,54 @@ class App(QWidget):
             w = self.inputs.get(c.id)
             if isinstance(w, EmailInputWidget):
                 w.set_domains(self.email_domains)
-    
 
-    #-----------Abas Excel----------#
+    # ----------- Abas Excel (UI + Sync) -----------
+
     def _reload_sheet_list(self) -> None:
+        """Recarrega combobox de abas a partir do Excel e atualiza snapshot interno."""
+        if not self.file_path or not os.path.exists(self.file_path):
+            self.cmb_sheet.blockSignals(True)
+            self.cmb_sheet.clear()
+            self.cmb_sheet.blockSignals(False)
+            self._last_sheets_meta = []
+            return
+
+        meta: List[Tuple[int, str]] = []
+
+        # 1) tenta ler com IDs (melhor para detectar rename)
+        try:
+            meta = list_sheets_with_ids(self.file_path)
+        except Exception:
+            meta = []
+
+        # 2) fallback: lê só os nomes e cria IDs artificiais
+        if not meta:
+            try:
+                names = list_sheets(self.file_path)
+                meta = [(i + 1, name) for i, name in enumerate(names)]
+            except Exception:
+                meta = []
+
+        self._last_sheets_meta = meta
+        self._reload_sheet_list_from_meta(meta)
+
+    def _reload_sheet_list_from_meta(self, meta) -> None:
         self.cmb_sheet.blockSignals(True)
         self.cmb_sheet.clear()
 
-        if not self.file_path or not os.path.exists(self.file_path):
-            self.cmb_sheet.blockSignals(False)
-            return
+        titles = [t for _, t in meta]
+        for t in titles:
+            self.cmb_sheet.addItem(t)
 
-        try:
-            names = list_sheets(self.file_path)
-        except Exception:
-            names = []
-
-        for n in names:
-            self.cmb_sheet.addItem(n)
-
-        # tenta selecionar a aba atual
-        if self.sheet_name in names:
+        if self.sheet_name in titles:
             self.cmb_sheet.setCurrentText(self.sheet_name)
-        elif names:
-            self.sheet_name = names[0]
+        elif titles:
+            self.sheet_name = titles[0]
+            self.cfg_fields["aba"] = self.sheet_name
             self.cmb_sheet.setCurrentIndex(0)
 
         self.cmb_sheet.blockSignals(False)
-    
+
     def on_sheet_changed(self, new_sheet: str) -> None:
         if not new_sheet or not self.file_path:
             return
@@ -369,18 +397,15 @@ class App(QWidget):
         self.sheet_name = new_sheet
         self.cfg_fields["aba"] = self.sheet_name
 
-        # carrega campos do controle para essa aba
         sheet_campos = get_sheet_campos(self.cfg_fields, self.sheet_name)
-
         if sheet_campos:
             self.campos = [Campo(**c) for c in sheet_campos]
             self.render_fields()
             save_fields_config(self.cfg_fields)
             return
 
-        # se não tiver no controle, importa do Excel e, ao final, _persist_campos() já salvará na aba correta
         self.sync_fields_from_existing_excel(self.file_path)
-    
+
     def create_new_sheet(self) -> None:
         if not self.file_path:
             QMessageBox.warning(self, "Atenção", "Selecione uma planilha primeiro.")
@@ -395,7 +420,6 @@ class App(QWidget):
         try:
             ensure_sheet_exists(self.file_path, name)
 
-            # cria cabeçalhos na nova aba a partir dos campos atuais (opcional)
             headers = [c.titulo for c in self.campos]
             ensure_workbook(self.file_path, name, headers)
             apply_column_type_rules(self.file_path, name, self.campos)
@@ -405,6 +429,111 @@ class App(QWidget):
 
         self._reload_sheet_list()
         self.cmb_sheet.setCurrentText(name)  # dispara on_sheet_changed
+
+    def _snapshot_current_inputs(self) -> Dict[str, str]:
+        by_title: Dict[str, str] = {}
+        for c in self.campos:
+            w = self.inputs.get(c.id)
+            if isinstance(w, EmailInputWidget):
+                val, _ = w.get_email()
+                by_title[c.titulo] = val or ""
+            elif isinstance(w, BoolInputWidget):
+                by_title[c.titulo] = w.value() or ""
+            elif isinstance(w, QLineEdit):
+                by_title[c.titulo] = w.text() or ""
+            else:
+                by_title[c.titulo] = ""
+        return by_title
+
+    def _restore_inputs_by_title(self, by_title: Dict[str, str]) -> None:
+        for c in self.campos:
+            if c.titulo not in by_title:
+                continue
+            w = self.inputs.get(c.id)
+            val = by_title.get(c.titulo, "")
+            if isinstance(w, EmailInputWidget):
+                w.set_email(val)
+            elif isinstance(w, BoolInputWidget):
+                w.set_value(val)
+            elif isinstance(w, QLineEdit):
+                w.setText(val)
+
+    def _maybe_sync_sheets_from_excel(self) -> None:
+        if not self.file_path or not os.path.exists(self.file_path):
+            return
+
+        # tenta com IDs; se falhar, tenta só nomes
+        try:
+            new_meta = list_sheets_with_ids(self.file_path)
+        except Exception:
+            new_meta = []
+
+        if not new_meta:
+            try:
+                names = list_sheets(self.file_path)
+                new_meta = [(i + 1, name) for i, name in enumerate(names)]
+            except Exception:
+                return
+
+    def _maybe_sync_headers_from_excel(self) -> None:
+        if not self.file_path:
+            return
+
+        if self.focusWidget() and isinstance(self.focusWidget(), QLineEdit):
+            return
+
+        try:
+            _sheet_used, headers, has_header = read_headers_from_excel(self.file_path, self.sheet_name)
+        except Exception:
+            return
+
+        if not has_header or not headers:
+            return
+
+        current_titles = [c.titulo for c in self.campos]
+        if headers == current_titles:
+            return
+
+        draft = self._snapshot_current_inputs()
+
+        ok = self.sync_fields_from_existing_excel(self.file_path)
+        if not ok:
+            return
+
+        self._restore_inputs_by_title(draft)
+        self.lbl_status.setText("Campos atualizados automaticamente a partir do cabeçalho da planilha.")
+    
+    def refresh_sheets(self) -> None:
+        if not self.file_path or not os.path.exists(self.file_path):
+            QMessageBox.warning(self, "Atenção", "Selecione uma planilha primeiro.")
+            return
+
+        # Recarrega a lista de abas do arquivo
+        self._reload_sheet_list()
+
+        # Se a aba atual não existir mais, força fallback e carrega campos
+        titles = [self.cmb_sheet.itemText(i) for i in range(self.cmb_sheet.count())]
+        if self.sheet_name and self.sheet_name not in titles:
+            old = self.sheet_name
+            self.sheet_name = titles[0] if titles else ""
+            self.cfg_fields["aba"] = self.sheet_name
+            save_fields_config(self.cfg_fields)
+
+            if self.sheet_name:
+                # tenta carregar do controle; se não existir, importa do Excel
+                sheet_campos = get_sheet_campos(self.cfg_fields, self.sheet_name)
+                if sheet_campos:
+                    self.campos = [Campo(**c) for c in sheet_campos]
+                    self.render_fields()
+                else:
+                    self.sync_fields_from_existing_excel(self.file_path)
+
+            self.lbl_status.setText(f"Aba '{old}' não existe mais. Alternando para '{self.sheet_name}'.")
+            return
+
+        # Aba existe: opcionalmente atualizar cabeçalhos desta aba também
+        self._maybe_sync_headers_from_excel()
+        self.lbl_status.setText("Abas atualizadas.")
 
     # ---------- configurações (engrenagem) ----------
 
@@ -443,12 +572,24 @@ class App(QWidget):
         self.cmb_sheet.setMinimumWidth(180)
         self.cmb_sheet.currentTextChanged.connect(self.on_sheet_changed)
 
-        self.btn_new_sheet = QPushButton("Nova aba…")
+        self.btn_new_sheet = QPushButton("Nova aba")
+        self.btn_new_sheet.setToolTip("Criar nova aba na planilha")
         self.btn_new_sheet.clicked.connect(self.create_new_sheet)
 
         sheet_row.addWidget(QLabel("Aba:"))
+
+        self.btn_refresh_sheets = QPushButton("↻ Atualizar")       
+        self.btn_refresh_sheets.setToolTip("Atualizar abas da planilha")
+        self.btn_refresh_sheets.setFixedWidth(100)
+        self.btn_refresh_sheets.clicked.connect(self.refresh_sheets)
+
         sheet_row.addWidget(self.cmb_sheet, 1)
         sheet_row.addWidget(self.btn_new_sheet)
+        sheet_row.addWidget(self.btn_refresh_sheets)
+        
+        self.cmb_sheet.setMinimumWidth(180)
+        self.cmb_sheet.currentTextChanged.connect(self.on_sheet_changed)      
+        
 
         root.addLayout(sheet_row)
 
@@ -464,8 +605,12 @@ class App(QWidget):
         actions = QHBoxLayout()
 
         self.btn_add_field = QPushButton("Adicionar Campo")
+        self.btn_add_field.setToolTip("Adicionar novo campo de preenchimento")
         self.btn_save = QPushButton("Salvar (nova linha)")
+        self.btn_save.setToolTip("Salvar os dados preenchidos como nova linha na planilha")
         self.btn_clear = QPushButton("Limpar")
+        self.btn_clear.setToolTip("Limpar os campos para preencher com novos dados")
+
 
         self.btn_save.setProperty("variant", "primary")
 
@@ -500,6 +645,7 @@ class App(QWidget):
         footer_row.addWidget(self.lbl_footer_left, 1)
 
         self.btn_license = QPushButton("Licença")
+        self.btn_license.setToolTip("Ver informações da licença de uso do software")
         self.btn_license.clicked.connect(self.open_license)
         footer_row.addWidget(self.btn_license, 0, Qt.AlignRight)
 
@@ -514,6 +660,7 @@ class App(QWidget):
 
         if self.file_path:
             self.lbl_file.setText(f"Arquivo: {self.file_path}")
+            self._reload_sheet_list()
 
     def _apply_input_mask(self, inp: QLineEdit, tipo: str) -> None:
         if isinstance(inp, CursorStartLineEdit):
@@ -527,7 +674,6 @@ class App(QWidget):
             inp.setInputMask("")
 
     def render_fields(self) -> None:
-        # 1) Snapshot dos valores atuais antes de destruir os widgets
         prev_value: Dict[str, str] = {}
         prev_email_parts: Dict[str, Tuple[str, str]] = {}
 
@@ -535,8 +681,8 @@ class App(QWidget):
             try:
                 if isinstance(w, EmailInputWidget):
                     full, _ok = w.get_email()
-                    prev_value[cid] = full or ""                  # SEMPRE string
-                    prev_email_parts[cid] = (w.local(), w.domain())  # partes (opcional)
+                    prev_value[cid] = full or ""
+                    prev_email_parts[cid] = (w.local(), w.domain())
                 elif isinstance(w, BoolInputWidget):
                     prev_value[cid] = w.value()
                 elif isinstance(w, QLineEdit):
@@ -546,14 +692,12 @@ class App(QWidget):
             except Exception:
                 prev_value[cid] = ""
 
-        # 2) Limpa o layout e remove widgets
         while self.fields_layout.count():
             item = self.fields_layout.takeAt(0)
             ww = item.widget()
             if ww:
                 ww.deleteLater()
 
-        # 3) Recria os campos
         self.inputs.clear()
 
         theme = getattr(self, "_last_theme_for_fields", dict(DEFAULT_THEME))
@@ -566,7 +710,6 @@ class App(QWidget):
             if campo.tipo == "email":
                 emailw = EmailInputWidget(domains=self.email_domains)
 
-                # Se antes era email, restaura as partes; senão tenta usar o texto completo
                 if campo.id in prev_email_parts:
                     loc, dom = prev_email_parts[campo.id]
                     emailw.set_parts(loc, dom)
@@ -586,10 +729,7 @@ class App(QWidget):
                 inp = CursorStartLineEdit()
                 inp.setPlaceholderText(f"Digite ou cole: {campo.titulo}")
                 self._apply_input_mask(inp, campo.tipo)
-
-                # Aqui SEMPRE vem string, nunca tupla
                 inp.setText(prev_value.get(campo.id, ""))
-
                 self.inputs[campo.id] = inp
                 input_widget = inp
 
@@ -615,6 +755,13 @@ class App(QWidget):
         self.file_path = path
         self.lbl_file.setText(f"Arquivo: {path}")
         save_sheet_config(path)
+
+        # atualiza assinatura e lista de abas imediatamente
+        try:
+            self._sheet_last_sig = self._file_signature(path)
+        except Exception:
+            self._sheet_last_sig = None
+
         self._reload_sheet_list()
 
         if prepare:
@@ -626,6 +773,58 @@ class App(QWidget):
                     self.lbl_status.setText("Planilha preparada e salva como padrão.")
             except Exception as e:
                 self.lbl_status.setText(f"Erro ao preparar planilha: {e}")
+
+    # ---------- monitor de mudanças do arquivo ----------
+
+    def _start_sheet_monitor(self) -> None:
+        if self._sheet_monitor_timer is not None:
+            return               
+
+        self._sheet_monitor_timer = QTimer(self)
+        self._sheet_monitor_timer.setInterval(1200)
+        self._sheet_monitor_timer.timeout.connect(self._check_sheet_changed)
+        self._sheet_monitor_timer.start()
+
+        # roda uma vez no início
+        self._check_sheet_changed()
+
+        # rodar uma vez no início (se existir planilha)
+        if self.file_path and os.path.exists(self.file_path):
+            try:
+                self._sheet_last_sig = self._file_signature(self.file_path)
+            except Exception:
+                self._sheet_last_sig = None
+
+            if hasattr(self, "_maybe_sync_sheets_from_excel"):
+                self._maybe_sync_sheets_from_excel()
+            if hasattr(self, "_maybe_sync_headers_from_excel"):
+                self._maybe_sync_headers_from_excel()
+
+    def _file_signature(self, path: str):
+        st = os.stat(path)
+        return (int(st.st_mtime), int(st.st_size))
+
+    def _check_sheet_changed(self) -> None:
+        if not self.file_path or not os.path.exists(self.file_path):
+            return
+
+        # 1) Sempre tenta sincronizar abas (deleção/rename/criação)
+        # (se não mudou, a função retorna rápido)
+        self._maybe_sync_sheets_from_excel()
+
+        # 2) Só sincroniza cabeçalho quando o arquivo mudar de fato
+        try:
+            sig = self._file_signature(self.file_path)
+        except Exception:
+            return
+
+        if self._sheet_last_sig is None:
+            self._sheet_last_sig = sig
+            return
+
+        if sig != self._sheet_last_sig:
+            self._sheet_last_sig = sig
+            self._maybe_sync_headers_from_excel()
 
     # ---------- sincronizar campos ----------
 
@@ -718,14 +917,13 @@ class App(QWidget):
             )
             if resp == QMessageBox.Yes:
                 self._apply_file_path(path, prepare=False, silent=True)
-                
                 ok = self.sync_fields_from_existing_excel(path)
                 if ok:
                     self.lbl_file.setText(f"Arquivo: {path}  (aba: {self.sheet_name})")
                 return
 
         self._apply_file_path(path, prepare=True, silent=False)
-        self._reload_sheet_list()
+
     # ---------- ações de campos ----------
 
     def add_field(self) -> None:
@@ -904,7 +1102,7 @@ class App(QWidget):
                     return
                 row_by_title[c.titulo] = email_final
                 continue
-            
+
             if c.tipo == "booleano" and isinstance(w, BoolInputWidget):
                 row_by_title[c.titulo] = w.value()
                 continue

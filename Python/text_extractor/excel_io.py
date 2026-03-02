@@ -11,6 +11,17 @@ from openpyxl.utils import get_column_letter
 from models import Campo, EXCEL_NUMBER_FORMAT
 from formatters import cast_value_by_type
 
+def list_sheets_with_ids(path: str) -> List[Tuple[int, str]]:
+    """
+    Retorna [(sheetId, title), ...] na ordem do workbook.
+    sheetId é estável em renomeação (na prática, é o melhor identificador).
+    """
+    wb = load_workbook(path)
+    out: List[Tuple[int, str]] = []
+    for ws in wb.worksheets:
+        sid = int(getattr(ws, "sheet_id", None) or getattr(ws, "sheetId", None) or ws._id)
+        out.append((sid, ws.title))
+    return out
 
 def list_sheets(path: str) -> list[str]:
     wb = load_workbook(path)

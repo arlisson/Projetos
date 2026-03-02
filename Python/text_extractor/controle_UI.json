@@ -10,18 +10,18 @@
     "settings": "assets/icons/engrenagem.png"
   },
   "theme": {
-    "background": "#111C27",
-    "surface": "#1F2A34",
-    "surface_alt": "#29333D",
+    "background": "#101C28",
+    "surface": "#1E2A35",
+    "surface_alt": "#28333E",
     "text": "#ECEDEE",
     "muted_text": "#888E94",
     "primary": "#3B82F6",
     "danger": "#EF4444",
-    "border": "#37404A"
+    "border": "#36404A"
   },
   "background_hsl": {
     "h": 210,
-    "s": 38,
+    "s": 43,
     "l": 11
   },
   "footer_left_html": "<b>Se precisar de telefonia para sua empresa -> WhatsApp (22) 98812-4656</b>"

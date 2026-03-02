@@ -1,6 +1,6 @@
 {
-  "arquivo_padrao": "leads.xlsx",
-  "aba": "teste",
+  "arquivo_padrao": "PreencheFacil.xlsx",
+  "aba": "Aba 1",
   "abas": {
     "Sheet1": {
       "campos": [
@@ -9,6 +9,12 @@
           "titulo": "nome",
           "tipo": "texto",
           "fixo": true
+        },
+        {
+          "id": "data",
+          "titulo": "Data",
+          "tipo": "data",
+          "fixo": false
         }
       ]
     },
@@ -25,6 +31,26 @@
           "titulo": "Data",
           "tipo": "data",
           "fixo": false
+        }
+      ]
+    },
+    "Aba 1": {
+      "campos": [
+        {
+          "id": "telefone",
+          "titulo": "nome",
+          "tipo": "texto",
+          "fixo": true
+        }
+      ]
+    },
+    "Planilha1": {
+      "campos": [
+        {
+          "id": "telefone",
+          "titulo": "nome",
+          "tipo": "texto",
+          "fixo": true
         },
         {
           "id": "endereo",

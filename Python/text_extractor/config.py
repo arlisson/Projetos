@@ -43,6 +43,27 @@ def _normalize_campos(campos: list, field_types: List[str]) -> list:
         out.append(c)
     return out
 
+def rename_sheet_key(cfg: dict, old_name: str, new_name: str) -> None:
+    if old_name == new_name:
+        return
+    abas = cfg.get("abas") or {}
+    if old_name not in abas:
+        # nada para mover
+        cfg.setdefault("abas", {})
+        cfg["abas"].setdefault(new_name, {"campos": []})
+        return
+    cfg.setdefault("abas", {})
+    # se já existir destino, você pode escolher mesclar; aqui eu preservo destino e só movo se vazio
+    if new_name not in cfg["abas"]:
+        cfg["abas"][new_name] = abas[old_name]
+    else:
+        if not (cfg["abas"][new_name].get("campos") or []):
+            cfg["abas"][new_name] = abas[old_name]
+    try:
+        del cfg["abas"][old_name]
+    except Exception:
+        pass
+
 def get_sheet_campos(cfg: dict, sheet_name: str) -> list:
     abas = cfg.get("abas") or {}
     sheet = abas.get(sheet_name) or {}
