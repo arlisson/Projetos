@@ -673,6 +673,7 @@ class App(QWidget):
         else:
             inp.setInputMask("")
 
+    
     def render_fields(self) -> None:
         prev_value: Dict[str, str] = {}
         prev_email_parts: Dict[str, Tuple[str, str]] = {}
@@ -706,7 +707,7 @@ class App(QWidget):
 
         for campo in self.campos:
             label_text = f"{campo.titulo}  [{campo.tipo}]"
-
+           
             if campo.tipo == "email":
                 emailw = EmailInputWidget(domains=self.email_domains)
 
@@ -739,6 +740,22 @@ class App(QWidget):
 
             self.icon_mgr.apply_button_icon(roww.btn_edit, "edit_title", text)
             self.icon_mgr.apply_button_icon(roww.btn_del, "delete_field", white)
+
+            # estado do toggle
+            locked = bool(getattr(campo, "locked", False))
+            roww.set_locked(locked)
+            roww.lockToggled.connect(self.on_field_lock_toggled)
+
+            # NOVO: ícone aberto/fechado no botão de cadeado
+            lock_icon_key = "lock_closed" if locked else "lock_open"
+            self.icon_mgr.apply_button_icon(roww.btn_lock, lock_icon_key, text)
+
+            # se estiver bloqueado, desabilita ações
+            if getattr(campo, "locked", False):
+                roww.btn_edit.setEnabled(False)
+                roww.btn_del.setEnabled(False)
+                roww.btn_edit.setToolTip("Campo protegido: não pode ser alterado.")
+                roww.btn_del.setToolTip("Campo protegido: não pode ser excluído.")
 
             self.fields_layout.addWidget(roww)
 
@@ -868,6 +885,7 @@ class App(QWidget):
                 cid = old.id
                 tipo = old.tipo if old.tipo in FIELD_TYPES else "texto"
                 fixo = old.fixo
+                locked = getattr(old, "locked", False)
                 used_ids.add(cid)
             else:
                 cid = make_unique_id(sanitize_id(h), used_ids)
@@ -875,8 +893,9 @@ class App(QWidget):
                 if tipo not in FIELD_TYPES:
                     tipo = "texto"
                 fixo = False
+                locked = False
 
-            new_campos.append(Campo(id=cid, titulo=h, tipo=tipo, fixo=fixo))
+            new_campos.append(Campo(id=cid, titulo=h, tipo=tipo, fixo=fixo, locked=locked))
 
         self.campos = new_campos
         self._persist_campos()
@@ -924,7 +943,18 @@ class App(QWidget):
 
         self._apply_file_path(path, prepare=True, silent=False)
 
-    # ---------- ações de campos ----------
+    
+
+    # ---------- ações de campos ----------]
+ 
+    def on_field_lock_toggled(self, field_id: str, locked: bool) -> None:
+        campo = next((c for c in self.campos if c.id == field_id), None)
+        if not campo:
+            return
+
+        campo.locked = bool(locked)
+        self._persist_campos()
+        self.render_fields()
 
     def add_field(self) -> None:
         title, ok = QInputDialog.getText(self, "Novo campo", "Título do campo:")
@@ -945,7 +975,7 @@ class App(QWidget):
         used_ids = {c.id for c in self.campos}
         cid = make_unique_id(sanitize_id(title), used_ids)
 
-        self.campos.append(Campo(id=cid, titulo=title, tipo=tipo, fixo=False))
+        self.campos.append(Campo(id=cid, titulo=title, tipo=tipo, fixo=False, locked=False))
         self._persist_campos()
 
         self.render_fields()
@@ -964,6 +994,10 @@ class App(QWidget):
         if not campo:
             return
 
+        if getattr(campo, "locked", False):
+            QMessageBox.warning(self, "Campo protegido", "Este campo está bloqueado e não pode ser alterado.")
+            return
+        
         old_tipo = campo.tipo
 
         old_value = ""
@@ -1035,6 +1069,10 @@ class App(QWidget):
     def delete_field(self, field_id: str) -> None:
         campo = next((c for c in self.campos if c.id == field_id), None)
         if not campo:
+            return
+        
+        if getattr(campo, "locked", False):
+            QMessageBox.warning(self, "Campo protegido", "Este campo está bloqueado e não pode ser excluído.")
             return
 
         msg = (

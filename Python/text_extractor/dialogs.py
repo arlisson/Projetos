@@ -23,6 +23,14 @@ from PySide6.QtWidgets import (
 
 class ThemeDialog(QDialog):
     def __init__(self, parent: QWidget, h: int, s: int, l: int):
+        """ Método construtor do diálogo de ajuste de tema.
+ 
+        Args:
+            parent (QWidget): Widget pai do diálogo.
+            h (int): Valor do tom da cor (0-359).
+            s (int): Valor da saturação (0-100).
+            l (int): Valor do brilho (0-100).
+        """
         super().__init__(parent)
         self.setWindowTitle("Ajustar tema")
         self.setModal(True)
@@ -61,6 +69,11 @@ class ThemeDialog(QDialog):
         btns.rejected.connect(self.reject)
 
     def values(self) -> Tuple[int, int, int]:
+        """ Retorna os valores atuais dos sliders de cor.
+ 
+        Returns:
+            Tuple[int, int, int]: Valores do tom, saturação e brilho.
+        """
         return self.slider_h.value(), self.slider_s.value(), self.slider_l.value()
 
 
@@ -68,26 +81,48 @@ class CursorStartLineEdit(QLineEdit):
     """
     QLineEdit que força o cursor para o início ao receber foco/clique.
     Útil para campos com inputMask (telefone, data) para facilitar colar.
+
     """
 
     def __init__(self, *args, force_cursor_start: bool = False, **kwargs):
+        """ Inicializa o CursorStartLineEdit.
+
+        Args:
+            force_cursor_start (bool, optional): Se True, o cursor será forçado para o início ao receber foco ou clique. Defaults to False.
+        """
         super().__init__(*args, **kwargs)
         self._force_cursor_start = force_cursor_start
 
     def set_force_cursor_start(self, enabled: bool) -> None:
+        """ Define se o cursor será forçado para o início ao receber foco ou clique.
+        
+        Args:
+            enabled (bool): Se True, o cursor será forçado para o início ao receber foco ou clique.
+        """
         self._force_cursor_start = bool(enabled)
 
     def _move_cursor_to_start(self) -> None:
+        """ Move o cursor para o início do campo de texto e desmarca qualquer seleção.
+        """
         if self._force_cursor_start:
             self.setCursorPosition(0)
             self.deselect()
 
     def focusInEvent(self, event):
+        """ Sobrescreve o evento de foco para mover o cursor para o início se a opção estiver habilitada.    
+
+        Args:
+            event (_type_): Evento de foco recebido.
+        """
         super().focusInEvent(event)
         if self._force_cursor_start:
             QTimer.singleShot(0, self._move_cursor_to_start)
 
     def mousePressEvent(self, event):
+        """ Sobrescreve o evento de clique do mouse para mover o cursor para o início se a opção estiver habilitada.
+        Args:
+            event (_type_): Evento de clique do mouse recebido.
+        """
         super().mousePressEvent(event)
         if self._force_cursor_start:
             QTimer.singleShot(0, self._move_cursor_to_start)

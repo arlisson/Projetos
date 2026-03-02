@@ -33,6 +33,7 @@ class Campo:
     titulo: str
     tipo: str = "texto"
     fixo: bool = False
+    locked: bool = False
 
 
 def sanitize_id(title: str) -> str:

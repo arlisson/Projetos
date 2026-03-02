@@ -111,6 +111,9 @@ class FieldRowWidget(QWidget):
     editRequested = Signal(str)
     deleteRequested = Signal(str)
 
+    # NOVO: emite (field_id, locked)
+    lockToggled = Signal(str, bool)
+
     def __init__(
         self,
         field_id: str,
@@ -120,6 +123,14 @@ class FieldRowWidget(QWidget):
     ):
         super().__init__(parent)
         self.field_id = field_id
+
+        # NOVO: botão só com ícone (sem texto)
+        self.btn_lock = QPushButton()
+        self.btn_lock.setCheckable(True)
+        self.btn_lock.setFixedSize(28, 28)
+        self.btn_lock.setToolTip("Bloquear/desbloquear este campo")
+
+        self.btn_lock.toggled.connect(lambda checked: self.lockToggled.emit(self.field_id, bool(checked)))
 
         self.lbl = QLabel(label_text)
         self.lbl.setMinimumWidth(160)
@@ -133,15 +144,22 @@ class FieldRowWidget(QWidget):
 
         row = QHBoxLayout()
         row.setContentsMargins(0, 0, 0, 0)
+
+        # NOVO: cadeado antes do título
+        row.addWidget(self.btn_lock)
         row.addWidget(self.lbl)
+
         row.addWidget(input_widget, 1)
         row.addWidget(self.btn_edit)
         row.addWidget(self.btn_del)
 
         self.setLayout(row)
 
-# widgets.py (adicione)
-
+    # NOVO: para atualizar o estado sem disparar evento
+    def set_locked(self, locked: bool) -> None:
+        self.btn_lock.blockSignals(True)
+        self.btn_lock.setChecked(bool(locked))
+        self.btn_lock.blockSignals(False)
 
 class BoolInputWidget(QWidget):
     """

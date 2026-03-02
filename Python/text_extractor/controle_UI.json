@@ -7,7 +7,9 @@
     "clear": "assets/icons/limpar.png",
     "edit_title": "assets/icons/editar.png",
     "delete_field": "assets/icons/lixeira.png",
-    "settings": "assets/icons/engrenagem.png"
+    "settings": "assets/icons/engrenagem.png",
+    "lock_open": "assets/icons/cadeado-aberto.png",
+    "lock_closed": "assets/icons/cadeado.png"
   },
   "theme": {
     "background": "#101C28",
