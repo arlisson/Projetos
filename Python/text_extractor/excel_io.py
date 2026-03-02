@@ -12,6 +12,16 @@ from models import Campo, EXCEL_NUMBER_FORMAT
 from formatters import cast_value_by_type
 
 
+def list_sheets(path: str) -> list[str]:
+    wb = load_workbook(path)
+    return list(wb.sheetnames)
+
+def ensure_sheet_exists(path: str, sheet_name: str) -> None:
+    wb = load_workbook(path)
+    if sheet_name not in wb.sheetnames:
+        wb.create_sheet(sheet_name)
+        wb.save(path)
+
 def is_excel_lock_present(xlsx_path: str) -> bool:
     folder = os.path.dirname(xlsx_path) or "."
     name = os.path.basename(xlsx_path)

@@ -12,15 +12,47 @@ CONFIG_EMAIL_DOMAINS_PATH = "controle_email_dominios.json"
 
 
 def default_fields_config() -> dict:
+    # Agora com "abas"
+    base_campos = [
+        {"id": "nome", "titulo": "Nome", "tipo": "texto", "fixo": True},
+        {"id": "telefone", "titulo": "Telefone", "tipo": "telefone", "fixo": True},
+        {"id": "email", "titulo": "Email", "tipo": "email", "fixo": True},
+    ]
+    default_sheet = "Preenche Fácil"
     return {
         "arquivo_padrao": "PreencheFacil.xlsx",
-        "aba": "Preenche Fácil",
-        "campos": [
-            {"id": "nome", "titulo": "Nome", "tipo": "texto", "fixo": True},
-            {"id": "telefone", "titulo": "Telefone", "tipo": "telefone", "fixo": True},
-            {"id": "email", "titulo": "Email", "tipo": "email", "fixo": True},
-        ],
+        "aba": default_sheet,
+        "abas": {
+            default_sheet: {"campos": base_campos}
+        },
     }
+
+def _normalize_campos(campos: list, field_types: List[str]) -> list:
+    out = []
+    for c in campos or []:
+        if not isinstance(c, dict):
+            continue
+        c = dict(c)
+        c.setdefault("tipo", "texto")
+        c.setdefault("fixo", False)
+        if c.get("tipo") not in field_types:
+            c["tipo"] = "texto"
+        # garante chaves mínimas
+        c.setdefault("id", "")
+        c.setdefault("titulo", "")
+        out.append(c)
+    return out
+
+def get_sheet_campos(cfg: dict, sheet_name: str) -> list:
+    abas = cfg.get("abas") or {}
+    sheet = abas.get(sheet_name) or {}
+    return sheet.get("campos") or []
+
+
+def set_sheet_campos(cfg: dict, sheet_name: str, campos: list) -> None:
+    cfg.setdefault("abas", {})
+    cfg["abas"].setdefault(sheet_name, {})
+    cfg["abas"][sheet_name]["campos"] = campos
 
 
 def load_fields_config(field_types: List[str]) -> dict:
@@ -30,17 +62,42 @@ def load_fields_config(field_types: List[str]) -> dict:
         return cfg
 
     with open(CONFIG_FIELDS_PATH, "r", encoding="utf-8") as f:
-        cfg = json.load(f)
+        cfg = json.load(f) or {}
 
-    for c in cfg.get("campos", []):
-        c.setdefault("tipo", "texto")
-        c.setdefault("fixo", False)
-        if c.get("tipo") not in field_types:
-            c["tipo"] = "texto"
+    # defaults
+    d = default_fields_config()
+    cfg.setdefault("arquivo_padrao", d["arquivo_padrao"])
+    cfg.setdefault("aba", d["aba"])
 
-    cfg.setdefault("arquivo_padrao", "PreencheFacil.xlsx")
-    cfg.setdefault("aba", "Preenche Fácil")
-    cfg.setdefault("campos", [])
+    # migração do formato antigo:
+    # - se existir cfg["campos"] no topo e não existir cfg["abas"], move para a aba atual
+    if "abas" not in cfg or not isinstance(cfg.get("abas"), dict):
+        cfg["abas"] = {}
+    if "campos" in cfg and isinstance(cfg.get("campos"), list):
+        campos_legacy = cfg.get("campos") or []
+        sheet = cfg.get("aba") or d["aba"]
+        if sheet not in cfg["abas"]:
+            cfg["abas"][sheet] = {}
+        if not cfg["abas"][sheet].get("campos"):
+            cfg["abas"][sheet]["campos"] = campos_legacy
+        # opcional: remover o legado para não confundir
+        try:
+            del cfg["campos"]
+        except Exception:
+            pass
+
+    # garante que exista a aba atual dentro de "abas"
+    sheet = cfg.get("aba") or d["aba"]
+    if sheet not in cfg["abas"]:
+        cfg["abas"][sheet] = {"campos": d["abas"][d["aba"]]["campos"]}
+
+    # normaliza campos de todas as abas
+    for sheet_name, payload in (cfg.get("abas") or {}).items():
+        if not isinstance(payload, dict):
+            cfg["abas"][sheet_name] = {"campos": []}
+            continue
+        payload.setdefault("campos", [])
+        payload["campos"] = _normalize_campos(payload.get("campos"), field_types)
 
     return cfg
 

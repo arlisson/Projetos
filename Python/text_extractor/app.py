@@ -32,6 +32,7 @@ from PySide6.QtWidgets import (
     QFrame,
     QDialog,
     QDialogButtonBox,
+    QComboBox,
 )
 
 from colors import (
@@ -42,6 +43,7 @@ from colors import (
 )
 
 from config import (
+    get_sheet_campos,
     load_fields_config,
     save_fields_config,
     load_ui_config,
@@ -50,6 +52,7 @@ from config import (
     save_sheet_config,
     load_email_domains_config,
     save_email_domains_config,
+    set_sheet_campos,
 )
 
 from models import (
@@ -67,7 +70,9 @@ from formatters import (
 )
 
 from excel_io import (
+    ensure_sheet_exists,
     is_excel_lock_present,
+    list_sheets,
     read_headers_from_excel,
     write_headers_from_campos,
     ensure_workbook,
@@ -153,7 +158,8 @@ class App(QWidget):
         self.sheet_name: str = self.cfg_fields.get("aba", "Preenche Fácil")
         self.file_path: Optional[str] = get_last_sheet_path()
 
-        self.campos: List[Campo] = [Campo(**c) for c in self.cfg_fields.get("campos", [])]
+        sheet_campos = get_sheet_campos(self.cfg_fields, self.sheet_name)
+        self.campos: List[Campo] = [Campo(**c) for c in (sheet_campos or [])]
 
         # inputs[field_id] = QLineEdit | EmailInputWidget
         self.inputs: Dict[str, Any] = {}
@@ -328,6 +334,77 @@ class App(QWidget):
             w = self.inputs.get(c.id)
             if isinstance(w, EmailInputWidget):
                 w.set_domains(self.email_domains)
+    
+
+    #-----------Abas Excel----------#
+    def _reload_sheet_list(self) -> None:
+        self.cmb_sheet.blockSignals(True)
+        self.cmb_sheet.clear()
+
+        if not self.file_path or not os.path.exists(self.file_path):
+            self.cmb_sheet.blockSignals(False)
+            return
+
+        try:
+            names = list_sheets(self.file_path)
+        except Exception:
+            names = []
+
+        for n in names:
+            self.cmb_sheet.addItem(n)
+
+        # tenta selecionar a aba atual
+        if self.sheet_name in names:
+            self.cmb_sheet.setCurrentText(self.sheet_name)
+        elif names:
+            self.sheet_name = names[0]
+            self.cmb_sheet.setCurrentIndex(0)
+
+        self.cmb_sheet.blockSignals(False)
+    
+    def on_sheet_changed(self, new_sheet: str) -> None:
+        if not new_sheet or not self.file_path:
+            return
+
+        self.sheet_name = new_sheet
+        self.cfg_fields["aba"] = self.sheet_name
+
+        # carrega campos do controle para essa aba
+        sheet_campos = get_sheet_campos(self.cfg_fields, self.sheet_name)
+
+        if sheet_campos:
+            self.campos = [Campo(**c) for c in sheet_campos]
+            self.render_fields()
+            save_fields_config(self.cfg_fields)
+            return
+
+        # se não tiver no controle, importa do Excel e, ao final, _persist_campos() já salvará na aba correta
+        self.sync_fields_from_existing_excel(self.file_path)
+    
+    def create_new_sheet(self) -> None:
+        if not self.file_path:
+            QMessageBox.warning(self, "Atenção", "Selecione uma planilha primeiro.")
+            return
+
+        name, ok = QInputDialog.getText(self, "Nova aba", "Nome da nova aba:")
+        if not ok or not name.strip():
+            return
+
+        name = name.strip()
+
+        try:
+            ensure_sheet_exists(self.file_path, name)
+
+            # cria cabeçalhos na nova aba a partir dos campos atuais (opcional)
+            headers = [c.titulo for c in self.campos]
+            ensure_workbook(self.file_path, name, headers)
+            apply_column_type_rules(self.file_path, name, self.campos)
+        except Exception as e:
+            QMessageBox.critical(self, "Erro", f"Falha ao criar aba: {e}")
+            return
+
+        self._reload_sheet_list()
+        self.cmb_sheet.setCurrentText(name)  # dispara on_sheet_changed
 
     # ---------- configurações (engrenagem) ----------
 
@@ -359,6 +436,21 @@ class App(QWidget):
         file_row.addWidget(self.lbl_file, 1)
         file_row.addWidget(self.btn_settings)
         root.addLayout(file_row)
+
+        sheet_row = QHBoxLayout()
+
+        self.cmb_sheet = QComboBox()
+        self.cmb_sheet.setMinimumWidth(180)
+        self.cmb_sheet.currentTextChanged.connect(self.on_sheet_changed)
+
+        self.btn_new_sheet = QPushButton("Nova aba…")
+        self.btn_new_sheet.clicked.connect(self.create_new_sheet)
+
+        sheet_row.addWidget(QLabel("Aba:"))
+        sheet_row.addWidget(self.cmb_sheet, 1)
+        sheet_row.addWidget(self.btn_new_sheet)
+
+        root.addLayout(sheet_row)
 
         self.fields_container = QWidget()
         self.fields_layout = QVBoxLayout()
@@ -515,7 +607,7 @@ class App(QWidget):
     # ---------- persistência ----------
 
     def _persist_campos(self) -> None:
-        self.cfg_fields["campos"] = [c.__dict__ for c in self.campos]
+        set_sheet_campos(self.cfg_fields, self.sheet_name, [c.__dict__ for c in self.campos])
         self.cfg_fields["aba"] = self.sheet_name
         save_fields_config(self.cfg_fields)
 
@@ -523,6 +615,7 @@ class App(QWidget):
         self.file_path = path
         self.lbl_file.setText(f"Arquivo: {path}")
         save_sheet_config(path)
+        self._reload_sheet_list()
 
         if prepare:
             try:
@@ -625,13 +718,14 @@ class App(QWidget):
             )
             if resp == QMessageBox.Yes:
                 self._apply_file_path(path, prepare=False, silent=True)
+                
                 ok = self.sync_fields_from_existing_excel(path)
                 if ok:
                     self.lbl_file.setText(f"Arquivo: {path}  (aba: {self.sheet_name})")
                 return
 
         self._apply_file_path(path, prepare=True, silent=False)
-
+        self._reload_sheet_list()
     # ---------- ações de campos ----------
 
     def add_field(self) -> None:
