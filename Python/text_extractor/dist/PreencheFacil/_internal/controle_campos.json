@@ -1,30 +1,64 @@
 {
-  "arquivo_padrao": "leads.xlsx",
-  "aba": "Sheet1",
-  "campos": [
-    {
-      "id": "telefone",
-      "titulo": "telefone",
-      "tipo": "telefone",
-      "fixo": true
+  "arquivo_padrao": "PreencheFacil.xlsx",
+  "aba": "Aba 1",
+  "abas": {
+    "Sheet1": {
+      "campos": [
+        {
+          "id": "telefone",
+          "titulo": "nome",
+          "tipo": "texto",
+          "fixo": true
+        },
+        {
+          "id": "data",
+          "titulo": "Data",
+          "tipo": "data",
+          "fixo": false
+        }
+      ]
     },
-    {
-      "id": "nome",
-      "titulo": "Email",
-      "tipo": "email",
-      "fixo": true
+    "teste": {
+      "campos": [
+        {
+          "id": "telefone",
+          "titulo": "nome",
+          "tipo": "texto",
+          "fixo": true
+        },
+        {
+          "id": "data",
+          "titulo": "Data",
+          "tipo": "data",
+          "fixo": false
+        }
+      ]
     },
-    {
-      "id": "email",
-      "titulo": "Data",
-      "tipo": "data",
-      "fixo": false
+    "Aba 1": {
+      "campos": [
+        {
+          "id": "telefone",
+          "titulo": "nome",
+          "tipo": "texto",
+          "fixo": true
+        }
+      ]
     },
-    {
-      "id": "possui_conta",
-      "titulo": "Possui conta",
-      "tipo": "booleano",
-      "fixo": false
+    "Planilha1": {
+      "campos": [
+        {
+          "id": "telefone",
+          "titulo": "nome",
+          "tipo": "texto",
+          "fixo": true
+        },
+        {
+          "id": "endereo",
+          "titulo": "Endereço",
+          "tipo": "texto",
+          "fixo": false
+        }
+      ]
     }
-  ]
+  }
 }

@@ -13,8 +13,8 @@
     "background": "#0A141E",
     "surface": "#19222C",
     "surface_alt": "#222C34",
-    "text": "#E6EDF7",
-    "muted_text": "#828B93",
+    "text": "#EBECED",
+    "muted_text": "#858A8F",
     "primary": "#3B82F6",
     "danger": "#EF4444",
     "border": "#313A42"

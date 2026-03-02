@@ -1,0 +1,2 @@
+Fazer página de ajuda para usuários no github (APÓS APP FINALIZADO)
+Fazer documentação final para desenvolvedores

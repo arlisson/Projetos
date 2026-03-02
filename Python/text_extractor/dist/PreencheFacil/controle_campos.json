@@ -1,24 +1,32 @@
 {
   "arquivo_padrao": "PreencheFacil.xlsx",
-  "aba": "Preenche Fácil",
-  "campos": [
-    {
-      "id": "nome",
-      "titulo": "Nome",
-      "tipo": "texto",
-      "fixo": true
+  "aba": "Aba 1",
+  "abas": {
+    "Preenche Fácil": {
+      "campos": [
+        {
+          "id": "nome",
+          "titulo": "Nome",
+          "tipo": "texto",
+          "fixo": true
+        },
+        {
+          "id": "telefone",
+          "titulo": "Telefone",
+          "tipo": "telefone",
+          "fixo": true
+        }
+      ]
     },
-    {
-      "id": "telefone",
-      "titulo": "Telefone",
-      "tipo": "telefone",
-      "fixo": true
-    },
-    {
-      "id": "email",
-      "titulo": "Email",
-      "tipo": "email",
-      "fixo": true
+    "Aba 1": {
+      "campos": [
+        {
+          "id": "nome",
+          "titulo": "nome",
+          "tipo": "texto",
+          "fixo": true
+        }
+      ]
     }
-  ]
+  }
 }
