@@ -14,8 +14,8 @@ import sys
 import os
 from typing import Dict, List, Optional, Any, Tuple
 
-from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QIcon
+from PySide6.QtCore import QUrl, Qt, QTimer
+from PySide6.QtGui import QDesktopServices, QIcon, QPixmap
 from PySide6.QtWidgets import (
     QApplication,
     QFileDialog,
@@ -304,6 +304,44 @@ class App(QWidget):
             QLabel#Status {{
                 color: {muted};
             }}
+           QWidget#PromoFooter {{
+                /* Banner discreto e consistente com o tema */
+                background-color: {surface_alt};
+                border: 1px solid {border};
+                border-radius: 12px;
+            }}
+
+            /* Barra de destaque à esquerda (chama atenção sem gritar) */
+            QWidget#PromoFooter {{
+                border-left: 6px solid {primary};
+            }}
+
+            /* IMPORTANTÍSSIMO: evita o “retângulo preto” interno */
+            QWidget#PromoFooter QLabel,
+            QWidget#PromoFooter QPushButton {{
+                background-color: transparent;
+            }}
+
+            /* Tipografia do texto do rodapé */
+            QWidget#PromoFooter QLabel {{
+                font-size: 13px;
+                font-weight: 650;
+                color: {text};
+            }}
+
+            /* Botão Licença mais “neutro” dentro do banner */
+            QWidget#PromoFooter QPushButton {{
+                background-color: transparent;
+                border: 1px solid {border};
+                padding: 6px 10px;
+                border-radius: 10px;
+            }}
+
+            QWidget#PromoFooter QPushButton:hover {{
+                border-color: {primary};
+            }}
+                           
+
         """)
 
         self._retint_all_icons(theme)
@@ -635,13 +673,39 @@ class App(QWidget):
         sep.setFixedHeight(1)
         root.addWidget(sep)
 
-        footer_row = QHBoxLayout()
+        # --- Rodapé (banner) com logo + CTA clicável ---
+        footer_wrap = QWidget()
+        footer_wrap.setObjectName("PromoFooter")
 
-        default_footer = "<b>Se precisar de telefonia para sua empresa -> WhatsApp (22) 98812-4656</b>"
+        footer_row = QHBoxLayout(footer_wrap)
+        footer_row.setContentsMargins(12, 10, 12, 10)
+        footer_row.setSpacing(10)
+
+        default_footer = "<b>Se precisar de telefonia para sua empresa</b> → WhatsApp (22) 98812-4656"
         footer_html = (self.cfg_ui.get("footer_left_html") or default_footer)
+
+        # Link do banner (WhatsApp/site)
+        footer_link = (self.cfg_ui.get("footer_link") or "").strip()
+
+        # Logo (opcional)
+        logo_path = (self.cfg_ui.get("footer_logo_path") or "").strip()
+        logo_h = int(self.cfg_ui.get("footer_logo_height") or 28)
+
+        self.lbl_footer_logo = QLabel()
+        self.lbl_footer_logo.setFixedHeight(logo_h)
+        self.lbl_footer_logo.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+
+        if logo_path:
+            pix = QPixmap(abs_path(logo_path))
+            if not pix.isNull():
+                self.lbl_footer_logo.setPixmap(pix.scaledToHeight(logo_h, Qt.SmoothTransformation))
 
         self.lbl_footer_left = QLabel(footer_html)
         self.lbl_footer_left.setTextFormat(Qt.RichText)
+        self.lbl_footer_left.setWordWrap(True)
+        self.lbl_footer_left.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+
+        footer_row.addWidget(self.lbl_footer_logo, 0)
         footer_row.addWidget(self.lbl_footer_left, 1)
 
         self.btn_license = QPushButton("Licença")
@@ -649,9 +713,13 @@ class App(QWidget):
         self.btn_license.clicked.connect(self.open_license)
         footer_row.addWidget(self.btn_license, 0, Qt.AlignRight)
 
-        footer_wrap = QWidget()
-        footer_wrap.setLayout(footer_row)
+        # Banner inteiro clicável
+        if footer_link:
+            footer_wrap.setCursor(Qt.PointingHandCursor)
+            footer_wrap.mousePressEvent = lambda ev: QDesktopServices.openUrl(QUrl(footer_link))
+
         root.addWidget(footer_wrap)
+        # --- fim rodapé ---
 
         self.setLayout(root)
 
@@ -661,6 +729,53 @@ class App(QWidget):
         if self.file_path:
             self.lbl_file.setText(f"Arquivo: {self.file_path}")
             self._reload_sheet_list()
+            
+
+    def _build_footer(self) -> QWidget:
+        ui = self.cfg_ui  # ou como você já carrega controle_ui.json
+
+        footer = QWidget()
+        footer.setObjectName("promoFooter")
+
+        row = QHBoxLayout(footer)
+        row.setContentsMargins(12, 10, 12, 10)
+        row.setSpacing(10)
+
+        # Logo
+        self.lbl_footer_logo = QLabel()
+        self.lbl_footer_logo.setFixedHeight(int(ui.get("footer_logo_height", 28)))
+        self.lbl_footer_logo.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+
+        logo_path = ui.get("footer_logo_path", "")
+        if logo_path:
+            pix = QPixmap(abs_path(logo_path))  # use seu resolvedor (PyInstaller)
+            if not pix.isNull():
+                h = int(ui.get("footer_logo_height", 28))
+                self.lbl_footer_logo.setPixmap(pix.scaledToHeight(h, Qt.SmoothTransformation))
+
+        # Texto/CTA
+        self.lbl_footer_left = QLabel(ui.get("footer_left_html", ""))
+        self.lbl_footer_left.setTextFormat(Qt.RichText)
+        self.lbl_footer_left.setOpenExternalLinks(False)  # vamos tratar clique no banner todo
+        self.lbl_footer_left.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+
+        # Botão licença (mantém, mas “menos chamativo”)
+        self.btn_license = QPushButton("Licença")
+        self.btn_license.setFixedWidth(90)
+
+        row.addWidget(self.lbl_footer_logo, 0)
+        row.addWidget(self.lbl_footer_left, 1)
+        row.addWidget(self.btn_license, 0)
+
+        # Banner clicável (WhatsApp/site)
+        link = ui.get("footer_link", "").strip()
+        if link:
+            footer.mousePressEvent = lambda ev: QDesktopServices.openUrl(QUrl(link))
+
+            # opcional: cursor “mão”
+            footer.setCursor(Qt.PointingHandCursor)
+
+        return footer
 
     def _apply_input_mask(self, inp: QLineEdit, tipo: str) -> None:
         if isinstance(inp, CursorStartLineEdit):

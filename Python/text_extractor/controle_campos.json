@@ -45,7 +45,7 @@
           "titulo": "nome",
           "tipo": "texto",
           "fixo": true,
-          "locked": true
+          "locked": false
         },
         {
           "id": "email",

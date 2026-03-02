@@ -12,19 +12,22 @@
     "lock_closed": "assets/icons/cadeado.png"
   },
   "theme": {
-    "background": "#101C28",
-    "surface": "#1E2A35",
-    "surface_alt": "#28333E",
+    "background": "#13212F",
+    "surface": "#212E3B",
+    "surface_alt": "#2B3744",
     "text": "#ECEDEE",
-    "muted_text": "#888E94",
+    "muted_text": "#8A9197",
     "primary": "#3B82F6",
     "danger": "#EF4444",
-    "border": "#36404A"
+    "border": "#394550"
   },
   "background_hsl": {
     "h": 210,
     "s": 43,
-    "l": 11
+    "l": 13
   },
-  "footer_left_html": "<b>Se precisar de telefonia para sua empresa -> WhatsApp (22) 98812-4656</b>"
+  "footer_left_html": "<b>Se precisar de telefonia para sua empresa</b> → WhatsApp (22) 98812-4656",
+  "footer_link": "https://hub-avance.vercel.app",
+  "footer_logo_path": "assets/icons/A.png",
+  "footer_logo_height": 28
 }
