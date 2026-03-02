@@ -8,13 +8,15 @@
           "id": "telefone",
           "titulo": "nome",
           "tipo": "texto",
-          "fixo": true
+          "fixo": true,
+          "locked": false
         },
         {
           "id": "data",
           "titulo": "Data",
           "tipo": "data",
-          "fixo": false
+          "fixo": false,
+          "locked": false
         }
       ]
     },
@@ -24,13 +26,15 @@
           "id": "telefone",
           "titulo": "nome",
           "tipo": "texto",
-          "fixo": true
+          "fixo": true,
+          "locked": false
         },
         {
           "id": "data",
           "titulo": "Data",
           "tipo": "data",
-          "fixo": false
+          "fixo": false,
+          "locked": false
         }
       ]
     },
@@ -40,7 +44,22 @@
           "id": "telefone",
           "titulo": "nome",
           "tipo": "texto",
-          "fixo": true
+          "fixo": true,
+          "locked": false
+        },
+        {
+          "id": "email",
+          "titulo": "email",
+          "tipo": "email",
+          "fixo": false,
+          "locked": false
+        },
+        {
+          "id": "telefone_2",
+          "titulo": "telefone",
+          "tipo": "telefone",
+          "fixo": false,
+          "locked": false
         }
       ]
     },
@@ -50,13 +69,15 @@
           "id": "telefone",
           "titulo": "nome",
           "tipo": "texto",
-          "fixo": true
+          "fixo": true,
+          "locked": false
         },
         {
           "id": "endereo",
           "titulo": "Endereço",
           "tipo": "texto",
-          "fixo": false
+          "fixo": false,
+          "locked": false
         }
       ]
     }

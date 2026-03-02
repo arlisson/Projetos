@@ -1,6 +1,6 @@
 {
   "arquivo_padrao": "PreencheFacil.xlsx",
-  "aba": "Aba 1",
+  "aba": "Preenche Fácil",
   "abas": {
     "Preenche Fácil": {
       "campos": [
@@ -8,23 +8,22 @@
           "id": "nome",
           "titulo": "Nome",
           "tipo": "texto",
-          "fixo": true
+          "fixo": true,
+          "locked": false
         },
         {
           "id": "telefone",
           "titulo": "Telefone",
           "tipo": "telefone",
-          "fixo": true
-        }
-      ]
-    },
-    "Aba 1": {
-      "campos": [
+          "fixo": true,
+          "locked": false
+        },
         {
-          "id": "nome",
-          "titulo": "nome",
-          "tipo": "texto",
-          "fixo": true
+          "id": "email",
+          "titulo": "Email",
+          "tipo": "email",
+          "fixo": true,
+          "locked": false
         }
       ]
     }
