@@ -70,12 +70,17 @@ def derive_theme_from_background(bg_hex: str, base_theme: dict) -> dict:
         surface_rgb = blend(bg_rgb, white, 0.06)
         surface_alt_rgb = blend(bg_rgb, white, 0.10)
         border_rgb = blend(bg_rgb, white, 0.16)
-        text_rgb = hex_to_rgb(base_theme.get("text", "#E6EDF7"))
+
+        # Antes: text_rgb = hex_to_rgb(base_theme.get("text", "#E6EDF7"))
+        # Depois: texto “puxa” um pouco a cor do fundo, mas continua claro
+        text_rgb = blend(bg_rgb, white, 0.92)
     else:
         surface_rgb = blend(bg_rgb, black, 0.06)
         surface_alt_rgb = blend(bg_rgb, black, 0.10)
         border_rgb = blend(bg_rgb, black, 0.16)
-        text_rgb = (15, 23, 42)
+
+        # texto escuro, também pode variar um pouco com o fundo
+        text_rgb = blend(bg_rgb, black, 0.92)
 
     muted_rgb = blend(text_rgb, border_rgb, 0.55)
 

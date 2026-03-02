@@ -180,6 +180,15 @@ def apply_column_type_rules(path: str, sheet_name: str, campos: List[Campo]) -> 
 
     wb.save(path)
 
+def _next_data_row(ws) -> int:
+    # começa em 2 (linha 1 é cabeçalho)
+    r = 2
+    # considera “ocupada” se qualquer célula da linha tiver valor
+    while True:
+        if any(cell.value not in (None, "") for cell in ws[r]):
+            r += 1
+            continue
+        return r
 
 def append_row_typed(path: str, sheet_name: str, campos: List[Campo], row_by_title: Dict[str, str]) -> None:
     headers = [c.titulo for c in campos]
@@ -192,7 +201,7 @@ def append_row_typed(path: str, sheet_name: str, campos: List[Campo], row_by_tit
     existing = [v for v in existing if v is not None]
     col_idx = {h: (existing.index(h) + 1) for h in existing}
 
-    next_row = ws.max_row + 1
+    next_row = _next_data_row(ws)
 
     for c in campos:
         h = c.titulo

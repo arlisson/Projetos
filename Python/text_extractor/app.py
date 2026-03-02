@@ -312,7 +312,7 @@ class App(QWidget):
 
     def open_email_domains(self) -> None:
         dlg = EmailDomainsDialog(self, domains=list(self.email_domains))
-        if dlg.exec() == dlg.accepted:
+        if dlg.exec() == QDialog.Accepted:
             # sempre persiste, mesmo que não existam campos email
             self.email_domains = dlg.domains()
             self.cfg_email["dominios"] = list(self.email_domains)
@@ -895,7 +895,7 @@ class App(QWidget):
 
         on_change()
 
-        if dlg.exec() == dlg.accepted:
+        if dlg.exec() == QDialog.Accepted:
             hh, ss, ll = dlg.values()
             rr, gg, bb = hsl_to_rgb(hh, ss, ll)
             bg_hex = rgb_to_hex(rr, gg, bb)
