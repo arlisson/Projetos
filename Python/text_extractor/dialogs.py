@@ -130,6 +130,12 @@ class CursorStartLineEdit(QLineEdit):
 
 class EmailDomainsDialog(QDialog):
     def __init__(self, parent: QWidget, domains: List[str]):
+        """ Diálogo para gerenciar a lista de domínios de e-mail permitidos.
+
+        Args:
+            parent (QWidget): Widget pai do diálogo.
+            domains (List[str]): Lista inicial de domínios de e-mail a serem exibidos no diálogo. 
+        """
         super().__init__(parent)
         self.setWindowTitle("Domínios de e-mail")
         self.setModal(True)
@@ -165,6 +171,11 @@ class EmailDomainsDialog(QDialog):
         btns.rejected.connect(self.reject)
 
     def domains(self) -> List[str]:
+        """ Retorna a lista de domínios de e-mail configurados no diálogo, garantindo que cada domínio comece com '@' e seja único.
+
+        Returns:
+            List[str]: Lista de domínios de e-mail configurados no diálogo.
+        """
         out: List[str] = []
         for i in range(self.listw.count()):
             s = (self.listw.item(i).text() or "").strip()
@@ -177,6 +188,9 @@ class EmailDomainsDialog(QDialog):
         return out
 
     def _add(self):
+        """ 
+        Abre um diálogo para adicionar um novo domínio de e-mail à lista. O usuário deve inserir o domínio (com ou sem '@'), e o método garante que o domínio seja adicionado de forma única e formatada corretamente.
+        """
         v, ok = QInputDialog.getText(self, "Adicionar domínio", "Domínio (ex.: @gmail.com):")
         if not ok:
             return
@@ -191,6 +205,8 @@ class EmailDomainsDialog(QDialog):
         QListWidgetItem(s, self.listw)
 
     def _edit(self):
+        """ Abre um diálogo para editar o domínio de e-mail selecionado na lista. O usuário pode modificar o domínio (com ou sem '@'), e o método garante que o domínio seja atualizado de forma única e formatada corretamente.        
+        """
         item = self.listw.currentItem()
         if not item:
             return
@@ -206,6 +222,8 @@ class EmailDomainsDialog(QDialog):
         item.setText(s)
 
     def _del(self):
+        """ Remove o domínio de e-mail selecionado na lista. O método verifica se um item está selecionado e, em caso afirmativo, remove-o da lista.
+        """
         row = self.listw.currentRow()
         if row < 0:
             return

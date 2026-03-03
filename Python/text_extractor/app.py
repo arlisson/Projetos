@@ -580,9 +580,9 @@ class App(QWidget):
         dlg = SettingsDialog(self)
         dlg.exec()
 
-    def open_help(self) -> None:
-        url = self.cfg_ui.get("help_url", "").strip()
+    def open_help(self) -> None:        
         try:
+            url = self.cfg_ui.get("help_url", "").strip()
             if url:
                 QDesktopServices.openUrl(QUrl(url))
             else:

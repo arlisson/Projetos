@@ -13,8 +13,12 @@ from formatters import cast_value_by_type
 
 def list_sheets_with_ids(path: str) -> List[Tuple[int, str]]:
     """
-    Retorna [(sheetId, title), ...] na ordem do workbook.
-    sheetId é estável em renomeação (na prática, é o melhor identificador).
+    Lê um arquivo Excel e retorna uma lista de tuplas contendo o ID da planilha e o nome de cada aba presente no arquivo. O método utiliza a biblioteca openpyxl para carregar o arquivo e iterar sobre as planilhas, extraindo o ID (que pode ser obtido de diferentes atributos dependendo da versão do openpyxl) e o título de cada aba, retornando-os em uma lista estruturada.
+    Args:
+        path (str): Caminho do arquivo Excel a ser lido.
+
+    Returns:
+            list[Tuple[int, str]]: Lista de tuplas, onde cada tupla contém o ID da planilha (int) e o nome da aba (str) presente no arquivo Excel.
     """
     wb = load_workbook(path)
     out: List[Tuple[int, str]] = []
@@ -98,6 +102,13 @@ def write_headers_from_campos(path: str, sheet_name: str, campos: List[Campo]) -
 
 
 def ensure_workbook(path: str, sheet_name: str, headers: List[str]) -> None:
+    """
+    Garante que o arquivo Excel exista, que a aba exista e que a linha 1 tenha os cabeçalhos (títulos) especificados.
+    Args:
+        path (str): Caminho do arquivo Excel.
+        sheet_name (str): Nome da aba onde os dados serão escritos.
+        headers (List[str]): Lista de cabeçalhos (títulos) a serem garantidos na linha 1 da aba. Se a aba já existir, os cabeçalhos serão mesclados com os existentes, mantendo a ordem dos novos e sem duplicatas.
+    """
     if not os.path.exists(path):
         wb = Workbook()
         ws = wb.active
@@ -131,6 +142,13 @@ def ensure_workbook(path: str, sheet_name: str, headers: List[str]) -> None:
 
 
 def apply_column_type_rules(path: str, sheet_name: str, campos: List[Campo]) -> None:
+    """
+    Aplica regras de formatação e validação de dados nas colunas do Excel com base nos tipos definidos nos campos do app. Para cada campo, o método verifica se a coluna correspondente existe na aba especificada e, se existir, aplica a formatação numérica adequada e as regras de validação de dados (como restrições de valor para números, datas ou listas) para garantir que os dados inseridos estejam em conformidade com os tipos esperados.
+    Args:
+        path (str): Caminho do arquivo Excel.
+        sheet_name (str): Nome da aba onde os dados serão validados.
+        campos (List[Campo]): Lista de campos do app com informações de tipo e título para aplicar as regras de validação.
+    """
     if not path or not os.path.exists(path):
         return
 
@@ -202,6 +220,14 @@ def apply_column_type_rules(path: str, sheet_name: str, campos: List[Campo]) -> 
     wb.save(path)
 
 def _next_data_row(ws) -> int:
+    """
+    Retorna o índice da próxima linha vazia (base 1) na planilha, considerando a linha 1 como cabeçalho. A função verifica cada linha a partir da linha 2 e considera a linha "ocupada" se qualquer célula nessa linha tiver um valor diferente de None ou vazio. Quando encontra uma linha onde todas as células estão vazias, retorna o índice dessa linha como a próxima linha disponível para inserção de dados.
+    Args:
+        ws (_type_): Worksheet do openpyxl.
+
+    Returns:
+        int: Índice da próxima linha vazia (base 1).
+    """
     # começa em 2 (linha 1 é cabeçalho)
     r = 2
     # considera “ocupada” se qualquer célula da linha tiver valor
@@ -212,6 +238,14 @@ def _next_data_row(ws) -> int:
         return r
 
 def append_row_typed(path: str, sheet_name: str, campos: List[Campo], row_by_title: Dict[str, str]) -> None:
+    """
+    Adiciona uma nova linha de dados ao arquivo Excel na aba especificada, mapeando os valores fornecidos em row_by_title para os campos definidos em campos. O método garante que os valores sejam convertidos para os tipos apropriados com base nas informações dos campos antes de serem inseridos no Excel. Ele também verifica se a aba existe e se os cabeçalhos estão presentes, criando-os se necessário, e insere os dados na próxima linha disponível.
+    Args:
+        path (str): Caminho do arquivo Excel.
+        sheet_name (str):   Nome da aba onde os dados serão escritos.
+        campos (List[Campo]): Lista de campos do app com informações de tipo e título para mapear os dados a serem inseridos.
+        row_by_title (Dict[str, str]):  Dicionário onde a chave é o título do campo (correspondente ao cabeçalho da coluna) e o valor é a string a ser convertida e inserida na célula. O método irá converter cada valor para o tipo apropriado com base nas informações dos campos antes de inserir no Excel.
+    """
     headers = [c.titulo for c in campos]
     ensure_workbook(path, sheet_name, headers)
 
@@ -237,6 +271,13 @@ def append_row_typed(path: str, sheet_name: str, campos: List[Campo], row_by_tit
 
 
 def delete_column_by_header(path: str, sheet_name: str, header_name: str) -> None:
+    """
+    Exclui uma coluna do arquivo Excel com base no nome do cabeçalho. O método verifica se o arquivo e a aba existem, se a linha 1 contém o cabeçalho especificado e, se todas as condições forem atendidas, exclui a coluna correspondente ao cabeçalho fornecido.
+    Args:
+        path (str): Caminho do arquivo Excel.
+        sheet_name (str): Nome da aba onde a coluna será excluída.
+        header_name (str): Nome do cabeçalho da coluna a ser excluída.
+    """
     if not path or not os.path.exists(path):
         return
 
@@ -261,6 +302,14 @@ def delete_column_by_header(path: str, sheet_name: str, header_name: str) -> Non
 
 
 def rename_column_header(path: str, sheet_name: str, old_header: str, new_header: str) -> None:
+    """
+    Renomeia o cabeçalho de uma coluna no arquivo Excel. O método verifica se o arquivo e a aba existem, se a linha 1 contém o cabeçalho antigo especificado e, se todas as condições forem atendidas, atualiza o valor do cabeçalho para o novo nome fornecido.
+    Args:
+        path (str): Caminho do arquivo Excel.
+        sheet_name (str): Nome da aba onde a coluna será renomeada.
+        old_header (str): Nome do cabeçalho atual da coluna a ser renomeada.
+        new_header (str): Novo nome do cabeçalho da coluna.
+    """
     if not path or not os.path.exists(path):
         return
 
