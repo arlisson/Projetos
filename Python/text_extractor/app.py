@@ -356,6 +356,7 @@ class App(QWidget):
         self.icon_mgr.apply_button_icon(self.btn_save, "save_lead", white)
         self.icon_mgr.apply_button_icon(self.btn_settings, "settings", text)
         self.icon_mgr.apply_button_icon(self.btn_refresh_sheets, "refresh", text)
+        self.icon_mgr.apply_button_icon(self.btn_help, "help", text)
 
         self._last_theme_for_fields = theme
         self.render_fields()
@@ -579,6 +580,16 @@ class App(QWidget):
         dlg = SettingsDialog(self)
         dlg.exec()
 
+    def open_help(self) -> None:
+        url = self.cfg_ui.get("help_url", "").strip()
+        try:
+            if url:
+                QDesktopServices.openUrl(QUrl(url))
+            else:
+                QMessageBox.information(self, "Ajuda", "Nenhum link de ajuda configurado.")
+        except Exception:
+            QMessageBox.warning(self, "Erro", "Não foi possível abrir o link de ajuda.")
+
     # ---------- build UI ----------
 
     def _build_ui(self) -> None:
@@ -599,9 +610,15 @@ class App(QWidget):
         self.btn_settings.setFixedWidth(44)
         self.btn_settings.clicked.connect(self.open_settings)
 
+        self.btn_help = QPushButton("")
+        self.btn_help.setToolTip("Ajuda")
+        self.btn_help.setFixedWidth(44)
+        self.btn_help.clicked.connect(self.open_help)
+
         file_row.addWidget(self.btn_file)
         file_row.addWidget(self.lbl_file, 1)
         file_row.addWidget(self.btn_settings)
+        file_row.addWidget(self.btn_help)
         root.addLayout(file_row)
 
         sheet_row = QHBoxLayout()
