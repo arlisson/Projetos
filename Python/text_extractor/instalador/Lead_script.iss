@@ -52,8 +52,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "C:\Projetos\Python\text_extractor\dist\PreencheFacil\PreencheFacil.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Projetos\Python\text_extractor\dist\PreencheFacil\controle_*.json"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Projetos\Python\text_extractor\dist\PreencheFacil\LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Projetos\Python\text_extractor\dist\PreencheFacil\LICENSE.pt-BR.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Projetos\Python\text_extractor\dist\PreencheFacil\_internal\LICENSE.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Projetos\Python\text_extractor\dist\PreencheFacil\_internal\LICENSE.pt-BR.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Projetos\Python\text_extractor\dist\PreencheFacil\_internal\*"; DestDir: "{app}\_internal"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 

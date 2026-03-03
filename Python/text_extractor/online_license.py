@@ -134,9 +134,9 @@ def save_cache(data: dict) -> None:
 
 def get_machine_guid() -> str:
     """
-    Obtém o valor do MachineGuid do sistema a partir do registro do Windows. O método abre a chave de registro HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography, consulta o valor da chave "MachineGuid" e retorna esse valor como uma string. O MachineGuid é um identificador único para o computador, e é comumente usado para fins de licenciamento e identificação de dispositivos. Se ocorrer um erro ao acessar o registro ou ao obter o valor, o método irá lançar uma exceção, indicando que a obtenção do MachineGuid falhou.
+    Obtém o valor do MachineGuid do sistema a partir do registro do Windows. O método abre a chave de registro HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Cryptography, consulta o valor da chave "MachineGuid" e retorna esse valor como uma string. O MachineGuid é um identificador único para o computador, e é comumente usado para fins de licenciamento e identificação de dispositivos. Se ocorrer um erro ao acessar o registro ou ao obter o valor, o método irá lançar uma exceção, indicando que a obtenção do MachineGuid falhou.
     Returns:
-        str: O valor do MachineGuid do sistema, obtido a partir do registro do Windows. O método abre a chave de registro HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography, consulta o valor da chave "MachineGuid" e retorna esse valor como uma string. Se ocorrer um erro ao acessar o registro ou ao obter o valor, o método irá lançar uma exceção.
+        str: O valor do MachineGuid do sistema, obtido a partir do registro do Windows. O método abre a chave de registro HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Cryptography, consulta o valor da chave "MachineGuid" e retorna esse valor como uma string. Se ocorrer um erro ao acessar o registro ou ao obter o valor, o método irá lançar uma exceção.
     """
     key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Cryptography")
     val, _ = winreg.QueryValueEx(key, "MachineGuid")
