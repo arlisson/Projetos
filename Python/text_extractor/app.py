@@ -94,6 +94,27 @@ from widgets import EmailInputWidget, FieldRowWidget, BoolInputWidget
 
 
 def abs_path(p: str) -> str:
+    """    
+    Resolve um caminho de arquivo para um caminho absoluto.
+
+    Esta função é crucial para lidar com recursos em um aplicativo que pode ser
+    executado tanto em um ambiente de desenvolvimento quanto como um executável
+    "congelado" (por exemplo, com PyInstaller).
+
+    - Se o caminho já for absoluto, ele é retornado sem modificação.
+    - Se o caminho for relativo, a função determina o diretório base:
+        - Em um executável PyInstaller, usa o diretório temporário `_MEIPASS`.
+        - Em um script Python normal, usa o diretório do próprio script.
+    - O caminho relativo é então combinado com este diretório base.
+
+    Args:
+       
+        p (str): O caminho do arquivo a ser resolvido.
+
+    Returns:
+      
+        str: O caminho absoluto correspondente, ou uma string vazia se a entrada for nula/vazia.
+    """
     if not p:
         return ""
     if os.path.isabs(p):
@@ -103,12 +124,34 @@ def abs_path(p: str) -> str:
 
 
 def file_exists(p: str) -> bool:
+    """
+    Verifica se um arquivo existe e pode ser lido.
+
+    Args:
+        p (str): String que representa o caminho para o arquivo a ser verificado.
+
+    Returns:
+        bool: True se o arquivo existe e pode ser lido, False caso contrário.
+    """
     ap = abs_path(p)
     return bool(ap) and os.path.exists(ap)
 
 
 class SettingsDialog(QDialog):
+    """
+    Classe de diálogo para gerenciar as configurações globais do aplicativo, permitindo ao usuário acessar os ajustes de tema visual e a lista de domínios de e-mail sugeridos.
+    
+    Args:
+        QDialog (_type_): Objeto do tipo QDialog.
+    """
     def __init__(self, parent: "App"):
+        """
+        Funcção de inicialização do diálogo de configurações.
+        
+        Args:
+            parent (App): A instância principal do aplicativo que gerencia o estado e as configurações.
+            
+        """
         super().__init__(parent)
         self.setWindowTitle("Configurações")
         self.setModal(True)
@@ -140,15 +183,38 @@ class SettingsDialog(QDialog):
         self.setLayout(layout)
 
     def _open_theme(self) -> None:
+        """ 
+        Abre o diálogo de ajuste de tema de cores, permitindo ao usuário modificar a aparência visual do aplicativo.
+        
+        """
         self.parent_app.open_theme_settings()
 
     def _open_domains(self) -> None:
+        """
+        Abre o diálogo de gerenciamento de domínios de e-mail. Após o fechamento do diálogo, 
+        atualiza a lista de domínios no aplicativo e sincroniza os widgets de entrada de e-mail existentes.
+        
+        """
         self.parent_app.open_email_domains()
         self.btn_domains.setEnabled(self.parent_app._has_email_fields())
 
 
 class App(QWidget):
+    """
+    Interface principal do aplicativo "Preenche Fácil".
+    Gerencia a configuração de campos, a interface de usuário dinâmica,
+    a integração com planilhas Excel e a persistência de dados.
+
+    
+    Args:
+        QWidget (_type_): Objeto do tipo QWidget. 
+    """
     def __init__(self):
+        """
+        Inicializa a aplicação, carrega as configurações de campos, UI e domínios de e-mail, 
+        e configura a interface do usuário e o monitoramento da planilha.        
+
+        """
         super().__init__()
 
         self.cfg_fields = load_fields_config(FIELD_TYPES)
@@ -184,12 +250,19 @@ class App(QWidget):
         self._start_sheet_monitor()
 
     def open_license(self) -> None:
+        """
+        Abre o diálogo de informações da licença, exibindo o texto da licença
+        e aplicando o tema visual atual do aplicativo.
+        """
         theme = (self.cfg_ui.get("theme") or dict(DEFAULT_THEME))
         text = read_license_text()
         dlg = LicenseDialog(self, theme=theme, license_text=text)
         dlg.exec()
 
     def _apply_window_icon(self) -> None:
+        """
+        Aplica o ícone da janela do aplicativo a partir das configurações da UI.
+        """
         icon_path = self.cfg_ui.get("window_icon", "")
         if file_exists(icon_path):
             self.setWindowIcon(QIcon(abs_path(icon_path)))
@@ -197,6 +270,13 @@ class App(QWidget):
     # ---------- tema ----------
 
     def _apply_theme_from_config(self) -> None:
+        """
+        Aplica o tema visual do aplicativo com base nas configurações carregadas.
+        Calcula as cores derivadas a partir dos valores HSL do plano de fundo e
+        atualiza o folha de estilos (stylesheet) e os ícones.
+        
+        
+        """
         base_theme = dict(DEFAULT_THEME)
         base_theme.update(self.cfg_ui.get("theme", {}) or {})
 
@@ -217,6 +297,14 @@ class App(QWidget):
         self._apply_theme(derived)
 
     def _apply_theme(self, theme: dict) -> None:
+        """
+        Aplica o tema visual (cores e estilos) a todos os widgets da interface.
+        
+        Args:
+            theme (dict): Dicionário contendo as cores hexadecimais para cada elemento da UI.
+    
+        
+        """
         bg = theme["background"]
         surface = theme["surface"]
         surface_alt = theme["surface_alt"]
@@ -347,6 +435,14 @@ class App(QWidget):
         self._retint_all_icons(theme)
 
     def _retint_all_icons(self, theme: dict) -> None:
+        """
+        Atualiza a cor de todos os ícones da interface para que correspondam ao tema atual.
+    
+        
+        Args:
+            theme (dict): Um dicionário contendo cores hexadecimais para cada elemento da UI.
+        
+        """
         text = theme["text"]
         white = "#FFFFFF"
 
@@ -364,9 +460,25 @@ class App(QWidget):
     # ---------- domínios email ----------
 
     def _has_email_fields(self) -> bool:
+        """
+
+        Verifica se a lista de campos atual contém ao menos um campo do tipo 'email'.
+        
+        Returns:
+            bool: True se houver campos de e-mail, False caso contrário.
+        
+        
+        """
         return any(c.tipo == "email" for c in self.campos)
 
     def open_email_domains(self) -> None:
+        """
+        Abre o diálogo de gerenciamento de domínios de e-mail. 
+        Permite adicionar, editar ou remover domínios da lista de sugestões.
+        Ao aceitar, salva as alterações e atualiza todos os widgets de e-mail ativos.
+        
+        
+        """
         dlg = EmailDomainsDialog(self, domains=list(self.email_domains))
         if dlg.exec() == QDialog.Accepted:
             self.email_domains = dlg.domains()
@@ -375,6 +487,12 @@ class App(QWidget):
             self._refresh_email_domain_widgets()
 
     def _refresh_email_domain_widgets(self) -> None:
+        """
+        Atualiza a lista de domínios em todos os widgets de entrada de e-mail ativos, 
+        preservando o texto já digitado pelo usuário.
+        
+
+        """
         for c in self.campos:
             if c.tipo != "email":
                 continue
@@ -413,6 +531,13 @@ class App(QWidget):
         self._reload_sheet_list_from_meta(meta)
 
     def _reload_sheet_list_from_meta(self, meta) -> None:
+        """
+        Atualiza o QComboBox de abas com base nos metadados fornecidos e sincroniza a aba selecionada.
+                
+        Args:
+            meta (_type_): List[Tuple[int, str]] 
+            
+        """
         self.cmb_sheet.blockSignals(True)
         self.cmb_sheet.clear()
 
@@ -430,6 +555,13 @@ class App(QWidget):
         self.cmb_sheet.blockSignals(False)
 
     def on_sheet_changed(self, new_sheet: str) -> None:
+        """
+        Atualiza a aba ativa e recarrega os campos correspondentes. Se a aba for nova, 
+        tenta sincronizar os cabeçalhos a partir do arquivo Excel.        
+
+        Args:
+            new_sheet (str): String representando a nova aba
+        """
         if not new_sheet or not self.file_path:
             return
 
@@ -446,6 +578,8 @@ class App(QWidget):
         self.sync_fields_from_existing_excel(self.file_path)
 
     def create_new_sheet(self) -> None:
+        """Função responsável por criar uma nova aba na planilha
+        """
         if not self.file_path:
             QMessageBox.warning(self, "Atenção", "Selecione uma planilha primeiro.")
             return
@@ -470,6 +604,14 @@ class App(QWidget):
         self.cmb_sheet.setCurrentText(name)  # dispara on_sheet_changed
 
     def _snapshot_current_inputs(self) -> Dict[str, str]:
+        """
+        Captura o estado atual de todos os campos de entrada, mapeando o título do campo ao seu valor textual.
+        Isso permite preservar os dados digitados pelo usuário durante operações de sincronização ou troca de abas.
+        
+        
+        Returns:
+            Dict[str, str]: Dicionário representando Título, Valor dos campos
+        """
         by_title: Dict[str, str] = {}
         for c in self.campos:
             w = self.inputs.get(c.id)
@@ -485,6 +627,15 @@ class App(QWidget):
         return by_title
 
     def _restore_inputs_by_title(self, by_title: Dict[str, str]) -> None:
+        """
+        Restaura os valores dos campos de entrada a partir de um dicionário de títulos e valores.
+    
+        
+
+        Args:
+            by_title (Dict[str, str]): Dicionário contendo os títulos dos campos como chaves e seus respectivos valores atuais como valores.
+            
+        """
         for c in self.campos:
             if c.titulo not in by_title:
                 continue
@@ -498,6 +649,9 @@ class App(QWidget):
                 w.setText(val)
 
     def _maybe_sync_sheets_from_excel(self) -> None:
+        """        Verifica se houve mudanças nas abas do arquivo Excel (renomeação, exclusão ou adição) 
+        e sincroniza o estado interno do aplicativo e a interface (combobox) sem perder o foco.
+        """
         if not self.file_path or not os.path.exists(self.file_path):
             return
 
@@ -515,6 +669,11 @@ class App(QWidget):
                 return
 
     def _maybe_sync_headers_from_excel(self) -> None:
+        """        Verifica se o cabeçalho da planilha Excel mudou em relação aos campos atuais do aplicativo.
+        Se houver divergência, sincroniza os campos automaticamente, preservando os valores
+        que o usuário já digitou nos inputs.
+        
+        """
         if not self.file_path:
             return
 
@@ -543,6 +702,7 @@ class App(QWidget):
         self.lbl_status.setText("Campos atualizados automaticamente a partir do cabeçalho da planilha.")
     
     def refresh_sheets(self) -> None:
+      
         if not self.file_path or not os.path.exists(self.file_path):
             QMessageBox.warning(self, "Atenção", "Selecione uma planilha primeiro.")
             return
