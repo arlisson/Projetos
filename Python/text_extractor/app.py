@@ -453,6 +453,8 @@ class App(QWidget):
         self.icon_mgr.apply_button_icon(self.btn_settings, "settings", text)
         self.icon_mgr.apply_button_icon(self.btn_refresh_sheets, "refresh", text)
         self.icon_mgr.apply_button_icon(self.btn_help, "help", text)
+        self.icon_mgr.apply_button_icon(self.btn_license, "license", text)
+
 
         self._last_theme_for_fields = theme
         self.render_fields()
@@ -774,11 +776,18 @@ class App(QWidget):
         self.btn_help.setToolTip("Ajuda")
         self.btn_help.setFixedWidth(44)
         self.btn_help.clicked.connect(self.open_help)
+        
+        self.btn_license = QPushButton("")
+        self.btn_license.setToolTip("Licença de uso do software")
+        self.btn_license.setFixedWidth(44)
+        self.btn_license.clicked.connect(self.open_license)
 
         file_row.addWidget(self.btn_file)
         file_row.addWidget(self.lbl_file, 1)
         file_row.addWidget(self.btn_settings)
         file_row.addWidget(self.btn_help)
+        file_row.addWidget(self.btn_license)
+
         root.addLayout(file_row)
 
         sheet_row = QHBoxLayout()
@@ -885,11 +894,7 @@ class App(QWidget):
         footer_row.addWidget(self.lbl_footer_logo, 0)
         footer_row.addWidget(self.lbl_footer_left, 1)
 
-        self.btn_license = QPushButton("Licença")
-        self.btn_license.setToolTip("Ver informações da licença de uso do software")
-        self.btn_license.clicked.connect(self.open_license)
-        footer_row.addWidget(self.btn_license, 0, Qt.AlignRight)
-
+        
         # Banner inteiro clicável
         if footer_link:
             footer_wrap.setCursor(Qt.PointingHandCursor)
@@ -935,14 +940,11 @@ class App(QWidget):
         self.lbl_footer_left.setTextFormat(Qt.RichText)
         self.lbl_footer_left.setOpenExternalLinks(False)  # vamos tratar clique no banner todo
         self.lbl_footer_left.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
-
-        # Botão licença (mantém, mas “menos chamativo”)
-        self.btn_license = QPushButton("Licença")
-        self.btn_license.setFixedWidth(90)
+       
 
         row.addWidget(self.lbl_footer_logo, 0)
         row.addWidget(self.lbl_footer_left, 1)
-        row.addWidget(self.btn_license, 0)
+        
 
         # Banner clicável (WhatsApp/site)
         link = ui.get("footer_link", "").strip()

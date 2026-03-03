@@ -247,7 +247,8 @@ def default_ui_config() -> dict:
             "settings": "assets/icons/engrenagem.png",
             "lock_open": "assets/icons/cadeado-aberto.png",
             "lock_closed": "assets/icons/cadeado.png",
-            "help": "assets/icons/ajuda.png"
+            "help": "assets/icons/ajuda.png",
+            "license": "assets/icons/information.png"
         },
         "theme": {
             "background": "#0B1220",
