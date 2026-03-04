@@ -1,0 +1,361 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>widgets module &mdash; PreencheFacil v0.0.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=bc6a6d3b"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="user_login module" href="user_login.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PreencheFacil
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">text_extractor</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="app.html">app module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="colors.html">colors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html">config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialogs.html">dialogs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel_io.html">excel_io module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatters.html">formatters module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="icon_manager.html">icon_manager module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="license_dialog.html">license_dialog module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loading_screen.html">loading_screen module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="online_license.html">online_license module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simple_lock.html">simple_lock module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_login.html">user_login module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">widgets module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#widgets.EmailInputWidget"><code class="docutils literal notranslate"><span class="pre">EmailInputWidget</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#widgets.EmailInputWidget.set_domains"><code class="docutils literal notranslate"><span class="pre">EmailInputWidget.set_domains()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#widgets.EmailInputWidget.local"><code class="docutils literal notranslate"><span class="pre">EmailInputWidget.local()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#widgets.EmailInputWidget.domain"><code class="docutils literal notranslate"><span class="pre">EmailInputWidget.domain()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#widgets.EmailInputWidget.set_parts"><code class="docutils literal notranslate"><span class="pre">EmailInputWidget.set_parts()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#widgets.EmailInputWidget.set_email"><code class="docutils literal notranslate"><span class="pre">EmailInputWidget.set_email()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#widgets.EmailInputWidget.get_email"><code class="docutils literal notranslate"><span class="pre">EmailInputWidget.get_email()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#widgets.FieldRowWidget"><code class="docutils literal notranslate"><span class="pre">FieldRowWidget</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#widgets.FieldRowWidget.editRequested"><code class="docutils literal notranslate"><span class="pre">FieldRowWidget.editRequested</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#widgets.FieldRowWidget.deleteRequested"><code class="docutils literal notranslate"><span class="pre">FieldRowWidget.deleteRequested</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#widgets.FieldRowWidget.lockToggled"><code class="docutils literal notranslate"><span class="pre">FieldRowWidget.lockToggled</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#widgets.FieldRowWidget.set_locked"><code class="docutils literal notranslate"><span class="pre">FieldRowWidget.set_locked()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#widgets.BoolInputWidget"><code class="docutils literal notranslate"><span class="pre">BoolInputWidget</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#widgets.BoolInputWidget.value"><code class="docutils literal notranslate"><span class="pre">BoolInputWidget.value()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#widgets.BoolInputWidget.set_value"><code class="docutils literal notranslate"><span class="pre">BoolInputWidget.set_value()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PreencheFacil</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">text_extractor</a></li>
+      <li class="breadcrumb-item active">widgets module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/widgets.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-widgets">
+<span id="widgets-module"></span><h1>widgets module<a class="headerlink" href="#module-widgets" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="widgets.EmailInputWidget">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">widgets.</span></span><span class="sig-name descname"><span class="pre">EmailInputWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domains</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/widgets.html#EmailInputWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#widgets.EmailInputWidget" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
+<p>Encapsula:
+- QLineEdit (parte local) + QComboBox (domínio)
+- Monta e lê email final
+- Atualiza lista de domínios preservando seleção</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Se o local contém ‘&#64;’, considera colado completo e retorna ok=True</p></li>
+<li><p>Se local não vazio e domínio vazio =&gt; ok=False</p></li>
+<li><p>Se local vazio =&gt; retorna “” e ok=True (campo em branco)</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code>]</span>) – O widget pai opcional. Defaults to None</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="widgets.EmailInputWidget.set_domains">
+<span class="sig-name descname"><span class="pre">set_domains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domains</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/widgets.html#EmailInputWidget.set_domains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#widgets.EmailInputWidget.set_domains" title="Link to this definition"></a></dt>
+<dd><p>Atualiza a lista de domínios disponíveis no QComboBox.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>domains</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – A lista de domínios a ser exibida no QComboBox. O método atualiza o conteúdo do QComboBox com os domínios fornecidos, preservando a seleção atual do usuário sempre que possível.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="widgets.EmailInputWidget.local">
+<span class="sig-name descname"><span class="pre">local</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/widgets.html#EmailInputWidget.local"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#widgets.EmailInputWidget.local" title="Link to this definition"></a></dt>
+<dd><p>Retorna a parte local do e-mail (antes do ‘&#64;’) inserida pelo usuário. O método obtém o texto do QLineEdit, que representa a parte local do e-mail, e remove quaisquer espaços em branco extras antes de retornar o valor. Se o campo estiver vazio, o método retorna uma string vazia. Este método é usado para acessar a parte local do e-mail que o usuário digitou ou colou no campo de entrada, permitindo que outras partes do aplicativo possam compor o endereço de e-mail completo combinando a parte local com o domínio selecionado.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A parte local do e-mail inserida pelo usuário, sem espaços em branco extras. Se o campo estiver vazio, retorna uma string vazia.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="widgets.EmailInputWidget.domain">
+<span class="sig-name descname"><span class="pre">domain</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/widgets.html#EmailInputWidget.domain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#widgets.EmailInputWidget.domain" title="Link to this definition"></a></dt>
+<dd><p>Retorna a parte do domínio do e-mail (após o ‘&#64;’) selecionada pelo usuário. O método obtém o texto atualmente selecionado no QComboBox, que representa a parte do domínio do e-mail, e remove quaisquer espaços em branco extras antes de retornar o valor. Se nenhum domínio estiver selecionado ou se o campo estiver vazio, o método retorna uma string vazia. Este método é usado para acessar a parte do domínio do e-mail que o usuário selecionou, permitindo que outras partes do aplicativo possam compor o endereço de e-mail completo combinando a parte local com o domínio selecionado.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A parte do domínio do e-mail selecionada pelo usuário, sem espaços em branco extras. Se nenhum domínio estiver selecionado ou se o campo estiver vazio, retorna uma string vazia.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="widgets.EmailInputWidget.set_parts">
+<span class="sig-name descname"><span class="pre">set_parts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">local</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">domain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/widgets.html#EmailInputWidget.set_parts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#widgets.EmailInputWidget.set_parts" title="Link to this definition"></a></dt>
+<dd><p>Define as partes local e de domínio do e-mail no widget. O método recebe a parte local e a parte do domínio como argumentos, limpa quaisquer espaços em branco extras e atualiza os campos correspondentes no QLineEdit e no QComboBox. A parte local é definida no QLineEdit, enquanto a parte do domínio é selecionada no QComboBox. Se a parte do domínio fornecida não estiver presente na lista de domínios do QComboBox, o método pode optar por adicionar o domínio à lista ou simplesmente deixar o campo de domínio vazio, dependendo da implementação desejada. Este método é útil para configurar o widget com um endereço de e-mail específico, dividindo-o em suas partes componentes para exibição e edição pelo usuário.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>local</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – A parte local do e-mail a ser definida no QLineEdit. O método limpa quaisquer espaços em branco extras antes de definir o valor no campo de entrada.</p></li>
+<li><p><strong>domain</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – A parte do domínio do e-mail a ser selecionada no QComboBox. O método limpa quaisquer espaços em branco extras antes de tentar selecionar o domínio na lista. Se o domínio não estiver presente na lista, o comportamento pode variar dependendo da implementação (por exemplo, adicionar o domínio à lista ou deixar o campo de domínio vazio).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="widgets.EmailInputWidget.set_email">
+<span class="sig-name descname"><span class="pre">set_email</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/widgets.html#EmailInputWidget.set_email"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#widgets.EmailInputWidget.set_email" title="Link to this definition"></a></dt>
+<dd><p>Define o endereço de e-mail completo no widget, dividindo-o em partes local e de domínio. O método recebe um endereço de e-mail completo como argumento, limpa quaisquer espaços em branco extras e verifica se o endereço contém o caractere ‘&#64;’. Se o endereço contiver ‘&#64;’, ele é dividido em parte local (antes do ‘&#64;’) e parte de domínio (após o ‘&#64;’), e os campos correspondentes no QLineEdit e no QComboBox são atualizados usando o método set_parts(). Se o endereço não contiver ‘&#64;’, ele é tratado como a parte local do e-mail, e a parte do domínio é deixada vazia. Este método é útil para configurar o widget com um endereço de e-mail completo, permitindo que o usuário veja e edite as partes local e de domínio separadamente.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>email</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – O endereço de e-mail completo a ser definido no widget. O método limpa quaisquer espaços em branco extras antes de processar o endereço. Se o endereço contiver ‘&#64;’, ele será dividido em parte local e parte de domínio; caso contrário, será tratado como parte local com domínio vazio.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="widgets.EmailInputWidget.get_email">
+<span class="sig-name descname"><span class="pre">get_email</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/widgets.html#EmailInputWidget.get_email"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#widgets.EmailInputWidget.get_email" title="Link to this definition"></a></dt>
+<dd><p>Retorna o endereço de e-mail completo composto pela parte local e a parte do domínio, juntamente com um indicador de validade. O método obtém a parte local do QLineEdit e a parte do domínio do QComboBox, limpa quaisquer espaços em branco extras e verifica se a parte local contém o caractere ‘&#64;’. Se a parte local contiver ‘&#64;’, o método considera que o usuário colou um endereço de e-mail completo na parte local, e retorna esse valor como o endereço de e-mail completo, juntamente com um indicador de validade True. Se a parte local não contiver ‘&#64;’, o método verifica se a parte local está vazia; se estiver vazia, retorna uma string vazia como o endereço de e-mail completo e um indicador de validade True (campo em branco é considerado válido). Se a parte local não estiver vazia e a parte do domínio estiver vazia, o método retorna a parte local como o endereço de e-mail completo e um indicador de validade False (indica que falta o domínio). Se ambas as partes estiverem presentes, o método combina a parte local com a parte do domínio para formar o endereço de e-mail completo e retorna esse valor juntamente com um indicador de validade True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Uma tupla contendo o endereço de e-mail completo composto pela parte local e a parte do domínio, e um indicador de validade. O primeiro elemento da tupla é o endereço de e-mail completo resultante da combinação da parte local e do domínio, ou uma string vazia se a parte local estiver vazia. O segundo elemento é um booleano que indica se o endereço de e-mail é considerado válido (True) ou inválido (False) com base nas regras descritas acima.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="widgets.FieldRowWidget">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">widgets.</span></span><span class="sig-name descname"><span class="pre">FieldRowWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/widgets.html#FieldRowWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#widgets.FieldRowWidget" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
+<p>Widget para exibir um campo com opções de editar, excluir e bloquear. O widget é composto por um QLabel para exibir o título do campo, um widget de entrada (input_widget) para mostrar o valor do campo, e três botões: “Editar”, “Excluir” e um botão de bloqueio (cadeado). O botão de bloqueio é um QPushButton configurado como checkable, permitindo que o usuário bloqueie ou desbloqueie o campo. O widget emite sinais quando os botões são clicados: editRequested quando o botão “Editar” é clicado, deleteRequested quando o botão “Excluir” é clicado, e lockToggled quando o estado do botão de bloqueio é alterado. O layout do widget é organizado horizontalmente, com o botão de bloqueio posicionado antes do título, seguido pelo QLabel, o widget de entrada e os botões de ação. Este widget é útil para exibir campos de dados em uma interface de usuário, permitindo que os usuários interajam com os campos por meio das opções de edição, exclusão e bloqueio.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>QWidget</strong> (<em>_type_</em>) – O widget base do PySide6 que é estendido para criar o FieldRowWidget personalizado. Este widget serve como a classe base para o FieldRowWidget, permitindo que ele seja integrado em interfaces de usuário criadas com PySide6.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="widgets.FieldRowWidget.editRequested">
+<span class="sig-name descname"><span class="pre">editRequested</span></span><a class="headerlink" href="#widgets.FieldRowWidget.editRequested" title="Link to this definition"></a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="widgets.FieldRowWidget.deleteRequested">
+<span class="sig-name descname"><span class="pre">deleteRequested</span></span><a class="headerlink" href="#widgets.FieldRowWidget.deleteRequested" title="Link to this definition"></a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="widgets.FieldRowWidget.lockToggled">
+<span class="sig-name descname"><span class="pre">lockToggled</span></span><a class="headerlink" href="#widgets.FieldRowWidget.lockToggled" title="Link to this definition"></a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="widgets.FieldRowWidget.set_locked">
+<span class="sig-name descname"><span class="pre">set_locked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locked</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/widgets.html#FieldRowWidget.set_locked"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#widgets.FieldRowWidget.set_locked" title="Link to this definition"></a></dt>
+<dd><p>Atualiza o estado do botão de bloqueio sem disparar o evento lockToggled. Este método é usado para definir o estado do botão de bloqueio (bloqueado ou desbloqueado) programaticamente, sem emitir o sinal lockToggled que normalmente seria acionado quando o usuário interage com o botão. Isso é útil para evitar loops de eventos ou para atualizar o estado do botão com base em mudanças externas sem causar efeitos colaterais indesejados. O método bloqueia temporariamente os sinais do botão de bloqueio, define o estado do botão de acordo com o valor fornecido e, em seguida, desbloqueia os sinais para permitir que futuras interações do usuário sejam processadas normalmente.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>locked</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – O estado a ser definido para o botão de bloqueio. Se True, o botão será marcado como bloqueado; se False, será marcado como desbloqueado. O método garante que o estado do botão seja atualizado de acordo com o valor fornecido, sem disparar o evento lockToggled.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="widgets.BoolInputWidget">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">widgets.</span></span><span class="sig-name descname"><span class="pre">BoolInputWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/widgets.html#BoolInputWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#widgets.BoolInputWidget" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
+<p>Widget de entrada booleana baseado em QComboBox.</p>
+<p>Exibe uma lista suspensa com as opções “Sim” e “Não” e fornece métodos
+para ler e atribuir o valor selecionado, aceitando variações comuns de
+entrada (ex.: “yes”, “true”, “1”, “nao”, “false”, “0”).</p>
+<dl class="simple">
+<dt>Uso típico:</dt><dd><p>w = BoolInputWidget()
+w.set_value(“true”)   # seleciona “Sim”
+w.value()             # retorna “Sim” ou “Não”</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>parent</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code>]</span>) – Widget pai do Qt (opcional).</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="widgets.BoolInputWidget.value">
+<span class="sig-name descname"><span class="pre">value</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/widgets.html#BoolInputWidget.value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#widgets.BoolInputWidget.value" title="Link to this definition"></a></dt>
+<dd><p>Retorna o texto atualmente selecionado no combo (“Sim” ou “Não”),
+removendo espaços em branco. Se não houver seleção válida, retorna
+string vazia.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Valor selecionado (“Sim”/“Não”) ou “”.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="widgets.BoolInputWidget.set_value">
+<span class="sig-name descname"><span class="pre">set_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/widgets.html#BoolInputWidget.set_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#widgets.BoolInputWidget.set_value" title="Link to this definition"></a></dt>
+<dd><p>Define a seleção do combo com base na string fornecida, aceitando variações
+comuns de verdadeiro/falso.</p>
+<p>Normalização aplicada:
+- {“sim”,”s”,”yes”,”y”,”true”,”1”} -&gt; “Sim”
+- {“não”,”nao”,”n”,”no”,”false”,”0”} -&gt; “Não”
+- Se <cite>v</cite> for vazio (ou apenas espaços), define “”.
+- Se <cite>v</cite> não corresponder e não for “Sim”/”Não”, define “”.</p>
+<p>Observação:
+- Para o estado vazio funcionar, é necessário adicionar um item vazio no</p>
+<blockquote>
+<div><p>QComboBox (linha comentada <cite>self.cmb.addItem(“”)</cite>).</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>v</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Valor de entrada a ser normalizado e aplicado ao combo.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="user_login.html" class="btn btn-neutral float-left" title="user_login module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Avance Telecom.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

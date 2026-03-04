@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>simple_lock &#8212; PreencheFacil v0.0.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <script src="../_static/documentation_options.js?v=bc6a6d3b"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for simple_lock</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">base64</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">hmac</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ctypes</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ctypes.wintypes</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">wt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">winreg</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="n">APP_NAME</span> <span class="o">=</span> <span class="s2">&quot;LeadsApp&quot;</span>
+
+<span class="c1"># Troque por um segredo longo e aleatório (64+ bytes).</span>
+<span class="c1"># Ideal: gerar uma vez e NÃO mudar depois de distribuir, senão invalida os markers já gerados.</span>
+<span class="n">APP_SECRET</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;CHANGE_ME__PUT_A_LONG_RANDOM_SECRET_64_BYTES_MINIMUM________________&quot;</span>
+
+<span class="c1"># Marker SOMENTE LEITURA criado pelo instalador em: &lt;pasta do app&gt;\_internal\</span>
+<span class="c1"># (não será escrito pelo app)</span>
+<span class="n">INTERNAL_DIR_NAME</span> <span class="o">=</span> <span class="s2">&quot;_internal&quot;</span>
+<span class="n">INTERNAL_MARKER_FILE</span> <span class="o">=</span> <span class="s2">&quot;_internal.dat&quot;</span>  <span class="c1"># o instalador deve criar este arquivo</span>
+
+<span class="c1"># Marcador por máquina (gerado APENAS após validação online)</span>
+<span class="c1"># C:\ProgramData\LeadsApp\cahce_string.dat</span>
+<span class="n">PROGRAMDATA_FILE</span> <span class="o">=</span> <span class="s2">&quot;cahce_string.dat&quot;</span>
+
+<span class="c1"># Registro (apenas status; não guarda token)</span>
+<span class="n">REG_PATH</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;Software\LeadsApp&quot;</span>
+<span class="n">REG_STATE</span> <span class="o">=</span> <span class="s2">&quot;InstallState&quot;</span>
+<span class="n">REG_FIRSTSEEN</span> <span class="o">=</span> <span class="s2">&quot;FirstSeen&quot;</span>
+<span class="n">REG_MIDHASH</span> <span class="o">=</span> <span class="s2">&quot;MachineIdHash&quot;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_atomic_write_text</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Escreve texto em um arquivo de forma atômica, garantindo que o arquivo seja criado ou atualizado de maneira segura e consistente. O método cria um arquivo temporário com a extensão &quot;.tmp&quot; no mesmo diretório do arquivo de destino, escreve o texto nesse arquivo temporário, e então substitui o arquivo de destino pelo arquivo temporário usando os.replace, que é uma operação atômica no nível do sistema operacional. Isso garante que o arquivo de destino nunca fique em um estado parcialmente escrito, mesmo se ocorrer uma falha durante a escrita. O método também garante que o diretório do arquivo de destino exista antes de tentar escrever o arquivo.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): O caminho do arquivo onde o texto será escrito de forma atômica.</span>
+<span class="sd">        text (str): O texto a ser escrito no arquivo.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="s2">&quot;.tmp&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">fsync</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">fileno</span><span class="p">())</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_backup_file</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Faz um backup de um arquivo existente, copiando-o para um novo arquivo com um sufixo que inclui a razão do backup e um timestamp. O método verifica se o arquivo especificado existe, e se existir, ele gera um nome de arquivo de backup usando o nome original do arquivo, a razão fornecida e um timestamp no formato &quot;YYYYMMDD-HHMMSS&quot;. O arquivo original é então copiado para o novo caminho de backup usando shutil.copy2, que preserva os metadados do arquivo. Se o backup for criado com sucesso, o caminho do arquivo de backup é retornado; caso contrário, se ocorrer um erro durante o processo de backup ou se o arquivo original não existir, o método retorna None.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): O caminho do arquivo a ser copiado.</span>
+<span class="sd">        reason (str): A razão do backup. Essa string é usada para criar o nome do arquivo de backup, indicando o motivo pelo qual o backup foi realizado (por exemplo, &quot;before_update&quot;, &quot;pre_install&quot;, etc.). O método inclui essa razão no nome do arquivo de backup para facilitar a identificação do propósito do backup posteriormente.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Optional[str]: O caminho do arquivo de backup criado, ou None se o backup falhar ou o arquivo original não existir.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">ts</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y%m</span><span class="si">%d</span><span class="s2">-%H%M%S&quot;</span><span class="p">)</span>
+    <span class="n">bak</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">ts</span><span class="si">}</span><span class="s2">.bak&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">bak</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">bak</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_file_write_bytes</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">blob</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Escreve bytes em um arquivo de forma atômica, garantindo que o arquivo seja criado ou atualizado de maneira segura e consistente. O método cria um arquivo temporário com a extensão &quot;.tmp&quot; no mesmo diretório do arquivo de destino, escreve os bytes nesse arquivo temporário, e então substitui o arquivo de destino pelo arquivo temporário usando os.replace, que é uma operação atômica no nível do sistema operacional. Isso garante que o arquivo de destino nunca fique em um estado parcialmente escrito, mesmo se ocorrer uma falha durante a escrita. O método também garante que o diretório do arquivo de destino exista antes de tentar escrever o arquivo.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): O caminho do arquivo onde os bytes serão escritos de forma atômica.</span>
+<span class="sd">        blob (bytes): Os bytes a serem escritos no arquivo.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">blob</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">)</span>
+    <span class="n">_atomic_write_text</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+
+<span class="c1"># -------------------------</span>
+<span class="c1"># Paths</span>
+<span class="c1"># -------------------------</span>
+
+<div class="viewcode-block" id="exe_dir_base">
+<a class="viewcode-back" href="../api/simple_lock.html#simple_lock.exe_dir_base">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">exe_dir_base</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retorna o diretório base do executável, considerando o ambiente de execução (PyInstaller ou desenvolvimento). O método verifica se o atributo sys._MEIPASS está presente, o que indica que o aplicativo está sendo executado a partir de um pacote criado pelo PyInstaller, e retorna esse diretório como base. Caso contrário, ele retorna o diretório do arquivo atual como base. O resultado é o caminho do diretório onde o aplicativo está sendo executado, que pode ser usado para localizar recursos e arquivos relacionados ao aplicativo.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: O diretório base do executável, considerando o ambiente de execução (PyInstaller ou desenvolvimento). O método verifica se o atributo sys._MEIPASS está presente, o que indica que o aplicativo está sendo executado a partir de um pacote criado pelo PyInstaller, e retorna esse diretório como base. Caso contrário, ele retorna o diretório do arquivo atual como base. O resultado é o caminho do diretório onde o aplicativo está sendo executado, que pode ser usado para localizar recursos e arquivos relacionados ao aplicativo.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s2">&quot;frozen&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="internal_dir">
+<a class="viewcode-back" href="../api/simple_lock.html#simple_lock.internal_dir">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">internal_dir</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retorna o caminho do diretório interno do aplicativo, que é uma subpasta chamada &quot;_internal&quot; localizada dentro do diretório base do executável. O método utiliza a função exe_dir_base para obter o diretório base do executável e, em seguida, combina esse diretório com o nome da subpasta &quot;_internal&quot; para formar o caminho completo do diretório interno. Esse diretório é usado para armazenar arquivos relacionados ao aplicativo que não devem ser acessados ou modificados diretamente pelo usuário, como o marcador de licença e outros arquivos de configuração ou estado.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: O caminho do diretório interno do aplicativo, que é uma subpasta chamada &quot;_internal&quot; localizada dentro do diretório base do executável. O método utiliza a função exe_dir_base para obter o diretório base do executável e, em seguida, combina esse diretório com o nome da subpasta &quot;_internal&quot; para formar o caminho completo do diretório interno. Esse diretório é usado para armazenar arquivos relacionados ao aplicativo que não devem ser acessados ou modificados diretamente pelo usuário, como o marcador de licença e outros arquivos de configuração ou estado.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exe_dir_base</span><span class="p">(),</span> <span class="n">INTERNAL_DIR_NAME</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="internal_marker_path">
+<a class="viewcode-back" href="../api/simple_lock.html#simple_lock.internal_marker_path">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">internal_marker_path</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retorna o caminho do arquivo de marcador interno, que é um arquivo chamado &quot;_internal.dat&quot; localizado dentro do diretório interno do aplicativo. O método utiliza a função internal_dir para obter o caminho do diretório interno e, em seguida, combina esse diretório com o nome do arquivo de marcador para formar o caminho completo do arquivo de marcador. Esse arquivo é criado pelo instalador e serve como um indicador de que o aplicativo foi instalado corretamente, além de ser usado para armazenar informações relacionadas à licença e ao estado do aplicativo.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: O caminho do arquivo de marcador interno, que é um arquivo chamado &quot;_internal.dat&quot; localizado dentro do diretório interno do aplicativo. O método utiliza a função internal_dir para obter o caminho do diretório interno e, em seguida, combina esse diretório com o nome do arquivo de marcador para formar o caminho completo do arquivo de marcador. Esse arquivo é criado pelo instalador e serve como um indicador de que o aplicativo foi instalado corretamente, além de ser usado para armazenar informações relacionadas à licença e ao estado do aplicativo.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">internal_dir</span><span class="p">(),</span> <span class="n">INTERNAL_MARKER_FILE</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="programdata_dir">
+<a class="viewcode-back" href="../api/simple_lock.html#simple_lock.programdata_dir">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">programdata_dir</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retorna o caminho do diretório ProgramData específico para o aplicativo, que é uma subpasta com o nome do aplicativo localizada dentro do diretório ProgramData do sistema. O método obtém o caminho do diretório ProgramData usando a variável de ambiente &quot;PROGRAMDATA&quot; (ou um valor padrão se a variável não estiver definida), e então combina esse caminho com o nome do aplicativo para formar o caminho completo do diretório específico do aplicativo dentro do ProgramData. O método também garante que esse diretório exista, criando-o se necessário, para que possa ser usado para armazenar arquivos relacionados ao estado e à configuração do aplicativo.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: O caminho do diretório ProgramData específico para o aplicativo, que é uma subpasta com o nome do aplicativo localizada dentro do diretório ProgramData do sistema. O método obtém o caminho do diretório ProgramData usando a variável de ambiente &quot;PROGRAMDATA&quot; (ou um valor padrão se a variável não estiver definida), e então combina esse caminho com o nome do aplicativo para formar o caminho completo do diretório específico do aplicativo dentro do ProgramData. O método também garante que esse diretório exista, criando-o se necessário, para que possa ser usado para armazenar arquivos relacionados ao estado e à configuração do aplicativo.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;PROGRAMDATA&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="sa">r</span><span class="s2">&quot;C:\ProgramData&quot;</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">APP_NAME</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">d</span></div>
+
+
+
+<div class="viewcode-block" id="license_path_programdata">
+<a class="viewcode-back" href="../api/simple_lock.html#simple_lock.license_path_programdata">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">license_path_programdata</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retorna o caminho do arquivo de licença localizado no diretório ProgramData específico para o aplicativo. O método utiliza a função programdata_dir para obter o caminho do diretório específico do aplicativo dentro do ProgramData, e então combina esse diretório com o nome do arquivo de licença (definido pela constante PROGRAMDATA_FILE) para formar o caminho completo do arquivo de licença. Esse arquivo é usado para armazenar informações relacionadas à licença do aplicativo, e o método garante que o caminho retornado seja válido para uso na leitura e escrita de dados relacionados à licença.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: O caminho completo do arquivo de licença localizado no diretório ProgramData específico para o aplicativo.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">programdata_dir</span><span class="p">(),</span> <span class="n">PROGRAMDATA_FILE</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># -------------------------</span>
+<span class="c1"># Registro (status)</span>
+<span class="c1"># -------------------------</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_reg_get</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Lê um valor do registro do Windows para uma chave específica, retornando o valor como uma string ou None se a chave não existir ou se ocorrer um erro durante o acesso ao registro. O método tenta abrir a chave de registro definida pela constante REG_PATH e ler o valor associado à chave fornecida. Se a chave ou o valor não existirem, ou se ocorrer um erro durante o acesso ao registro, o método retorna None para indicar que o valor não pôde ser obtido. Caso contrário, ele retorna o valor do registro como uma string, removendo quaisquer espaços em branco extras.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        name (str): O nome da chave do registro a ser lida. O método tentará abrir a chave de registro definida pela constante REG_PATH e ler o valor associado a essa chave. Se a chave ou o valor não existirem, ou se ocorrer um erro durante o acesso ao registro, o método retornará None para indicar que o valor não pôde ser obtido.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Optional[str]: O valor do registro para a chave especificada, ou None se a chave não existir ou se ocorrer um erro ao acessar o registro. O método tenta abrir a chave de registro definida pela constante REG_PATH e ler o valor associado à chave fornecida. Se a chave ou o valor não existirem, ou se ocorrer um erro durante o acesso ao registro, o método retorna None para indicar que o valor não pôde ser obtido.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">winreg</span><span class="o">.</span><span class="n">OpenKey</span><span class="p">(</span><span class="n">winreg</span><span class="o">.</span><span class="n">HKEY_CURRENT_USER</span><span class="p">,</span> <span class="n">REG_PATH</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">winreg</span><span class="o">.</span><span class="n">KEY_READ</span><span class="p">)</span>
+        <span class="n">val</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">winreg</span><span class="o">.</span><span class="n">QueryValueEx</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">v</span> <span class="ow">or</span> <span class="kc">None</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_reg_set</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    Escreve um valor no registro do Windows para uma chave específica, criando a chave de registro se ela não existir. O método tenta criar ou abrir a chave de registro definida pela constante REG_PATH e, em seguida, define o valor associado à chave fornecida usando winreg.SetValueEx. Se a chave de registro não existir, ela será criada automaticamente. O método não retorna nenhum valor, mas garante que o valor seja escrito no registro para a chave especificada.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        name (str): O nome da chave do registro a ser escrita. O método tentará criar ou abrir a chave de registro definida pela constante REG_PATH e, em seguida, definir o valor associado a essa chave usando winreg.SetValueEx. Se a chave de registro não existir, ela será criada automaticamente.</span>
+<span class="sd">        value (str):  O valor a ser escrito no registro para a chave especificada. O método tentará criar ou abrir a chave de registro definida pela constante REG_PATH e, em seguida, definir o valor associado a essa chave usando winreg.SetValueEx. Se a chave de registro não existir, ela será criada automaticamente. O método não retorna nenhum valor, mas garante que o valor seja escrito no registro para a chave especificada.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">winreg</span><span class="o">.</span><span class="n">CreateKey</span><span class="p">(</span><span class="n">winreg</span><span class="o">.</span><span class="n">HKEY_CURRENT_USER</span><span class="p">,</span> <span class="n">REG_PATH</span><span class="p">)</span>
+    <span class="n">winreg</span><span class="o">.</span><span class="n">SetValueEx</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">winreg</span><span class="o">.</span><span class="n">REG_SZ</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_reg_set_if_missing</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    Escreve um valor no registro do Windows para uma chave específica somente se a chave ainda não tiver um valor definido. O método verifica se a chave de registro especificada já possui um valor usando a função _reg_get, e se o valor retornado for None (indicando que a chave não existe ou não tem um valor definido), ele chama a função _reg_set para escrever o valor fornecido no registro. Se a chave já tiver um valor definido, o método não faz nada, garantindo que o valor existente no registro seja preservado.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        name (str): O nome da chave do registro a ser escrita. O método verificará se essa chave já possui um valor definido usando a função _reg_get, e se o valor retornado for None (indicando que a chave não existe ou não tem um valor definido), ele chamará a função _reg_set para escrever o valor fornecido no registro. Se a chave já tiver um valor definido, o método não fará nada, garantindo que o valor existente no registro seja preservado.</span>
+<span class="sd">        value (str): O valor a ser escrito no registro para a chave especificada, caso a chave ainda não tenha um valor definido. O método verificará se a chave de registro especificada já possui um valor usando a função _reg_get, e se o valor retornado for None (indicando que a chave não existe ou não tem um valor definido), ele chamará a função _reg_set para escrever o valor fornecido no registro. Se a chave já tiver um valor definido, o método não fará nada, garantindo que o valor existente no registro seja preservado.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">_reg_get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_reg_set</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+
+<span class="c1"># -------------------------</span>
+<span class="c1"># Machine ID (estável)</span>
+<span class="c1"># -------------------------</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_machine_guid</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Obtém o MachineGuid do registro do Windows.</span>
+
+<span class="sd">        O método abre a chave de registro:</span>
+
+<span class="sd">        ``HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Cryptography``</span>
+
+<span class="sd">        e lê o valor da chave ``MachineGuid``.</span>
+
+<span class="sd">        Esse identificador é único para cada máquina e pode ser utilizado</span>
+<span class="sd">        para associar licenças ou identificar dispositivos.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            MachineGuid lido do registro do Windows.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">winreg</span><span class="o">.</span><span class="n">OpenKey</span><span class="p">(</span><span class="n">winreg</span><span class="o">.</span><span class="n">HKEY_LOCAL_MACHINE</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;SOFTWARE\Microsoft\Cryptography&quot;</span><span class="p">)</span>
+    <span class="n">val</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">winreg</span><span class="o">.</span><span class="n">QueryValueEx</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;MachineGuid&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="machine_id">
+<a class="viewcode-back" href="../api/simple_lock.html#simple_lock.machine_id">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">machine_id</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calcula o hash SHA-256 do MachineGuid do registro do Windows e retorna como uma string em letras maiúsculas. O método chama a função _machine_guid para obter o MachineGuid da máquina e, em seguida, calcula o hash SHA-256 desse valor usando a biblioteca hashlib. O resultado é convertido para uma string hexadecimal e transformado em letras maiúsculas antes de ser retornado. Esse hash é usado como um identificador único para a máquina, permitindo que o aplicativo associe informações ou licenças a um dispositivo específico de forma segura.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: O hash SHA-256 do MachineGuid do registro do Windows, retornado como uma string em letras maiúsculas. O método chama a função _machine_guid para obter o MachineGuid da máquina e, em seguida, calcula o hash SHA-256 desse valor usando a biblioteca hashlib. O resultado é convertido para uma string hexadecimal e transformado em letras maiúsculas antes de ser retornado. Esse hash é usado como um identificador único para a máquina, permitindo que o aplicativo associe informações ou licenças a um dispositivo específico de forma segura.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">raw</span> <span class="o">=</span> <span class="n">_machine_guid</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">raw</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="machine_id_hash">
+<a class="viewcode-back" href="../api/simple_lock.html#simple_lock.machine_id_hash">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">machine_id_hash</span><span class="p">(</span><span class="n">mid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calcula o hash SHA-256 de um identificador de máquina (Machine ID) fornecido como argumento e retorna o resultado como uma string em letras maiúsculas. O método recebe um valor de identificador de máquina (mid) como entrada, codifica esse valor em UTF-8 e calcula o hash SHA-256 usando a biblioteca hashlib. O resultado é convertido para uma string hexadecimal e transformado em letras maiúsculas antes de ser retornado. Esse hash é usado para criar um identificador único e seguro para a máquina, permitindo que o aplicativo associe informações ou licenças a um dispositivo específico de forma segura.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        mid (str): O valor do identificador da máquina (Machine ID) a ser convertido em hash SHA-256.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: O hash SHA-256 do valor passado como argumento `mid`, retornado como uma string em letras maiúsculas.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">mid</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span></div>
+
+
+
+<span class="c1"># -------------------------</span>
+<span class="c1"># DPAPI (LocalMachine)</span>
+<span class="c1"># -------------------------</span>
+
+<div class="viewcode-block" id="DATA_BLOB">
+<a class="viewcode-back" href="../api/simple_lock.html#simple_lock.DATA_BLOB">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DATA_BLOB</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">Structure</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Representa a estrutura DATA_BLOB usada pela API de criptografia do Windows (DPAPI). Essa estrutura é usada para armazenar dados binários que serão protegidos ou desprotegidos usando as funções CryptProtectData e CryptUnprotectData. A estrutura contém dois campos: cbData, que é um valor DWORD que indica o tamanho dos dados em bytes, e pbData, que é um ponteiro para os dados binários a serem protegidos ou desprotegidos. Essa estrutura é essencial para a interação com a API de criptografia do Windows, permitindo que os dados sejam manipulados de forma segura e eficiente.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        ctypes (_type_): A classe DATA_BLOB herda de ctypes.Structure, o que permite que ela seja usada para definir uma estrutura de dados compatível com a API de criptografia do Windows. A estrutura é definida usando a sintaxe de classes do Python, e os campos da estrutura são especificados na lista _fields_, onde cada campo é representado por uma tupla contendo o nome do campo e seu tipo de dados correspondente (por exemplo, wt.DWORD para cbData e ctypes.POINTER(ctypes.c_byte) para pbData). Essa definição permite que a estrutura seja usada para armazenar e manipular dados binários de forma segura ao interagir com as funções de criptografia do Windows.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_fields_</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;cbData&quot;</span><span class="p">,</span> <span class="n">wt</span><span class="o">.</span><span class="n">DWORD</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;pbData&quot;</span><span class="p">,</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">c_byte</span><span class="p">))]</span></div>
+
+
+
+<span class="n">crypt32</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">WinDLL</span><span class="p">(</span><span class="s2">&quot;crypt32&quot;</span><span class="p">,</span> <span class="n">use_last_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">kernel32</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">WinDLL</span><span class="p">(</span><span class="s2">&quot;kernel32&quot;</span><span class="p">,</span> <span class="n">use_last_error</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">CryptProtectData</span> <span class="o">=</span> <span class="n">crypt32</span><span class="o">.</span><span class="n">CryptProtectData</span>
+<span class="n">CryptProtectData</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">ctypes</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">DATA_BLOB</span><span class="p">),</span>
+    <span class="n">wt</span><span class="o">.</span><span class="n">LPCWSTR</span><span class="p">,</span>
+    <span class="n">ctypes</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">DATA_BLOB</span><span class="p">),</span>
+    <span class="n">ctypes</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">,</span>
+    <span class="n">ctypes</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">,</span>
+    <span class="n">wt</span><span class="o">.</span><span class="n">DWORD</span><span class="p">,</span>
+    <span class="n">ctypes</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">DATA_BLOB</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">CryptProtectData</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">wt</span><span class="o">.</span><span class="n">BOOL</span>
+
+<span class="n">CryptUnprotectData</span> <span class="o">=</span> <span class="n">crypt32</span><span class="o">.</span><span class="n">CryptUnprotectData</span>
+<span class="n">CryptUnprotectData</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">ctypes</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">DATA_BLOB</span><span class="p">),</span>
+    <span class="n">ctypes</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">wt</span><span class="o">.</span><span class="n">LPWSTR</span><span class="p">),</span>
+    <span class="n">ctypes</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">DATA_BLOB</span><span class="p">),</span>
+    <span class="n">ctypes</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">,</span>
+    <span class="n">ctypes</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">,</span>
+    <span class="n">wt</span><span class="o">.</span><span class="n">DWORD</span><span class="p">,</span>
+    <span class="n">ctypes</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">DATA_BLOB</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">CryptUnprotectData</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">wt</span><span class="o">.</span><span class="n">BOOL</span>
+
+<span class="n">LocalFree</span> <span class="o">=</span> <span class="n">kernel32</span><span class="o">.</span><span class="n">LocalFree</span>
+<span class="n">LocalFree</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">ctypes</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">]</span>
+<span class="n">LocalFree</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_void_p</span>
+
+<span class="n">CRYPTPROTECT_LOCAL_MACHINE</span> <span class="o">=</span> <span class="mh">0x4</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_bytes_to_blob</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DATA_BLOB</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converte um objeto de bytes em uma estrutura DATA_BLOB compatível com a API de criptografia do Windows (DPAPI). O método recebe um objeto de bytes como entrada, cria um buffer de bytes usando ctypes, e então preenche a estrutura DATA_BLOB com o tamanho dos dados (cbData) e um ponteiro para os dados binários (pbData). O resultado é uma instância da estrutura DATA_BLOB que pode ser usada para proteger ou desproteger os dados usando as funções CryptProtectData e CryptUnprotectData da API de criptografia do Windows. Essa conversão é essencial para garantir que os dados sejam manipulados corretamente ao interagir com a API de criptografia do Windows.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        data (bytes): Os dados binários a serem convertidos em uma estrutura DATA_BLOB.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        DATA_BLOB: Uma instância da estrutura DATA_BLOB criada a partir dos dados binários fornecidos.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">buf</span> <span class="o">=</span> <span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">c_byte</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span><span class="o">.</span><span class="n">from_buffer_copy</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">DATA_BLOB</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">c_byte</span><span class="p">)))</span>
+
+
+<div class="viewcode-block" id="dpapi_protect_localmachine">
+<a class="viewcode-back" href="../api/simple_lock.html#simple_lock.dpapi_protect_localmachine">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">dpapi_protect_localmachine</span><span class="p">(</span><span class="n">plaintext</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Protege um objeto de bytes usando a API de criptografia do Windows (DPAPI) com a opção CRYPTPROTECT_LOCAL_MACHINE, que vincula os dados protegidos à máquina em que foram protegidos. O método recebe um objeto de bytes como entrada, converte esses bytes em uma estrutura DATA_BLOB usando a função _bytes_to_blob, e então chama a função CryptProtectData para proteger os dados. O resultado é um novo objeto de bytes que representa os dados protegidos, que pode ser armazenado ou transmitido com segurança. Se ocorrer um erro durante o processo de proteção, o método levanta uma exceção OSError com o código de erro correspondente.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        plaintext (bytes): </span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        OSError: Se ocorrer um erro durante o processo de proteção dos dados usando a API de criptografia do Windows, o método levanta uma exceção OSError com o código de erro correspondente, que pode ser obtido usando ctypes.get_last_error() para fornecer informações sobre a natureza do erro ocorrido.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bytes: Um novo objeto de bytes que representa os dados protegidos usando a API de criptografia do Windows (DPAPI) com a opção CRYPTPROTECT_LOCAL_MACHINE. O método converte os bytes de entrada em uma estrutura DATA_BLOB, chama a função CryptProtectData para proteger os dados, e retorna o resultado como um objeto de bytes. Se ocorrer um erro durante o processo de proteção, o método levanta uma exceção OSError com o código de erro correspondente.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">in_blob</span> <span class="o">=</span> <span class="n">_bytes_to_blob</span><span class="p">(</span><span class="n">plaintext</span><span class="p">)</span>
+    <span class="n">out_blob</span> <span class="o">=</span> <span class="n">DATA_BLOB</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">CryptProtectData</span><span class="p">(</span>
+        <span class="n">ctypes</span><span class="o">.</span><span class="n">byref</span><span class="p">(</span><span class="n">in_blob</span><span class="p">),</span>
+        <span class="s2">&quot;local_marker&quot;</span><span class="p">,</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">CRYPTPROTECT_LOCAL_MACHINE</span><span class="p">,</span>
+        <span class="n">ctypes</span><span class="o">.</span><span class="n">byref</span><span class="p">(</span><span class="n">out_blob</span><span class="p">),</span>
+    <span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">get_last_error</span><span class="p">())</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">string_at</span><span class="p">(</span><span class="n">out_blob</span><span class="o">.</span><span class="n">pbData</span><span class="p">,</span> <span class="n">out_blob</span><span class="o">.</span><span class="n">cbData</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">LocalFree</span><span class="p">(</span><span class="n">out_blob</span><span class="o">.</span><span class="n">pbData</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="dpapi_unprotect">
+<a class="viewcode-back" href="../api/simple_lock.html#simple_lock.dpapi_unprotect">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">dpapi_unprotect</span><span class="p">(</span><span class="n">ciphertext</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Desprotege um objeto de bytes protegido usando a API de criptografia do Windows (DPAPI). O método recebe um objeto de bytes protegido como entrada, converte esses bytes em uma estrutura DATA_BLOB usando a função _bytes_to_blob, e então chama a função CryptUnprotectData para desproteger os dados. O resultado é um novo objeto de bytes que representa os dados desprotegidos, que pode ser usado ou processado conforme necessário. Se ocorrer um erro durante o processo de desproteção, o método levanta uma exceção OSError com o código de erro correspondente.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        ciphertext (bytes): Um objeto de bytes protegido usando a API de criptografia do Windows (DPAPI).</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        OSError: Se ocorrer um erro durante o processo de desproteção dos dados usando a API de criptografia do Windows, o método levanta uma exceção OSError com o código de erro correspondente, que pode ser obtido usando ctypes.get_last_error() para fornecer informações sobre a natureza do erro ocorrido.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bytes: Um novo objeto de bytes que representa os dados desprotegidos usando a API de criptografia do Windows (DPAPI). O método recebe um objeto de bytes protegido como entrada, converte esses bytes em uma estrutura DATA_BLOB usando a função _bytes_to_blob, chama a função CryptUnprotectData para desproteger os dados, e retorna o resultado como um objeto de bytes. Se ocorrer um erro durante o processo de desproteção, o método levanta uma exceção OSError com o código de erro correspondente.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">in_blob</span> <span class="o">=</span> <span class="n">_bytes_to_blob</span><span class="p">(</span><span class="n">ciphertext</span><span class="p">)</span>
+    <span class="n">out_blob</span> <span class="o">=</span> <span class="n">DATA_BLOB</span><span class="p">()</span>
+    <span class="n">p_desc</span> <span class="o">=</span> <span class="n">wt</span><span class="o">.</span><span class="n">LPWSTR</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">CryptUnprotectData</span><span class="p">(</span>
+        <span class="n">ctypes</span><span class="o">.</span><span class="n">byref</span><span class="p">(</span><span class="n">in_blob</span><span class="p">),</span>
+        <span class="n">ctypes</span><span class="o">.</span><span class="n">byref</span><span class="p">(</span><span class="n">p_desc</span><span class="p">),</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="mi">0</span><span class="p">,</span>
+        <span class="n">ctypes</span><span class="o">.</span><span class="n">byref</span><span class="p">(</span><span class="n">out_blob</span><span class="p">),</span>
+    <span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">get_last_error</span><span class="p">())</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">string_at</span><span class="p">(</span><span class="n">out_blob</span><span class="o">.</span><span class="n">pbData</span><span class="p">,</span> <span class="n">out_blob</span><span class="o">.</span><span class="n">cbData</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">p_desc</span><span class="p">:</span>
+            <span class="n">LocalFree</span><span class="p">(</span><span class="n">p_desc</span><span class="p">)</span>
+        <span class="n">LocalFree</span><span class="p">(</span><span class="n">out_blob</span><span class="o">.</span><span class="n">pbData</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># -------------------------</span>
+<span class="c1"># Arquivo (ProgramData)</span>
+<span class="c1"># -------------------------</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_file_read_bytes</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Lê um arquivo de texto contendo dados codificados em base64, decodifica esses dados e retorna o resultado como um objeto de bytes. O método verifica se o arquivo especificado existe, e se existir, ele lê o conteúdo do arquivo como uma string, remove quaisquer espaços em branco extras, e então decodifica a string usando base64 para obter os dados binários originais. Se o arquivo não existir ou se ocorrer um erro durante a leitura ou decodificação, o método retorna None para indicar que os dados não puderam ser obtidos.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): O caminho do arquivo de texto que contém os dados codificados em base64 a serem lidos e decodificados. O método verifica se o arquivo especificado existe, e se existir, ele lê o conteúdo do arquivo como uma string, remove quaisquer espaços em branco extras, e então decodifica a string usando base64 para obter os dados binários originais. Se o arquivo não existir ou se ocorrer um erro durante a leitura ou decodificação, o método retorna None para indicar que os dados não puderam ser obtidos.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Optional[bytes]: Um objeto de bytes que representa os dados decodificados do arquivo de texto codificado em base64. O método verifica se o arquivo especificado existe, e se existir, ele lê o conteúdo do arquivo como uma string, remove quaisquer espaços em branco extras, e então decodifica a string usando base64 para obter os dados binários originais. Se o arquivo não existir ou se ocorrer um erro durante a leitura ou decodificação, o método retorna None para indicar que os dados não puderam ser obtidos.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_file_write_bytes</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">blob</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Escreve um objeto de bytes em um arquivo de texto, codificando os bytes em base64 antes de escrevê-los. O método recebe um objeto de bytes como entrada, codifica esses bytes usando base64 para obter uma string legível, e então escreve essa string em um arquivo de texto no caminho especificado. O método garante que o diretório do arquivo de destino exista antes de tentar escrever o arquivo. Se ocorrer um erro durante a escrita do arquivo, o método levanta uma exceção correspondente.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): O caminho do arquivo de texto onde os bytes codificados em base64 serão escritos. O método garante que o diretório do arquivo de destino exista antes de tentar escrever o arquivo. Se ocorrer um erro durante a escrita do arquivo, o método levanta uma exceção correspondente.</span>
+<span class="sd">        blob (bytes): O objeto de bytes a ser codificado em base64 e escrito no arquivo de texto. O método recebe esse objeto de bytes como entrada, codifica os bytes usando base64 para obter uma string legível, e então escreve essa string em um arquivo de texto no caminho especificado. Se ocorrer um erro durante a escrita do arquivo, o método levanta uma exceção correspondente.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">blob</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+
+<span class="c1"># -------------------------</span>
+<span class="c1"># Payload (dentro do DPAPI)</span>
+<span class="c1"># -------------------------</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_make_payload</span><span class="p">(</span><span class="n">mid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Cria um payload formatado contendo o hash da máquina, o token e o MAC calculado usando HMAC-SHA256. O método recebe um identificador de máquina (mid) e um token como entrada, calcula o hash do identificador de máquina usando a função machine_id_hash, e então calcula um código de autenticação de mensagem (MAC) usando HMAC com a chave secreta do aplicativo (APP_SECRET) e os dados combinados do hash da máquina e do token. O resultado é um objeto de bytes que contém o hash da máquina, o token e o MAC, separados por caracteres de pipe (&quot;|&quot;), que pode ser protegido usando a API de criptografia do Windows (DPAPI) para garantir a segurança dos dados.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        mid (str): O ID da máquina.</span>
+<span class="sd">        token (bytes): O token gerado para a máquina.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bytes: Um objeto de bytes contendo o payload formatado com o hash da máquina, o token e o MAC calculado.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="n">midh</span> <span class="o">=</span> <span class="n">machine_id_hash</span><span class="p">(</span><span class="n">mid</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">)</span>
+    <span class="n">mac</span> <span class="o">=</span> <span class="n">hmac</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">APP_SECRET</span><span class="p">,</span> <span class="n">midh</span> <span class="o">+</span> <span class="n">token</span><span class="p">,</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">midh</span> <span class="o">+</span> <span class="sa">b</span><span class="s2">&quot;|&quot;</span> <span class="o">+</span> <span class="n">token</span> <span class="o">+</span> <span class="sa">b</span><span class="s2">&quot;|&quot;</span> <span class="o">+</span> <span class="n">mac</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_payload</span><span class="p">(</span><span class="n">payload</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">]:</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="n">payload</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;|&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;payload inválido&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">),</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+
+<span class="c1"># -------------------------</span>
+<span class="c1"># Core</span>
+<span class="c1"># -------------------------</span>
+
+<div class="viewcode-block" id="ensure_or_mark">
+<a class="viewcode-back" href="../api/simple_lock.html#simple_lock.ensure_or_mark">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">ensure_or_mark</span><span class="p">(</span><span class="n">allow_create</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Política final (conforme combinado):</span>
+
+<span class="sd">    - O instalador cria: ``&lt;pasta app&gt;\\_internal\\_internal.dat`` (marker somente leitura)</span>
+<span class="sd">    - O app NUNCA escreve em ``_internal``</span>
+<span class="sd">    - O marcador por máquina fica em ProgramData e é DPAPI (LocalMachine):</span>
+<span class="sd">    ``C:\\ProgramData\\LeadsApp\\cache_string.dat``</span>
+
+<span class="sd">    Regras</span>
+
+<span class="sd">    1. Se marker do instalador não existir =&gt; bloqueia (evita rodar app copiado solto).</span>
+<span class="sd">    2. Se o arquivo de ProgramData NÃO existir:</span>
+<span class="sd">    - ``allow_create=False`` =&gt; bloqueia pedindo ativação online primeiro.</span>
+<span class="sd">    - ``allow_create=True``  =&gt; cria o marcador por máquina (use somente após validação online OK).</span>
+<span class="sd">    3. Se o arquivo existir =&gt; valida DPAPI + HMAC + machine_id_hash.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    allow_create : bool</span>
+<span class="sd">        Indica se o método deve criar um novo marcador por máquina em ProgramData caso o arquivo</span>
+<span class="sd">        de marcador não exista. Se ``False``, bloqueia e solicita ativação online. Se ``True``,</span>
+<span class="sd">        cria o marcador por máquina usando DPAPI (use somente após validação online bem-sucedida).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 1) Exigir marker do instalador</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">internal_marker_path</span><span class="p">()):</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Instalação inválida (marker do instalador ausente em _internal).&quot;</span>
+
+    <span class="n">mid</span> <span class="o">=</span> <span class="n">machine_id</span><span class="p">()</span>
+    <span class="n">midh</span> <span class="o">=</span> <span class="n">machine_id_hash</span><span class="p">(</span><span class="n">mid</span><span class="p">)</span>
+
+    <span class="c1"># 2) Ler marcador por máquina</span>
+    <span class="n">blob</span> <span class="o">=</span> <span class="n">_file_read_bytes</span><span class="p">(</span><span class="n">license_path_programdata</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">blob</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">allow_create</span><span class="p">:</span>
+            <span class="n">_reg_set</span><span class="p">(</span><span class="n">REG_STATE</span><span class="p">,</span> <span class="s2">&quot;NEEDS_ONLINE_ACTIVATION&quot;</span><span class="p">)</span>
+            <span class="n">_reg_set</span><span class="p">(</span><span class="n">REG_MIDHASH</span><span class="p">,</span> <span class="n">midh</span><span class="p">)</span>
+            <span class="n">_reg_set_if_missing</span><span class="p">(</span><span class="n">REG_FIRSTSEEN</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())))</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Primeira execução requer ativação online.&quot;</span>
+
+        <span class="c1"># allow_create=True =&gt; criar marcador por máquina (após validação online)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">token</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">urandom</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+            <span class="n">payload</span> <span class="o">=</span> <span class="n">_make_payload</span><span class="p">(</span><span class="n">mid</span><span class="p">,</span> <span class="n">token</span><span class="p">)</span>
+            <span class="n">protected</span> <span class="o">=</span> <span class="n">dpapi_protect_localmachine</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+            <span class="n">_file_write_bytes</span><span class="p">(</span><span class="n">license_path_programdata</span><span class="p">(),</span> <span class="n">protected</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Sem permissão para criar arquivo de controle em ProgramData.&quot;</span>
+
+        <span class="n">_reg_set</span><span class="p">(</span><span class="n">REG_STATE</span><span class="p">,</span> <span class="s2">&quot;OK&quot;</span><span class="p">)</span>
+        <span class="n">_reg_set</span><span class="p">(</span><span class="n">REG_MIDHASH</span><span class="p">,</span> <span class="n">midh</span><span class="p">)</span>
+        <span class="n">_reg_set_if_missing</span><span class="p">(</span><span class="n">REG_FIRSTSEEN</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())))</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;OK&quot;</span>
+
+        <span class="c1"># 3) Validar marcador existente</span>
+    <span class="n">lp</span> <span class="o">=</span> <span class="n">license_path_programdata</span><span class="p">()</span>  <span class="c1"># caminho do arquivo em ProgramData</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="n">dpapi_unprotect</span><span class="p">(</span><span class="n">blob</span><span class="p">)</span>  <span class="c1"># falha em outro PC</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">_reg_set</span><span class="p">(</span><span class="n">REG_STATE</span><span class="p">,</span> <span class="s2">&quot;MOVED_OR_COPIED&quot;</span><span class="p">)</span>
+        <span class="n">_reg_set</span><span class="p">(</span><span class="n">REG_MIDHASH</span><span class="p">,</span> <span class="n">midh</span><span class="p">)</span>
+        <span class="n">_reg_set_if_missing</span><span class="p">(</span><span class="n">REG_FIRSTSEEN</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())))</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Arquivo de controle não pode ser aberto neste computador (cópia detectada).</span><span class="se">\n\n</span><span class="s2">Arquivo:</span><span class="se">\n</span><span class="si">{</span><span class="n">lp</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">stored_midh</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">mac</span> <span class="o">=</span> <span class="n">_parse_payload</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="c1"># backup do arquivo problemático</span>
+        <span class="n">bak</span> <span class="o">=</span> <span class="n">_backup_file</span><span class="p">(</span><span class="n">lp</span><span class="p">,</span> <span class="s2">&quot;corrupted&quot;</span><span class="p">)</span>
+        <span class="n">_reg_set</span><span class="p">(</span><span class="n">REG_STATE</span><span class="p">,</span> <span class="s2">&quot;CORRUPTED&quot;</span><span class="p">)</span>
+        <span class="n">_reg_set</span><span class="p">(</span><span class="n">REG_MIDHASH</span><span class="p">,</span> <span class="n">midh</span><span class="p">)</span>
+        <span class="n">_reg_set_if_missing</span><span class="p">(</span><span class="n">REG_FIRSTSEEN</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())))</span>
+
+        <span class="c1"># opcional: recriar automaticamente se allow_create=True (ou seja, após validação online)</span>
+        <span class="k">if</span> <span class="n">allow_create</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">token_new</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">urandom</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+                <span class="n">payload_new</span> <span class="o">=</span> <span class="n">_make_payload</span><span class="p">(</span><span class="n">mid</span><span class="p">,</span> <span class="n">token_new</span><span class="p">)</span>
+                <span class="n">protected_new</span> <span class="o">=</span> <span class="n">dpapi_protect_localmachine</span><span class="p">(</span><span class="n">payload_new</span><span class="p">)</span>
+                <span class="n">_file_write_bytes</span><span class="p">(</span><span class="n">lp</span><span class="p">,</span> <span class="n">protected_new</span><span class="p">)</span>
+                <span class="n">_reg_set</span><span class="p">(</span><span class="n">REG_STATE</span><span class="p">,</span> <span class="s2">&quot;OK&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;OK&quot;</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="n">extra</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Backup:</span><span class="se">\n</span><span class="si">{</span><span class="n">bak</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">bak</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Arquivo de controle corrompido.</span><span class="se">\n\n</span><span class="s2">Arquivo:</span><span class="se">\n</span><span class="si">{</span><span class="n">lp</span><span class="si">}{</span><span class="n">extra</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="n">expected_mac</span> <span class="o">=</span> <span class="n">hmac</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">APP_SECRET</span><span class="p">,</span> <span class="n">stored_midh</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">token</span><span class="p">,</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">hmac</span><span class="o">.</span><span class="n">compare_digest</span><span class="p">(</span><span class="n">mac</span><span class="p">,</span> <span class="n">expected_mac</span><span class="p">):</span>
+        <span class="n">bak</span> <span class="o">=</span> <span class="n">_backup_file</span><span class="p">(</span><span class="n">lp</span><span class="p">,</span> <span class="s2">&quot;tampered&quot;</span><span class="p">)</span>
+        <span class="n">_reg_set</span><span class="p">(</span><span class="n">REG_STATE</span><span class="p">,</span> <span class="s2">&quot;TAMPERED&quot;</span><span class="p">)</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Backup:</span><span class="se">\n</span><span class="si">{</span><span class="n">bak</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">bak</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Arquivo de controle adulterado.</span><span class="se">\n\n</span><span class="s2">Arquivo:</span><span class="se">\n</span><span class="si">{</span><span class="n">lp</span><span class="si">}{</span><span class="n">extra</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">if</span> <span class="n">stored_midh</span> <span class="o">!=</span> <span class="n">midh</span><span class="p">:</span>
+        <span class="n">bak</span> <span class="o">=</span> <span class="n">_backup_file</span><span class="p">(</span><span class="n">lp</span><span class="p">,</span> <span class="s2">&quot;wrongpc&quot;</span><span class="p">)</span>
+        <span class="n">_reg_set</span><span class="p">(</span><span class="n">REG_STATE</span><span class="p">,</span> <span class="s2">&quot;WRONG_PC&quot;</span><span class="p">)</span>
+        <span class="n">extra</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Backup:</span><span class="se">\n</span><span class="si">{</span><span class="n">bak</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">bak</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Arquivo de controle pertence a outro computador.</span><span class="se">\n\n</span><span class="s2">Arquivo:</span><span class="se">\n</span><span class="si">{</span><span class="n">lp</span><span class="si">}{</span><span class="n">extra</span><span class="si">}</span><span class="s2">&quot;</span>
+
+
+    <span class="n">_reg_set</span><span class="p">(</span><span class="n">REG_STATE</span><span class="p">,</span> <span class="s2">&quot;OK&quot;</span><span class="p">)</span>
+    <span class="n">_reg_set</span><span class="p">(</span><span class="n">REG_MIDHASH</span><span class="p">,</span> <span class="n">midh</span><span class="p">)</span>
+    <span class="n">_reg_set_if_missing</span><span class="p">(</span><span class="n">REG_FIRSTSEEN</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())))</span>
+    <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;OK&quot;</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">PreencheFacil</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">text_extractor</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Avance Telecom.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

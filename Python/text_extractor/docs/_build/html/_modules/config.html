@@ -1,0 +1,518 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>config &mdash; PreencheFacil v0.0.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=bc6a6d3b"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PreencheFacil
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">text_extractor</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PreencheFacil</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">config</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for config</h1><div class="highlight"><pre>
+<span></span><span class="c1"># config.py</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="n">CONFIG_FIELDS_PATH</span> <span class="o">=</span> <span class="s2">&quot;controle_campos.json&quot;</span>
+<span class="n">CONFIG_SHEET_PATH</span> <span class="o">=</span> <span class="s2">&quot;controle_planilha.json&quot;</span>
+<span class="n">CONFIG_UI_PATH</span> <span class="o">=</span> <span class="s2">&quot;controle_ui.json&quot;</span>
+<span class="n">CONFIG_EMAIL_DOMAINS_PATH</span> <span class="o">=</span> <span class="s2">&quot;controle_email_dominios.json&quot;</span>
+
+
+<div class="viewcode-block" id="default_fields_config">
+<a class="viewcode-back" href="../api/config.html#config.default_fields_config">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">default_fields_config</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configurações padrão para campos e abas.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: Configurações iniciais com uma aba &quot;Preenche Fácil&quot; contendo campos básicos.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Agora com &quot;abas&quot;</span>
+    <span class="n">base_campos</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;nome&quot;</span><span class="p">,</span> <span class="s2">&quot;titulo&quot;</span><span class="p">:</span> <span class="s2">&quot;Nome&quot;</span><span class="p">,</span> <span class="s2">&quot;tipo&quot;</span><span class="p">:</span> <span class="s2">&quot;texto&quot;</span><span class="p">,</span> <span class="s2">&quot;fixo&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;locked&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;telefone&quot;</span><span class="p">,</span> <span class="s2">&quot;titulo&quot;</span><span class="p">:</span> <span class="s2">&quot;Telefone&quot;</span><span class="p">,</span> <span class="s2">&quot;tipo&quot;</span><span class="p">:</span> <span class="s2">&quot;telefone&quot;</span><span class="p">,</span> <span class="s2">&quot;fixo&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;locked&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="s2">&quot;titulo&quot;</span><span class="p">:</span> <span class="s2">&quot;Email&quot;</span><span class="p">,</span> <span class="s2">&quot;tipo&quot;</span><span class="p">:</span> <span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="s2">&quot;fixo&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;locked&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+    <span class="p">]</span>
+    <span class="n">default_sheet</span> <span class="o">=</span> <span class="s2">&quot;Preenche Fácil&quot;</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;arquivo_padrao&quot;</span><span class="p">:</span> <span class="s2">&quot;PreencheFacil.xlsx&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;aba&quot;</span><span class="p">:</span> <span class="n">default_sheet</span><span class="p">,</span>
+        <span class="s2">&quot;abas&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">default_sheet</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;campos&quot;</span><span class="p">:</span> <span class="n">base_campos</span><span class="p">}</span>
+        <span class="p">},</span>
+    <span class="p">}</span></div>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_normalize_campos</span><span class="p">(</span><span class="n">campos</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">field_types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Normaliza a lista de campos, garantindo que cada campo seja um dicionário com chaves mínimas e tipos válidos.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        campos (list): Lista de campos a normalizar. Cada campo deve ser um dicionário, mas o formato é flexível.</span>
+<span class="sd">        field_types (List[str]): Lista de tipos de campo válidos. Se o campo tiver um tipo não listado, será definido como &quot;texto&quot;.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list: Lista de campos normalizada, onde cada campo é um dicionário com chaves &quot;id&quot;, &quot;titulo&quot;, &quot;tipo&quot; e &quot;fixo&quot;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">campos</span> <span class="ow">or</span> <span class="p">[]:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;tipo&quot;</span><span class="p">,</span> <span class="s2">&quot;texto&quot;</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;fixo&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;locked&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> 
+
+        <span class="k">if</span> <span class="s2">&quot;locked&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">c</span><span class="p">:</span>
+            <span class="n">c</span><span class="p">[</span><span class="s2">&quot;locked&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fixo&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tipo&quot;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">field_types</span><span class="p">:</span>
+            <span class="n">c</span><span class="p">[</span><span class="s2">&quot;tipo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;texto&quot;</span>
+        <span class="c1"># garante chaves mínimas</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;titulo&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+<div class="viewcode-block" id="rename_sheet_key">
+<a class="viewcode-back" href="../api/config.html#config.rename_sheet_key">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">rename_sheet_key</span><span class="p">(</span><span class="n">cfg</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">old_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Renomeia uma aba (sheet) dentro da configuração, movendo os campos associados para a nova chave.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cfg (dict): Configuração completa onde as abas estão definidas. Deve conter a chave &quot;abas&quot; que é um dicionário de abas.</span>
+<span class="sd">        old_name (str): Nome atual da aba que se deseja renomear. Se não existir, a função apenas garante que a nova aba exista sem campos.</span>
+<span class="sd">        new_name (str): Novo nome para a aba. Se já existir, os campos só serão movidos se a aba de destino estiver vazia. Se for igual ao old_name, não faz nada.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">old_name</span> <span class="o">==</span> <span class="n">new_name</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">abas</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;abas&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">old_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">abas</span><span class="p">:</span>
+        <span class="c1"># nada para mover</span>
+        <span class="n">cfg</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;abas&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;abas&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">new_name</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;campos&quot;</span><span class="p">:</span> <span class="p">[]})</span>
+        <span class="k">return</span>
+    <span class="n">cfg</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;abas&quot;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="c1"># se já existir destino, você pode escolher mesclar; aqui eu preservo destino e só movo se vazio</span>
+    <span class="k">if</span> <span class="n">new_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;abas&quot;</span><span class="p">]:</span>
+        <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;abas&quot;</span><span class="p">][</span><span class="n">new_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">abas</span><span class="p">[</span><span class="n">old_name</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;abas&quot;</span><span class="p">][</span><span class="n">new_name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;campos&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]):</span>
+            <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;abas&quot;</span><span class="p">][</span><span class="n">new_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">abas</span><span class="p">[</span><span class="n">old_name</span><span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">del</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;abas&quot;</span><span class="p">][</span><span class="n">old_name</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="get_sheet_campos">
+<a class="viewcode-back" href="../api/config.html#config.get_sheet_campos">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_sheet_campos</span><span class="p">(</span><span class="n">cfg</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">sheet_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Obtém os campos configurados para uma aba específica dentro da configuração.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cfg (dict): Configuração completa onde as abas estão definidas. Deve conter a chave &quot;abas&quot; que é um dicionário de abas, cada uma com uma lista de campos.</span>
+<span class="sd">        sheet_name (str): Nome da aba para a qual se deseja obter os campos. Se a aba não existir, retorna uma lista vazia.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list: Lista de campos configurados para a aba especificada. Cada campo é um dicionário com chaves como &quot;id&quot;, &quot;titulo&quot;, &quot;tipo&quot; e &quot;fixo&quot;. Se a aba ou os campos não estiverem definidos, retorna uma lista vazia.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">abas</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;abas&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+    <span class="n">sheet</span> <span class="o">=</span> <span class="n">abas</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">sheet_name</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+    <span class="k">return</span> <span class="n">sheet</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;campos&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span></div>
+
+
+
+<div class="viewcode-block" id="set_sheet_campos">
+<a class="viewcode-back" href="../api/config.html#config.set_sheet_campos">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">set_sheet_campos</span><span class="p">(</span><span class="n">cfg</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">sheet_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">campos</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Define os campos para uma aba específica dentro da configuração, normalizando a lista de campos e garantindo a estrutura correta.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cfg (dict): Configuração completa onde as abas estão definidas. Deve conter a chave &quot;abas&quot; que é um dicionário de abas, cada uma com uma lista de campos.</span>
+<span class="sd">        sheet_name (str):   Nome da aba para a qual se deseja definir os campos. Se a aba não existir, será criada automaticamente.</span>
+<span class="sd">        campos (list): Lista de campos a ser definida para a aba especificada. Cada campo deve ser um dicionário, mas o formato é flexível. A função irá normalizar os campos, garantindo que cada um tenha as chaves mínimas e tipos válidos, conforme definido na função _normalize_campos.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cfg</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;abas&quot;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;abas&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">sheet_name</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;abas&quot;</span><span class="p">][</span><span class="n">sheet_name</span><span class="p">][</span><span class="s2">&quot;campos&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">campos</span></div>
+
+
+
+<div class="viewcode-block" id="load_fields_config">
+<a class="viewcode-back" href="../api/config.html#config.load_fields_config">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_fields_config</span><span class="p">(</span><span class="n">field_types</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Carrega a configuração de campos e abas a partir do arquivo JSON, aplicando normalização e migração de formato se necessário.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        field_types (List[str]): Lista de tipos de campo válidos para normalização. Usada para garantir que os campos carregados tenham tipos reconhecidos, definindo como &quot;texto&quot; se o tipo for inválido ou ausente.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: Configuração de campos carregada e normalizada.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">CONFIG_FIELDS_PATH</span><span class="p">):</span>
+        <span class="n">cfg</span> <span class="o">=</span> <span class="n">default_fields_config</span><span class="p">()</span>
+        <span class="n">save_fields_config</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cfg</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">CONFIG_FIELDS_PATH</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">cfg</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+
+    <span class="c1"># defaults</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">default_fields_config</span><span class="p">()</span>
+    <span class="n">cfg</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;arquivo_padrao&quot;</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;arquivo_padrao&quot;</span><span class="p">])</span>
+    <span class="n">cfg</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;aba&quot;</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;aba&quot;</span><span class="p">])</span>
+
+    <span class="c1"># migração do formato antigo:</span>
+    <span class="c1"># - se existir cfg[&quot;campos&quot;] no topo e não existir cfg[&quot;abas&quot;], move para a aba atual</span>
+    <span class="k">if</span> <span class="s2">&quot;abas&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cfg</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;abas&quot;</span><span class="p">),</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;abas&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="s2">&quot;campos&quot;</span> <span class="ow">in</span> <span class="n">cfg</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;campos&quot;</span><span class="p">),</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">campos_legacy</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;campos&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="n">sheet</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;aba&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;aba&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">sheet</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;abas&quot;</span><span class="p">]:</span>
+            <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;abas&quot;</span><span class="p">][</span><span class="n">sheet</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;abas&quot;</span><span class="p">][</span><span class="n">sheet</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;campos&quot;</span><span class="p">):</span>
+            <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;abas&quot;</span><span class="p">][</span><span class="n">sheet</span><span class="p">][</span><span class="s2">&quot;campos&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">campos_legacy</span>
+        <span class="c1"># opcional: remover o legado para não confundir</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;campos&quot;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="c1"># garante que exista a aba atual dentro de &quot;abas&quot;</span>
+    <span class="n">sheet</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;aba&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;aba&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">sheet</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;abas&quot;</span><span class="p">]:</span>
+        <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;abas&quot;</span><span class="p">][</span><span class="n">sheet</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;campos&quot;</span><span class="p">:</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;abas&quot;</span><span class="p">][</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;aba&quot;</span><span class="p">]][</span><span class="s2">&quot;campos&quot;</span><span class="p">]}</span>
+
+    <span class="c1"># normaliza campos de todas as abas</span>
+    <span class="k">for</span> <span class="n">sheet_name</span><span class="p">,</span> <span class="n">payload</span> <span class="ow">in</span> <span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;abas&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;abas&quot;</span><span class="p">][</span><span class="n">sheet_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;campos&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+            <span class="k">continue</span>
+        <span class="n">payload</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;campos&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;campos&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_normalize_campos</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;campos&quot;</span><span class="p">),</span> <span class="n">field_types</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">cfg</span></div>
+
+
+
+<div class="viewcode-block" id="save_fields_config">
+<a class="viewcode-back" href="../api/config.html#config.save_fields_config">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">save_fields_config</span><span class="p">(</span><span class="n">cfg</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Salva a configuração de campos e abas em um arquivo JSON, mantendo a estrutura esperada. </span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cfg (dict): Configuração de campos a ser salva. Deve conter a estrutura esperada, incluindo &quot;abas&quot; como um dicionário de abas, cada uma com uma lista de campos. A função não realiza validação ou normalização, portanto, é responsabilidade do chamador garantir que a configuração esteja no formato correto antes de chamar esta função. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">CONFIG_FIELDS_PATH</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="load_sheet_config">
+<a class="viewcode-back" href="../api/config.html#config.load_sheet_config">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_sheet_config</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Carrega a configuração de planilha a partir do arquivo JSON. Se o arquivo não existir ou ocorrer um erro durante a leitura, retorna um dicionário vazio. A função não realiza validação ou normalização da configuração, portanto, é responsabilidade do chamador garantir que a configuração esteja no formato correto após o carregamento. </span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: Configuração de planilha carregada a partir do arquivo JSON. Se o arquivo não existir ou ocorrer um erro durante a leitura, retorna um dicionário vazio. A função não realiza validação ou normalização da configuração, portanto, é responsabilidade do chamador garantir que a configuração esteja no formato correto após o carregamento. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">CONFIG_SHEET_PATH</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{}</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">CONFIG_SHEET_PATH</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{}</span></div>
+
+
+
+<div class="viewcode-block" id="save_sheet_config">
+<a class="viewcode-back" href="../api/config.html#config.save_sheet_config">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">save_sheet_config</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Salva o caminho da planilha na configuração, escrevendo em um arquivo JSON. A função irá criar ou sobrescrever o arquivo de configuração com um dicionário contendo a chave &quot;last_sheet_path&quot; e o valor do caminho fornecido. A função não realiza validação do caminho fornecido, portanto, é responsabilidade do chamador garantir que o caminho seja válido e acessível antes de chamar esta função.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): Caminho da planilha a ser salvo na configuração. A função irá salvar este caminho no arquivo de configuração JSON, substituindo o valor existente. A função não realiza validação do caminho fornecido, portanto, é responsabilidade do chamador garantir que o caminho seja válido e acessível antes de chamar esta função.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">CONFIG_SHEET_PATH</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">({</span><span class="s2">&quot;last_sheet_path&quot;</span><span class="p">:</span> <span class="n">path</span><span class="p">},</span> <span class="n">f</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_last_sheet_path">
+<a class="viewcode-back" href="../api/config.html#config.get_last_sheet_path">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_last_sheet_path</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Obtém o caminho da última planilha salvo na configuração. A função lê o arquivo de configuração JSON para obter o valor associado à chave &quot;last_sheet_path&quot;. Se o arquivo de configuração não existir, se a chave &quot;last_sheet_path&quot; não estiver presente ou se o caminho armazenado não corresponder a um arquivo existente no sistema de arquivos, a função retorna None. Caso contrário, retorna o caminho da última planilha como uma string.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Optional[str]: Caminho da última planilha salvo na configuração. Se o caminho não estiver presente na configuração ou se o arquivo de configuração não existir, retorna None. Se o caminho estiver presente mas o arquivo correspondente não existir no sistema de arquivos, também retorna None. Caso contrário, retorna o caminho da última planilha como uma string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cfg</span> <span class="o">=</span> <span class="n">load_sheet_config</span><span class="p">()</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;last_sheet_path&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">p</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">p</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span></div>
+
+
+
+<div class="viewcode-block" id="default_ui_config">
+<a class="viewcode-back" href="../api/config.html#config.default_ui_config">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">default_ui_config</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Configurações padrão para a interface do usuário, incluindo ícones, tema de cores e HTML para o rodapé. Esta configuração é usada como base para a personalização da aparência da aplicação. A função retorna um dicionário contendo as seguintes chaves:</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: Configurações padrão para a interface do usuário, incluindo ícones, tema de cores e HTML para o rodapé. Esta configuração é usada como base para a personalização da aparência da aplicação. A função retorna um dicionário contendo as seguintes chaves:</span>
+<span class="sd">    - &quot;window_icon&quot;: Caminho para o ícone da janela principal. </span>
+<span class="sd">    - &quot;button_icons&quot;: Dicionário de caminhos para ícones de botões específicos, como &quot;choose_file&quot;, &quot;add_field&quot;, &quot;save_lead&quot;, &quot;clear&quot;, &quot;edit_title&quot;, &quot;delete_field&quot; e &quot;settings&quot;.</span>
+<span class="sd">    - &quot;theme&quot;: Dicionário de cores para a interface, incluindo &quot;background&quot;, &quot;surface</span>
+<span class="sd">    &quot;, &quot;surface_alt&quot;, &quot;text&quot;, &quot;muted_text&quot;, &quot;primary&quot;, &quot;danger&quot; e &quot;border&quot;.</span>
+<span class="sd">    - &quot;background_hsl&quot;: Dicionário com valores de matiz (h), saturação (s) e luminosidade (l) para a cor de fundo, usado para ajustes dinâmicos de tema.</span>
+<span class="sd">    - &quot;footer_left_html&quot;: String contendo HTML para o conteúdo do rodapé à esquerda, permitindo personalização de mensagens ou links.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Mantém compatível com seu padrão anterior (icons + theme + background_hsl)</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;window_icon&quot;</span><span class="p">:</span> <span class="s2">&quot;assets/A.ico&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;button_icons&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;choose_file&quot;</span><span class="p">:</span> <span class="s2">&quot;assets/icons/pasta.png&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;add_field&quot;</span><span class="p">:</span> <span class="s2">&quot;assets/icons/adicionar.png&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;save_lead&quot;</span><span class="p">:</span> <span class="s2">&quot;assets/icons/salvar.png&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;clear&quot;</span><span class="p">:</span> <span class="s2">&quot;assets/icons/limpar.png&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;edit_title&quot;</span><span class="p">:</span> <span class="s2">&quot;assets/icons/editar.png&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;delete_field&quot;</span><span class="p">:</span> <span class="s2">&quot;assets/icons/lixeira.png&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;settings&quot;</span><span class="p">:</span> <span class="s2">&quot;assets/icons/engrenagem.png&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;lock_open&quot;</span><span class="p">:</span> <span class="s2">&quot;assets/icons/cadeado-aberto.png&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;lock_closed&quot;</span><span class="p">:</span> <span class="s2">&quot;assets/icons/cadeado.png&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;assets/icons/ajuda.png&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;license&quot;</span><span class="p">:</span> <span class="s2">&quot;assets/icons/information.png&quot;</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;theme&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;background&quot;</span><span class="p">:</span> <span class="s2">&quot;#0B1220&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;surface&quot;</span><span class="p">:</span> <span class="s2">&quot;#0F1A2B&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;surface_alt&quot;</span><span class="p">:</span> <span class="s2">&quot;#111F33&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;#E6EDF7&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;muted_text&quot;</span><span class="p">:</span> <span class="s2">&quot;#A7B3C6&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;primary&quot;</span><span class="p">:</span> <span class="s2">&quot;#3B82F6&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;danger&quot;</span><span class="p">:</span> <span class="s2">&quot;#EF4444&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;border&quot;</span><span class="p">:</span> <span class="s2">&quot;#1F2A44&quot;</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;background_hsl&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="mi">210</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="mi">49</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">},</span>
+        <span class="s2">&quot;footer_left_html&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;b&gt;Se precisar de telefonia para sua empresa&lt;/b&gt; → WhatsApp (22) 98812-4656&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;footer_link&quot;</span><span class="p">:</span> <span class="s2">&quot;https://hub-avance.vercel.app&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;footer_logo_path&quot;</span><span class="p">:</span> <span class="s2">&quot;assets/icons/A.png&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;footer_logo_height&quot;</span><span class="p">:</span> <span class="mi">28</span><span class="p">,</span>
+        <span class="s2">&quot;help_url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://arlisson.github.io/Leads-App/&quot;</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="load_ui_config">
+<a class="viewcode-back" href="../api/config.html#config.load_ui_config">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_ui_config</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Carrega as configurações da interface do usuário a partir de um arquivo JSON. Se o arquivo não existir ou ocorrer um erro durante a leitura, retorna as configurações padrão definidas pela função default_ui_config(). A função garante que as chaves principais estejam presentes na configuração carregada, preenchendo com valores padrão para quaisquer chaves ausentes. A configuração inclui temas de cores, ícones e HTML para o rodapé, permitindo personalização da aparência da aplicação.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: Configurações da interface do usuário carregadas a partir do arquivo JSON. Se o arquivo não existir ou ocorrer um erro durante a leitura, retorna as configurações padrão definidas pela função default_ui_config(). A função garante que as chaves principais estejam presentes na configuração carregada, preenchendo com valores padrão para quaisquer chaves ausentes. A configuração inclui temas de cores, ícones e HTML para o rodapé, permitindo personalização da aparência da aplicação.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">CONFIG_UI_PATH</span><span class="p">):</span>
+        <span class="n">cfg</span> <span class="o">=</span> <span class="n">default_ui_config</span><span class="p">()</span>
+        <span class="n">save_ui_config</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cfg</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">CONFIG_UI_PATH</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">cfg</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">cfg</span> <span class="o">=</span> <span class="n">default_ui_config</span><span class="p">()</span>
+        <span class="n">save_ui_config</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cfg</span>
+
+    <span class="c1"># defaults (não sobrescreve o que o usuário já configurou)</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">default_ui_config</span><span class="p">()</span>
+    <span class="n">cfg</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;window_icon&quot;</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;window_icon&quot;</span><span class="p">])</span>
+    <span class="n">cfg</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;button_icons&quot;</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;button_icons&quot;</span><span class="p">])</span>
+    <span class="n">cfg</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;theme&quot;</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;theme&quot;</span><span class="p">])</span>
+    <span class="n">cfg</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;background_hsl&quot;</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;background_hsl&quot;</span><span class="p">])</span>
+    <span class="n">cfg</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;footer_left_html&quot;</span><span class="p">,</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;footer_left_html&quot;</span><span class="p">])</span>
+
+    <span class="c1"># garante subchaves mínimas do tema</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;theme&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;theme&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">cfg</span></div>
+
+
+
+<div class="viewcode-block" id="save_ui_config">
+<a class="viewcode-back" href="../api/config.html#config.save_ui_config">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">save_ui_config</span><span class="p">(</span><span class="n">cfg</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Salva as configurações da interface do usuário em um arquivo JSON. A função recebe um dicionário de configurações e escreve seu conteúdo em um arquivo de configuração JSON, criando ou sobrescrevendo o arquivo existente. A configuração deve conter chaves principais como &quot;window_icon&quot;, &quot;button_icons&quot;, &quot;theme&quot;, &quot;background_hsl&quot; e &quot;footer_left_html&quot;. A função não realiza validação ou normalização da configuração, portanto, é responsabilidade do chamador garantir que a configuração esteja no formato correto antes de chamar esta função. O arquivo JSON resultante terá uma estrutura legível, com indentação para facilitar a edição manual se necessário.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cfg (dict): Configurações da interface do usuário a ser salva. Deve conter as chaves principais como &quot;window_icon&quot;, &quot;button_icons&quot;, &quot;theme&quot;, &quot;background_hsl&quot; e &quot;footer_left_html&quot;. A função não realiza validação ou normalização da configuração, portanto, é responsabilidade do chamador garantir que a configuração esteja no formato correto antes de chamar esta função. A função irá criar ou sobrescrever o arquivo de configuração JSON com o conteúdo fornecido. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">CONFIG_UI_PATH</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="default_email_domains_config">
+<a class="viewcode-back" href="../api/config.html#config.default_email_domains_config">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">default_email_domains_config</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Configurações padrão para domínios de email, contendo uma lista de domínios comuns usados para preenchimento automático em campos de email. Esta configuração é usada como base para a personalização dos domínios de email disponíveis na aplicação. A função retorna um dicionário com a chave &quot;dominios&quot;, que é uma lista de strings representando os domínios de email padrão, como &quot;@gmail.com&quot;, &quot;@hotmail.com&quot;, &quot;@yahoo.com&quot; e &quot;@outlook.com&quot;.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: Configurações padrão para domínios de email, contendo uma lista de domínios comuns usados para preenchimento automático em campos de email. Esta configuração é usada como base para a personalização dos domínios de email disponíveis na aplicação. A função retorna um dicionário com a chave &quot;dominios&quot;, que é uma lista de strings representando os domínios de email padrão, como &quot;@gmail.com&quot;, &quot;@hotmail.com&quot;, &quot;@yahoo.com&quot; e &quot;@outlook.com&quot;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;dominios&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;@gmail.com&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;@hotmail.com&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;@yahoo.com&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;@outlook.com&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="load_email_domains_config">
+<a class="viewcode-back" href="../api/config.html#config.load_email_domains_config">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_email_domains_config</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Carrega as configurações de domínios de email a partir de um arquivo JSON. Se o arquivo não existir ou ocorrer um erro durante a leitura, retorna as configurações padrão definidas pela função default_email_domains_config(). A função garante que a chave &quot;dominios&quot; esteja presente na configuração carregada, preenchendo com valores padrão para quaisquer chaves ausentes. A configuração inclui uma lista de domínios de email usados para preenchimento automático em campos de email, permitindo personalização dos domínios disponíveis na aplicação.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: Configurações de domínios de email carregadas do arquivo JSON ou as configurações padrão caso o arquivo não exista ou ocorra um erro durante a leitura.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">CONFIG_EMAIL_DOMAINS_PATH</span><span class="p">):</span>
+        <span class="n">cfg</span> <span class="o">=</span> <span class="n">default_email_domains_config</span><span class="p">()</span>
+        <span class="n">save_email_domains_config</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cfg</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">CONFIG_EMAIL_DOMAINS_PATH</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">cfg</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">cfg</span> <span class="o">=</span> <span class="n">default_email_domains_config</span><span class="p">()</span>
+        <span class="n">save_email_domains_config</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cfg</span>
+
+    <span class="n">cfg</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;dominios&quot;</span><span class="p">,</span> <span class="n">default_email_domains_config</span><span class="p">()[</span><span class="s2">&quot;dominios&quot;</span><span class="p">])</span>
+    <span class="c1"># normaliza: garante &#39;@&#39; e remove vazios/duplicados</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dominios&quot;</span><span class="p">,</span> <span class="p">[])</span> <span class="ow">or</span> <span class="p">[]:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">d</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">):</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;@&quot;</span> <span class="o">+</span> <span class="n">s</span>
+        <span class="k">if</span> <span class="n">s</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">out</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="n">cfg</span><span class="p">[</span><span class="s2">&quot;dominios&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">out</span>
+
+    <span class="k">return</span> <span class="n">cfg</span></div>
+
+
+
+<div class="viewcode-block" id="save_email_domains_config">
+<a class="viewcode-back" href="../api/config.html#config.save_email_domains_config">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">save_email_domains_config</span><span class="p">(</span><span class="n">cfg</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Salva as configurações de domínios de email em um arquivo JSON. A função recebe um dicionário de configurações contendo a chave &quot;dominios&quot;, que é uma lista de strings representando os domínios de email. O conteúdo do dicionário é escrito em um arquivo de configuração JSON, criando ou sobrescrevendo o arquivo existente. A função não realiza validação ou normalização da configuração, portanto, é responsabilidade do chamador garantir que a configuração esteja no formato correto antes de chamar esta função. O arquivo JSON resultante terá uma estrutura legível, com indentação para facilitar a edição manual se necessário.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cfg (dict): Configurações de domínios de email a ser salva. Deve conter a chave &quot;dominios&quot;, que é uma lista de strings representando os domínios de email. A função não realiza validação ou normalização da configuração, portanto, é responsabilidade do chamador garantir que a configuração esteja no formato correto antes de chamar esta função. A função irá criar ou sobrescrever o arquivo de configuração JSON com o conteúdo fornecido, mantendo uma estrutura legível com indentação.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">CONFIG_EMAIL_DOMAINS_PATH</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Avance Telecom.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

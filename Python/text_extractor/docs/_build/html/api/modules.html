@@ -1,0 +1,333 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>text_extractor &mdash; PreencheFacil v0.0.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=bc6a6d3b"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="app module" href="app.html" />
+    <link rel="prev" title="PreencheFacil documentation" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PreencheFacil
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">text_extractor</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="app.html">app module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="colors.html">colors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html">config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialogs.html">dialogs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel_io.html">excel_io module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatters.html">formatters module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="icon_manager.html">icon_manager module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="license_dialog.html">license_dialog module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loading_screen.html">loading_screen module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="online_license.html">online_license module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simple_lock.html">simple_lock module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_login.html">user_login module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="widgets.html">widgets module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PreencheFacil</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">text_extractor</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/modules.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="text-extractor">
+<h1>text_extractor<a class="headerlink" href="#text-extractor" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="app.html">app module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="app.html#app.abs_path"><code class="docutils literal notranslate"><span class="pre">abs_path()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="app.html#app.file_exists"><code class="docutils literal notranslate"><span class="pre">file_exists()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="app.html#app.SettingsDialog"><code class="docutils literal notranslate"><span class="pre">SettingsDialog</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="app.html#app.App"><code class="docutils literal notranslate"><span class="pre">App</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="app.html#app.App.open_license"><code class="docutils literal notranslate"><span class="pre">App.open_license()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.html#app.App.open_email_domains"><code class="docutils literal notranslate"><span class="pre">App.open_email_domains()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.html#app.App.on_sheet_changed"><code class="docutils literal notranslate"><span class="pre">App.on_sheet_changed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.html#app.App.create_new_sheet"><code class="docutils literal notranslate"><span class="pre">App.create_new_sheet()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.html#app.App.refresh_sheets"><code class="docutils literal notranslate"><span class="pre">App.refresh_sheets()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.html#app.App.open_settings"><code class="docutils literal notranslate"><span class="pre">App.open_settings()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.html#app.App.open_help"><code class="docutils literal notranslate"><span class="pre">App.open_help()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.html#app.App.render_fields"><code class="docutils literal notranslate"><span class="pre">App.render_fields()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.html#app.App.sync_fields_from_existing_excel"><code class="docutils literal notranslate"><span class="pre">App.sync_fields_from_existing_excel()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.html#app.App.choose_file"><code class="docutils literal notranslate"><span class="pre">App.choose_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.html#app.App.on_field_lock_toggled"><code class="docutils literal notranslate"><span class="pre">App.on_field_lock_toggled()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.html#app.App.add_field"><code class="docutils literal notranslate"><span class="pre">App.add_field()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.html#app.App.edit_field"><code class="docutils literal notranslate"><span class="pre">App.edit_field()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.html#app.App.delete_field"><code class="docutils literal notranslate"><span class="pre">App.delete_field()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.html#app.App.clear_fields"><code class="docutils literal notranslate"><span class="pre">App.clear_fields()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.html#app.App.save_lead"><code class="docutils literal notranslate"><span class="pre">App.save_lead()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="app.html#app.App.open_theme_settings"><code class="docutils literal notranslate"><span class="pre">App.open_theme_settings()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app.html#app.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="colors.html">colors module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="colors.html#colors.hex_to_rgb"><code class="docutils literal notranslate"><span class="pre">hex_to_rgb()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="colors.html#colors.rgb_to_hex"><code class="docutils literal notranslate"><span class="pre">rgb_to_hex()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="colors.html#colors.rgb_to_hsl"><code class="docutils literal notranslate"><span class="pre">rgb_to_hsl()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="colors.html#colors.hsl_to_rgb"><code class="docutils literal notranslate"><span class="pre">hsl_to_rgb()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="colors.html#colors.luminance"><code class="docutils literal notranslate"><span class="pre">luminance()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="colors.html#colors.blend"><code class="docutils literal notranslate"><span class="pre">blend()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="colors.html#colors.derive_theme_from_background"><code class="docutils literal notranslate"><span class="pre">derive_theme_from_background()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">config module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="config.html#config.default_fields_config"><code class="docutils literal notranslate"><span class="pre">default_fields_config()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#config.rename_sheet_key"><code class="docutils literal notranslate"><span class="pre">rename_sheet_key()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#config.get_sheet_campos"><code class="docutils literal notranslate"><span class="pre">get_sheet_campos()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#config.set_sheet_campos"><code class="docutils literal notranslate"><span class="pre">set_sheet_campos()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#config.load_fields_config"><code class="docutils literal notranslate"><span class="pre">load_fields_config()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#config.save_fields_config"><code class="docutils literal notranslate"><span class="pre">save_fields_config()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#config.load_sheet_config"><code class="docutils literal notranslate"><span class="pre">load_sheet_config()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#config.save_sheet_config"><code class="docutils literal notranslate"><span class="pre">save_sheet_config()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#config.get_last_sheet_path"><code class="docutils literal notranslate"><span class="pre">get_last_sheet_path()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#config.default_ui_config"><code class="docutils literal notranslate"><span class="pre">default_ui_config()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#config.load_ui_config"><code class="docutils literal notranslate"><span class="pre">load_ui_config()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#config.save_ui_config"><code class="docutils literal notranslate"><span class="pre">save_ui_config()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#config.default_email_domains_config"><code class="docutils literal notranslate"><span class="pre">default_email_domains_config()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#config.load_email_domains_config"><code class="docutils literal notranslate"><span class="pre">load_email_domains_config()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html#config.save_email_domains_config"><code class="docutils literal notranslate"><span class="pre">save_email_domains_config()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dialogs.html">dialogs module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dialogs.html#dialogs.ThemeDialog"><code class="docutils literal notranslate"><span class="pre">ThemeDialog</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dialogs.html#dialogs.ThemeDialog.values"><code class="docutils literal notranslate"><span class="pre">ThemeDialog.values()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dialogs.html#dialogs.CursorStartLineEdit"><code class="docutils literal notranslate"><span class="pre">CursorStartLineEdit</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dialogs.html#dialogs.CursorStartLineEdit.set_force_cursor_start"><code class="docutils literal notranslate"><span class="pre">CursorStartLineEdit.set_force_cursor_start()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dialogs.html#dialogs.CursorStartLineEdit.focusInEvent"><code class="docutils literal notranslate"><span class="pre">CursorStartLineEdit.focusInEvent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="dialogs.html#dialogs.CursorStartLineEdit.mousePressEvent"><code class="docutils literal notranslate"><span class="pre">CursorStartLineEdit.mousePressEvent()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dialogs.html#dialogs.EmailDomainsDialog"><code class="docutils literal notranslate"><span class="pre">EmailDomainsDialog</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dialogs.html#dialogs.EmailDomainsDialog.domains"><code class="docutils literal notranslate"><span class="pre">EmailDomainsDialog.domains()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="excel_io.html">excel_io module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="excel_io.html#excel_io.list_sheets_with_ids"><code class="docutils literal notranslate"><span class="pre">list_sheets_with_ids()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel_io.html#excel_io.list_sheets"><code class="docutils literal notranslate"><span class="pre">list_sheets()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel_io.html#excel_io.ensure_sheet_exists"><code class="docutils literal notranslate"><span class="pre">ensure_sheet_exists()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel_io.html#excel_io.is_excel_lock_present"><code class="docutils literal notranslate"><span class="pre">is_excel_lock_present()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel_io.html#excel_io.get_sheet_headers"><code class="docutils literal notranslate"><span class="pre">get_sheet_headers()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel_io.html#excel_io.read_headers_from_excel"><code class="docutils literal notranslate"><span class="pre">read_headers_from_excel()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel_io.html#excel_io.write_headers_from_campos"><code class="docutils literal notranslate"><span class="pre">write_headers_from_campos()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel_io.html#excel_io.ensure_workbook"><code class="docutils literal notranslate"><span class="pre">ensure_workbook()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel_io.html#excel_io.apply_column_type_rules"><code class="docutils literal notranslate"><span class="pre">apply_column_type_rules()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel_io.html#excel_io.append_row_typed"><code class="docutils literal notranslate"><span class="pre">append_row_typed()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel_io.html#excel_io.delete_column_by_header"><code class="docutils literal notranslate"><span class="pre">delete_column_by_header()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel_io.html#excel_io.rename_column_header"><code class="docutils literal notranslate"><span class="pre">rename_column_header()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="formatters.html">formatters module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="formatters.html#formatters.normalize_masked_text"><code class="docutils literal notranslate"><span class="pre">normalize_masked_text()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatters.html#formatters.digits_only"><code class="docutils literal notranslate"><span class="pre">digits_only()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatters.html#formatters.strip_mask_chars"><code class="docutils literal notranslate"><span class="pre">strip_mask_chars()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatters.html#formatters.parse_decimal_br"><code class="docutils literal notranslate"><span class="pre">parse_decimal_br()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatters.html#formatters.parse_date_any"><code class="docutils literal notranslate"><span class="pre">parse_date_any()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatters.html#formatters.normalize_bool_ptbr"><code class="docutils literal notranslate"><span class="pre">normalize_bool_ptbr()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatters.html#formatters.cast_value_by_type"><code class="docutils literal notranslate"><span class="pre">cast_value_by_type()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="icon_manager.html">icon_manager module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="icon_manager.html#icon_manager.IconManager"><code class="docutils literal notranslate"><span class="pre">IconManager</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="icon_manager.html#icon_manager.IconManager.icon_for_key"><code class="docutils literal notranslate"><span class="pre">IconManager.icon_for_key()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="icon_manager.html#icon_manager.IconManager.apply_button_icon"><code class="docutils literal notranslate"><span class="pre">IconManager.apply_button_icon()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="icon_manager.html#icon_manager.IconManager.clear_cache"><code class="docutils literal notranslate"><span class="pre">IconManager.clear_cache()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="license_dialog.html">license_dialog module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="license_dialog.html#license_dialog.abs_path"><code class="docutils literal notranslate"><span class="pre">abs_path()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="license_dialog.html#license_dialog.read_license_text"><code class="docutils literal notranslate"><span class="pre">read_license_text()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="license_dialog.html#license_dialog.LicenseDialog"><code class="docutils literal notranslate"><span class="pre">LicenseDialog</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="license_dialog.html#license_dialog.LicenseDialog.apply_theme"><code class="docutils literal notranslate"><span class="pre">LicenseDialog.apply_theme()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="loading_screen.html">loading_screen module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="loading_screen.html#loading_screen.LoadingScreen"><code class="docutils literal notranslate"><span class="pre">LoadingScreen</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="loading_screen.html#loading_screen.LoadingScreen.show"><code class="docutils literal notranslate"><span class="pre">LoadingScreen.show()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="loading_screen.html#loading_screen.LoadingScreen.update"><code class="docutils literal notranslate"><span class="pre">LoadingScreen.update()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="loading_screen.html#loading_screen.LoadingScreen.hide"><code class="docutils literal notranslate"><span class="pre">LoadingScreen.hide()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="loading_screen.html#loading_screen.LoadingScreen.close"><code class="docutils literal notranslate"><span class="pre">LoadingScreen.close()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="loading_screen.html#loading_screen.LoadingScreen.finish_and_close"><code class="docutils literal notranslate"><span class="pre">LoadingScreen.finish_and_close()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">models module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="models.html#models.Campo"><code class="docutils literal notranslate"><span class="pre">Campo</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="models.html#models.Campo.id"><code class="docutils literal notranslate"><span class="pre">Campo.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#models.Campo.titulo"><code class="docutils literal notranslate"><span class="pre">Campo.titulo</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#models.Campo.tipo"><code class="docutils literal notranslate"><span class="pre">Campo.tipo</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#models.Campo.fixo"><code class="docutils literal notranslate"><span class="pre">Campo.fixo</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#models.Campo.locked"><code class="docutils literal notranslate"><span class="pre">Campo.locked</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#models.sanitize_id"><code class="docutils literal notranslate"><span class="pre">sanitize_id()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#models.make_unique_id"><code class="docutils literal notranslate"><span class="pre">make_unique_id()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#models.infer_type_from_title"><code class="docutils literal notranslate"><span class="pre">infer_type_from_title()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="online_license.html">online_license module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="online_license.html#online_license.app_state_dir"><code class="docutils literal notranslate"><span class="pre">app_state_dir()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="online_license.html#online_license.cache_path"><code class="docutils literal notranslate"><span class="pre">cache_path()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="online_license.html#online_license.clear_cache"><code class="docutils literal notranslate"><span class="pre">clear_cache()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="online_license.html#online_license.now_ts"><code class="docutils literal notranslate"><span class="pre">now_ts()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="online_license.html#online_license.load_cache"><code class="docutils literal notranslate"><span class="pre">load_cache()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="online_license.html#online_license.save_cache"><code class="docutils literal notranslate"><span class="pre">save_cache()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="online_license.html#online_license.get_machine_guid"><code class="docutils literal notranslate"><span class="pre">get_machine_guid()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="online_license.html#online_license.device_id"><code class="docutils literal notranslate"><span class="pre">device_id()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="online_license.html#online_license.call_api"><code class="docutils literal notranslate"><span class="pre">call_api()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="online_license.html#online_license.ensure_online_license"><code class="docutils literal notranslate"><span class="pre">ensure_online_license()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="simple_lock.html">simple_lock module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="simple_lock.html#simple_lock.exe_dir_base"><code class="docutils literal notranslate"><span class="pre">exe_dir_base()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="simple_lock.html#simple_lock.internal_dir"><code class="docutils literal notranslate"><span class="pre">internal_dir()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="simple_lock.html#simple_lock.internal_marker_path"><code class="docutils literal notranslate"><span class="pre">internal_marker_path()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="simple_lock.html#simple_lock.programdata_dir"><code class="docutils literal notranslate"><span class="pre">programdata_dir()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="simple_lock.html#simple_lock.license_path_programdata"><code class="docutils literal notranslate"><span class="pre">license_path_programdata()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="simple_lock.html#simple_lock.machine_id"><code class="docutils literal notranslate"><span class="pre">machine_id()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="simple_lock.html#simple_lock.machine_id_hash"><code class="docutils literal notranslate"><span class="pre">machine_id_hash()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="simple_lock.html#simple_lock.DATA_BLOB"><code class="docutils literal notranslate"><span class="pre">DATA_BLOB</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="simple_lock.html#simple_lock.DATA_BLOB.cbData"><code class="docutils literal notranslate"><span class="pre">DATA_BLOB.cbData</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="simple_lock.html#simple_lock.DATA_BLOB.pbData"><code class="docutils literal notranslate"><span class="pre">DATA_BLOB.pbData</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="simple_lock.html#simple_lock.dpapi_protect_localmachine"><code class="docutils literal notranslate"><span class="pre">dpapi_protect_localmachine()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="simple_lock.html#simple_lock.dpapi_unprotect"><code class="docutils literal notranslate"><span class="pre">dpapi_unprotect()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="simple_lock.html#simple_lock.ensure_or_mark"><code class="docutils literal notranslate"><span class="pre">ensure_or_mark()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="user_login.html">user_login module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="user_login.html#user_login.app_state_dir"><code class="docutils literal notranslate"><span class="pre">app_state_dir()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_login.html#user_login.login_path"><code class="docutils literal notranslate"><span class="pre">login_path()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_login.html#user_login.load_login"><code class="docutils literal notranslate"><span class="pre">load_login()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_login.html#user_login.save_login"><code class="docutils literal notranslate"><span class="pre">save_login()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_login.html#user_login.clear_login"><code class="docutils literal notranslate"><span class="pre">clear_login()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_login.html#user_login.is_login_expired"><code class="docutils literal notranslate"><span class="pre">is_login_expired()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_login.html#user_login.prompt_email"><code class="docutils literal notranslate"><span class="pre">prompt_email()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="widgets.html">widgets module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="widgets.html#widgets.EmailInputWidget"><code class="docutils literal notranslate"><span class="pre">EmailInputWidget</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="widgets.html#widgets.EmailInputWidget.set_domains"><code class="docutils literal notranslate"><span class="pre">EmailInputWidget.set_domains()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="widgets.html#widgets.EmailInputWidget.local"><code class="docutils literal notranslate"><span class="pre">EmailInputWidget.local()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="widgets.html#widgets.EmailInputWidget.domain"><code class="docutils literal notranslate"><span class="pre">EmailInputWidget.domain()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="widgets.html#widgets.EmailInputWidget.set_parts"><code class="docutils literal notranslate"><span class="pre">EmailInputWidget.set_parts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="widgets.html#widgets.EmailInputWidget.set_email"><code class="docutils literal notranslate"><span class="pre">EmailInputWidget.set_email()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="widgets.html#widgets.EmailInputWidget.get_email"><code class="docutils literal notranslate"><span class="pre">EmailInputWidget.get_email()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="widgets.html#widgets.FieldRowWidget"><code class="docutils literal notranslate"><span class="pre">FieldRowWidget</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="widgets.html#widgets.FieldRowWidget.editRequested"><code class="docutils literal notranslate"><span class="pre">FieldRowWidget.editRequested</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="widgets.html#widgets.FieldRowWidget.deleteRequested"><code class="docutils literal notranslate"><span class="pre">FieldRowWidget.deleteRequested</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="widgets.html#widgets.FieldRowWidget.lockToggled"><code class="docutils literal notranslate"><span class="pre">FieldRowWidget.lockToggled</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="widgets.html#widgets.FieldRowWidget.set_locked"><code class="docutils literal notranslate"><span class="pre">FieldRowWidget.set_locked()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="widgets.html#widgets.BoolInputWidget"><code class="docutils literal notranslate"><span class="pre">BoolInputWidget</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="widgets.html#widgets.BoolInputWidget.value"><code class="docutils literal notranslate"><span class="pre">BoolInputWidget.value()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="widgets.html#widgets.BoolInputWidget.set_value"><code class="docutils literal notranslate"><span class="pre">BoolInputWidget.set_value()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="PreencheFacil documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="app.html" class="btn btn-neutral float-right" title="app module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Avance Telecom.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

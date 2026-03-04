@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>online_license &#8212; PreencheFacil v0.0.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <script src="../_static/documentation_options.js?v=bc6a6d3b"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for online_license</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">winreg</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="n">APP_NAME</span> <span class="o">=</span> <span class="s2">&quot;LeadsApp&quot;</span>
+
+<span class="n">API_URL</span> <span class="o">=</span> <span class="s2">&quot;https://script.google.com/macros/s/AKfycbznxprQ97DT5cYK2AXKSDNOr8N_kzi-YvZYiipHR0GXYnRUWhMhJFXm-8tcLqZ6DdG8/exec&quot;</span>
+
+<span class="n">LICENSE_CACHE_FILE</span> <span class="o">=</span> <span class="s2">&quot;license_cache.json&quot;</span>
+
+<span class="n">RENEW_EVERY_SECONDS</span> <span class="o">=</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">3600</span>         <span class="c1"># revalidar a cada 24h</span>
+<span class="n">OFFLINE_GRACE_SECONDS</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">3600</span>   <span class="c1"># tolerar 3 dias sem internet</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_ensure_dir</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Garante que um diretório exista, criando-o se necessário. O método utiliza a função os.makedirs para criar o diretório especificado no caminho fornecido, com a opção exist_ok=True para evitar erros se o diretório já existir. Após garantir que o diretório exista, o método retorna o caminho do diretório. Se a entrada for None ou vazia, o método retorna uma string vazia.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): O caminho do diretório a ser garantido. O método irá criar esse diretório se ele não existir, e retornará o caminho do diretório garantido. Se a entrada for None ou vazia, o método retornará uma string vazia.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: O caminho do diretório garantido, que existe após a execução do método. Se a entrada for None ou vazia, retorna uma string vazia.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">path</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_try_dir</span><span class="p">(</span><span class="n">base</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tenta criar um subdiretório com o nome do aplicativo dentro de um caminho base fornecido, e verifica se é possível escrever nesse diretório criando um arquivo de teste temporário. O método constrói o caminho do diretório combinando o caminho base com o nome do aplicativo, e então utiliza a função os.makedirs para criar o diretório se ele não existir. Em seguida, ele tenta criar um arquivo de teste temporário dentro desse diretório para verificar se é possível escrever nele. Se a criação do diretório ou do arquivo de teste falhar, o método retorna None. Caso contrário, ele retorna o caminho do diretório criado com sucesso.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        base (str): O caminho base onde o diretório será criado. O método tentará criar um subdiretório com o nome do aplicativo dentro desse caminho base, e verificará se é possível escrever nesse diretório criando um arquivo de teste temporário. Se a criação do diretório ou do arquivo de teste falhar, o método retornará None.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        _type_: O caminho do diretório criado com sucesso, ou None se a criação falhar.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">APP_NAME</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">test_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;.write_test_</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span><span class="si">}</span><span class="s2">.tmp&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">test_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;ok&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">test_file</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">d</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="app_state_dir">
+<a class="viewcode-back" href="../api/online_license.html#online_license.app_state_dir">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">app_state_dir</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retorna o caminho do diretório de estado do aplicativo, onde dados como cache de licença podem ser armazenados. O método tenta criar um subdiretório com o nome do aplicativo dentro de vários caminhos base comuns (APPDATA, LOCALAPPDATA, PROGRAMDATA) e verifica se é possível escrever nesse diretório. Se nenhum dos caminhos base permitir a criação de um diretório gravável, o método cria um diretório com o nome do aplicativo dentro do diretório home do usuário. O resultado é um caminho de diretório garantido onde o aplicativo pode armazenar seus dados de estado.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: O caminho do diretório de estado do aplicativo, onde dados como cache de licença podem ser armazenados. O método tenta criar um subdiretório com o nome do aplicativo dentro de vários caminhos base comuns (APPDATA, LOCALAPPDATA, PROGRAMDATA) e verifica se é possível escrever nesse diretório. Se nenhum dos caminhos base permitir a criação de um diretório gravável, o método cria um diretório com o nome do aplicativo dentro do diretório home do usuário. O resultado é um caminho de diretório garantido onde o aplicativo pode armazenar seus dados de estado.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">p1</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;APPDATA&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">p1</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">_try_dir</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">d</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">d</span>
+
+    <span class="n">p2</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;LOCALAPPDATA&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">p2</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">_try_dir</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">d</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">d</span>
+
+    <span class="n">p3</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;PROGRAMDATA&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="sa">r</span><span class="s2">&quot;C:\ProgramData&quot;</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">_try_dir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">p3</span><span class="p">,</span> <span class="n">APP_NAME</span><span class="p">,</span> <span class="s2">&quot;user_root&quot;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">d</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">d</span>
+
+    <span class="n">d</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">),</span> <span class="n">APP_NAME</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">d</span></div>
+
+
+
+<div class="viewcode-block" id="cache_path">
+<a class="viewcode-back" href="../api/online_license.html#online_license.cache_path">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">cache_path</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retorna o caminho completo do arquivo de cache de licença, que é construído combinando o diretório de estado do aplicativo (obtido pela função app_state_dir) com o nome do arquivo de cache definido na constante LICENSE_CACHE_FILE. O resultado é um caminho absoluto para o arquivo de cache onde os dados de licença podem ser armazenados e recuperados.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: O caminho completo do arquivo de cache de licença, que é construído combinando o diretório de estado do aplicativo (obtido pela função app_state_dir) com o nome do arquivo de cache definido na constante LICENSE_CACHE_FILE. O resultado é um caminho absoluto para o arquivo de cache onde os dados de licença podem ser armazenados e recuperados.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">app_state_dir</span><span class="p">(),</span> <span class="n">LICENSE_CACHE_FILE</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="clear_cache">
+<a class="viewcode-back" href="../api/online_license.html#online_license.clear_cache">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">clear_cache</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Limpa o cache de licença removendo o arquivo de cache se ele existir. O método obtém o caminho do arquivo de cache usando a função cache_path, verifica se o arquivo existe e, se for encontrado, tenta removê-lo usando a função os.remove. Se ocorrer um erro durante a remoção do arquivo, o método ignora a exceção e continua, garantindo que o cache seja limpo sem causar falhas no aplicativo.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">cache_path</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="now_ts">
+<a class="viewcode-back" href="../api/online_license.html#online_license.now_ts">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">now_ts</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retorna o timestamp atual em segundos desde a época (1 de janeiro de 1970). O método utiliza a função time.time para obter o tempo atual em segundos como um número de ponto flutuante, e então converte esse valor para um inteiro antes de retorná-lo. O resultado é o número de segundos inteiros que se passaram desde a época, representando o momento atual.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        int: O timestamp atual em segundos desde a época (1 de janeiro de 1970), obtido usando a função time.time e convertido para um inteiro.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span></div>
+
+
+
+<div class="viewcode-block" id="load_cache">
+<a class="viewcode-back" href="../api/online_license.html#online_license.load_cache">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_cache</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Carrega o cache de licença a partir do arquivo de cache, retornando um dicionário com os dados armazenados. O método tenta abrir o arquivo de cache usando o caminho obtido pela função cache_path, lê seu conteúdo como JSON e retorna o resultado como um dicionário. Se o arquivo não existir ou se ocorrer um erro durante a leitura ou a conversão do JSON, o método retorna um dicionário vazio, indicando que não há dados de cache disponíveis.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: O conteúdo do cache de licença carregado a partir do arquivo de cache, ou um dicionário vazio se o arquivo não existir ou se ocorrer um erro ao ler o arquivo. O método tenta abrir o arquivo de cache usando o caminho obtido pela função cache_path, lê seu conteúdo como JSON e retorna o resultado como um dicionário. Se o arquivo não existir ou se ocorrer um erro durante a leitura ou a conversão do JSON, o método retorna um dicionário vazio.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">cache_path</span><span class="p">(),</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="ow">or</span> <span class="p">{}</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{}</span></div>
+
+
+
+<div class="viewcode-block" id="save_cache">
+<a class="viewcode-back" href="../api/online_license.html#online_license.save_cache">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">save_cache</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Salva os dados de licença no cache escrevendo um dicionário como JSON em um arquivo de cache. O método recebe um dicionário de dados, converte-o para uma string JSON formatada usando a função json.dump, e escreve essa string no arquivo de cache localizado pelo caminho obtido pela função cache_path. Se ocorrer um erro durante a escrita do arquivo, o método irá lançar uma exceção, indicando que o processo de salvamento do cache falhou.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        data (dict): O dicionário de dados a ser salvo no cache de licença. O método irá converter esse dicionário para JSON e escrevê-lo no arquivo de cache usando o caminho obtido pela função cache_path. Se ocorrer um erro durante a escrita do arquivo, o método irá lançar uma exceção.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">cache_path</span><span class="p">(),</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_machine_guid">
+<a class="viewcode-back" href="../api/online_license.html#online_license.get_machine_guid">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_machine_guid</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Obtém o valor do MachineGuid do sistema a partir do registro do Windows. O método abre a chave de registro HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Cryptography, consulta o valor da chave &quot;MachineGuid&quot; e retorna esse valor como uma string. O MachineGuid é um identificador único para o computador, e é comumente usado para fins de licenciamento e identificação de dispositivos. Se ocorrer um erro ao acessar o registro ou ao obter o valor, o método irá lançar uma exceção, indicando que a obtenção do MachineGuid falhou.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: O valor do MachineGuid do sistema, obtido a partir do registro do Windows. O método abre a chave de registro HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Cryptography, consulta o valor da chave &quot;MachineGuid&quot; e retorna esse valor como uma string. Se ocorrer um erro ao acessar o registro ou ao obter o valor, o método irá lançar uma exceção.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">winreg</span><span class="o">.</span><span class="n">OpenKey</span><span class="p">(</span><span class="n">winreg</span><span class="o">.</span><span class="n">HKEY_LOCAL_MACHINE</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;SOFTWARE\Microsoft\Cryptography&quot;</span><span class="p">)</span>
+    <span class="n">val</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">winreg</span><span class="o">.</span><span class="n">QueryValueEx</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;MachineGuid&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="device_id">
+<a class="viewcode-back" href="../api/online_license.html#online_license.device_id">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">device_id</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gera um identificador de dispositivo único a partir do valor do MachineGuid do sistema, utilizando o hash SHA-256 para criar um identificador seguro e consistente. O método obtém o MachineGuid usando a função get_machine_guid, converte esse valor para bytes usando a codificação UTF-8, e então calcula o hash SHA-256 desses bytes usando a função hashlib.sha256. O resultado é um hash hexadecimal em letras maiúsculas que representa o identificador único do dispositivo, que pode ser usado para fins de licenciamento e identificação de hardware.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str:  O identificador do dispositivo, gerado a partir do valor do MachineGuid do sistema. O método obtém o MachineGuid usando a função get_machine_guid, converte esse valor para bytes usando a codificação UTF-8, e então calcula o hash SHA-256 desses bytes usando a função hashlib.sha256. O resultado é um hash hexadecimal em letras maiúsculas que representa o identificador único do dispositivo, que pode ser usado para fins de licenciamento e identificação de hardware.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">get_machine_guid</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="call_api">
+<a class="viewcode-back" href="../api/online_license.html#online_license.call_api">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">call_api</span><span class="p">(</span><span class="n">action</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dev_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Faz uma chamada POST para a API de licenciamento, enviando um payload JSON com a ação, o e-mail do usuário e o identificador do dispositivo. O método constrói um dicionário de payload contendo os parâmetros fornecidos, e então utiliza a função requests.post para enviar esse payload como JSON para a URL da API definida na constante API_URL. A chamada tem um timeout de 15 segundos para evitar bloqueios prolongados. Após receber a resposta, o método verifica o status HTTP e o tipo de conteúdo da resposta para garantir que seja uma resposta JSON válida. Se a resposta indicar sucesso (status code 200 e Content-Type contendo &quot;application/json&quot;), o método retorna o conteúdo da resposta como um dicionário. Caso contrário, ele lança uma exceção RuntimeError com uma mensagem apropriada indicando o erro ocorrido.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        action (str): A ação a ser realizada na API, como &quot;activate&quot; ou &quot;renew&quot;, que indica o tipo de operação de licenciamento</span>
+<span class="sd">        email (str): O e-mail do usuário para o qual a licença está sendo verificada ou ativada. O método inclui esse e-mail no payload enviado para a API, e é usado para identificar o usuário associado à licença.</span>
+<span class="sd">        dev_id (str): O identificador do dispositivo, gerado a partir do MachineGuid do sistema, que é enviado no payload para a API de licenciamento. Esse identificador é usado para associar a licença a um dispositivo específico e garantir que as verificações de licença sejam feitas corretamente com base no hardware do usuário.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        RuntimeError: Se a resposta da API indicar um erro, como um status HTTP diferente de 200 ou um Content-Type que não contenha &quot;application/json&quot;, o método lança uma exceção RuntimeError com uma mensagem que descreve o erro ocorrido, incluindo o status code e o conteúdo da resposta para facilitar a depuração. Se ocorrer um erro durante a chamada HTTP, como um timeout ou uma falha de conexão, a exceção correspondente será propagada para o chamador, indicando que a comunicação com a API falhou.</span>
+<span class="sd">        RuntimeError: Se a resposta da API indicar um erro, como um status HTTP diferente de 200 ou um Content-Type que não contenha &quot;application/json&quot;, o método lança uma exceção RuntimeError com uma mensagem que descreve o erro ocorrido, incluindo o status code e o conteúdo da resposta para facilitar a depuração. Se ocorrer um erro durante a chamada HTTP, como um timeout ou uma falha de conexão, a exceção correspondente será propagada para o chamador, indicando que a comunicação com a API falhou.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: O conteúdo da resposta da API de licenciamento, retornado como um dicionário. O método faz uma chamada POST para a API, enviando um payload JSON com a ação, o e-mail do usuário e o identificador do dispositivo. Após receber a resposta, o método verifica o status HTTP e o tipo de conteúdo para garantir que seja uma resposta JSON válida. Se a resposta indicar sucesso (status code 200 e Content-Type contendo &quot;application/json&quot;), o método retorna o conteúdo da resposta como um dicionário. Caso contrário, ele lança uma exceção RuntimeError com uma mensagem apropriada indicando o erro ocorrido.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="n">action</span><span class="p">,</span> <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="n">email</span><span class="p">,</span> <span class="s2">&quot;device_id&quot;</span><span class="p">:</span> <span class="n">dev_id</span><span class="p">}</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">API_URL</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+    <span class="n">ct</span> <span class="o">=</span> <span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;HTTP </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">[:</span><span class="mi">400</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;application/json&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ct</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Resposta não-JSON (Content-Type=</span><span class="si">{</span><span class="n">ct</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">[:</span><span class="mi">400</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="ensure_online_license">
+<a class="viewcode-back" href="../api/online_license.html#online_license.ensure_online_license">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">ensure_online_license</span><span class="p">(</span><span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    Verifica a validade da licença online para um usuário específico, utilizando o e-mail do usuário para consultar a API de licenciamento e retornando uma tupla com o resultado da verificação. O método processa o e-mail de entrada, obtém o identificador do dispositivo usando a função device_id, e então verifica se há um cache de licença válido que corresponda ao e-mail e ao dispositivo. Se um cache válido for encontrado, ele retorna um resultado positivo indicando que a licença é válida (True) junto com uma mensagem de &quot;OK (cache)&quot; e um código de status &quot;ok_cache&quot;. Se não houver um cache válido, o método determina a ação apropriada (&quot;activate&quot; ou &quot;renew&quot;) com base no estado do cache, e faz uma chamada para a API usando a função call_api. Dependendo da resposta da API, o método salva os dados no cache se a licença for válida, ou retorna mensagens de erro específicas para diferentes condições de falha (como &quot;no_license&quot;, &quot;blocked&quot;, &quot;device_limit&quot;, etc.). O resultado final é uma tupla que indica se a licença é válida, uma mensagem descritiva do resultado, e um código de status que pode ser usado para identificar o resultado específico da verificação.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        email (str): O e-mail do usuário para o qual a licença está sendo verificada ou ativada. O método inclui esse e-mail no payload enviado para a API, e é usado para identificar o usuário associado à licença.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple[bool, str, str]: Uma tupla contendo três elementos: um booleano indicando se a licença é válida (True) ou não (False), uma string com uma mensagem descritiva do resultado da verificação da licença, e uma string com um código de status que pode ser usado para identificar o resultado específico da verificação (como &quot;ok&quot;, &quot;no_license&quot;, &quot;blocked&quot;, etc.). O método realiza a verificação da licença online, utilizando o e-mail fornecido para consultar a API de licenciamento, e retorna os resultados dessa verificação na forma de uma tupla estruturada.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">email</span> <span class="o">=</span> <span class="p">(</span><span class="n">email</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">dev_id</span> <span class="o">=</span> <span class="n">device_id</span><span class="p">()</span>
+
+    <span class="n">cache</span> <span class="o">=</span> <span class="n">load_cache</span><span class="p">()</span>
+    <span class="n">cached_email</span> <span class="o">=</span> <span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;email&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">cached_dev</span> <span class="o">=</span> <span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;device_id&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">last_ok</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;last_ok_ts&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">age</span> <span class="o">=</span> <span class="p">(</span><span class="n">now_ts</span><span class="p">()</span> <span class="o">-</span> <span class="n">last_ok</span><span class="p">)</span> <span class="k">if</span> <span class="n">last_ok</span> <span class="k">else</span> <span class="mi">10</span><span class="o">**</span><span class="mi">9</span>
+
+    <span class="k">if</span> <span class="n">cached_email</span> <span class="o">==</span> <span class="n">email</span> <span class="ow">and</span> <span class="n">cached_dev</span> <span class="o">==</span> <span class="n">dev_id</span> <span class="ow">and</span> <span class="n">last_ok</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">age</span> <span class="o">&lt;=</span> <span class="n">RENEW_EVERY_SECONDS</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;OK (cache)&quot;</span><span class="p">,</span> <span class="s2">&quot;ok_cache&quot;</span>
+
+    <span class="n">action</span> <span class="o">=</span> <span class="s2">&quot;activate&quot;</span> <span class="k">if</span> <span class="n">last_ok</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">cached_email</span> <span class="o">!=</span> <span class="n">email</span> <span class="ow">or</span> <span class="n">cached_dev</span> <span class="o">!=</span> <span class="n">dev_id</span> <span class="k">else</span> <span class="s2">&quot;renew&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">call_api</span><span class="p">(</span><span class="n">action</span><span class="p">,</span> <span class="n">email</span><span class="p">,</span> <span class="n">dev_id</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">last_ok</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">cached_email</span> <span class="o">==</span> <span class="n">email</span> <span class="ow">and</span> <span class="n">cached_dev</span> <span class="o">==</span> <span class="n">dev_id</span> <span class="ow">and</span> <span class="n">age</span> <span class="o">&lt;=</span> <span class="n">OFFLINE_GRACE_SECONDS</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;OK (offline grace)&quot;</span><span class="p">,</span> <span class="s2">&quot;ok_offline_grace&quot;</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Falha ao validar licença: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;network_error&quot;</span>
+
+    <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ok&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">save_cache</span><span class="p">({</span><span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="n">email</span><span class="p">,</span> <span class="s2">&quot;device_id&quot;</span><span class="p">:</span> <span class="n">dev_id</span><span class="p">,</span> <span class="s2">&quot;last_ok_ts&quot;</span><span class="p">:</span> <span class="n">now_ts</span><span class="p">(),</span> <span class="s2">&quot;last_resp&quot;</span><span class="p">:</span> <span class="n">resp</span><span class="p">})</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;OK&quot;</span><span class="p">,</span> <span class="s2">&quot;ok&quot;</span>
+
+    <span class="n">err</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;unknown&quot;</span>
+
+    <span class="k">if</span> <span class="n">err</span> <span class="o">==</span> <span class="s2">&quot;no_license&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;E-mail não autorizado (sem licença).&quot;</span><span class="p">,</span> <span class="s2">&quot;no_license&quot;</span>
+    <span class="k">if</span> <span class="n">err</span> <span class="o">==</span> <span class="s2">&quot;blocked&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Acesso bloqueado para este e-mail.&quot;</span><span class="p">,</span> <span class="s2">&quot;blocked&quot;</span>
+    <span class="k">if</span> <span class="n">err</span> <span class="o">==</span> <span class="s2">&quot;device_limit&quot;</span><span class="p">:</span>
+        <span class="n">md</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;max_devices&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Limite de computadores atingido para este e-mail. (max=</span><span class="si">{</span><span class="n">md</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="s2">&quot;device_limit&quot;</span>
+    <span class="k">if</span> <span class="n">err</span> <span class="o">==</span> <span class="s2">&quot;not_activated&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Este computador ainda não foi ativado para este e-mail.&quot;</span><span class="p">,</span> <span class="s2">&quot;not_activated&quot;</span>
+    <span class="k">if</span> <span class="n">err</span> <span class="o">==</span> <span class="s2">&quot;revoked&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Este computador foi revogado para este e-mail.&quot;</span><span class="p">,</span> <span class="s2">&quot;revoked&quot;</span>
+
+    <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Licença inválida: </span><span class="si">{</span><span class="n">err</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">PreencheFacil</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">text_extractor</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2026, Avance Telecom.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

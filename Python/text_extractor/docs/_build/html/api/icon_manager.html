@@ -1,0 +1,188 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>icon_manager module &mdash; PreencheFacil v0.0.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=bc6a6d3b"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="license_dialog module" href="license_dialog.html" />
+    <link rel="prev" title="formatters module" href="formatters.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PreencheFacil
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">text_extractor</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="app.html">app module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="colors.html">colors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html">config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialogs.html">dialogs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel_io.html">excel_io module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatters.html">formatters module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">icon_manager module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#icon_manager.IconManager"><code class="docutils literal notranslate"><span class="pre">IconManager</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#icon_manager.IconManager.icon_for_key"><code class="docutils literal notranslate"><span class="pre">IconManager.icon_for_key()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#icon_manager.IconManager.apply_button_icon"><code class="docutils literal notranslate"><span class="pre">IconManager.apply_button_icon()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#icon_manager.IconManager.clear_cache"><code class="docutils literal notranslate"><span class="pre">IconManager.clear_cache()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="license_dialog.html">license_dialog module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loading_screen.html">loading_screen module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="online_license.html">online_license module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simple_lock.html">simple_lock module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_login.html">user_login module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="widgets.html">widgets module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PreencheFacil</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">text_extractor</a></li>
+      <li class="breadcrumb-item active">icon_manager module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/icon_manager.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-icon_manager">
+<span id="icon-manager-module"></span><h1>icon_manager module<a class="headerlink" href="#module-icon_manager" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="icon_manager.IconManager">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">icon_manager.</span></span><span class="sig-name descname"><span class="pre">IconManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ui_cfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_exists</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/icon_manager.html#IconManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#icon_manager.IconManager" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Centraliza:
+- Resolução de caminho (ex.: PyInstaller _MEIPASS via resolver externo)
+- Cache de QPixmap
+- Tint dos ícones (SourceIn)
+- Aplicação em botões por key (lido do ui_cfg[“button_icons”])</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="icon_manager.IconManager.icon_for_key">
+<span class="sig-name descname"><span class="pre">icon_for_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tint_hex</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/icon_manager.html#IconManager.icon_for_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#icon_manager.IconManager.icon_for_key" title="Link to this definition"></a></dt>
+<dd><p>Retorna um QIcon para uma chave de ícone específica, aplicando uma tintura se necessário. O método busca o caminho do ícone correspondente à chave fornecida no dicionário de configuração ui_cfg[“button_icons”], verifica se o arquivo existe e, se for encontrado, carrega o QPixmap usando o método _load_pixmap. Se o QPixmap for carregado com sucesso, ele aplica a tintura usando o método _tint_pixmap e retorna um QIcon criado a partir do pixmap tinturado. Se a chave não for encontrada, se o arquivo não existir ou se o QPixmap for inválido, o método retorna None.
+:param key: A chave do ícone a ser buscada no dicionário de configuração ui_cfg[“button_icons”] para obter o caminho do arquivo de ícone correspondente.
+:type key: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>
+:param tint_hex: A cor hexadecimal da tintura a ser aplicada ao ícone, caso o arquivo de ícone seja encontrado e carregado com sucesso.
+:type tint_hex: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>
+:returns: Um QIcon criado a partir do QPixmap tinturado correspondente à chave fornecida, ou None se a chave não for encontrada, se o arquivo de ícone não existir ou se o QPixmap for inválido.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">QIcon</span></code>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="icon_manager.IconManager.apply_button_icon">
+<span class="sig-name descname"><span class="pre">apply_button_icon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">btn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tint_hex</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/icon_manager.html#IconManager.apply_button_icon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#icon_manager.IconManager.apply_button_icon" title="Link to this definition"></a></dt>
+<dd><p>Aplica um ícone a um QPushButton com base em uma chave de ícone específica, utilizando o método icon_for_key para obter o QIcon correspondente. O método busca o QIcon usando a chave fornecida e, se um ícone válido for retornado, ele é aplicado ao botão usando o método setIcon do QPushButton. Se o ícone não for encontrado ou for inválido, o método não faz nenhuma alteração no botão.
+:param btn: O botão ao qual o ícone será aplicado.
+:type btn: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">QPushButton</span></code></span>
+:param key: A chave do ícone a ser buscada no dicionário de configuração ui_cfg[“button_icons”] para obter o caminho do arquivo de ícone correspondente.
+:type key: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>
+:param tint_hex: A cor hexadecimal da tintura a ser aplicada ao ícone, caso o arquivo de ícone seja encontrado e carregado com sucesso.
+:type tint_hex: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="icon_manager.IconManager.clear_cache">
+<span class="sig-name descname"><span class="pre">clear_cache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/icon_manager.html#IconManager.clear_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#icon_manager.IconManager.clear_cache" title="Link to this definition"></a></dt>
+<dd><p>Limpa o cache de QPixmap armazenados no IconManager. O método remove todas as entradas do dicionário _pixmap_cache, liberando a memória ocupada pelos QPixmaps armazenados. Isso pode ser útil para liberar recursos quando os ícones não são mais necessários ou quando se deseja forçar o recarregamento dos ícones a partir dos arquivos.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="formatters.html" class="btn btn-neutral float-left" title="formatters module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="license_dialog.html" class="btn btn-neutral float-right" title="license_dialog module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Avance Telecom.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

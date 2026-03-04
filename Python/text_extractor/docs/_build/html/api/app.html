@@ -1,0 +1,520 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app module &mdash; PreencheFacil v0.0.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=bc6a6d3b"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="colors module" href="colors.html" />
+    <link rel="prev" title="text_extractor" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PreencheFacil
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">text_extractor</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">app module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#app.abs_path"><code class="docutils literal notranslate"><span class="pre">abs_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.file_exists"><code class="docutils literal notranslate"><span class="pre">file_exists()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.SettingsDialog"><code class="docutils literal notranslate"><span class="pre">SettingsDialog</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#app.App"><code class="docutils literal notranslate"><span class="pre">App</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#app.App.open_license"><code class="docutils literal notranslate"><span class="pre">App.open_license()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.App.open_email_domains"><code class="docutils literal notranslate"><span class="pre">App.open_email_domains()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.App.on_sheet_changed"><code class="docutils literal notranslate"><span class="pre">App.on_sheet_changed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.App.create_new_sheet"><code class="docutils literal notranslate"><span class="pre">App.create_new_sheet()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.App.refresh_sheets"><code class="docutils literal notranslate"><span class="pre">App.refresh_sheets()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.App.open_settings"><code class="docutils literal notranslate"><span class="pre">App.open_settings()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.App.open_help"><code class="docutils literal notranslate"><span class="pre">App.open_help()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.App.render_fields"><code class="docutils literal notranslate"><span class="pre">App.render_fields()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.App.sync_fields_from_existing_excel"><code class="docutils literal notranslate"><span class="pre">App.sync_fields_from_existing_excel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.App.choose_file"><code class="docutils literal notranslate"><span class="pre">App.choose_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.App.on_field_lock_toggled"><code class="docutils literal notranslate"><span class="pre">App.on_field_lock_toggled()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.App.add_field"><code class="docutils literal notranslate"><span class="pre">App.add_field()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.App.edit_field"><code class="docutils literal notranslate"><span class="pre">App.edit_field()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.App.delete_field"><code class="docutils literal notranslate"><span class="pre">App.delete_field()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.App.clear_fields"><code class="docutils literal notranslate"><span class="pre">App.clear_fields()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.App.save_lead"><code class="docutils literal notranslate"><span class="pre">App.save_lead()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#app.App.open_theme_settings"><code class="docutils literal notranslate"><span class="pre">App.open_theme_settings()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#app.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="colors.html">colors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html">config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialogs.html">dialogs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel_io.html">excel_io module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatters.html">formatters module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="icon_manager.html">icon_manager module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="license_dialog.html">license_dialog module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loading_screen.html">loading_screen module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="online_license.html">online_license module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simple_lock.html">simple_lock module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_login.html">user_login module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="widgets.html">widgets module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PreencheFacil</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">text_extractor</a></li>
+      <li class="breadcrumb-item active">app module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/app.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-app">
+<span id="app-module"></span><h1>app module<a class="headerlink" href="#module-app" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.abs_path">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">abs_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app.html#abs_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.abs_path" title="Link to this definition"></a></dt>
+<dd><p>Resolve um caminho de arquivo para um caminho absoluto.</p>
+<p>Esta função é crucial para lidar com recursos em um aplicativo que pode ser
+executado tanto em um ambiente de desenvolvimento quanto como um executável
+“congelado” (por exemplo, com PyInstaller).</p>
+<ul class="simple">
+<li><p>Se o caminho já for absoluto, ele é retornado sem modificação.</p></li>
+<li><dl class="simple">
+<dt>Se o caminho for relativo, a função determina o diretório base:</dt><dd><ul>
+<li><p>Em um executável PyInstaller, usa o diretório temporário <cite>_MEIPASS</cite>.</p></li>
+<li><p>Em um script Python normal, usa o diretório do próprio script.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>O caminho relativo é então combinado com este diretório base.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>p</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – O caminho do arquivo a ser resolvido.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>O caminho absoluto correspondente, ou uma string vazia se a entrada for nula/vazia.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.file_exists">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">file_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app.html#file_exists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.file_exists" title="Link to this definition"></a></dt>
+<dd><p>Verifica se um arquivo existe e pode ser lido.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>p</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – String que representa o caminho para o arquivo a ser verificado.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True se o arquivo existe e pode ser lido, False caso contrário.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.SettingsDialog">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">SettingsDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app.html#SettingsDialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.SettingsDialog" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QDialog</span></code></p>
+<p>Classe de diálogo para gerenciar as configurações globais do aplicativo, permitindo ao usuário acessar os ajustes de tema visual e a lista de domínios de e-mail sugeridos.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>QDialog</strong> (<em>_type_</em>) – Objeto do tipo QDialog.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.App">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">App</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app.html#App"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.App" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
+<p>Interface principal do aplicativo “Preenche Fácil”.
+Gerencia a configuração de campos, a interface de usuário dinâmica,
+a integração com planilhas Excel e a persistência de dados.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>QWidget</strong> (<em>_type_</em>) – Objeto do tipo QWidget.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="app.App.open_license">
+<span class="sig-name descname"><span class="pre">open_license</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app.html#App.open_license"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.App.open_license" title="Link to this definition"></a></dt>
+<dd><p>Abre o diálogo de informações da licença, exibindo o texto da licença
+e aplicando o tema visual atual do aplicativo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.App.open_email_domains">
+<span class="sig-name descname"><span class="pre">open_email_domains</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app.html#App.open_email_domains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.App.open_email_domains" title="Link to this definition"></a></dt>
+<dd><p>Abre o diálogo de gerenciamento de domínios de e-mail.
+Permite adicionar, editar ou remover domínios da lista de sugestões.
+Ao aceitar, salva as alterações e atualiza todos os widgets de e-mail ativos.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.App.on_sheet_changed">
+<span class="sig-name descname"><span class="pre">on_sheet_changed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_sheet</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app.html#App.on_sheet_changed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.App.on_sheet_changed" title="Link to this definition"></a></dt>
+<dd><p>Atualiza a aba ativa e recarrega os campos correspondentes. Se a aba for nova,
+tenta sincronizar os cabeçalhos a partir do arquivo Excel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>new_sheet</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – String representando a nova aba</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.App.create_new_sheet">
+<span class="sig-name descname"><span class="pre">create_new_sheet</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app.html#App.create_new_sheet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.App.create_new_sheet" title="Link to this definition"></a></dt>
+<dd><p>Função responsável por criar uma nova aba na planilha</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.App.refresh_sheets">
+<span class="sig-name descname"><span class="pre">refresh_sheets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app.html#App.refresh_sheets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.App.refresh_sheets" title="Link to this definition"></a></dt>
+<dd><p>Atualiza a lista de abas (sheets) disponíveis no arquivo Excel selecionado e
+mantém o estado da aba atual consistente com o conteúdo do arquivo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.App.open_settings">
+<span class="sig-name descname"><span class="pre">open_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app.html#App.open_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.App.open_settings" title="Link to this definition"></a></dt>
+<dd><p>Função responsável por abrir o diálogo de configurações</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.App.open_help">
+<span class="sig-name descname"><span class="pre">open_help</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app.html#App.open_help"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.App.open_help" title="Link to this definition"></a></dt>
+<dd><p>Acessa a página web com informações sobre o software</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.App.render_fields">
+<span class="sig-name descname"><span class="pre">render_fields</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app.html#App.render_fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.App.render_fields" title="Link to this definition"></a></dt>
+<dd><p>Renderiza a lista de campos na interface, recriando as linhas de entrada.</p>
+<p>Preserva os valores já digitados (incluindo partes do e-mail), limpa o layout
+atual e monta novamente os widgets conforme o tipo de cada campo (email,
+booleano ou texto), conectando sinais de editar/excluir e aplicando ícones e
+estado de bloqueio.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.App.sync_fields_from_existing_excel">
+<span class="sig-name descname"><span class="pre">sync_fields_from_existing_excel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app.html#App.sync_fields_from_existing_excel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.App.sync_fields_from_existing_excel" title="Link to this definition"></a></dt>
+<dd><p>Sincroniza os campos do controle com o cabeçalho existente na planilha.</p>
+<p>Lê os cabeçalhos da aba, cria cabeçalho se estiver ausente, ou então mapeia
+cada coluna para um Campo (reaproveitando id/tipo quando possível e inferindo
+para novos títulos). Ao final, persiste a configuração, aplica regras de
+tipos de coluna e re-renderiza os campos na UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Caminho do arquivo Excel.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True se a sincronização foi concluída com sucesso; False em caso de erro
+ou ausência de cabeçalho válido.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.App.choose_file">
+<span class="sig-name descname"><span class="pre">choose_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app.html#App.choose_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.App.choose_file" title="Link to this definition"></a></dt>
+<dd><p>Abre o diálogo para escolher/criar uma planilha Excel e aplica a seleção.</p>
+<p>Se o arquivo já existir, pergunta se o usuário deseja importar os campos a
+partir do cabeçalho (linha 1). Caso aceite, sincroniza os campos do app com
+a planilha; caso contrário, mantém os campos atuais e prepara a planilha.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.App.on_field_lock_toggled">
+<span class="sig-name descname"><span class="pre">on_field_lock_toggled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">locked</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app.html#App.on_field_lock_toggled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.App.on_field_lock_toggled" title="Link to this definition"></a></dt>
+<dd><p>Atualiza o estado de bloqueio de um campo e persiste a alteração.</p>
+<p>Localiza o Campo pelo <cite>field_id</cite>, ajusta o atributo <cite>locked</cite>, salva a
+configuração e re-renderiza a lista de campos para refletir o novo estado.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field_id</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – ID do campo cujo bloqueio foi alterado.</p></li>
+<li><p><strong>locked</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – Novo estado de bloqueio (True = bloqueado).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.App.add_field">
+<span class="sig-name descname"><span class="pre">add_field</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app.html#App.add_field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.App.add_field" title="Link to this definition"></a></dt>
+<dd><p>Adiciona um novo campo de preenchimento.</p>
+<p>Solicita ao usuário o título e o tipo do campo, valida duplicidade de título,
+gera um ID único, salva no controle, re-renderiza a UI e (se houver planilha
+selecionada) tenta garantir/atualizar as colunas no Excel.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.App.edit_field">
+<span class="sig-name descname"><span class="pre">edit_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app.html#App.edit_field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.App.edit_field" title="Link to this definition"></a></dt>
+<dd><p>Edita o título e/ou o tipo de um campo existente.</p>
+<p>Impede edição de campos bloqueados, abre diálogos para alterar título e tipo,
+valida duplicidade, persiste a mudança e tenta refletir no Excel (renomeando
+o cabeçalho e reaplicando regras de tipos). Após re-renderizar, restaura o
+valor previamente digitado, ajustando-o quando há troca entre tipos com/sem
+máscara (telefone/data) e e-mail.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>field_id</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – ID do campo a ser editado.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.App.delete_field">
+<span class="sig-name descname"><span class="pre">delete_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app.html#App.delete_field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.App.delete_field" title="Link to this definition"></a></dt>
+<dd><p>Exclui um campo do controle (e a coluna correspondente no Excel, quando possível).</p>
+<p>Bloqueia a exclusão de campos protegidos, solicita confirmação do usuário,
+remove o campo da lista, persiste a alteração e tenta remover a coluna na
+planilha e reaplicar as regras de tipos. Em seguida, re-renderiza a UI e
+atualiza o status.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>field_id</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – ID do campo a ser excluído.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.App.clear_fields">
+<span class="sig-name descname"><span class="pre">clear_fields</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app.html#App.clear_fields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.App.clear_fields" title="Link to this definition"></a></dt>
+<dd><p>Limpa os valores preenchidos nos campos da interface.</p>
+<p>Zera os QLineEdit e, no caso de e-mail, mantém o domínio e limpa apenas a
+parte local. Também atualiza a mensagem de status.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.App.save_lead">
+<span class="sig-name descname"><span class="pre">save_lead</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app.html#App.save_lead"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.App.save_lead" title="Link to this definition"></a></dt>
+<dd><p>Salva os dados preenchidos como uma nova linha na planilha.</p>
+<p>Valida se há arquivo selecionado, verifica possível bloqueio do Excel,
+coleta os valores dos campos (tratando e-mail e booleano), normaliza texto
+com máscara e evita salvar quando tudo estiver vazio. Em seguida, tenta
+gravar a linha com novas tentativas em caso de PermissionError e, ao
+concluir, limpa os campos e informa o usuário.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.App.open_theme_settings">
+<span class="sig-name descname"><span class="pre">open_theme_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app.html#App.open_theme_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.App.open_theme_settings" title="Link to this definition"></a></dt>
+<dd><p>Abre o diálogo de tema e permite ajustar a cor de fundo (HSL) em tempo real.</p>
+<p>Aplica uma prévia do tema conforme os sliders mudam. Se o usuário confirmar,
+salva as novas configurações (background_hsl e theme) e aplica o tema
+derivado. Se cancelar, restaura o tema/configuração anterior.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.main">
+<span class="sig-prename descclassname"><span class="pre">app.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.main" title="Link to this definition"></a></dt>
+<dd><p>Ponto de entrada da aplicação.</p>
+<p>Inicializa o QApplication e uma tela de carregamento, solicita o e-mail do
+usuário e valida a licença online (com tentativas quando aplicável). Em
+seguida, valida/marca o dispositivo localmente e, se tudo estiver ok,
+instancia e exibe a janela principal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="text_extractor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="colors.html" class="btn btn-neutral float-right" title="colors module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Avance Telecom.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

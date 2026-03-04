@@ -1,0 +1,240 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>formatters module &mdash; PreencheFacil v0.0.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=bc6a6d3b"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="icon_manager module" href="icon_manager.html" />
+    <link rel="prev" title="excel_io module" href="excel_io.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PreencheFacil
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">text_extractor</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="app.html">app module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="colors.html">colors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html">config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialogs.html">dialogs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel_io.html">excel_io module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">formatters module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#formatters.normalize_masked_text"><code class="docutils literal notranslate"><span class="pre">normalize_masked_text()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#formatters.digits_only"><code class="docutils literal notranslate"><span class="pre">digits_only()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#formatters.strip_mask_chars"><code class="docutils literal notranslate"><span class="pre">strip_mask_chars()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#formatters.parse_decimal_br"><code class="docutils literal notranslate"><span class="pre">parse_decimal_br()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#formatters.parse_date_any"><code class="docutils literal notranslate"><span class="pre">parse_date_any()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#formatters.normalize_bool_ptbr"><code class="docutils literal notranslate"><span class="pre">normalize_bool_ptbr()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#formatters.cast_value_by_type"><code class="docutils literal notranslate"><span class="pre">cast_value_by_type()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="icon_manager.html">icon_manager module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="license_dialog.html">license_dialog module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loading_screen.html">loading_screen module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="online_license.html">online_license module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simple_lock.html">simple_lock module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_login.html">user_login module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="widgets.html">widgets module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PreencheFacil</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">text_extractor</a></li>
+      <li class="breadcrumb-item active">formatters module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/formatters.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-formatters">
+<span id="formatters-module"></span><h1>formatters module<a class="headerlink" href="#module-formatters" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="formatters.normalize_masked_text">
+<span class="sig-prename descclassname"><span class="pre">formatters.</span></span><span class="sig-name descname"><span class="pre">normalize_masked_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/formatters.html#normalize_masked_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#formatters.normalize_masked_text" title="Link to this definition"></a></dt>
+<dd><p>Normaliza um texto que pode conter caracteres de máscara (como em campos de formulário) e retorna uma versão limpa e formatada do texto. O método remove caracteres de máscara comuns, como sublinhados, espaços, hífens, pontos, barras e parênteses, e verifica se o texto resultante contém apenas caracteres de separação. Se o texto contiver apenas caracteres de separação sem letras ou dígitos, ele retorna uma string vazia. Além disso, se o texto contiver uma barra sem dígitos, ou se tiver dígitos mas menos de 8 quando houver uma barra, ele também retorna uma string vazia. Caso contrário, retorna o texto limpo e formatado.
+:param value: O texto a ser normalizado.
+:type value: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>
+:returns: O texto normalizado, sem caracteres de máscara e formatado de acordo com as regras descritas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="formatters.digits_only">
+<span class="sig-prename descclassname"><span class="pre">formatters.</span></span><span class="sig-name descname"><span class="pre">digits_only</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/formatters.html#digits_only"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#formatters.digits_only" title="Link to this definition"></a></dt>
+<dd><p>Remove todos os caracteres não numéricos de uma string, retornando apenas os dígitos. O método utiliza uma expressão regular para substituir qualquer caractere que não seja um dígito por uma string vazia, resultando em uma string composta apenas por números. Se a entrada for None ou vazia, o método retorna uma string vazia.
+:param value: A string de entrada a ser processada.
+:type value: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>
+:returns: A string contendo apenas os dígitos da entrada original.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="formatters.strip_mask_chars">
+<span class="sig-prename descclassname"><span class="pre">formatters.</span></span><span class="sig-name descname"><span class="pre">strip_mask_chars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/formatters.html#strip_mask_chars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#formatters.strip_mask_chars" title="Link to this definition"></a></dt>
+<dd><p>Remove caracteres de máscara comuns de uma string, como sublinhados, espaços, hífens, pontos, barras e parênteses, e retorna a string limpa. O método utiliza uma expressão regular para substituir esses caracteres por uma string vazia, resultando em uma versão da string sem os caracteres de máscara. Se a entrada for None ou vazia, o método retorna uma string vazia.
+:param value: A string de entrada a ser processada, que pode conter caracteres de máscara.
+:type value: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>
+:returns: A string limpa, sem caracteres de máscara.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="formatters.parse_decimal_br">
+<span class="sig-prename descclassname"><span class="pre">formatters.</span></span><span class="sig-name descname"><span class="pre">parse_decimal_br</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/formatters.html#parse_decimal_br"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#formatters.parse_decimal_br" title="Link to this definition"></a></dt>
+<dd><p>Converte uma string que representa um número no formato brasileiro (com vírgula como separador decimal) para um valor float. O método remove quaisquer caracteres que não sejam dígitos, vírgulas, pontos ou sinais de menos, e então processa a string para garantir que o formato seja interpretado corretamente. Se a string contiver tanto vírgula quanto ponto, o método assume que o ponto é um separador de milhar e a vírgula é o separador decimal. Se a string contiver apenas vírgula, ela é tratada como separador decimal. O método tenta converter a string resultante para float e retorna o valor convertido, ou None se a conversão falhar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>s</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – A string contendo um valor numérico no formato brasileiro (com vírgula como separador decimal).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>O valor numérico convertido para float, ou None se a conversão falhar.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="formatters.parse_date_any">
+<span class="sig-prename descclassname"><span class="pre">formatters.</span></span><span class="sig-name descname"><span class="pre">parse_date_any</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/formatters.html#parse_date_any"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#formatters.parse_date_any" title="Link to this definition"></a></dt>
+<dd><p>Converte uma string que representa uma data em um objeto date do Python, tentando vários formatos comuns de data. O método aceita strings em formatos como dd/mm/yyyy, dd-mm-yyyy, yyyy-mm-dd e yyyy/mm/dd. Ele tenta converter a string para um objeto date usando cada um desses formatos, e retorna o primeiro resultado bem-sucedido. Se a conversão falhar para todos os formatos, o método retorna None. Se a entrada for None ou vazia, ele também retorna None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>s</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – A string contendo uma data no formato dd/mm/yyyy, dd-mm-yyyy, yyyy-mm-dd ou yyyy/mm/dd.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A data convertida, ou None se a conversão falhar.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="formatters.normalize_bool_ptbr">
+<span class="sig-prename descclassname"><span class="pre">formatters.</span></span><span class="sig-name descname"><span class="pre">normalize_bool_ptbr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/formatters.html#normalize_bool_ptbr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#formatters.normalize_bool_ptbr" title="Link to this definition"></a></dt>
+<dd><p>Normaliza uma string que representa um valor booleano em português, retornando “Sim” para valores que indicam verdadeiro e “Não” para valores que indicam falso. O método aceita várias formas de entrada, como “sim”, “s”, “yes”, “y”, “true”, “1” para verdadeiro, e “não”, “nao”, “n”, “no”, “false”, “0” para falso. A comparação é feita de forma case-insensitive e a string de entrada é limpa de espaços antes da comparação. Se a string não corresponder a nenhum dos valores reconhecidos para verdadeiro ou falso, o método retorna a string original limpa.
+:param s: A string de entrada que representa um valor booleano em português.
+:type s: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>
+:returns: “Sim” se a string indicar verdadeiro, “Não” se indicar falso, ou a string original limpa se não corresponder a nenhum dos casos anteriores. Retorna None se a entrada for None ou vazia.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="formatters.cast_value_by_type">
+<span class="sig-prename descclassname"><span class="pre">formatters.</span></span><span class="sig-name descname"><span class="pre">cast_value_by_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tipo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/formatters.html#cast_value_by_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#formatters.cast_value_by_type" title="Link to this definition"></a></dt>
+<dd><p>Converte uma string bruta para um valor do tipo especificado, com suporte para tipos como “numero”, “moeda”, “data” e “booleano”. O método processa a string de entrada com base no tipo solicitado, utilizando funções de formatação específicas para cada tipo. Para “numero” e “moeda”, ele tenta converter a string para um float usando o formato brasileiro. Para “data”, ele tenta converter a string para um objeto date. Para “booleano”, ele normaliza a string para “Sim” ou “Não”. Se a conversão falhar ou se o tipo não for reconhecido, o método retorna a string original limpa.
+:param tipo: O tipo para o qual a string deve ser convertida, como “numero”, “moeda”, “data” ou “booleano”.
+:type tipo: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>
+:param raw: A string bruta a ser convertida para o tipo especificado. O método irá processar essa string de acordo com as regras de formatação para o tipo solicitado e retornar o valor convertido, ou a string original limpa se a conversão falhar ou se o tipo não for reconhecido.
+:type raw: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>
+:returns: O valor convertido para o tipo especificado, ou a string original limpa se a conversão falhar ou se o tipo não for reconhecido. Para “numero” e “moeda”, retorna um float; para “data”, retorna um objeto date; para “booleano”, retorna “Sim” ou “Não”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="excel_io.html" class="btn btn-neutral float-left" title="excel_io module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="icon_manager.html" class="btn btn-neutral float-right" title="icon_manager module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Avance Telecom.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

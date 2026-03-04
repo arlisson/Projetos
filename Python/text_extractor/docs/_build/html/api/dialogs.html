@@ -1,0 +1,223 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dialogs module &mdash; PreencheFacil v0.0.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=bc6a6d3b"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="excel_io module" href="excel_io.html" />
+    <link rel="prev" title="config module" href="config.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PreencheFacil
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">text_extractor</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="app.html">app module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="colors.html">colors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config.html">config module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">dialogs module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#dialogs.ThemeDialog"><code class="docutils literal notranslate"><span class="pre">ThemeDialog</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#dialogs.ThemeDialog.values"><code class="docutils literal notranslate"><span class="pre">ThemeDialog.values()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#dialogs.CursorStartLineEdit"><code class="docutils literal notranslate"><span class="pre">CursorStartLineEdit</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#dialogs.CursorStartLineEdit.set_force_cursor_start"><code class="docutils literal notranslate"><span class="pre">CursorStartLineEdit.set_force_cursor_start()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dialogs.CursorStartLineEdit.focusInEvent"><code class="docutils literal notranslate"><span class="pre">CursorStartLineEdit.focusInEvent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dialogs.CursorStartLineEdit.mousePressEvent"><code class="docutils literal notranslate"><span class="pre">CursorStartLineEdit.mousePressEvent()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#dialogs.EmailDomainsDialog"><code class="docutils literal notranslate"><span class="pre">EmailDomainsDialog</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#dialogs.EmailDomainsDialog.domains"><code class="docutils literal notranslate"><span class="pre">EmailDomainsDialog.domains()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="excel_io.html">excel_io module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatters.html">formatters module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="icon_manager.html">icon_manager module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="license_dialog.html">license_dialog module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loading_screen.html">loading_screen module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="online_license.html">online_license module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simple_lock.html">simple_lock module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_login.html">user_login module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="widgets.html">widgets module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PreencheFacil</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">text_extractor</a></li>
+      <li class="breadcrumb-item active">dialogs module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/dialogs.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-dialogs">
+<span id="dialogs-module"></span><h1>dialogs module<a class="headerlink" href="#module-dialogs" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="dialogs.ThemeDialog">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">dialogs.</span></span><span class="sig-name descname"><span class="pre">ThemeDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogs.html#ThemeDialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogs.ThemeDialog" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QDialog</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogs.ThemeDialog.values">
+<span class="sig-name descname"><span class="pre">values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogs.html#ThemeDialog.values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogs.ThemeDialog.values" title="Link to this definition"></a></dt>
+<dd><p>Retorna os valores atuais dos sliders de cor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Valores do tom, saturação e brilho.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dialogs.CursorStartLineEdit">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">dialogs.</span></span><span class="sig-name descname"><span class="pre">CursorStartLineEdit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_cursor_start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogs.html#CursorStartLineEdit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogs.CursorStartLineEdit" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QLineEdit</span></code></p>
+<p>QLineEdit que força o cursor para o início ao receber foco/clique.
+Útil para campos com inputMask (telefone, data) para facilitar colar.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogs.CursorStartLineEdit.set_force_cursor_start">
+<span class="sig-name descname"><span class="pre">set_force_cursor_start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enabled</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogs.html#CursorStartLineEdit.set_force_cursor_start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogs.CursorStartLineEdit.set_force_cursor_start" title="Link to this definition"></a></dt>
+<dd><p>Define se o cursor será forçado para o início ao receber foco ou clique.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>enabled</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – Se True, o cursor será forçado para o início ao receber foco ou clique.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogs.CursorStartLineEdit.focusInEvent">
+<span class="sig-name descname"><span class="pre">focusInEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogs.html#CursorStartLineEdit.focusInEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogs.CursorStartLineEdit.focusInEvent" title="Link to this definition"></a></dt>
+<dd><p>Sobrescreve o evento de foco para mover o cursor para o início se a opção estiver habilitada.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>_type_</em>) – Evento de foco recebido.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogs.CursorStartLineEdit.mousePressEvent">
+<span class="sig-name descname"><span class="pre">mousePressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogs.html#CursorStartLineEdit.mousePressEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogs.CursorStartLineEdit.mousePressEvent" title="Link to this definition"></a></dt>
+<dd><p>Sobrescreve o evento de clique do mouse para mover o cursor para o início se a opção estiver habilitada.
+:type event: _type_
+:param event: Evento de clique do mouse recebido.
+:type event: _type_</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dialogs.EmailDomainsDialog">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">dialogs.</span></span><span class="sig-name descname"><span class="pre">EmailDomainsDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">domains</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogs.html#EmailDomainsDialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogs.EmailDomainsDialog" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QDialog</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dialogs.EmailDomainsDialog.domains">
+<span class="sig-name descname"><span class="pre">domains</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dialogs.html#EmailDomainsDialog.domains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dialogs.EmailDomainsDialog.domains" title="Link to this definition"></a></dt>
+<dd><p>Retorna a lista de domínios de e-mail configurados no diálogo, garantindo que cada domínio comece com ‘&#64;’ e seja único.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Lista de domínios de e-mail configurados no diálogo.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="config.html" class="btn btn-neutral float-left" title="config module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="excel_io.html" class="btn btn-neutral float-right" title="excel_io module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Avance Telecom.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
