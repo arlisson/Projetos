@@ -13,3 +13,6 @@ python -m PyInstaller --noconsole --name PreencheFacil `
 --add-data "LICENSE.txt;." `
 --add-data "LICENSE.pt-BR.txt;." `
 app.py
+
+
+python -m sphinx -b html -E docs/source docs
