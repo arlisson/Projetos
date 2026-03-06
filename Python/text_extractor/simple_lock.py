@@ -182,9 +182,21 @@ def _reg_set_if_missing(name: str, value: str) -> None:
 
 def _machine_guid() -> str:
     """
-    Obtém o MachineGuid do registro do Windows, que é um identificador único para a máquina. O método abre a chave de registro localizada em "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography" e lê o valor associado à chave "MachineGuid". O valor é retornado como uma string, removendo quaisquer espaços em branco extras. O MachineGuid é um identificador estável que pode ser usado para identificar de forma única uma máquina, e é comumente utilizado em cenários onde é necessário associar informações ou licenças a um dispositivo específico.
-    Returns:
-        str: O MachineGuid lido do registro do Windows. O método abre a chave de registro localizada em "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography" e lê o valor associado à chave "MachineGuid". O valor é retornado como uma string, removendo quaisquer espaços em branco extras. O MachineGuid é um identificador estável que pode ser usado para identificar de forma única uma máquina, e é comumente utilizado em cenários onde é necessário associar informações ou licenças a um dispositivo específico.
+        Obtém o MachineGuid do registro do Windows.
+
+        O método abre a chave de registro:
+
+        ``HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Cryptography``
+
+        e lê o valor da chave ``MachineGuid``.
+
+        Esse identificador é único para cada máquina e pode ser utilizado
+        para associar licenças ou identificar dispositivos.
+
+        Returns
+        -------
+        str
+            MachineGuid lido do registro do Windows.
     """
     key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Cryptography")
     val, _ = winreg.QueryValueEx(key, "MachineGuid")
@@ -408,22 +420,27 @@ def _parse_payload(payload: bytes) -> Tuple[str, bytes, bytes]:
 # -------------------------
 
 def ensure_or_mark(allow_create: bool = False) -> Tuple[bool, str]:
-    """
-        Política final (conforme combinado):
-        - O instalador cria: <pasta app>\\_internal\\_internal.dat (marker somente leitura)
-        - O app NUNCA escreve em _internal
-        - O marcador por máquina fica em ProgramData e é DPAPI(LocalMachine):
-            C:\\ProgramData\\LeadsApp\\cahce_string.dat
+    """Política final (conforme combinado):
 
-        Regras:
-        1) Se marker do instalador não existir => bloqueia (evita rodar app copiado solto).
-        2) Se o arquivo de ProgramData NÃO existir:
-        - allow_create=False => bloqueia pedindo ativação online primeiro.
-        - allow_create=True  => cria o marcador por máquina (use somente após validação online OK).
-        3) Se o arquivo existir => valida DPAPI + HMAC + machine_id_hash.
+    - O instalador cria: ``<pasta app>\\_internal\\_internal.dat`` (marker somente leitura)
+    - O app NUNCA escreve em ``_internal``
+    - O marcador por máquina fica em ProgramData e é DPAPI (LocalMachine):
+    ``C:\\ProgramData\\LeadsApp\\cache_string.dat``
 
-        Args:
-          allow_create (bool): Indica se o método deve criar um novo marcador por máquina no diretório ProgramData caso o arquivo de marcador não exista. Se allow_create for False, o método bloqueia a execução e solicitará ativação online. Se allow_create for True, o método tentará criar um novo marcador por máquina usando DPAPI para proteger os dados, e se a criação for bem-sucedida, permitirá a execução do aplicativo. Essa opção é útil para permitir que o aplicativo seja ativado online pela primeira vez, criando o marcador por máquina necessário para futuras validações.
+    Regras
+
+    1. Se marker do instalador não existir => bloqueia (evita rodar app copiado solto).
+    2. Se o arquivo de ProgramData NÃO existir:
+    - ``allow_create=False`` => bloqueia pedindo ativação online primeiro.
+    - ``allow_create=True``  => cria o marcador por máquina (use somente após validação online OK).
+    3. Se o arquivo existir => valida DPAPI + HMAC + machine_id_hash.
+
+    Parameters
+    ----------
+    allow_create : bool
+        Indica se o método deve criar um novo marcador por máquina em ProgramData caso o arquivo
+        de marcador não exista. Se ``False``, bloqueia e solicita ativação online. Se ``True``,
+        cria o marcador por máquina usando DPAPI (use somente após validação online bem-sucedida).
     """
     # 1) Exigir marker do instalador
     if not os.path.exists(internal_marker_path()):

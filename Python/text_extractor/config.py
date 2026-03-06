@@ -222,17 +222,17 @@ def get_last_sheet_path() -> Optional[str]:
 
 
 def default_ui_config() -> dict:
-    """    Configurações padrão para a interface do usuário, incluindo ícones, tema de cores e HTML para o rodapé. Esta configuração é usada como base para a personalização da aparência da aplicação. A função retorna um dicionário contendo as seguintes chaves:
+    """
+    Configurações padrão para a interface do usuário, incluindo ícones, tema de cores e HTML para o rodapé. Esta configuração é usada como base para a personalização da aparência da aplicação. A função retorna um dicionário contendo as seguintes chaves:
 
     Returns:
         dict: Configurações padrão para a interface do usuário, incluindo ícones, tema de cores e HTML para o rodapé. Esta configuração é usada como base para a personalização da aparência da aplicação. A função retorna um dicionário contendo as seguintes chaves:
-- "window_icon": Caminho para o ícone da janela principal. 
-- "button_icons": Dicionário de caminhos para ícones de botões específicos, como "choose_file", "add_field", "save_lead", "clear", "edit_title", "delete_field" e "settings".
-- "theme": Dicionário de cores para a interface, incluindo "background", "surface
-", "surface_alt", "text", "muted_text", "primary", "danger" e "border".
-- "background_hsl": Dicionário com valores de matiz (h), saturação (s) e luminosidade (l) para a cor de fundo, usado para ajustes dinâmicos de tema.
-- "footer_left_html": String contendo HTML para o conteúdo do rodapé à esquerda, permitindo personalização de mensagens ou links.
-
+    - "window_icon": Caminho para o ícone da janela principal. 
+    - "button_icons": Dicionário de caminhos para ícones de botões específicos, como "choose_file", "add_field", "save_lead", "clear", "edit_title", "delete_field" e "settings".
+    - "theme": Dicionário de cores para a interface, incluindo "background", "surface
+    ", "surface_alt", "text", "muted_text", "primary", "danger" e "border".
+    - "background_hsl": Dicionário com valores de matiz (h), saturação (s) e luminosidade (l) para a cor de fundo, usado para ajustes dinâmicos de tema.
+    - "footer_left_html": String contendo HTML para o conteúdo do rodapé à esquerda, permitindo personalização de mensagens ou links.
     """
     # Mantém compatível com seu padrão anterior (icons + theme + background_hsl)
     return {
@@ -371,3 +371,46 @@ def save_email_domains_config(cfg: dict) -> None:
     """
     with open(CONFIG_EMAIL_DOMAINS_PATH, "w", encoding="utf-8") as f:
         json.dump(cfg, f, ensure_ascii=False, indent=2)
+
+
+def delete_sheet_key(cfg_fields: dict, sheet_name: str) -> bool:
+    """
+    Remove do controle JSON a configuração referente a uma aba específica.
+
+    Args:
+        cfg_fields (dict): Configuração carregada do controle de campos.
+        sheet_name (str): Nome da aba a ser removida.
+
+    Returns:
+        bool: True se removeu algo, False caso contrário.
+    """
+    if not isinstance(cfg_fields, dict) or not sheet_name:
+        return False
+
+    changed = False
+
+    # Caso principal: estrutura por abas
+    sheets = cfg_fields.get("abas")
+    if isinstance(sheets, dict) and sheet_name in sheets:
+        del sheets[sheet_name]
+        changed = True
+
+    # Compatibilidade: caso exista estrutura antiga em lista
+    sheets_list = cfg_fields.get("sheets")
+    if isinstance(sheets_list, list):
+        original_len = len(sheets_list)
+        cfg_fields["sheets"] = [
+            item for item in sheets_list
+            if not (
+                isinstance(item, dict)
+                and item.get("aba") == sheet_name
+            )
+        ]
+        if len(cfg_fields["sheets"]) != original_len:
+            changed = True
+
+    # Se a aba removida era a aba atual, limpa a referência
+    if cfg_fields.get("aba") == sheet_name:
+        cfg_fields["aba"] = ""
+
+    return changed

@@ -14,19 +14,19 @@
     "license": "assets/icons/information.png"
   },
   "theme": {
-    "background": "#13212F",
-    "surface": "#212E3B",
-    "surface_alt": "#2B3744",
-    "text": "#ECEDEE",
-    "muted_text": "#8A9197",
+    "background": "#0A141E",
+    "surface": "#19222C",
+    "surface_alt": "#222C34",
+    "text": "#EBECED",
+    "muted_text": "#858A8F",
     "primary": "#3B82F6",
     "danger": "#EF4444",
-    "border": "#394550"
+    "border": "#313A42"
   },
   "background_hsl": {
     "h": 210,
-    "s": 43,
-    "l": 13
+    "s": 49,
+    "l": 8
   },
   "footer_left_html": "<b>Se precisar de telefonia para sua empresa</b> → WhatsApp (22) 98812-4656",
   "footer_link": "https://hub-avance.vercel.app",

@@ -1,0 +1,574 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="dialogs module" href="dialogs.html"><link rel="prev" title="colors module" href="colors.html">
+
+    <!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>config module - PreencheFacil v0.0.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">PreencheFacil v0.0.3 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <span class="sidebar-brand-text">PreencheFacil v0.0.3 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="modules.html">text_extractor</a><input aria-label="Toggle navigation of text_extractor" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="app.html">app module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="colors.html">colors module</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialogs.html">dialogs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="excel_io.html">excel_io module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formatters.html">formatters module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="icon_manager.html">icon_manager module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="license_dialog.html">license_dialog module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loading_screen.html">loading_screen module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">models module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="online_license.html">online_license module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simple_lock.html">simple_lock module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_login.html">user_login module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="widgets.html">widgets module</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/api/config.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="module-config">
+<span id="config-module"></span><h1>config module<a class="headerlink" href="#module-config" title="Link to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="config.default_fields_config">
+<span class="sig-prename descclassname"><span class="pre">config.</span></span><span class="sig-name descname"><span class="pre">default_fields_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/config.html#default_fields_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#config.default_fields_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configurações padrão para campos e abas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Configurações iniciais com uma aba “Preenche Fácil” contendo campos básicos.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="config.rename_sheet_key">
+<span class="sig-prename descclassname"><span class="pre">config.</span></span><span class="sig-name descname"><span class="pre">rename_sheet_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/config.html#rename_sheet_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#config.rename_sheet_key" title="Link to this definition">¶</a></dt>
+<dd><p>Renomeia uma aba (sheet) dentro da configuração, movendo os campos associados para a nova chave.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cfg</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span>) – Configuração completa onde as abas estão definidas. Deve conter a chave “abas” que é um dicionário de abas.</p></li>
+<li><p><strong>old_name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Nome atual da aba que se deseja renomear. Se não existir, a função apenas garante que a nova aba exista sem campos.</p></li>
+<li><p><strong>new_name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Novo nome para a aba. Se já existir, os campos só serão movidos se a aba de destino estiver vazia. Se for igual ao old_name, não faz nada.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="config.get_sheet_campos">
+<span class="sig-prename descclassname"><span class="pre">config.</span></span><span class="sig-name descname"><span class="pre">get_sheet_campos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/config.html#get_sheet_campos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#config.get_sheet_campos" title="Link to this definition">¶</a></dt>
+<dd><p>Obtém os campos configurados para uma aba específica dentro da configuração.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cfg</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span>) – Configuração completa onde as abas estão definidas. Deve conter a chave “abas” que é um dicionário de abas, cada uma com uma lista de campos.</p></li>
+<li><p><strong>sheet_name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Nome da aba para a qual se deseja obter os campos. Se a aba não existir, retorna uma lista vazia.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Lista de campos configurados para a aba especificada. Cada campo é um dicionário com chaves como “id”, “titulo”, “tipo” e “fixo”. Se a aba ou os campos não estiverem definidos, retorna uma lista vazia.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="config.set_sheet_campos">
+<span class="sig-prename descclassname"><span class="pre">config.</span></span><span class="sig-name descname"><span class="pre">set_sheet_campos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">campos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/config.html#set_sheet_campos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#config.set_sheet_campos" title="Link to this definition">¶</a></dt>
+<dd><p>Define os campos para uma aba específica dentro da configuração, normalizando a lista de campos e garantindo a estrutura correta.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cfg</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span>) – Configuração completa onde as abas estão definidas. Deve conter a chave “abas” que é um dicionário de abas, cada uma com uma lista de campos.</p></li>
+<li><p><strong>sheet_name</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Nome da aba para a qual se deseja definir os campos. Se a aba não existir, será criada automaticamente.</p></li>
+<li><p><strong>campos</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></span>) – Lista de campos a ser definida para a aba especificada. Cada campo deve ser um dicionário, mas o formato é flexível. A função irá normalizar os campos, garantindo que cada um tenha as chaves mínimas e tipos válidos, conforme definido na função _normalize_campos.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="config.load_fields_config">
+<span class="sig-prename descclassname"><span class="pre">config.</span></span><span class="sig-name descname"><span class="pre">load_fields_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_types</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/config.html#load_fields_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#config.load_fields_config" title="Link to this definition">¶</a></dt>
+<dd><p>Carrega a configuração de campos e abas a partir do arquivo JSON, aplicando normalização e migração de formato se necessário.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>field_types</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – Lista de tipos de campo válidos para normalização. Usada para garantir que os campos carregados tenham tipos reconhecidos, definindo como “texto” se o tipo for inválido ou ausente.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Configuração de campos carregada e normalizada.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="config.save_fields_config">
+<span class="sig-prename descclassname"><span class="pre">config.</span></span><span class="sig-name descname"><span class="pre">save_fields_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/config.html#save_fields_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#config.save_fields_config" title="Link to this definition">¶</a></dt>
+<dd><p>Salva a configuração de campos e abas em um arquivo JSON, mantendo a estrutura esperada.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cfg</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span>) – Configuração de campos a ser salva. Deve conter a estrutura esperada, incluindo “abas” como um dicionário de abas, cada uma com uma lista de campos. A função não realiza validação ou normalização, portanto, é responsabilidade do chamador garantir que a configuração esteja no formato correto antes de chamar esta função.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="config.load_sheet_config">
+<span class="sig-prename descclassname"><span class="pre">config.</span></span><span class="sig-name descname"><span class="pre">load_sheet_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/config.html#load_sheet_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#config.load_sheet_config" title="Link to this definition">¶</a></dt>
+<dd><p>Carrega a configuração de planilha a partir do arquivo JSON. Se o arquivo não existir ou ocorrer um erro durante a leitura, retorna um dicionário vazio. A função não realiza validação ou normalização da configuração, portanto, é responsabilidade do chamador garantir que a configuração esteja no formato correto após o carregamento.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Configuração de planilha carregada a partir do arquivo JSON. Se o arquivo não existir ou ocorrer um erro durante a leitura, retorna um dicionário vazio. A função não realiza validação ou normalização da configuração, portanto, é responsabilidade do chamador garantir que a configuração esteja no formato correto após o carregamento.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="config.save_sheet_config">
+<span class="sig-prename descclassname"><span class="pre">config.</span></span><span class="sig-name descname"><span class="pre">save_sheet_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/config.html#save_sheet_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#config.save_sheet_config" title="Link to this definition">¶</a></dt>
+<dd><p>Salva o caminho da planilha na configuração, escrevendo em um arquivo JSON. A função irá criar ou sobrescrever o arquivo de configuração com um dicionário contendo a chave “last_sheet_path” e o valor do caminho fornecido. A função não realiza validação do caminho fornecido, portanto, é responsabilidade do chamador garantir que o caminho seja válido e acessível antes de chamar esta função.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Caminho da planilha a ser salvo na configuração. A função irá salvar este caminho no arquivo de configuração JSON, substituindo o valor existente. A função não realiza validação do caminho fornecido, portanto, é responsabilidade do chamador garantir que o caminho seja válido e acessível antes de chamar esta função.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="config.get_last_sheet_path">
+<span class="sig-prename descclassname"><span class="pre">config.</span></span><span class="sig-name descname"><span class="pre">get_last_sheet_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/config.html#get_last_sheet_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#config.get_last_sheet_path" title="Link to this definition">¶</a></dt>
+<dd><p>Obtém o caminho da última planilha salvo na configuração. A função lê o arquivo de configuração JSON para obter o valor associado à chave “last_sheet_path”. Se o arquivo de configuração não existir, se a chave “last_sheet_path” não estiver presente ou se o caminho armazenado não corresponder a um arquivo existente no sistema de arquivos, a função retorna None. Caso contrário, retorna o caminho da última planilha como uma string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Caminho da última planilha salvo na configuração. Se o caminho não estiver presente na configuração ou se o arquivo de configuração não existir, retorna None. Se o caminho estiver presente mas o arquivo correspondente não existir no sistema de arquivos, também retorna None. Caso contrário, retorna o caminho da última planilha como uma string.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="config.default_ui_config">
+<span class="sig-prename descclassname"><span class="pre">config.</span></span><span class="sig-name descname"><span class="pre">default_ui_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/config.html#default_ui_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#config.default_ui_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configurações padrão para a interface do usuário, incluindo ícones, tema de cores e HTML para o rodapé. Esta configuração é usada como base para a personalização da aparência da aplicação. A função retorna um dicionário contendo as seguintes chaves:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Configurações padrão para a interface do usuário, incluindo ícones, tema de cores e HTML para o rodapé. Esta configuração é usada como base para a personalização da aparência da aplicação. A função retorna um dicionário contendo as seguintes chaves:</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span></p>
+</dd>
+</dl>
+<ul class="simple">
+<li><p>“window_icon”: Caminho para o ícone da janela principal.</p></li>
+<li><p>“button_icons”: Dicionário de caminhos para ícones de botões específicos, como “choose_file”, “add_field”, “save_lead”, “clear”, “edit_title”, “delete_field” e “settings”.</p></li>
+<li><p>“theme”: Dicionário de cores para a interface, incluindo “background”, “surface</p></li>
+</ul>
+<p>“, “surface_alt”, “text”, “muted_text”, “primary”, “danger” e “border”.
+- “background_hsl”: Dicionário com valores de matiz (h), saturação (s) e luminosidade (l) para a cor de fundo, usado para ajustes dinâmicos de tema.
+- “footer_left_html”: String contendo HTML para o conteúdo do rodapé à esquerda, permitindo personalização de mensagens ou links.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="config.load_ui_config">
+<span class="sig-prename descclassname"><span class="pre">config.</span></span><span class="sig-name descname"><span class="pre">load_ui_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/config.html#load_ui_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#config.load_ui_config" title="Link to this definition">¶</a></dt>
+<dd><p>Carrega as configurações da interface do usuário a partir de um arquivo JSON. Se o arquivo não existir ou ocorrer um erro durante a leitura, retorna as configurações padrão definidas pela função default_ui_config(). A função garante que as chaves principais estejam presentes na configuração carregada, preenchendo com valores padrão para quaisquer chaves ausentes. A configuração inclui temas de cores, ícones e HTML para o rodapé, permitindo personalização da aparência da aplicação.
+:returns: Configurações da interface do usuário carregadas a partir do arquivo JSON. Se o arquivo não existir ou ocorrer um erro durante a leitura, retorna as configurações padrão definidas pela função default_ui_config(). A função garante que as chaves principais estejam presentes na configuração carregada, preenchendo com valores padrão para quaisquer chaves ausentes. A configuração inclui temas de cores, ícones e HTML para o rodapé, permitindo personalização da aparência da aplicação.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="config.save_ui_config">
+<span class="sig-prename descclassname"><span class="pre">config.</span></span><span class="sig-name descname"><span class="pre">save_ui_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/config.html#save_ui_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#config.save_ui_config" title="Link to this definition">¶</a></dt>
+<dd><p>Salva as configurações da interface do usuário em um arquivo JSON. A função recebe um dicionário de configurações e escreve seu conteúdo em um arquivo de configuração JSON, criando ou sobrescrevendo o arquivo existente. A configuração deve conter chaves principais como “window_icon”, “button_icons”, “theme”, “background_hsl” e “footer_left_html”. A função não realiza validação ou normalização da configuração, portanto, é responsabilidade do chamador garantir que a configuração esteja no formato correto antes de chamar esta função. O arquivo JSON resultante terá uma estrutura legível, com indentação para facilitar a edição manual se necessário.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cfg</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span>) – Configurações da interface do usuário a ser salva. Deve conter as chaves principais como “window_icon”, “button_icons”, “theme”, “background_hsl” e “footer_left_html”. A função não realiza validação ou normalização da configuração, portanto, é responsabilidade do chamador garantir que a configuração esteja no formato correto antes de chamar esta função. A função irá criar ou sobrescrever o arquivo de configuração JSON com o conteúdo fornecido.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="config.default_email_domains_config">
+<span class="sig-prename descclassname"><span class="pre">config.</span></span><span class="sig-name descname"><span class="pre">default_email_domains_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/config.html#default_email_domains_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#config.default_email_domains_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configurações padrão para domínios de email, contendo uma lista de domínios comuns usados para preenchimento automático em campos de email. Esta configuração é usada como base para a personalização dos domínios de email disponíveis na aplicação. A função retorna um dicionário com a chave “dominios”, que é uma lista de strings representando os domínios de email padrão, como “&#64;gmail.com”, “&#64;hotmail.com”, “&#64;yahoo.com” e “&#64;outlook.com”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Configurações padrão para domínios de email, contendo uma lista de domínios comuns usados para preenchimento automático em campos de email. Esta configuração é usada como base para a personalização dos domínios de email disponíveis na aplicação. A função retorna um dicionário com a chave “dominios”, que é uma lista de strings representando os domínios de email padrão, como “&#64;gmail.com”, “&#64;hotmail.com”, “&#64;yahoo.com” e “&#64;outlook.com”.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="config.load_email_domains_config">
+<span class="sig-prename descclassname"><span class="pre">config.</span></span><span class="sig-name descname"><span class="pre">load_email_domains_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/config.html#load_email_domains_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#config.load_email_domains_config" title="Link to this definition">¶</a></dt>
+<dd><p>Carrega as configurações de domínios de email a partir de um arquivo JSON. Se o arquivo não existir ou ocorrer um erro durante a leitura, retorna as configurações padrão definidas pela função default_email_domains_config(). A função garante que a chave “dominios” esteja presente na configuração carregada, preenchendo com valores padrão para quaisquer chaves ausentes. A configuração inclui uma lista de domínios de email usados para preenchimento automático em campos de email, permitindo personalização dos domínios disponíveis na aplicação.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Configurações de domínios de email carregadas do arquivo JSON ou as configurações padrão caso o arquivo não exista ou ocorra um erro durante a leitura.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="config.save_email_domains_config">
+<span class="sig-prename descclassname"><span class="pre">config.</span></span><span class="sig-name descname"><span class="pre">save_email_domains_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/config.html#save_email_domains_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#config.save_email_domains_config" title="Link to this definition">¶</a></dt>
+<dd><p>Salva as configurações de domínios de email em um arquivo JSON. A função recebe um dicionário de configurações contendo a chave “dominios”, que é uma lista de strings representando os domínios de email. O conteúdo do dicionário é escrito em um arquivo de configuração JSON, criando ou sobrescrevendo o arquivo existente. A função não realiza validação ou normalização da configuração, portanto, é responsabilidade do chamador garantir que a configuração esteja no formato correto antes de chamar esta função. O arquivo JSON resultante terá uma estrutura legível, com indentação para facilitar a edição manual se necessário.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cfg</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span>) – Configurações de domínios de email a ser salva. Deve conter a chave “dominios”, que é uma lista de strings representando os domínios de email. A função não realiza validação ou normalização da configuração, portanto, é responsabilidade do chamador garantir que a configuração esteja no formato correto antes de chamar esta função. A função irá criar ou sobrescrever o arquivo de configuração JSON com o conteúdo fornecido, mantendo uma estrutura legível com indentação.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="dialogs.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">dialogs module</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="colors.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">colors module</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">config module</a><ul>
+<li><a class="reference internal" href="#config.default_fields_config"><code class="docutils literal notranslate"><span class="pre">default_fields_config()</span></code></a></li>
+<li><a class="reference internal" href="#config.rename_sheet_key"><code class="docutils literal notranslate"><span class="pre">rename_sheet_key()</span></code></a></li>
+<li><a class="reference internal" href="#config.get_sheet_campos"><code class="docutils literal notranslate"><span class="pre">get_sheet_campos()</span></code></a></li>
+<li><a class="reference internal" href="#config.set_sheet_campos"><code class="docutils literal notranslate"><span class="pre">set_sheet_campos()</span></code></a></li>
+<li><a class="reference internal" href="#config.load_fields_config"><code class="docutils literal notranslate"><span class="pre">load_fields_config()</span></code></a></li>
+<li><a class="reference internal" href="#config.save_fields_config"><code class="docutils literal notranslate"><span class="pre">save_fields_config()</span></code></a></li>
+<li><a class="reference internal" href="#config.load_sheet_config"><code class="docutils literal notranslate"><span class="pre">load_sheet_config()</span></code></a></li>
+<li><a class="reference internal" href="#config.save_sheet_config"><code class="docutils literal notranslate"><span class="pre">save_sheet_config()</span></code></a></li>
+<li><a class="reference internal" href="#config.get_last_sheet_path"><code class="docutils literal notranslate"><span class="pre">get_last_sheet_path()</span></code></a></li>
+<li><a class="reference internal" href="#config.default_ui_config"><code class="docutils literal notranslate"><span class="pre">default_ui_config()</span></code></a></li>
+<li><a class="reference internal" href="#config.load_ui_config"><code class="docutils literal notranslate"><span class="pre">load_ui_config()</span></code></a></li>
+<li><a class="reference internal" href="#config.save_ui_config"><code class="docutils literal notranslate"><span class="pre">save_ui_config()</span></code></a></li>
+<li><a class="reference internal" href="#config.default_email_domains_config"><code class="docutils literal notranslate"><span class="pre">default_email_domains_config()</span></code></a></li>
+<li><a class="reference internal" href="#config.load_email_domains_config"><code class="docutils literal notranslate"><span class="pre">load_email_domains_config()</span></code></a></li>
+<li><a class="reference internal" href="#config.save_email_domains_config"><code class="docutils literal notranslate"><span class="pre">save_email_domains_config()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=bc6a6d3b"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>

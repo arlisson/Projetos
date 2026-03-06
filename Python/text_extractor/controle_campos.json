@@ -1,82 +1,28 @@
 {
   "arquivo_padrao": "PreencheFacil.xlsx",
-  "aba": "Aba 1",
+  "aba": "Preenche Fácil",
   "abas": {
-    "Sheet1": {
+    "Preenche Fácil": {
       "campos": [
         {
-          "id": "telefone",
-          "titulo": "nome",
+          "id": "nome",
+          "titulo": "Nome",
           "tipo": "texto",
           "fixo": true,
           "locked": false
         },
         {
-          "id": "data",
-          "titulo": "Data",
-          "tipo": "data",
-          "fixo": false,
-          "locked": false
-        }
-      ]
-    },
-    "teste": {
-      "campos": [
-        {
           "id": "telefone",
-          "titulo": "nome",
-          "tipo": "texto",
-          "fixo": true,
-          "locked": false
-        },
-        {
-          "id": "data",
-          "titulo": "Data",
-          "tipo": "data",
-          "fixo": false,
-          "locked": false
-        }
-      ]
-    },
-    "Aba 1": {
-      "campos": [
-        {
-          "id": "telefone",
-          "titulo": "nome",
-          "tipo": "texto",
+          "titulo": "Telefone",
+          "tipo": "telefone",
           "fixo": true,
           "locked": false
         },
         {
           "id": "email",
-          "titulo": "email",
+          "titulo": "Email",
           "tipo": "email",
-          "fixo": false,
-          "locked": false
-        },
-        {
-          "id": "telefone_2",
-          "titulo": "telefone",
-          "tipo": "telefone",
-          "fixo": false,
-          "locked": false
-        }
-      ]
-    },
-    "Planilha1": {
-      "campos": [
-        {
-          "id": "telefone",
-          "titulo": "nome",
-          "tipo": "texto",
           "fixo": true,
-          "locked": false
-        },
-        {
-          "id": "endereo",
-          "titulo": "Endereço",
-          "tipo": "texto",
-          "fixo": false,
           "locked": false
         }
       ]

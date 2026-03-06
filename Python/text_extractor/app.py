@@ -52,7 +52,8 @@ from config import (
     load_email_domains_config,
     save_email_domains_config,
     set_sheet_campos,
-    rename_sheet_key,  # <-- necessário para refletir rename de abas no controle
+    rename_sheet_key,
+    delete_sheet_key,  # <-- necessário para refletir rename de abas no controle
 )
 
 from models import (
@@ -651,13 +652,13 @@ class App(QWidget):
                 w.setText(val)
 
     def _maybe_sync_sheets_from_excel(self) -> None:
-        """        Verifica se houve mudanças nas abas do arquivo Excel (renomeação, exclusão ou adição) 
-        e sincroniza o estado interno do aplicativo e a interface (combobox) sem perder o foco.
+        """
+        Verifica se houve mudanças nas abas do arquivo Excel (renomeação, exclusão ou adição)
+        e sincroniza o estado interno do aplicativo e o JSON de controle.
         """
         if not self.file_path or not os.path.exists(self.file_path):
             return
 
-        # tenta com IDs; se falhar, tenta só nomes
         try:
             new_meta = list_sheets_with_ids(self.file_path)
         except Exception:
@@ -669,6 +670,82 @@ class App(QWidget):
                 new_meta = [(i + 1, name) for i, name in enumerate(names)]
             except Exception:
                 return
+
+        old_meta = self._last_sheets_meta or []
+
+        old_by_id = {sid: name for sid, name in old_meta}
+        new_by_id = {sid: name for sid, name in new_meta}
+
+        old_ids = set(old_by_id.keys())
+        new_ids = set(new_by_id.keys())
+
+        removed_ids = old_ids - new_ids
+        common_ids = old_ids & new_ids
+
+        changed = False
+        removed_names: List[str] = []
+        renamed_pairs: List[Tuple[str, str]] = []
+
+        # 1) Detecta renomeações pelo ID da aba
+        for sid in common_ids:
+            old_name = old_by_id[sid]
+            new_name = new_by_id[sid]
+            if old_name != new_name:
+                rename_sheet_key(self.cfg_fields, old_name, new_name)
+
+                if self.sheet_name == old_name:
+                    self.sheet_name = new_name
+                    self.cfg_fields["aba"] = new_name
+
+                renamed_pairs.append((old_name, new_name))
+                changed = True
+
+        # 2) Detecta exclusões e remove do JSON
+        for sid in removed_ids:
+            old_name = old_by_id[sid]
+            if delete_sheet_key(self.cfg_fields, old_name):
+                removed_names.append(old_name)
+                changed = True
+
+                # Se a aba atual foi removida, troca para uma válida depois
+                if self.sheet_name == old_name:
+                    self.sheet_name = ""
+
+        # 3) Salva controle se algo mudou
+        if changed:
+            available_titles = [name for _, name in new_meta]
+
+            if self.sheet_name not in available_titles:
+                self.sheet_name = available_titles[0] if available_titles else ""
+                self.cfg_fields["aba"] = self.sheet_name
+
+            save_fields_config(self.cfg_fields)
+
+        # 4) Atualiza combobox e snapshot interno
+        prev_sheet = self.sheet_name
+        self._last_sheets_meta = new_meta
+        self._reload_sheet_list_from_meta(new_meta)
+
+        # 5) Se a aba atual mudou por exclusão, carrega os campos corretos
+        if self.sheet_name and self.sheet_name != prev_sheet:
+            sheet_campos = get_sheet_campos(self.cfg_fields, self.sheet_name)
+            if sheet_campos:
+                self.campos = [Campo(**c) for c in sheet_campos]
+                self.render_fields()
+            else:
+                self.sync_fields_from_existing_excel(self.file_path)
+
+        # 6) Atualiza status
+        msgs = []
+
+        if renamed_pairs:
+            msgs.extend([f"Aba renomeada: '{old}' → '{new}'" for old, new in renamed_pairs])
+
+        if removed_names:
+            msgs.extend([f"Aba removida do controle: '{name}'" for name in removed_names])
+
+        if msgs:
+            self.lbl_status.setText(" | ".join(msgs))
 
     def _maybe_sync_headers_from_excel(self) -> None:
         """        Verifica se o cabeçalho da planilha Excel mudou em relação aos campos atuais do aplicativo.
@@ -719,6 +796,9 @@ class App(QWidget):
         titles = [self.cmb_sheet.itemText(i) for i in range(self.cmb_sheet.count())]
         if self.sheet_name and self.sheet_name not in titles:
             old = self.sheet_name
+
+            delete_sheet_key(self.cfg_fields, old)
+
             self.sheet_name = titles[0] if titles else ""
             self.cfg_fields["aba"] = self.sheet_name
             save_fields_config(self.cfg_fields)
