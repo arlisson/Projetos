@@ -712,6 +712,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">icon_mgr</span><span class="o">.</span><span class="n">apply_button_icon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btn_refresh_sheets</span><span class="p">,</span> <span class="s2">&quot;refresh&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">icon_mgr</span><span class="o">.</span><span class="n">apply_button_icon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btn_help</span><span class="p">,</span> <span class="s2">&quot;help&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">icon_mgr</span><span class="o">.</span><span class="n">apply_button_icon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btn_license</span><span class="p">,</span> <span class="s2">&quot;license&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">icon_mgr</span><span class="o">.</span><span class="n">apply_button_icon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btn_delete</span><span class="p">,</span> <span class="s2">&quot;delete&quot;</span><span class="p">,</span> <span class="n">white</span><span class="p">)</span>
+
 
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_last_theme_for_fields</span> <span class="o">=</span> <span class="n">theme</span>
@@ -1208,17 +1210,23 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_save</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">&quot;Salvar os dados preenchidos como nova linha na planilha&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_clear</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Limpar&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_clear</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">&quot;Limpar os campos para preencher com novos dados&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_delete</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Excluir campos&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_delete</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">&quot;Excluir todos os campos&quot;</span><span class="p">)</span>
 
 
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_save</span><span class="o">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s2">&quot;variant&quot;</span><span class="p">,</span> <span class="s2">&quot;primary&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_delete</span><span class="o">.</span><span class="n">setProperty</span><span class="p">(</span><span class="s2">&quot;variant&quot;</span><span class="p">,</span> <span class="s2">&quot;danger&quot;</span><span class="p">)</span>
 
         <span class="n">actions</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btn_add_field</span><span class="p">)</span>
         <span class="n">actions</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btn_clear</span><span class="p">)</span>
+        <span class="n">actions</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btn_delete</span><span class="p">)</span>        
         <span class="n">actions</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btn_save</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_add_field</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add_field</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_save</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_lead</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_clear</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clear_fields</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_delete</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delete_all_fields</span><span class="p">)</span>
+
 
         <span class="n">root</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span>
 
@@ -1956,6 +1964,104 @@
 
 
     <span class="c1"># ---------- ações gerais ----------</span>
+<div class="viewcode-block" id="App.delete_all_fields">
+<a class="viewcode-back" href="../api/app.html#app.App.delete_all_fields">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete_all_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Exclui todos os campos não protegidos do controle e, quando possível,</span>
+<span class="sd">        remove também as colunas correspondentes na planilha Excel.</span>
+
+<span class="sd">        A função:</span>
+<span class="sd">        - verifica se há campos cadastrados;</span>
+<span class="sd">        - impede a exclusão de campos protegidos;</span>
+<span class="sd">        - solicita confirmação do usuário;</span>
+<span class="sd">        - remove do controle apenas os campos permitidos;</span>
+<span class="sd">        - persiste a alteração;</span>
+<span class="sd">        - tenta remover as colunas correspondentes no Excel;</span>
+<span class="sd">        - reaplica as regras de tipo nas colunas restantes;</span>
+<span class="sd">        - re-renderiza a interface e atualiza o status.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">campos</span><span class="p">:</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Nenhum campo&quot;</span><span class="p">,</span> <span class="s2">&quot;Não há campos para excluir.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">locked_fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">campos</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="s2">&quot;locked&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)]</span>
+        <span class="n">deletable_fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">campos</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="s2">&quot;locked&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">deletable_fields</span><span class="p">:</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="s2">&quot;Exclusão bloqueada&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Todos os campos estão protegidos e não podem ser excluídos.&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">total</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">campos</span><span class="p">)</span>
+        <span class="n">total_locked</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">locked_fields</span><span class="p">)</span>
+        <span class="n">total_deletable</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">deletable_fields</span><span class="p">)</span>
+
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Confirma excluir </span><span class="si">{</span><span class="n">total_deletable</span><span class="si">}</span><span class="s2"> campo(s)?</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;Isso também removerá as colunas correspondentes na planilha Excel.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;Os dados dessas colunas serão removidos definitivamente.&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">total_locked</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="si">{</span><span class="n">total_locked</span><span class="si">}</span><span class="s2"> campo(s) protegido(s) não serão excluídos.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">question</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Confirmar exclusão em massa&quot;</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span> <span class="o">!=</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">field_titles_to_delete</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">titulo</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">deletable_fields</span><span class="p">]</span>
+
+        <span class="c1"># Mantém apenas os campos protegidos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">campos</span> <span class="o">=</span> <span class="n">locked_fields</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_persist_campos</span><span class="p">()</span>
+
+        <span class="n">excel_errors</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">titulo</span> <span class="ow">in</span> <span class="n">field_titles_to_delete</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">delete_column_by_header</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet_name</span><span class="p">,</span> <span class="n">titulo</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="n">excel_errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">titulo</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">apply_column_type_rules</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sheet_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">campos</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">excel_errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Falha ao reaplicar regras de tipo: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">excel_errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">render_fields</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">excel_errors</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lbl_status</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span>
+                <span class="s2">&quot;Campos removidos do controle, mas houve falhas ao atualizar o Excel.&quot;</span>
+            <span class="p">)</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="s2">&quot;Exclusão concluída com ressalvas&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Os campos foram removidos do controle, mas ocorreram erros ao atualizar a planilha:</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">excel_errors</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">total_locked</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lbl_status</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">total_deletable</span><span class="si">}</span><span class="s2"> campo(s) excluído(s). </span><span class="si">{</span><span class="n">total_locked</span><span class="si">}</span><span class="s2"> protegido(s) foram mantidos.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lbl_status</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Todos os campos foram excluídos com sucesso.&quot;</span><span class="p">)</span></div>
+
+    
 
 <div class="viewcode-block" id="App.clear_fields">
 <a class="viewcode-back" href="../api/app.html#app.App.clear_fields">[docs]</a>

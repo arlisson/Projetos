@@ -455,6 +455,8 @@ class App(QWidget):
         self.icon_mgr.apply_button_icon(self.btn_refresh_sheets, "refresh", text)
         self.icon_mgr.apply_button_icon(self.btn_help, "help", text)
         self.icon_mgr.apply_button_icon(self.btn_license, "license", text)
+        self.icon_mgr.apply_button_icon(self.btn_delete, "delete", white)
+
 
 
         self._last_theme_for_fields = theme
@@ -933,17 +935,23 @@ class App(QWidget):
         self.btn_save.setToolTip("Salvar os dados preenchidos como nova linha na planilha")
         self.btn_clear = QPushButton("Limpar")
         self.btn_clear.setToolTip("Limpar os campos para preencher com novos dados")
+        self.btn_delete = QPushButton("Excluir campos")
+        self.btn_delete.setToolTip("Excluir todos os campos")
 
 
         self.btn_save.setProperty("variant", "primary")
+        self.btn_delete.setProperty("variant", "danger")
 
         actions.addWidget(self.btn_add_field)
         actions.addWidget(self.btn_clear)
+        actions.addWidget(self.btn_delete)        
         actions.addWidget(self.btn_save)
 
         self.btn_add_field.clicked.connect(self.add_field)
         self.btn_save.clicked.connect(self.save_lead)
         self.btn_clear.clicked.connect(self.clear_fields)
+        self.btn_delete.clicked.connect(self.delete_all_fields)
+
 
         root.addLayout(actions)
 
@@ -1660,6 +1668,101 @@ class App(QWidget):
         self.lbl_status.setText("Campo excluído (e coluna removida, quando aplicável).")
 
     # ---------- ações gerais ----------
+    def delete_all_fields(self) -> None:
+        """
+        Exclui todos os campos não protegidos do controle e, quando possível,
+        remove também as colunas correspondentes na planilha Excel.
+
+        A função:
+        - verifica se há campos cadastrados;
+        - impede a exclusão de campos protegidos;
+        - solicita confirmação do usuário;
+        - remove do controle apenas os campos permitidos;
+        - persiste a alteração;
+        - tenta remover as colunas correspondentes no Excel;
+        - reaplica as regras de tipo nas colunas restantes;
+        - re-renderiza a interface e atualiza o status.
+
+        Returns:
+            None
+        """
+        if not self.campos:
+            QMessageBox.information(self, "Nenhum campo", "Não há campos para excluir.")
+            return
+
+        locked_fields = [c for c in self.campos if getattr(c, "locked", False)]
+        deletable_fields = [c for c in self.campos if not getattr(c, "locked", False)]
+
+        if not deletable_fields:
+            QMessageBox.warning(
+                self,
+                "Exclusão bloqueada",
+                "Todos os campos estão protegidos e não podem ser excluídos."
+            )
+            return
+
+        total = len(self.campos)
+        total_locked = len(locked_fields)
+        total_deletable = len(deletable_fields)
+
+        msg = (
+            f"Confirma excluir {total_deletable} campo(s)?\n\n"
+            "Isso também removerá as colunas correspondentes na planilha Excel.\n"
+            "Os dados dessas colunas serão removidos definitivamente."
+        )
+
+        if total_locked:
+            msg += (
+                f"\n\n{total_locked} campo(s) protegido(s) não serão excluídos."
+            )
+
+        if QMessageBox.question(self, "Confirmar exclusão em massa", msg) != QMessageBox.Yes:
+            return
+
+        field_titles_to_delete = [c.titulo for c in deletable_fields]
+
+        # Mantém apenas os campos protegidos
+        self.campos = locked_fields
+        self._persist_campos()
+
+        excel_errors = []
+
+        try:
+            if self.file_path:
+                for titulo in field_titles_to_delete:
+                    try:
+                        delete_column_by_header(self.file_path, self.sheet_name, titulo)
+                    except Exception as e:
+                        excel_errors.append(f"{titulo}: {e}")
+
+                try:
+                    apply_column_type_rules(self.file_path, self.sheet_name, self.campos)
+                except Exception as e:
+                    excel_errors.append(f"Falha ao reaplicar regras de tipo: {e}")
+
+        except Exception as e:
+            excel_errors.append(str(e))
+
+        self.render_fields()
+
+        if excel_errors:
+            self.lbl_status.setText(
+                "Campos removidos do controle, mas houve falhas ao atualizar o Excel."
+            )
+            QMessageBox.warning(
+                self,
+                "Exclusão concluída com ressalvas",
+                "Os campos foram removidos do controle, mas ocorreram erros ao atualizar a planilha:\n\n"
+                + "\n".join(excel_errors)
+            )
+        else:
+            if total_locked:
+                self.lbl_status.setText(
+                    f"{total_deletable} campo(s) excluído(s). {total_locked} protegido(s) foram mantidos."
+                )
+            else:
+                self.lbl_status.setText("Todos os campos foram excluídos com sucesso.")
+    
 
     def clear_fields(self) -> None:
         """

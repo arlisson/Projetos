@@ -1,6 +1,6 @@
 {
   "arquivo_padrao": "PreencheFacil.xlsx",
-  "aba": "Preenche Fácil",
+  "aba": "teste campos",
   "abas": {
     "Preenche Fácil": {
       "campos": [
@@ -24,6 +24,17 @@
           "tipo": "email",
           "fixo": true,
           "locked": false
+        }
+      ]
+    },
+    "teste campos": {
+      "campos": [
+        {
+          "id": "nome",
+          "titulo": "Nome",
+          "tipo": "texto",
+          "fixo": true,
+          "locked": true
         }
       ]
     }
