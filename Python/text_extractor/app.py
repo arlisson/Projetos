@@ -321,6 +321,15 @@ class App(QWidget):
         is_light_theme = base_dark.lightness() > 140
 
         def rgba(hex_color: str, a: int) -> str:
+            """Define o estilo de cores do footer de propaganda
+
+            Args:
+                hex_color (str): Cor em formato hexadecimal, como "#RRGGBB".
+                a (int): Valor do canal alfa (opacidade), entre 0 e 255.
+
+            Returns:
+                str: String no formato "rgba(r, g, b, a)", pronta para uso em estilos QSS.
+            """
             c = QColor(hex_color)
             return f"rgba({c.red()}, {c.green()}, {c.blue()}, {a})"
 
@@ -333,12 +342,12 @@ class App(QWidget):
                 qlineargradient(
                     x1:0, y1:0, x2:1, y2:0,
                     stop:0.00 {rgba(surface_alt, 245)},
-                    stop:0.16 {rgba(surface, 248)},
-                    stop:0.32 {mid_2},
-                    stop:0.48 {mid_3},
-                    stop:0.58 {mid_2},
-                    stop:0.72 {rgba(surface, 248)},
-                    stop:0.88 {rgba(primary, 120)},
+                    stop:0.14 {rgba(surface, 248)},
+                    stop:0.28 {mid_2},
+                    stop:0.34 {mid_3},
+                    stop:0.44 {mid_2},
+                    stop:0.54 {rgba(surface, 248)},
+                    stop:0.64 {rgba(primary, 120)},
                     stop:1.00 {rgba(primary, 170)}
                 )
             """
@@ -354,12 +363,12 @@ class App(QWidget):
                 qlineargradient(
                     x1:0, y1:0, x2:1, y2:0,
                     stop:0.00 {rgba(surface_alt, 235)},
-                    stop:0.16 {rgba(surface, 242)},
-                    stop:0.34 {rgba(surface, 248)},
-                    stop:0.48 {mid_dark_rgba},
-                    stop:0.60 {rgba(surface, 248)},
-                    stop:0.76 {rgba(surface_alt, 240)},
-                    stop:0.90 {rgba(primary, 180)},
+                    stop:0.14 {rgba(surface, 242)},
+                    stop:0.28 {rgba(surface, 248)},
+                    stop:0.34 {mid_dark_rgba},
+                    stop:0.44 {rgba(surface, 248)},
+                    stop:0.54 {rgba(surface_alt, 240)},
+                    stop:0.64 {rgba(primary, 170)},
                     stop:1.00 {rgba(primary, 230)}
                 )
             """
@@ -460,7 +469,7 @@ class App(QWidget):
             }}
 
             QWidget#PromoFooter QLabel {{
-                font-size: 13px;
+                font-size: 16px;
                 font-weight: 700;
                 color: {text};
             }}

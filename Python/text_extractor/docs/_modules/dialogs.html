@@ -279,7 +279,12 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Ajustar tema&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setModal</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setMinimumWidth</span><span class="p">(</span><span class="mi">240</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setMinimumWidth</span><span class="p">(</span><span class="mi">280</span><span class="p">)</span>
+
+        <span class="c1"># valores padrão do sistema</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_h</span> <span class="o">=</span> <span class="mi">210</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_s</span> <span class="o">=</span> <span class="mi">49</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_l</span> <span class="o">=</span> <span class="mi">8</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">slider_h</span> <span class="o">=</span> <span class="n">QSlider</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">Horizontal</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">slider_s</span> <span class="o">=</span> <span class="n">QSlider</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">Horizontal</span><span class="p">)</span>
@@ -302,16 +307,42 @@
         <span class="n">form</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Saturação&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">slider_s</span><span class="p">)</span>
         <span class="n">form</span><span class="o">.</span><span class="n">addRow</span><span class="p">(</span><span class="s2">&quot;Brilho&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">slider_l</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_reset</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Restaurar padrão&quot;</span><span class="p">)</span>
+
         <span class="n">btns</span> <span class="o">=</span> <span class="n">QDialogButtonBox</span><span class="p">(</span><span class="n">QDialogButtonBox</span><span class="o">.</span><span class="n">Ok</span> <span class="o">|</span> <span class="n">QDialogButtonBox</span><span class="o">.</span><span class="n">Cancel</span><span class="p">)</span>
+
+        <span class="n">bottom</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">bottom</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btn_reset</span><span class="p">)</span>
+        <span class="n">bottom</span><span class="o">.</span><span class="n">addStretch</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">bottom</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">btns</span><span class="p">)</span>
 
         <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lbl_preview</span><span class="p">)</span>
-        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">btns</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">bottom</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_reset</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">restore_defaults</span><span class="p">)</span>
         <span class="n">btns</span><span class="o">.</span><span class="n">accepted</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accept</span><span class="p">)</span>
         <span class="n">btns</span><span class="o">.</span><span class="n">rejected</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reject</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ThemeDialog.restore_defaults">
+<a class="viewcode-back" href="../api/dialogs.html#dialogs.ThemeDialog.restore_defaults">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">restore_defaults</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Restaura os sliders para os valores padrão do tema.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slider_h</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_h</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slider_s</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_s</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">slider_l</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_l</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Retorna os valores atuais dos sliders de cor.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple[int, int, int]: Valores do tom, saturação e brilho.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">slider_h</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">slider_s</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">slider_l</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
 
 <div class="viewcode-block" id="ThemeDialog.values">
 <a class="viewcode-back" href="../api/dialogs.html#dialogs.ThemeDialog.values">[docs]</a>

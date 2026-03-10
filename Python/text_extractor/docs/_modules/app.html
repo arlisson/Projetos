@@ -259,7 +259,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtCore</span><span class="w"> </span><span class="kn">import</span> <span class="n">QUrl</span><span class="p">,</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">QTimer</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QDesktopServices</span><span class="p">,</span> <span class="n">QIcon</span><span class="p">,</span> <span class="n">QPixmap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtGui</span><span class="w"> </span><span class="kn">import</span> <span class="n">QDesktopServices</span><span class="p">,</span> <span class="n">QIcon</span><span class="p">,</span> <span class="n">QPixmap</span><span class="p">,</span> <span class="n">QColor</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">PySide6.QtWidgets</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">QApplication</span><span class="p">,</span>
     <span class="n">QFileDialog</span><span class="p">,</span>
@@ -276,6 +276,7 @@
     <span class="n">QDialog</span><span class="p">,</span>
     <span class="n">QDialogButtonBox</span><span class="p">,</span>
     <span class="n">QComboBox</span><span class="p">,</span>
+    
 <span class="p">)</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">colors</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
@@ -573,6 +574,66 @@
         <span class="n">danger</span> <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s2">&quot;danger&quot;</span><span class="p">]</span>
         <span class="n">border</span> <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s2">&quot;border&quot;</span><span class="p">]</span>
 
+        <span class="n">base_dark</span> <span class="o">=</span> <span class="n">QColor</span><span class="p">(</span><span class="n">surface</span><span class="p">)</span>
+        <span class="n">is_light_theme</span> <span class="o">=</span> <span class="n">base_dark</span><span class="o">.</span><span class="n">lightness</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">140</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">rgba</span><span class="p">(</span><span class="n">hex_color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Define o estilo de cores do footer de propaganda</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                hex_color (str): Cor em formato hexadecimal, como &quot;#RRGGBB&quot;.</span>
+<span class="sd">                a (int): Valor do canal alfa (opacidade), entre 0 e 255.</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                str: String no formato &quot;rgba(r, g, b, a)&quot;, pronta para uso em estilos QSS.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">QColor</span><span class="p">(</span><span class="n">hex_color</span><span class="p">)</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;rgba(</span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">red</span><span class="p">()</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">green</span><span class="p">()</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">blue</span><span class="p">()</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2">)&quot;</span>
+
+        <span class="k">if</span> <span class="n">is_light_theme</span><span class="p">:</span>
+            <span class="n">mid_1</span> <span class="o">=</span> <span class="n">rgba</span><span class="p">(</span><span class="n">surface</span><span class="p">,</span> <span class="mi">252</span><span class="p">)</span>
+            <span class="n">mid_2</span> <span class="o">=</span> <span class="n">rgba</span><span class="p">(</span><span class="n">surface_alt</span><span class="p">,</span> <span class="mi">248</span><span class="p">)</span>
+            <span class="n">mid_3</span> <span class="o">=</span> <span class="n">rgba</span><span class="p">(</span><span class="n">border</span><span class="p">,</span> <span class="mi">120</span><span class="p">)</span>
+
+            <span class="n">footer_grad</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                qlineargradient(</span>
+<span class="s2">                    x1:0, y1:0, x2:1, y2:0,</span>
+<span class="s2">                    stop:0.00 </span><span class="si">{</span><span class="n">rgba</span><span class="p">(</span><span class="n">surface_alt</span><span class="p">,</span><span class="w"> </span><span class="mi">245</span><span class="p">)</span><span class="si">}</span><span class="s2">,</span>
+<span class="s2">                    stop:0.14 </span><span class="si">{</span><span class="n">rgba</span><span class="p">(</span><span class="n">surface</span><span class="p">,</span><span class="w"> </span><span class="mi">248</span><span class="p">)</span><span class="si">}</span><span class="s2">,</span>
+<span class="s2">                    stop:0.28 </span><span class="si">{</span><span class="n">mid_2</span><span class="si">}</span><span class="s2">,</span>
+<span class="s2">                    stop:0.34 </span><span class="si">{</span><span class="n">mid_3</span><span class="si">}</span><span class="s2">,</span>
+<span class="s2">                    stop:0.44 </span><span class="si">{</span><span class="n">mid_2</span><span class="si">}</span><span class="s2">,</span>
+<span class="s2">                    stop:0.54 </span><span class="si">{</span><span class="n">rgba</span><span class="p">(</span><span class="n">surface</span><span class="p">,</span><span class="w"> </span><span class="mi">248</span><span class="p">)</span><span class="si">}</span><span class="s2">,</span>
+<span class="s2">                    stop:0.64 </span><span class="si">{</span><span class="n">rgba</span><span class="p">(</span><span class="n">primary</span><span class="p">,</span><span class="w"> </span><span class="mi">120</span><span class="p">)</span><span class="si">}</span><span class="s2">,</span>
+<span class="s2">                    stop:1.00 </span><span class="si">{</span><span class="n">rgba</span><span class="p">(</span><span class="n">primary</span><span class="p">,</span><span class="w"> </span><span class="mi">170</span><span class="p">)</span><span class="si">}</span>
+<span class="s2">                )</span>
+<span class="s2">            &quot;&quot;&quot;</span>
+            <span class="n">footer_border</span> <span class="o">=</span> <span class="n">rgba</span><span class="p">(</span><span class="n">border</span><span class="p">,</span> <span class="mi">110</span><span class="p">)</span>
+            <span class="n">footer_btn_bg</span> <span class="o">=</span> <span class="s2">&quot;rgba(0, 0, 0, 0.02)&quot;</span>
+            <span class="n">footer_btn_hover</span> <span class="o">=</span> <span class="s2">&quot;rgba(0, 0, 0, 0.05)&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mid_dark</span> <span class="o">=</span> <span class="n">QColor</span><span class="p">(</span><span class="n">surface</span><span class="p">)</span>
+            <span class="n">mid_dark</span> <span class="o">=</span> <span class="n">mid_dark</span><span class="o">.</span><span class="n">darker</span><span class="p">(</span><span class="mi">180</span><span class="p">)</span>
+            <span class="n">mid_dark_rgba</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;rgba(</span><span class="si">{</span><span class="n">mid_dark</span><span class="o">.</span><span class="n">red</span><span class="p">()</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">mid_dark</span><span class="o">.</span><span class="n">green</span><span class="p">()</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">mid_dark</span><span class="o">.</span><span class="n">blue</span><span class="p">()</span><span class="si">}</span><span class="s2">, 255)&quot;</span>
+
+            <span class="n">footer_grad</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                qlineargradient(</span>
+<span class="s2">                    x1:0, y1:0, x2:1, y2:0,</span>
+<span class="s2">                    stop:0.00 </span><span class="si">{</span><span class="n">rgba</span><span class="p">(</span><span class="n">surface_alt</span><span class="p">,</span><span class="w"> </span><span class="mi">235</span><span class="p">)</span><span class="si">}</span><span class="s2">,</span>
+<span class="s2">                    stop:0.14 </span><span class="si">{</span><span class="n">rgba</span><span class="p">(</span><span class="n">surface</span><span class="p">,</span><span class="w"> </span><span class="mi">242</span><span class="p">)</span><span class="si">}</span><span class="s2">,</span>
+<span class="s2">                    stop:0.28 </span><span class="si">{</span><span class="n">rgba</span><span class="p">(</span><span class="n">surface</span><span class="p">,</span><span class="w"> </span><span class="mi">248</span><span class="p">)</span><span class="si">}</span><span class="s2">,</span>
+<span class="s2">                    stop:0.34 </span><span class="si">{</span><span class="n">mid_dark_rgba</span><span class="si">}</span><span class="s2">,</span>
+<span class="s2">                    stop:0.44 </span><span class="si">{</span><span class="n">rgba</span><span class="p">(</span><span class="n">surface</span><span class="p">,</span><span class="w"> </span><span class="mi">248</span><span class="p">)</span><span class="si">}</span><span class="s2">,</span>
+<span class="s2">                    stop:0.54 </span><span class="si">{</span><span class="n">rgba</span><span class="p">(</span><span class="n">surface_alt</span><span class="p">,</span><span class="w"> </span><span class="mi">240</span><span class="p">)</span><span class="si">}</span><span class="s2">,</span>
+<span class="s2">                    stop:0.64 </span><span class="si">{</span><span class="n">rgba</span><span class="p">(</span><span class="n">primary</span><span class="p">,</span><span class="w"> </span><span class="mi">170</span><span class="p">)</span><span class="si">}</span><span class="s2">,</span>
+<span class="s2">                    stop:1.00 </span><span class="si">{</span><span class="n">rgba</span><span class="p">(</span><span class="n">primary</span><span class="p">,</span><span class="w"> </span><span class="mi">230</span><span class="p">)</span><span class="si">}</span>
+<span class="s2">                )</span>
+<span class="s2">            &quot;&quot;&quot;</span>
+            <span class="n">footer_border</span> <span class="o">=</span> <span class="n">rgba</span><span class="p">(</span><span class="n">border</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>
+            <span class="n">footer_btn_bg</span> <span class="o">=</span> <span class="s2">&quot;rgba(255, 255, 255, 0.03)&quot;</span>
+            <span class="n">footer_btn_hover</span> <span class="o">=</span> <span class="s2">&quot;rgba(255, 255, 255, 0.06)&quot;</span>
+        
+
         <span class="bp">self</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">            QWidget </span><span class="se">{{</span>
 <span class="s2">                background-color: </span><span class="si">{</span><span class="n">bg</span><span class="si">}</span><span class="s2">;</span>
@@ -651,41 +712,35 @@
 <span class="s2">            QLabel#Status </span><span class="se">{{</span>
 <span class="s2">                color: </span><span class="si">{</span><span class="n">muted</span><span class="si">}</span><span class="s2">;</span>
 <span class="s2">            </span><span class="se">}}</span>
-<span class="s2">           QWidget#PromoFooter </span><span class="se">{{</span>
-<span class="s2">                /* Banner discreto e consistente com o tema */</span>
-<span class="s2">                background-color: </span><span class="si">{</span><span class="n">surface_alt</span><span class="si">}</span><span class="s2">;</span>
-<span class="s2">                border: 1px solid </span><span class="si">{</span><span class="n">border</span><span class="si">}</span><span class="s2">;</span>
-<span class="s2">                border-radius: 12px;</span>
-<span class="s2">            </span><span class="se">}}</span>
 
-<span class="s2">            /* Barra de destaque à esquerda (chama atenção sem gritar) */</span>
 <span class="s2">            QWidget#PromoFooter </span><span class="se">{{</span>
+<span class="s2">                border: 1px solid </span><span class="si">{</span><span class="n">footer_border</span><span class="si">}</span><span class="s2">;</span>
 <span class="s2">                border-left: 6px solid </span><span class="si">{</span><span class="n">primary</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                border-radius: 14px;</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">footer_grad</span><span class="si">}</span><span class="s2">;</span>
 <span class="s2">            </span><span class="se">}}</span>
 
-<span class="s2">            /* IMPORTANTÍSSIMO: evita o “retângulo preto” interno */</span>
 <span class="s2">            QWidget#PromoFooter QLabel,</span>
 <span class="s2">            QWidget#PromoFooter QPushButton </span><span class="se">{{</span>
-<span class="s2">                background-color: transparent;</span>
+<span class="s2">                background: transparent;</span>
 <span class="s2">            </span><span class="se">}}</span>
 
-<span class="s2">            /* Tipografia do texto do rodapé */</span>
 <span class="s2">            QWidget#PromoFooter QLabel </span><span class="se">{{</span>
-<span class="s2">                font-size: 13px;</span>
-<span class="s2">                font-weight: 650;</span>
+<span class="s2">                font-size: 16px;</span>
+<span class="s2">                font-weight: 700;</span>
 <span class="s2">                color: </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">;</span>
 <span class="s2">            </span><span class="se">}}</span>
 
-<span class="s2">            /* Botão Licença mais “neutro” dentro do banner */</span>
 <span class="s2">            QWidget#PromoFooter QPushButton </span><span class="se">{{</span>
-<span class="s2">                background-color: transparent;</span>
-<span class="s2">                border: 1px solid </span><span class="si">{</span><span class="n">border</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">footer_btn_bg</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                border: 1px solid </span><span class="si">{</span><span class="n">footer_border</span><span class="si">}</span><span class="s2">;</span>
 <span class="s2">                padding: 6px 10px;</span>
 <span class="s2">                border-radius: 10px;</span>
 <span class="s2">            </span><span class="se">}}</span>
 
 <span class="s2">            QWidget#PromoFooter QPushButton:hover </span><span class="se">{{</span>
 <span class="s2">                border-color: </span><span class="si">{</span><span class="n">primary</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">footer_btn_hover</span><span class="si">}</span><span class="s2">;</span>
 <span class="s2">            </span><span class="se">}}</span>
 <span class="s2">                           </span>
 
