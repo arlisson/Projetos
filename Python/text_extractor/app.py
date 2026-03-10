@@ -1,5 +1,6 @@
 # app.py (editado: footer via controle_ui.json e engrenagem abre tema + domínios + abas com sync automático)
 from __future__ import annotations
+from datetime import datetime
 
 from license_dialog import LicenseDialog, read_license_text
 from user_login import prompt_email, clear_login
@@ -15,7 +16,7 @@ import os
 from typing import Dict, List, Optional, Any, Tuple
 
 from PySide6.QtCore import QUrl, Qt, QTimer
-from PySide6.QtGui import QDesktopServices, QIcon, QPixmap
+from PySide6.QtGui import QDesktopServices, QIcon, QPixmap, QColor
 from PySide6.QtWidgets import (
     QApplication,
     QFileDialog,
@@ -32,6 +33,7 @@ from PySide6.QtWidgets import (
     QDialog,
     QDialogButtonBox,
     QComboBox,
+    
 )
 
 from colors import (
@@ -315,6 +317,57 @@ class App(QWidget):
         danger = theme["danger"]
         border = theme["border"]
 
+        base_dark = QColor(surface)
+        is_light_theme = base_dark.lightness() > 140
+
+        def rgba(hex_color: str, a: int) -> str:
+            c = QColor(hex_color)
+            return f"rgba({c.red()}, {c.green()}, {c.blue()}, {a})"
+
+        if is_light_theme:
+            mid_1 = rgba(surface, 252)
+            mid_2 = rgba(surface_alt, 248)
+            mid_3 = rgba(border, 120)
+
+            footer_grad = f"""
+                qlineargradient(
+                    x1:0, y1:0, x2:1, y2:0,
+                    stop:0.00 {rgba(surface_alt, 245)},
+                    stop:0.16 {rgba(surface, 248)},
+                    stop:0.32 {mid_2},
+                    stop:0.48 {mid_3},
+                    stop:0.58 {mid_2},
+                    stop:0.72 {rgba(surface, 248)},
+                    stop:0.88 {rgba(primary, 120)},
+                    stop:1.00 {rgba(primary, 170)}
+                )
+            """
+            footer_border = rgba(border, 110)
+            footer_btn_bg = "rgba(0, 0, 0, 0.02)"
+            footer_btn_hover = "rgba(0, 0, 0, 0.05)"
+        else:
+            mid_dark = QColor(surface)
+            mid_dark = mid_dark.darker(180)
+            mid_dark_rgba = f"rgba({mid_dark.red()}, {mid_dark.green()}, {mid_dark.blue()}, 255)"
+
+            footer_grad = f"""
+                qlineargradient(
+                    x1:0, y1:0, x2:1, y2:0,
+                    stop:0.00 {rgba(surface_alt, 235)},
+                    stop:0.16 {rgba(surface, 242)},
+                    stop:0.34 {rgba(surface, 248)},
+                    stop:0.48 {mid_dark_rgba},
+                    stop:0.60 {rgba(surface, 248)},
+                    stop:0.76 {rgba(surface_alt, 240)},
+                    stop:0.90 {rgba(primary, 180)},
+                    stop:1.00 {rgba(primary, 230)}
+                )
+            """
+            footer_border = rgba(border, 150)
+            footer_btn_bg = "rgba(255, 255, 255, 0.03)"
+            footer_btn_hover = "rgba(255, 255, 255, 0.06)"
+        
+
         self.setStyleSheet(f"""
             QWidget {{
                 background-color: {bg};
@@ -393,41 +446,35 @@ class App(QWidget):
             QLabel#Status {{
                 color: {muted};
             }}
-           QWidget#PromoFooter {{
-                /* Banner discreto e consistente com o tema */
-                background-color: {surface_alt};
-                border: 1px solid {border};
-                border-radius: 12px;
-            }}
 
-            /* Barra de destaque à esquerda (chama atenção sem gritar) */
             QWidget#PromoFooter {{
+                border: 1px solid {footer_border};
                 border-left: 6px solid {primary};
+                border-radius: 14px;
+                background-color: {footer_grad};
             }}
 
-            /* IMPORTANTÍSSIMO: evita o “retângulo preto” interno */
             QWidget#PromoFooter QLabel,
             QWidget#PromoFooter QPushButton {{
-                background-color: transparent;
+                background: transparent;
             }}
 
-            /* Tipografia do texto do rodapé */
             QWidget#PromoFooter QLabel {{
                 font-size: 13px;
-                font-weight: 650;
+                font-weight: 700;
                 color: {text};
             }}
 
-            /* Botão Licença mais “neutro” dentro do banner */
             QWidget#PromoFooter QPushButton {{
-                background-color: transparent;
-                border: 1px solid {border};
+                background-color: {footer_btn_bg};
+                border: 1px solid {footer_border};
                 padding: 6px 10px;
                 border-radius: 10px;
             }}
 
             QWidget#PromoFooter QPushButton:hover {{
                 border-color: {primary};
+                background-color: {footer_btn_hover};
             }}
                            
 
@@ -456,7 +503,7 @@ class App(QWidget):
         self.icon_mgr.apply_button_icon(self.btn_help, "help", text)
         self.icon_mgr.apply_button_icon(self.btn_license, "license", text)
         self.icon_mgr.apply_button_icon(self.btn_delete, "delete", white)
-
+        self.icon_mgr.apply_button_icon(self.btn_protocol, "protocol", white)
 
 
         self._last_theme_for_fields = theme
@@ -883,6 +930,8 @@ class App(QWidget):
         self.btn_license.setFixedWidth(44)
         self.btn_license.clicked.connect(self.open_license)
 
+        
+
         file_row.addWidget(self.btn_file)
         file_row.addWidget(self.lbl_file, 1)
         file_row.addWidget(self.btn_settings)
@@ -931,26 +980,39 @@ class App(QWidget):
 
         self.btn_add_field = QPushButton("Adicionar Campo")
         self.btn_add_field.setToolTip("Adicionar novo campo de preenchimento")
+        self.btn_add_field.setCursor(Qt.PointingHandCursor)
+
         self.btn_save = QPushButton("Salvar (nova linha)")
         self.btn_save.setToolTip("Salvar os dados preenchidos como nova linha na planilha")
+        self.btn_save.setCursor(Qt.PointingHandCursor)
+
         self.btn_clear = QPushButton("Limpar")
         self.btn_clear.setToolTip("Limpar os campos para preencher com novos dados")
+        self.btn_clear.setCursor(Qt.PointingHandCursor)
+
         self.btn_delete = QPushButton("Excluir campos")
         self.btn_delete.setToolTip("Excluir todos os campos")
+        self.btn_delete.setCursor(Qt.PointingHandCursor)
 
+        self.btn_protocol = QPushButton("Protocolo")
+        self.btn_protocol.setToolTip("Gerador de protocolo")
+        self.btn_protocol.setCursor(Qt.PointingHandCursor)
 
         self.btn_save.setProperty("variant", "primary")
         self.btn_delete.setProperty("variant", "danger")
+        self.btn_protocol.setProperty("variant", "primary")
 
         actions.addWidget(self.btn_add_field)
         actions.addWidget(self.btn_clear)
-        actions.addWidget(self.btn_delete)        
+        actions.addWidget(self.btn_delete)
         actions.addWidget(self.btn_save)
+        actions.addWidget(self.btn_protocol)
 
         self.btn_add_field.clicked.connect(self.add_field)
         self.btn_save.clicked.connect(self.save_lead)
         self.btn_clear.clicked.connect(self.clear_fields)
         self.btn_delete.clicked.connect(self.delete_all_fields)
+        self.btn_protocol.clicked.connect(self.generate_protocol)
 
 
         root.addLayout(actions)
@@ -971,7 +1033,7 @@ class App(QWidget):
         footer_wrap.setObjectName("PromoFooter")
 
         footer_row = QHBoxLayout(footer_wrap)
-        footer_row.setContentsMargins(12, 10, 12, 10)
+        footer_row.setContentsMargins(18, 16, 18, 16)
         footer_row.setSpacing(10)
 
         default_footer = "<b>Se precisar de telefonia para sua empresa</b> → WhatsApp (22) 98812-4656"
@@ -1668,6 +1730,51 @@ class App(QWidget):
         self.lbl_status.setText("Campo excluído (e coluna removida, quando aplicável).")
 
     # ---------- ações gerais ----------
+    def generate_protocol(self) -> None:
+        """ Função responsável por gerar um protocolo no formato dd/MM/yy/hh/mm/ss\n
+            Exibe uma janela com o protocolo gerado.
+            Returns:
+                None
+        """ 
+        protocolo = datetime.now().strftime("%d%m%y%H%M%S")
+
+        dlg = QDialog(self)
+        dlg.setWindowTitle("Protocolo gerado")
+        dlg.setModal(True)
+        dlg.setMinimumWidth(360)
+
+        layout = QVBoxLayout(dlg)
+
+        lbl = QLabel("Protocolo gerado:")
+        layout.addWidget(lbl)
+
+        inp_protocol = QLineEdit()
+        inp_protocol.setReadOnly(True)
+        inp_protocol.setText(protocolo)
+        inp_protocol.setAlignment(Qt.AlignCenter)
+        inp_protocol.selectAll()
+        layout.addWidget(inp_protocol)
+
+        buttons = QDialogButtonBox()
+        btn_copy = buttons.addButton("Copiar", QDialogButtonBox.ActionRole)
+        btn_close = buttons.addButton("Fechar", QDialogButtonBox.RejectRole)
+
+        def copy_protocol() -> None:
+            """Função responsável por permitir copiar o protocolo gerado, clicando no botão 'copiar'
+            """
+            QApplication.clipboard().setText(protocolo)
+            self.lbl_status.setText(f"Protocolo gerado e copiado: {protocolo}")
+            QMessageBox.information(self, "Copiado", "Protocolo copiado para a área de transferência.")
+
+        btn_copy.clicked.connect(copy_protocol)
+        btn_close.clicked.connect(dlg.reject)
+
+        layout.addWidget(buttons)
+
+        self.lbl_status.setText(f"Protocolo gerado: {protocolo}")
+        dlg.exec()
+    
+    
     def delete_all_fields(self) -> None:
         """
         Exclui todos os campos não protegidos do controle e, quando possível,

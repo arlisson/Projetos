@@ -34,7 +34,12 @@ class ThemeDialog(QDialog):
         super().__init__(parent)
         self.setWindowTitle("Ajustar tema")
         self.setModal(True)
-        self.setMinimumWidth(240)
+        self.setMinimumWidth(280)
+
+        # valores padrão do sistema
+        self.default_h = 210
+        self.default_s = 49
+        self.default_l = 8
 
         self.slider_h = QSlider(Qt.Horizontal)
         self.slider_s = QSlider(Qt.Horizontal)
@@ -57,16 +62,39 @@ class ThemeDialog(QDialog):
         form.addRow("Saturação", self.slider_s)
         form.addRow("Brilho", self.slider_l)
 
+        self.btn_reset = QPushButton("Restaurar padrão")
+
         btns = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+
+        bottom = QHBoxLayout()
+        bottom.addWidget(self.btn_reset)
+        bottom.addStretch(1)
+        bottom.addWidget(btns)
 
         layout = QVBoxLayout()
         layout.addLayout(form)
         layout.addWidget(self.lbl_preview)
-        layout.addWidget(btns)
+        layout.addLayout(bottom)
         self.setLayout(layout)
 
+        self.btn_reset.clicked.connect(self.restore_defaults)
         btns.accepted.connect(self.accept)
         btns.rejected.connect(self.reject)
+
+
+    def restore_defaults(self) -> None:
+        """Restaura os sliders para os valores padrão do tema."""
+        self.slider_h.setValue(self.default_h)
+        self.slider_s.setValue(self.default_s)
+        self.slider_l.setValue(self.default_l)
+
+    def values(self) -> Tuple[int, int, int]:
+        """ Retorna os valores atuais dos sliders de cor.
+
+        Returns:
+            Tuple[int, int, int]: Valores do tom, saturação e brilho.
+        """
+        return self.slider_h.value(), self.slider_s.value(), self.slider_l.value()
 
     def values(self) -> Tuple[int, int, int]:
         """ Retorna os valores atuais dos sliders de cor.

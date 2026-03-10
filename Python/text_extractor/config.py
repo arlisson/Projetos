@@ -249,7 +249,8 @@ def default_ui_config() -> dict:
             "lock_closed": "assets/icons/cadeado.png",
             "help": "assets/icons/ajuda.png",
             "license": "assets/icons/information.png",
-            "delete": "assets/icons/lixeira.png"
+            "delete": "assets/icons/lixeira.png",
+            "protocol":"assets/icons/protocol.png"
         },
         "theme": {
             "background": "#0B1220",
