@@ -19,6 +19,20 @@
           "locked": false
         },
         {
+          "id": "email",
+          "titulo": "Email",
+          "tipo": "email",
+          "fixo": false,
+          "locked": false
+        },
+        {
+          "id": "data_pagamento",
+          "titulo": "Data pagamento",
+          "tipo": "data",
+          "fixo": false,
+          "locked": false
+        },
+        {
           "id": "teste",
           "titulo": "Teste",
           "tipo": "texto",

@@ -1,6 +1,6 @@
 # excel_io.py
 from __future__ import annotations
-
+from datetime import datetime
 import os
 from typing import Dict, List, Tuple
 
@@ -237,37 +237,109 @@ def _next_data_row(ws) -> int:
             continue
         return r
 
-def append_row_typed(path: str, sheet_name: str, campos: List[Campo], row_by_title: Dict[str, str]) -> None:
+def parse_br_date_or_text(value: str):
     """
-    Adiciona uma nova linha de dados ao arquivo Excel na aba especificada, mapeando os valores fornecidos em row_by_title para os campos definidos em campos. O método garante que os valores sejam convertidos para os tipos apropriados com base nas informações dos campos antes de serem inseridos no Excel. Ele também verifica se a aba existe e se os cabeçalhos estão presentes, criando-os se necessário, e insere os dados na próxima linha disponível.
-    Args:
-        path (str): Caminho do arquivo Excel.
-        sheet_name (str):   Nome da aba onde os dados serão escritos.
-        campos (List[Campo]): Lista de campos do app com informações de tipo e título para mapear os dados a serem inseridos.
-        row_by_title (Dict[str, str]):  Dicionário onde a chave é o título do campo (correspondente ao cabeçalho da coluna) e o valor é a string a ser convertida e inserida na célula. O método irá converter cada valor para o tipo apropriado com base nas informações dos campos antes de inserir no Excel.
+    Retorna datetime se a data for válida e suportada pelo Excel.
+    Se for anterior a 1900, retorna o texto original.
+    Se não for uma data válida, retorna o texto original.
     """
-    headers = [c.titulo for c in campos]
-    ensure_workbook(path, sheet_name, headers)
+    value = (value or "").strip()
+    if not value:
+        return ""
 
-    wb = load_workbook(path)
+    try:
+        dt = datetime.strptime(value, "%d/%m/%Y")
+    except ValueError:
+        return value
+
+    if dt.year < 1900:
+        return value
+
+    return dt
+
+def append_row_typed(file_path: str, sheet_name: str, campos: List[Any], row_by_title: Dict[str, str]) -> None:
+    """
+    Adiciona uma nova linha na planilha, respeitando o tipo de cada campo.
+
+    Regras principais:
+    - texto/email/telefone/... -> grava como texto
+    - booleano -> grava como texto
+    - data:
+        * se ano >= 1900, grava como datetime com formato DD/MM/YYYY
+        * se ano < 1900, grava como texto
+    - campos vazios -> célula vazia
+
+    Args:
+        file_path: caminho do arquivo .xlsx
+        sheet_name: nome da aba
+        campos: lista de objetos Campo
+        row_by_title: dict no formato {titulo_do_campo: valor_digitado}
+    """
+    wb = load_workbook(file_path)
+    if sheet_name not in wb.sheetnames:
+        raise ValueError(f"A aba '{sheet_name}' não existe na planilha.")
+
     ws = wb[sheet_name]
 
-    existing = [c.value for c in ws[1]]
-    existing = [v for v in existing if v is not None]
-    col_idx = {h: (existing.index(h) + 1) for h in existing}
+    # Garante que exista ao menos a linha de cabeçalho
+    if ws.max_row < 1:
+        headers = [c.titulo for c in campos]
+        ws.append(headers)
 
-    next_row = _next_data_row(ws)
+    # Lê cabeçalhos atuais da linha 1
+    headers_in_sheet = []
+    for col_idx in range(1, ws.max_column + 1):
+        cell_value = ws.cell(row=1, column=col_idx).value
+        headers_in_sheet.append("" if cell_value is None else str(cell_value).strip())
 
-    for c in campos:
-        h = c.titulo
-        if h not in col_idx:
+    # Mapeia título -> índice da coluna
+    header_to_col = {title: idx + 1 for idx, title in enumerate(headers_in_sheet) if title}
+
+    # Garante que todos os campos existam no cabeçalho
+    for campo in campos:
+        if campo.titulo not in header_to_col:
+            new_col = ws.max_column + 1
+            ws.cell(row=1, column=new_col).value = campo.titulo
+            header_to_col[campo.titulo] = new_col
+
+    next_row = ws.max_row + 1
+
+    for campo in campos:
+        col_idx = header_to_col[campo.titulo]
+        cell = ws.cell(row=next_row, column=col_idx)
+
+        raw_value = row_by_title.get(campo.titulo, "")
+        raw_value = "" if raw_value is None else str(raw_value).strip()
+
+        # vazio
+        if raw_value == "":
+            cell.value = ""
+            cell.number_format = "@"
             continue
 
-        value = cast_value_by_type(c.tipo, row_by_title.get(h, ""))
-        cell = ws.cell(row=next_row, column=col_idx[h], value=value)
-        cell.number_format = EXCEL_NUMBER_FORMAT.get(c.tipo, "@")
+        # tratamento por tipo
+        if campo.tipo == "data":
+            parsed = parse_br_date_or_text(raw_value)
 
-    wb.save(path)
+            if isinstance(parsed, datetime):
+                cell.value = parsed
+                cell.number_format = "DD/MM/YYYY"
+            else:
+                cell.value = parsed
+                cell.number_format = "@"
+
+        elif campo.tipo == "booleano":
+            # mantém como texto, preservando exatamente o valor vindo do widget
+            cell.value = raw_value
+            cell.number_format = "@"
+
+        else:
+            # texto, email, telefone e demais tipos ficam como texto
+            cell.value = raw_value
+            cell.number_format = "@"
+
+    wb.save(file_path)
+    wb.close()
 
 
 def delete_column_by_header(path: str, sheet_name: str, header_name: str) -> None:
