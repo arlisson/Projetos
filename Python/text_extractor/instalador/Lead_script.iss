@@ -34,7 +34,7 @@ DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only).
 ;PrivilegesRequired=lowest
 OutputDir=C:\Projetos\Python\text_extractor\instalador
-OutputBaseFilename=PreencheFacil
+OutputBaseFilename=Instalador-PreencheFacil
 SetupIconFile=C:\Projetos\Python\text_extractor\assets\A.ico
 SolidCompression=yes
 WizardStyle=classic dynamic
