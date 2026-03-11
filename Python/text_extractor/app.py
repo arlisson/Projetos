@@ -33,6 +33,7 @@ from PySide6.QtWidgets import (
     QDialog,
     QDialogButtonBox,
     QComboBox,
+    QListView
     
 )
 
@@ -270,6 +271,16 @@ class App(QWidget):
         if file_exists(icon_path):
             self.setWindowIcon(QIcon(abs_path(icon_path)))
 
+    def _force_combobox_popup_style(self, combo: QComboBox) -> None:
+        """
+        Força o uso de QListView no popup do QComboBox para evitar problemas
+        de renderização/transparência no Windows 11.
+        """
+        try:
+            combo.setView(QListView(combo))
+        except Exception:
+            pass
+
     # ---------- tema ----------
 
     def _apply_theme_from_config(self) -> None:
@@ -302,11 +313,9 @@ class App(QWidget):
     def _apply_theme(self, theme: dict) -> None:
         """
         Aplica o tema visual (cores e estilos) a todos os widgets da interface.
-        
+
         Args:
             theme (dict): Dicionário contendo as cores hexadecimais para cada elemento da UI.
-    
-        
         """
         bg = theme["background"]
         surface = theme["surface"]
@@ -321,7 +330,8 @@ class App(QWidget):
         is_light_theme = base_dark.lightness() > 140
 
         def rgba(hex_color: str, a: int) -> str:
-            """Define o estilo de cores do footer de propaganda
+            """
+            Define o estilo de cores do footer de propaganda.
 
             Args:
                 hex_color (str): Cor em formato hexadecimal, como "#RRGGBB".
@@ -375,7 +385,6 @@ class App(QWidget):
             footer_border = rgba(border, 150)
             footer_btn_bg = "rgba(255, 255, 255, 0.03)"
             footer_btn_hover = "rgba(255, 255, 255, 0.06)"
-        
 
         self.setStyleSheet(f"""
             QWidget {{
@@ -401,16 +410,59 @@ class App(QWidget):
                 color: {text};
                 border: 1px solid {border};
                 border-radius: 8px;
-                padding: 6px;
+                padding: 6px 34px 6px 10px;
                 min-width: 120px;
             }}
 
-            QComboBox QAbstractItemView {{
+            QComboBox:hover {{
+                border-color: {primary};
+            }}
+
+            QComboBox::drop-down {{
+                subcontrol-origin: padding;
+                subcontrol-position: top right;
+                width: 26px;
+                border-left: 1px solid {border};
+                background-color: {surface_alt};
+                border-top-right-radius: 8px;
+                border-bottom-right-radius: 8px;
+            }}
+
+            QComboBox::down-arrow {{
+                image: url("assets/icons/seta-baixo.png");
+                width: 12px;
+                height: 12px;
+            }}
+
+            QComboBox QAbstractItemView,
+            QComboBox QListView {{
                 background-color: {surface_alt};
                 color: {text};
                 border: 1px solid {border};
+                outline: 0;
+                padding: 4px;
                 selection-background-color: {primary};
                 selection-color: #FFFFFF;
+            }}
+
+            QComboBox QAbstractItemView::item,
+            QComboBox QListView::item {{
+                background-color: {surface_alt};
+                color: {text};
+                min-height: 24px;
+                padding: 6px 8px;
+            }}
+
+            QComboBox QAbstractItemView::item:selected,
+            QComboBox QListView::item:selected {{
+                background-color: {primary};
+                color: #FFFFFF;
+            }}
+
+            QComboBox QAbstractScrollArea,
+            QComboBox QAbstractItemView:enabled,
+            QComboBox QListView:enabled {{
+                background-color: {surface_alt};
             }}
 
             QScrollArea {{
@@ -485,8 +537,6 @@ class App(QWidget):
                 border-color: {primary};
                 background-color: {footer_btn_hover};
             }}
-                           
-
         """)
 
         self._retint_all_icons(theme)
@@ -901,17 +951,16 @@ class App(QWidget):
 
     def _build_ui(self) -> None:
         """
-            Monta a interface principal da janela.
+        Monta a interface principal da janela.
 
-            Cria os layouts e widgets (seleção de planilha, escolha de aba, área rolável
-            de campos, botões de ação, status e rodapé/banner), conecta os sinais aos
-            handlers e aplica o layout final. Ao final, renderiza os campos e, se já
-            houver um arquivo selecionado, atualiza o label e recarrega as abas.
+        Cria os layouts e widgets (seleção de planilha, escolha de aba, área rolável
+        de campos, botões de ação, status e rodapé/banner), conecta os sinais aos
+        handlers e aplica o layout final. Ao final, renderiza os campos e, se já
+        houver um arquivo selecionado, atualiza o label e recarrega as abas.
 
-            Returns: 
-                None
+        Returns:
+            None
         """
-
         self.setWindowTitle("Preenche Fácil - Avance")
         self.setMinimumWidth(490)
 
@@ -933,13 +982,11 @@ class App(QWidget):
         self.btn_help.setToolTip("Ajuda")
         self.btn_help.setFixedWidth(44)
         self.btn_help.clicked.connect(self.open_help)
-        
+
         self.btn_license = QPushButton("")
         self.btn_license.setToolTip("Licença de uso do software")
         self.btn_license.setFixedWidth(44)
         self.btn_license.clicked.connect(self.open_license)
-
-        
 
         file_row.addWidget(self.btn_file)
         file_row.addWidget(self.lbl_file, 1)
@@ -953,6 +1000,7 @@ class App(QWidget):
 
         self.cmb_sheet = QComboBox()
         self.cmb_sheet.setMinimumWidth(180)
+        self._force_combobox_popup_style(self.cmb_sheet)
         self.cmb_sheet.currentTextChanged.connect(self.on_sheet_changed)
 
         self.btn_new_sheet = QPushButton("Nova aba")
@@ -961,7 +1009,7 @@ class App(QWidget):
 
         sheet_row.addWidget(QLabel("Aba:"))
 
-        self.btn_refresh_sheets = QPushButton("↻ Atualizar")       
+        self.btn_refresh_sheets = QPushButton("↻ Atualizar")
         self.btn_refresh_sheets.setToolTip("Atualizar abas da planilha")
         self.btn_refresh_sheets.setFixedWidth(100)
         self.btn_refresh_sheets.clicked.connect(self.refresh_sheets)
@@ -969,10 +1017,6 @@ class App(QWidget):
         sheet_row.addWidget(self.cmb_sheet, 1)
         sheet_row.addWidget(self.btn_new_sheet)
         sheet_row.addWidget(self.btn_refresh_sheets)
-        
-        self.cmb_sheet.setMinimumWidth(180)
-        self.cmb_sheet.currentTextChanged.connect(self.on_sheet_changed)      
-        
 
         root.addLayout(sheet_row)
 
@@ -1023,7 +1067,6 @@ class App(QWidget):
         self.btn_delete.clicked.connect(self.delete_all_fields)
         self.btn_protocol.clicked.connect(self.generate_protocol)
 
-
         root.addLayout(actions)
 
         self.lbl_status = QLabel("Preencha os campos (copie/cole) e clique em Salvar.")
@@ -1037,7 +1080,6 @@ class App(QWidget):
         sep.setFixedHeight(1)
         root.addWidget(sep)
 
-        # --- Rodapé (banner) com logo + CTA clicável ---
         footer_wrap = QWidget()
         footer_wrap.setObjectName("PromoFooter")
 
@@ -1048,10 +1090,8 @@ class App(QWidget):
         default_footer = "<b>Se precisar de telefonia para sua empresa</b> → WhatsApp (22) 98812-4656"
         footer_html = (self.cfg_ui.get("footer_left_html") or default_footer)
 
-        # Link do banner (WhatsApp/site)
         footer_link = (self.cfg_ui.get("footer_link") or "").strip()
 
-        # Logo (opcional)
         logo_path = (self.cfg_ui.get("footer_logo_path") or "").strip()
         logo_h = int(self.cfg_ui.get("footer_logo_height") or 28)
 
@@ -1072,14 +1112,11 @@ class App(QWidget):
         footer_row.addWidget(self.lbl_footer_logo, 0)
         footer_row.addWidget(self.lbl_footer_left, 1)
 
-        
-        # Banner inteiro clicável
         if footer_link:
             footer_wrap.setCursor(Qt.PointingHandCursor)
             footer_wrap.mousePressEvent = lambda ev: QDesktopServices.openUrl(QUrl(footer_link))
 
         root.addWidget(footer_wrap)
-        # --- fim rodapé ---
 
         self.setLayout(root)
 
@@ -1214,7 +1251,7 @@ class App(QWidget):
 
         for campo in self.campos:
             label_text = f"{campo.titulo}  [{campo.tipo}]"
-           
+
             if campo.tipo == "email":
                 emailw = EmailInputWidget(domains=self.email_domains)
 
@@ -1224,12 +1261,21 @@ class App(QWidget):
                 else:
                     emailw.set_email(prev_value.get(campo.id, ""))
 
+                # força QListView em combos internos do widget
+                for combo in emailw.findChildren(QComboBox):
+                    self._force_combobox_popup_style(combo)
+
                 self.inputs[campo.id] = emailw
                 input_widget = emailw
 
             elif campo.tipo == "booleano":
                 bw = BoolInputWidget()
                 bw.set_value(prev_value.get(campo.id, ""))
+
+                # força QListView em combos internos do widget
+                for combo in bw.findChildren(QComboBox):
+                    self._force_combobox_popup_style(combo)
+
                 self.inputs[campo.id] = bw
                 input_widget = bw
 
@@ -1248,16 +1294,13 @@ class App(QWidget):
             self.icon_mgr.apply_button_icon(roww.btn_edit, "edit_title", text)
             self.icon_mgr.apply_button_icon(roww.btn_del, "delete_field", white)
 
-            # estado do toggle
             locked = bool(getattr(campo, "locked", False))
             roww.set_locked(locked)
             roww.lockToggled.connect(self.on_field_lock_toggled)
 
-            # NOVO: ícone aberto/fechado no botão de cadeado
             lock_icon_key = "lock_closed" if locked else "lock_open"
             self.icon_mgr.apply_button_icon(roww.btn_lock, lock_icon_key, text)
 
-            # se estiver bloqueado, desabilita ações
             if getattr(campo, "locked", False):
                 roww.btn_edit.setEnabled(False)
                 roww.btn_del.setEnabled(False)
@@ -2081,6 +2124,7 @@ def main() -> None:
         None
     """
     app = QApplication([])
+    app.setStyle("Fusion")
 
     loader = LoadingScreen(app, title="Validando acesso")
     loader.show("Preparando validação...")

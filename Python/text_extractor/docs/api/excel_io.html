@@ -348,13 +348,7 @@ Se a aba não existir, cria.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="excel_io.apply_column_type_rules">
 <span class="sig-prename descclassname"><span class="pre">excel_io.</span></span><span class="sig-name descname"><span class="pre">apply_column_type_rules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">campos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/excel_io.html#apply_column_type_rules"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel_io.apply_column_type_rules" title="Link to this definition">¶</a></dt>
-<dd><p>Aplica regras de formatação e validação de dados nas colunas do Excel com base nos tipos definidos nos campos do app. Para cada campo, o método verifica se a coluna correspondente existe na aba especificada e, se existir, aplica a formatação numérica adequada e as regras de validação de dados (como restrições de valor para números, datas ou listas) para garantir que os dados inseridos estejam em conformidade com os tipos esperados.
-:param path: Caminho do arquivo Excel.
-:type path: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>
-:param sheet_name: Nome da aba onde os dados serão validados.
-:type sheet_name: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>
-:param campos: Lista de campos do app com informações de tipo e título para aplicar as regras de validação.
-:type campos: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="models.html#models.Campo" title="models.Campo"><code class="xref py py-class docutils literal notranslate"><span class="pre">Campo</span></code></a>]</span></p>
+<dd><p>Aplica regras de formatação e validação de dados nas colunas do Excel com base nos tipos definidos nos campos do app.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
@@ -363,17 +357,52 @@ Se a aba não existir, cria.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="excel_io.parse_br_number">
+<span class="sig-prename descclassname"><span class="pre">excel_io.</span></span><span class="sig-name descname"><span class="pre">parse_br_number</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/excel_io.html#parse_br_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel_io.parse_br_number" title="Link to this definition">¶</a></dt>
+<dd><p>Converte texto numérico para int ou float, aceitando padrão brasileiro.</p>
+<p>Exemplos aceitos:
+- 10
+- 10,5
+- 1.234,56</p>
+<p>Retorna:
+- int, se for inteiro
+- float, se tiver parte decimal
+- None, se não for número válido</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="excel_io.parse_br_date_or_text">
+<span class="sig-prename descclassname"><span class="pre">excel_io.</span></span><span class="sig-name descname"><span class="pre">parse_br_date_or_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/excel_io.html#parse_br_date_or_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel_io.parse_br_date_or_text" title="Link to this definition">¶</a></dt>
+<dd><p>Retorna datetime se a data for válida e suportada pelo Excel.
+Se for anterior a 1900, retorna o texto original.
+Se não for uma data válida, retorna o texto original.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="excel_io.append_row_typed">
-<span class="sig-prename descclassname"><span class="pre">excel_io.</span></span><span class="sig-name descname"><span class="pre">append_row_typed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">campos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_by_title</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/excel_io.html#append_row_typed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel_io.append_row_typed" title="Link to this definition">¶</a></dt>
-<dd><p>Adiciona uma nova linha de dados ao arquivo Excel na aba especificada, mapeando os valores fornecidos em row_by_title para os campos definidos em campos. O método garante que os valores sejam convertidos para os tipos apropriados com base nas informações dos campos antes de serem inseridos no Excel. Ele também verifica se a aba existe e se os cabeçalhos estão presentes, criando-os se necessário, e insere os dados na próxima linha disponível.
-:param path: Caminho do arquivo Excel.
-:type path: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>
-:param sheet_name: Nome da aba onde os dados serão escritos.
-:type sheet_name: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>
-:param campos: Lista de campos do app com informações de tipo e título para mapear os dados a serem inseridos.
-:type campos: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="models.html#models.Campo" title="models.Campo"><code class="xref py py-class docutils literal notranslate"><span class="pre">Campo</span></code></a>]</span>
-:param row_by_title: Dicionário onde a chave é o título do campo (correspondente ao cabeçalho da coluna) e o valor é a string a ser convertida e inserida na célula. O método irá converter cada valor para o tipo apropriado com base nas informações dos campos antes de inserir no Excel.
-:type row_by_title: <span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
+<span class="sig-prename descclassname"><span class="pre">excel_io.</span></span><span class="sig-name descname"><span class="pre">append_row_typed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sheet_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">campos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">row_by_title</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/excel_io.html#append_row_typed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#excel_io.append_row_typed" title="Link to this definition">¶</a></dt>
+<dd><p>Adiciona uma nova linha na planilha, respeitando o tipo de cada campo.</p>
+<p>Regras principais:
+- texto/email/telefone/… -&gt; grava como texto
+- booleano -&gt; grava como texto
+- numero:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>grava como int/float</p></li>
+<li><p>sem forçar casas decimais</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><dl class="simple">
+<dt>data:</dt><dd><ul>
+<li><p>se ano &gt;= 1900, grava como datetime com formato DD/MM/YYYY</p></li>
+<li><p>se ano &lt; 1900, grava como texto</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>campos vazios -&gt; célula vazia</p></li>
+</ul>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
@@ -484,6 +513,8 @@ Se a aba não existir, cria.</p>
 <li><a class="reference internal" href="#excel_io.write_headers_from_campos"><code class="docutils literal notranslate"><span class="pre">write_headers_from_campos()</span></code></a></li>
 <li><a class="reference internal" href="#excel_io.ensure_workbook"><code class="docutils literal notranslate"><span class="pre">ensure_workbook()</span></code></a></li>
 <li><a class="reference internal" href="#excel_io.apply_column_type_rules"><code class="docutils literal notranslate"><span class="pre">apply_column_type_rules()</span></code></a></li>
+<li><a class="reference internal" href="#excel_io.parse_br_number"><code class="docutils literal notranslate"><span class="pre">parse_br_number()</span></code></a></li>
+<li><a class="reference internal" href="#excel_io.parse_br_date_or_text"><code class="docutils literal notranslate"><span class="pre">parse_br_date_or_text()</span></code></a></li>
 <li><a class="reference internal" href="#excel_io.append_row_typed"><code class="docutils literal notranslate"><span class="pre">append_row_typed()</span></code></a></li>
 <li><a class="reference internal" href="#excel_io.delete_column_by_header"><code class="docutils literal notranslate"><span class="pre">delete_column_by_header()</span></code></a></li>
 <li><a class="reference internal" href="#excel_io.rename_column_header"><code class="docutils literal notranslate"><span class="pre">rename_column_header()</span></code></a></li>

@@ -2,7 +2,7 @@
 from __future__ import annotations
 from datetime import datetime
 import os
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Tuple
 
 from openpyxl import Workbook, load_workbook
 from openpyxl.worksheet.datavalidation import DataValidation
@@ -143,11 +143,7 @@ def ensure_workbook(path: str, sheet_name: str, headers: List[str]) -> None:
 
 def apply_column_type_rules(path: str, sheet_name: str, campos: List[Campo]) -> None:
     """
-    Aplica regras de formatação e validação de dados nas colunas do Excel com base nos tipos definidos nos campos do app. Para cada campo, o método verifica se a coluna correspondente existe na aba especificada e, se existir, aplica a formatação numérica adequada e as regras de validação de dados (como restrições de valor para números, datas ou listas) para garantir que os dados inseridos estejam em conformidade com os tipos esperados.
-    Args:
-        path (str): Caminho do arquivo Excel.
-        sheet_name (str): Nome da aba onde os dados serão validados.
-        campos (List[Campo]): Lista de campos do app com informações de tipo e título para aplicar as regras de validação.
+    Aplica regras de formatação e validação de dados nas colunas do Excel com base nos tipos definidos nos campos do app.
     """
     if not path or not os.path.exists(path):
         return
@@ -176,7 +172,15 @@ def apply_column_type_rules(path: str, sheet_name: str, campos: List[Campo]) -> 
 
         col_idx = header_to_col[c.titulo]
         col_letter = get_column_letter(col_idx)
-        fmt = EXCEL_NUMBER_FORMAT.get(c.tipo, "@")
+
+        if c.tipo == "numero":
+            fmt = "General"
+        elif c.tipo == "moeda":
+            fmt = EXCEL_NUMBER_FORMAT.get("moeda", '"R$" #,##0.00')
+        elif c.tipo == "data":
+            fmt = EXCEL_NUMBER_FORMAT.get("data", "DD/MM/YYYY")
+        else:
+            fmt = EXCEL_NUMBER_FORMAT.get(c.tipo, "@")
 
         for r in range(2, max_row + 1):
             ws.cell(row=r, column=col_idx).number_format = fmt
@@ -218,6 +222,7 @@ def apply_column_type_rules(path: str, sheet_name: str, campos: List[Campo]) -> 
             dv.add(rng)
 
     wb.save(path)
+    wb.close()
 
 def _next_data_row(ws) -> int:
     """
@@ -236,6 +241,37 @@ def _next_data_row(ws) -> int:
             r += 1
             continue
         return r
+    
+def parse_br_number(value: str):
+    """
+    Converte texto numérico para int ou float, aceitando padrão brasileiro.
+
+    Exemplos aceitos:
+    - 10
+    - 10,5
+    - 1.234,56
+
+    Retorna:
+    - int, se for inteiro
+    - float, se tiver parte decimal
+    - None, se não for número válido
+    """
+    value = (value or "").strip()
+    if not value:
+        return None
+
+    # remove separador de milhar e converte vírgula decimal para ponto
+    normalized = value.replace(".", "").replace(",", ".")
+
+    try:
+        num = float(normalized)
+    except ValueError:
+        return None
+
+    if num.is_integer():
+        return int(num)
+
+    return num
 
 def parse_br_date_or_text(value: str):
     """
@@ -264,16 +300,13 @@ def append_row_typed(file_path: str, sheet_name: str, campos: List[Any], row_by_
     Regras principais:
     - texto/email/telefone/... -> grava como texto
     - booleano -> grava como texto
+    - numero:
+        * grava como int/float
+        * sem forçar casas decimais
     - data:
         * se ano >= 1900, grava como datetime com formato DD/MM/YYYY
         * se ano < 1900, grava como texto
     - campos vazios -> célula vazia
-
-    Args:
-        file_path: caminho do arquivo .xlsx
-        sheet_name: nome da aba
-        campos: lista de objetos Campo
-        row_by_title: dict no formato {titulo_do_campo: valor_digitado}
     """
     wb = load_workbook(file_path)
     if sheet_name not in wb.sheetnames:
@@ -281,21 +314,17 @@ def append_row_typed(file_path: str, sheet_name: str, campos: List[Any], row_by_
 
     ws = wb[sheet_name]
 
-    # Garante que exista ao menos a linha de cabeçalho
     if ws.max_row < 1:
         headers = [c.titulo for c in campos]
         ws.append(headers)
 
-    # Lê cabeçalhos atuais da linha 1
     headers_in_sheet = []
     for col_idx in range(1, ws.max_column + 1):
         cell_value = ws.cell(row=1, column=col_idx).value
         headers_in_sheet.append("" if cell_value is None else str(cell_value).strip())
 
-    # Mapeia título -> índice da coluna
     header_to_col = {title: idx + 1 for idx, title in enumerate(headers_in_sheet) if title}
 
-    # Garante que todos os campos existam no cabeçalho
     for campo in campos:
         if campo.titulo not in header_to_col:
             new_col = ws.max_column + 1
@@ -311,13 +340,11 @@ def append_row_typed(file_path: str, sheet_name: str, campos: List[Any], row_by_
         raw_value = row_by_title.get(campo.titulo, "")
         raw_value = "" if raw_value is None else str(raw_value).strip()
 
-        # vazio
         if raw_value == "":
             cell.value = ""
-            cell.number_format = "@"
+            cell.number_format = "General"
             continue
 
-        # tratamento por tipo
         if campo.tipo == "data":
             parsed = parse_br_date_or_text(raw_value)
 
@@ -328,19 +355,37 @@ def append_row_typed(file_path: str, sheet_name: str, campos: List[Any], row_by_
                 cell.value = parsed
                 cell.number_format = "@"
 
+        elif campo.tipo == "numero":
+            parsed_num = parse_br_number(raw_value)
+
+            if parsed_num is None:
+                # fallback defensivo: grava como texto se vier algo inválido
+                cell.value = raw_value
+                cell.number_format = "@"
+            else:
+                cell.value = parsed_num
+                cell.number_format = "General"
+
+        elif campo.tipo == "moeda":
+            parsed_num = parse_br_number(raw_value)
+
+            if parsed_num is None:
+                cell.value = raw_value
+                cell.number_format = "@"
+            else:
+                cell.value = float(parsed_num)
+                cell.number_format = EXCEL_NUMBER_FORMAT.get("moeda", '"R$" #,##0.00')
+
         elif campo.tipo == "booleano":
-            # mantém como texto, preservando exatamente o valor vindo do widget
             cell.value = raw_value
             cell.number_format = "@"
 
         else:
-            # texto, email, telefone e demais tipos ficam como texto
             cell.value = raw_value
             cell.number_format = "@"
 
     wb.save(file_path)
     wb.close()
-
 
 def delete_column_by_header(path: str, sheet_name: str, header_name: str) -> None:
     """

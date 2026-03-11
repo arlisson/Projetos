@@ -243,9 +243,9 @@
           <h1>Source code for excel_io</h1><div class="highlight"><pre>
 <span></span><span class="c1"># excel_io.py</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
-
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">openpyxl</span><span class="w"> </span><span class="kn">import</span> <span class="n">Workbook</span><span class="p">,</span> <span class="n">load_workbook</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">openpyxl.worksheet.datavalidation</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataValidation</span>
@@ -412,11 +412,7 @@
 <a class="viewcode-back" href="../api/excel_io.html#excel_io.apply_column_type_rules">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">apply_column_type_rules</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sheet_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">campos</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Campo</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Aplica regras de formatação e validação de dados nas colunas do Excel com base nos tipos definidos nos campos do app. Para cada campo, o método verifica se a coluna correspondente existe na aba especificada e, se existir, aplica a formatação numérica adequada e as regras de validação de dados (como restrições de valor para números, datas ou listas) para garantir que os dados inseridos estejam em conformidade com os tipos esperados.</span>
-<span class="sd">    Args:</span>
-<span class="sd">        path (str): Caminho do arquivo Excel.</span>
-<span class="sd">        sheet_name (str): Nome da aba onde os dados serão validados.</span>
-<span class="sd">        campos (List[Campo]): Lista de campos do app com informações de tipo e título para aplicar as regras de validação.</span>
+<span class="sd">    Aplica regras de formatação e validação de dados nas colunas do Excel com base nos tipos definidos nos campos do app.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
         <span class="k">return</span>
@@ -445,7 +441,15 @@
 
         <span class="n">col_idx</span> <span class="o">=</span> <span class="n">header_to_col</span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">titulo</span><span class="p">]</span>
         <span class="n">col_letter</span> <span class="o">=</span> <span class="n">get_column_letter</span><span class="p">(</span><span class="n">col_idx</span><span class="p">)</span>
-        <span class="n">fmt</span> <span class="o">=</span> <span class="n">EXCEL_NUMBER_FORMAT</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">tipo</span><span class="p">,</span> <span class="s2">&quot;@&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">tipo</span> <span class="o">==</span> <span class="s2">&quot;numero&quot;</span><span class="p">:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;General&quot;</span>
+        <span class="k">elif</span> <span class="n">c</span><span class="o">.</span><span class="n">tipo</span> <span class="o">==</span> <span class="s2">&quot;moeda&quot;</span><span class="p">:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="n">EXCEL_NUMBER_FORMAT</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;moeda&quot;</span><span class="p">,</span> <span class="s1">&#39;&quot;R$&quot; #,##0.00&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">c</span><span class="o">.</span><span class="n">tipo</span> <span class="o">==</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="n">EXCEL_NUMBER_FORMAT</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;DD/MM/YYYY&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="n">EXCEL_NUMBER_FORMAT</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">tipo</span><span class="p">,</span> <span class="s2">&quot;@&quot;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">max_row</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
             <span class="n">ws</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">col_idx</span><span class="p">)</span><span class="o">.</span><span class="n">number_format</span> <span class="o">=</span> <span class="n">fmt</span>
@@ -486,7 +490,8 @@
             <span class="n">ws</span><span class="o">.</span><span class="n">add_data_validation</span><span class="p">(</span><span class="n">dv</span><span class="p">)</span>
             <span class="n">dv</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span>
 
-    <span class="n">wb</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
+    <span class="n">wb</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">wb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_next_data_row</span><span class="p">(</span><span class="n">ws</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
@@ -506,41 +511,159 @@
             <span class="n">r</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="k">continue</span>
         <span class="k">return</span> <span class="n">r</span>
+    
+<div class="viewcode-block" id="parse_br_number">
+<a class="viewcode-back" href="../api/excel_io.html#excel_io.parse_br_number">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_br_number</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converte texto numérico para int ou float, aceitando padrão brasileiro.</span>
+
+<span class="sd">    Exemplos aceitos:</span>
+<span class="sd">    - 10</span>
+<span class="sd">    - 10,5</span>
+<span class="sd">    - 1.234,56</span>
+
+<span class="sd">    Retorna:</span>
+<span class="sd">    - int, se for inteiro</span>
+<span class="sd">    - float, se tiver parte decimal</span>
+<span class="sd">    - None, se não for número válido</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># remove separador de milhar e converte vírgula decimal para ponto</span>
+    <span class="n">normalized</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">normalized</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">num</span><span class="o">.</span><span class="n">is_integer</span><span class="p">():</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">num</span></div>
+
+
+<div class="viewcode-block" id="parse_br_date_or_text">
+<a class="viewcode-back" href="../api/excel_io.html#excel_io.parse_br_date_or_text">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_br_date_or_text</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retorna datetime se a data for válida e suportada pelo Excel.</span>
+<span class="sd">    Se for anterior a 1900, retorna o texto original.</span>
+<span class="sd">    Se não for uma data válida, retorna o texto original.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">if</span> <span class="n">dt</span><span class="o">.</span><span class="n">year</span> <span class="o">&lt;</span> <span class="mi">1900</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">return</span> <span class="n">dt</span></div>
+
 
 <div class="viewcode-block" id="append_row_typed">
 <a class="viewcode-back" href="../api/excel_io.html#excel_io.append_row_typed">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">append_row_typed</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sheet_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">campos</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Campo</span><span class="p">],</span> <span class="n">row_by_title</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">append_row_typed</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sheet_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">campos</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">row_by_title</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Adiciona uma nova linha de dados ao arquivo Excel na aba especificada, mapeando os valores fornecidos em row_by_title para os campos definidos em campos. O método garante que os valores sejam convertidos para os tipos apropriados com base nas informações dos campos antes de serem inseridos no Excel. Ele também verifica se a aba existe e se os cabeçalhos estão presentes, criando-os se necessário, e insere os dados na próxima linha disponível.</span>
-<span class="sd">    Args:</span>
-<span class="sd">        path (str): Caminho do arquivo Excel.</span>
-<span class="sd">        sheet_name (str):   Nome da aba onde os dados serão escritos.</span>
-<span class="sd">        campos (List[Campo]): Lista de campos do app com informações de tipo e título para mapear os dados a serem inseridos.</span>
-<span class="sd">        row_by_title (Dict[str, str]):  Dicionário onde a chave é o título do campo (correspondente ao cabeçalho da coluna) e o valor é a string a ser convertida e inserida na célula. O método irá converter cada valor para o tipo apropriado com base nas informações dos campos antes de inserir no Excel.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">headers</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">titulo</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">campos</span><span class="p">]</span>
-    <span class="n">ensure_workbook</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">sheet_name</span><span class="p">,</span> <span class="n">headers</span><span class="p">)</span>
+<span class="sd">    Adiciona uma nova linha na planilha, respeitando o tipo de cada campo.</span>
 
-    <span class="n">wb</span> <span class="o">=</span> <span class="n">load_workbook</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="sd">    Regras principais:</span>
+<span class="sd">    - texto/email/telefone/... -&gt; grava como texto</span>
+<span class="sd">    - booleano -&gt; grava como texto</span>
+<span class="sd">    - numero:</span>
+<span class="sd">        * grava como int/float</span>
+<span class="sd">        * sem forçar casas decimais</span>
+<span class="sd">    - data:</span>
+<span class="sd">        * se ano &gt;= 1900, grava como datetime com formato DD/MM/YYYY</span>
+<span class="sd">        * se ano &lt; 1900, grava como texto</span>
+<span class="sd">    - campos vazios -&gt; célula vazia</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">wb</span> <span class="o">=</span> <span class="n">load_workbook</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sheet_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">wb</span><span class="o">.</span><span class="n">sheetnames</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;A aba &#39;</span><span class="si">{</span><span class="n">sheet_name</span><span class="si">}</span><span class="s2">&#39; não existe na planilha.&quot;</span><span class="p">)</span>
+
     <span class="n">ws</span> <span class="o">=</span> <span class="n">wb</span><span class="p">[</span><span class="n">sheet_name</span><span class="p">]</span>
 
-    <span class="n">existing</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">ws</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
-    <span class="n">existing</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">existing</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]</span>
-    <span class="n">col_idx</span> <span class="o">=</span> <span class="p">{</span><span class="n">h</span><span class="p">:</span> <span class="p">(</span><span class="n">existing</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">existing</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">ws</span><span class="o">.</span><span class="n">max_row</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">titulo</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">campos</span><span class="p">]</span>
+        <span class="n">ws</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">headers</span><span class="p">)</span>
 
-    <span class="n">next_row</span> <span class="o">=</span> <span class="n">_next_data_row</span><span class="p">(</span><span class="n">ws</span><span class="p">)</span>
+    <span class="n">headers_in_sheet</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">col_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">ws</span><span class="o">.</span><span class="n">max_column</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">cell_value</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">col_idx</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">headers_in_sheet</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span> <span class="k">if</span> <span class="n">cell_value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">cell_value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
 
-    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">campos</span><span class="p">:</span>
-        <span class="n">h</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">titulo</span>
-        <span class="k">if</span> <span class="n">h</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">col_idx</span><span class="p">:</span>
+    <span class="n">header_to_col</span> <span class="o">=</span> <span class="p">{</span><span class="n">title</span><span class="p">:</span> <span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">title</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">headers_in_sheet</span><span class="p">)</span> <span class="k">if</span> <span class="n">title</span><span class="p">}</span>
+
+    <span class="k">for</span> <span class="n">campo</span> <span class="ow">in</span> <span class="n">campos</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">campo</span><span class="o">.</span><span class="n">titulo</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">header_to_col</span><span class="p">:</span>
+            <span class="n">new_col</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">max_column</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">ws</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">new_col</span><span class="p">)</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">campo</span><span class="o">.</span><span class="n">titulo</span>
+            <span class="n">header_to_col</span><span class="p">[</span><span class="n">campo</span><span class="o">.</span><span class="n">titulo</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_col</span>
+
+    <span class="n">next_row</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">max_row</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="k">for</span> <span class="n">campo</span> <span class="ow">in</span> <span class="n">campos</span><span class="p">:</span>
+        <span class="n">col_idx</span> <span class="o">=</span> <span class="n">header_to_col</span><span class="p">[</span><span class="n">campo</span><span class="o">.</span><span class="n">titulo</span><span class="p">]</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">next_row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">col_idx</span><span class="p">)</span>
+
+        <span class="n">raw_value</span> <span class="o">=</span> <span class="n">row_by_title</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">campo</span><span class="o">.</span><span class="n">titulo</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">raw_value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="k">if</span> <span class="n">raw_value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">raw_value</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">raw_value</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">number_format</span> <span class="o">=</span> <span class="s2">&quot;General&quot;</span>
             <span class="k">continue</span>
 
-        <span class="n">value</span> <span class="o">=</span> <span class="n">cast_value_by_type</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">tipo</span><span class="p">,</span> <span class="n">row_by_title</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
-        <span class="n">cell</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">next_row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">col_idx</span><span class="p">[</span><span class="n">h</span><span class="p">],</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
-        <span class="n">cell</span><span class="o">.</span><span class="n">number_format</span> <span class="o">=</span> <span class="n">EXCEL_NUMBER_FORMAT</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">tipo</span><span class="p">,</span> <span class="s2">&quot;@&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">campo</span><span class="o">.</span><span class="n">tipo</span> <span class="o">==</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span>
+            <span class="n">parsed</span> <span class="o">=</span> <span class="n">parse_br_date_or_text</span><span class="p">(</span><span class="n">raw_value</span><span class="p">)</span>
 
-    <span class="n">wb</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parsed</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">parsed</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">number_format</span> <span class="o">=</span> <span class="s2">&quot;DD/MM/YYYY&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">parsed</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">number_format</span> <span class="o">=</span> <span class="s2">&quot;@&quot;</span>
 
+        <span class="k">elif</span> <span class="n">campo</span><span class="o">.</span><span class="n">tipo</span> <span class="o">==</span> <span class="s2">&quot;numero&quot;</span><span class="p">:</span>
+            <span class="n">parsed_num</span> <span class="o">=</span> <span class="n">parse_br_number</span><span class="p">(</span><span class="n">raw_value</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">parsed_num</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># fallback defensivo: grava como texto se vier algo inválido</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">raw_value</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">number_format</span> <span class="o">=</span> <span class="s2">&quot;@&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">parsed_num</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">number_format</span> <span class="o">=</span> <span class="s2">&quot;General&quot;</span>
+
+        <span class="k">elif</span> <span class="n">campo</span><span class="o">.</span><span class="n">tipo</span> <span class="o">==</span> <span class="s2">&quot;moeda&quot;</span><span class="p">:</span>
+            <span class="n">parsed_num</span> <span class="o">=</span> <span class="n">parse_br_number</span><span class="p">(</span><span class="n">raw_value</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">parsed_num</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">raw_value</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">number_format</span> <span class="o">=</span> <span class="s2">&quot;@&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">parsed_num</span><span class="p">)</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">number_format</span> <span class="o">=</span> <span class="n">EXCEL_NUMBER_FORMAT</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;moeda&quot;</span><span class="p">,</span> <span class="s1">&#39;&quot;R$&quot; #,##0.00&#39;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">campo</span><span class="o">.</span><span class="n">tipo</span> <span class="o">==</span> <span class="s2">&quot;booleano&quot;</span><span class="p">:</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">raw_value</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">number_format</span> <span class="o">=</span> <span class="s2">&quot;@&quot;</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">raw_value</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">number_format</span> <span class="o">=</span> <span class="s2">&quot;@&quot;</span>
+
+    <span class="n">wb</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="n">wb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="delete_column_by_header">

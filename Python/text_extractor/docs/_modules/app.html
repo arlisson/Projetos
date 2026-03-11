@@ -276,6 +276,7 @@
     <span class="n">QDialog</span><span class="p">,</span>
     <span class="n">QDialogButtonBox</span><span class="p">,</span>
     <span class="n">QComboBox</span><span class="p">,</span>
+    <span class="n">QListView</span>
     
 <span class="p">)</span>
 
@@ -527,6 +528,16 @@
         <span class="k">if</span> <span class="n">file_exists</span><span class="p">(</span><span class="n">icon_path</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">setWindowIcon</span><span class="p">(</span><span class="n">QIcon</span><span class="p">(</span><span class="n">abs_path</span><span class="p">(</span><span class="n">icon_path</span><span class="p">)))</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_force_combobox_popup_style</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">combo</span><span class="p">:</span> <span class="n">QComboBox</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Força o uso de QListView no popup do QComboBox para evitar problemas</span>
+<span class="sd">        de renderização/transparência no Windows 11.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">combo</span><span class="o">.</span><span class="n">setView</span><span class="p">(</span><span class="n">QListView</span><span class="p">(</span><span class="n">combo</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
     <span class="c1"># ---------- tema ----------</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_apply_theme_from_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -559,11 +570,9 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_apply_theme</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theme</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Aplica o tema visual (cores e estilos) a todos os widgets da interface.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Args:</span>
 <span class="sd">            theme (dict): Dicionário contendo as cores hexadecimais para cada elemento da UI.</span>
-<span class="sd">    </span>
-<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">bg</span> <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s2">&quot;background&quot;</span><span class="p">]</span>
         <span class="n">surface</span> <span class="o">=</span> <span class="n">theme</span><span class="p">[</span><span class="s2">&quot;surface&quot;</span><span class="p">]</span>
@@ -578,7 +587,8 @@
         <span class="n">is_light_theme</span> <span class="o">=</span> <span class="n">base_dark</span><span class="o">.</span><span class="n">lightness</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">140</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">rgba</span><span class="p">(</span><span class="n">hex_color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Define o estilo de cores do footer de propaganda</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Define o estilo de cores do footer de propaganda.</span>
 
 <span class="sd">            Args:</span>
 <span class="sd">                hex_color (str): Cor em formato hexadecimal, como &quot;#RRGGBB&quot;.</span>
@@ -632,7 +642,6 @@
             <span class="n">footer_border</span> <span class="o">=</span> <span class="n">rgba</span><span class="p">(</span><span class="n">border</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>
             <span class="n">footer_btn_bg</span> <span class="o">=</span> <span class="s2">&quot;rgba(255, 255, 255, 0.03)&quot;</span>
             <span class="n">footer_btn_hover</span> <span class="o">=</span> <span class="s2">&quot;rgba(255, 255, 255, 0.06)&quot;</span>
-        
 
         <span class="bp">self</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">            QWidget </span><span class="se">{{</span>
@@ -658,16 +667,59 @@
 <span class="s2">                color: </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">;</span>
 <span class="s2">                border: 1px solid </span><span class="si">{</span><span class="n">border</span><span class="si">}</span><span class="s2">;</span>
 <span class="s2">                border-radius: 8px;</span>
-<span class="s2">                padding: 6px;</span>
+<span class="s2">                padding: 6px 34px 6px 10px;</span>
 <span class="s2">                min-width: 120px;</span>
 <span class="s2">            </span><span class="se">}}</span>
 
-<span class="s2">            QComboBox QAbstractItemView </span><span class="se">{{</span>
+<span class="s2">            QComboBox:hover </span><span class="se">{{</span>
+<span class="s2">                border-color: </span><span class="si">{</span><span class="n">primary</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">            </span><span class="se">}}</span>
+
+<span class="s2">            QComboBox::drop-down </span><span class="se">{{</span>
+<span class="s2">                subcontrol-origin: padding;</span>
+<span class="s2">                subcontrol-position: top right;</span>
+<span class="s2">                width: 26px;</span>
+<span class="s2">                border-left: 1px solid </span><span class="si">{</span><span class="n">border</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">surface_alt</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                border-top-right-radius: 8px;</span>
+<span class="s2">                border-bottom-right-radius: 8px;</span>
+<span class="s2">            </span><span class="se">}}</span>
+
+<span class="s2">            QComboBox::down-arrow </span><span class="se">{{</span>
+<span class="s2">                image: url(&quot;assets/icons/seta-baixo.png&quot;);</span>
+<span class="s2">                width: 12px;</span>
+<span class="s2">                height: 12px;</span>
+<span class="s2">            </span><span class="se">}}</span>
+
+<span class="s2">            QComboBox QAbstractItemView,</span>
+<span class="s2">            QComboBox QListView </span><span class="se">{{</span>
 <span class="s2">                background-color: </span><span class="si">{</span><span class="n">surface_alt</span><span class="si">}</span><span class="s2">;</span>
 <span class="s2">                color: </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">;</span>
 <span class="s2">                border: 1px solid </span><span class="si">{</span><span class="n">border</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                outline: 0;</span>
+<span class="s2">                padding: 4px;</span>
 <span class="s2">                selection-background-color: </span><span class="si">{</span><span class="n">primary</span><span class="si">}</span><span class="s2">;</span>
 <span class="s2">                selection-color: #FFFFFF;</span>
+<span class="s2">            </span><span class="se">}}</span>
+
+<span class="s2">            QComboBox QAbstractItemView::item,</span>
+<span class="s2">            QComboBox QListView::item </span><span class="se">{{</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">surface_alt</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                color: </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                min-height: 24px;</span>
+<span class="s2">                padding: 6px 8px;</span>
+<span class="s2">            </span><span class="se">}}</span>
+
+<span class="s2">            QComboBox QAbstractItemView::item:selected,</span>
+<span class="s2">            QComboBox QListView::item:selected </span><span class="se">{{</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">primary</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                color: #FFFFFF;</span>
+<span class="s2">            </span><span class="se">}}</span>
+
+<span class="s2">            QComboBox QAbstractScrollArea,</span>
+<span class="s2">            QComboBox QAbstractItemView:enabled,</span>
+<span class="s2">            QComboBox QListView:enabled </span><span class="se">{{</span>
+<span class="s2">                background-color: </span><span class="si">{</span><span class="n">surface_alt</span><span class="si">}</span><span class="s2">;</span>
 <span class="s2">            </span><span class="se">}}</span>
 
 <span class="s2">            QScrollArea </span><span class="se">{{</span>
@@ -742,8 +794,6 @@
 <span class="s2">                border-color: </span><span class="si">{</span><span class="n">primary</span><span class="si">}</span><span class="s2">;</span>
 <span class="s2">                background-color: </span><span class="si">{</span><span class="n">footer_btn_hover</span><span class="si">}</span><span class="s2">;</span>
 <span class="s2">            </span><span class="se">}}</span>
-<span class="s2">                           </span>
-
 <span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_retint_all_icons</span><span class="p">(</span><span class="n">theme</span><span class="p">)</span>
@@ -1176,17 +1226,16 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_build_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Monta a interface principal da janela.</span>
+<span class="sd">        Monta a interface principal da janela.</span>
 
-<span class="sd">            Cria os layouts e widgets (seleção de planilha, escolha de aba, área rolável</span>
-<span class="sd">            de campos, botões de ação, status e rodapé/banner), conecta os sinais aos</span>
-<span class="sd">            handlers e aplica o layout final. Ao final, renderiza os campos e, se já</span>
-<span class="sd">            houver um arquivo selecionado, atualiza o label e recarrega as abas.</span>
+<span class="sd">        Cria os layouts e widgets (seleção de planilha, escolha de aba, área rolável</span>
+<span class="sd">        de campos, botões de ação, status e rodapé/banner), conecta os sinais aos</span>
+<span class="sd">        handlers e aplica o layout final. Ao final, renderiza os campos e, se já</span>
+<span class="sd">        houver um arquivo selecionado, atualiza o label e recarrega as abas.</span>
 
-<span class="sd">            Returns: </span>
-<span class="sd">                None</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Preenche Fácil - Avance&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setMinimumWidth</span><span class="p">(</span><span class="mi">490</span><span class="p">)</span>
 
@@ -1208,13 +1257,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_help</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">&quot;Ajuda&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_help</span><span class="o">.</span><span class="n">setFixedWidth</span><span class="p">(</span><span class="mi">44</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_help</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">open_help</span><span class="p">)</span>
-        
+
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_license</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_license</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">&quot;Licença de uso do software&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_license</span><span class="o">.</span><span class="n">setFixedWidth</span><span class="p">(</span><span class="mi">44</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_license</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">open_license</span><span class="p">)</span>
-
-        
 
         <span class="n">file_row</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btn_file</span><span class="p">)</span>
         <span class="n">file_row</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lbl_file</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -1228,6 +1275,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cmb_sheet</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cmb_sheet</span><span class="o">.</span><span class="n">setMinimumWidth</span><span class="p">(</span><span class="mi">180</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_force_combobox_popup_style</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmb_sheet</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cmb_sheet</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_sheet_changed</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_new_sheet</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Nova aba&quot;</span><span class="p">)</span>
@@ -1236,7 +1284,7 @@
 
         <span class="n">sheet_row</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Aba:&quot;</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">btn_refresh_sheets</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;↻ Atualizar&quot;</span><span class="p">)</span>       
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_refresh_sheets</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;↻ Atualizar&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_refresh_sheets</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">&quot;Atualizar abas da planilha&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_refresh_sheets</span><span class="o">.</span><span class="n">setFixedWidth</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_refresh_sheets</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refresh_sheets</span><span class="p">)</span>
@@ -1244,10 +1292,6 @@
         <span class="n">sheet_row</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmb_sheet</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">sheet_row</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btn_new_sheet</span><span class="p">)</span>
         <span class="n">sheet_row</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btn_refresh_sheets</span><span class="p">)</span>
-        
-        <span class="bp">self</span><span class="o">.</span><span class="n">cmb_sheet</span><span class="o">.</span><span class="n">setMinimumWidth</span><span class="p">(</span><span class="mi">180</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cmb_sheet</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_sheet_changed</span><span class="p">)</span>      
-        
 
         <span class="n">root</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">sheet_row</span><span class="p">)</span>
 
@@ -1298,7 +1342,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_delete</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delete_all_fields</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_protocol</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generate_protocol</span><span class="p">)</span>
 
-
         <span class="n">root</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">lbl_status</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Preencha os campos (copie/cole) e clique em Salvar.&quot;</span><span class="p">)</span>
@@ -1312,7 +1355,6 @@
         <span class="n">sep</span><span class="o">.</span><span class="n">setFixedHeight</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">root</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">sep</span><span class="p">)</span>
 
-        <span class="c1"># --- Rodapé (banner) com logo + CTA clicável ---</span>
         <span class="n">footer_wrap</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
         <span class="n">footer_wrap</span><span class="o">.</span><span class="n">setObjectName</span><span class="p">(</span><span class="s2">&quot;PromoFooter&quot;</span><span class="p">)</span>
 
@@ -1323,10 +1365,8 @@
         <span class="n">default_footer</span> <span class="o">=</span> <span class="s2">&quot;&lt;b&gt;Se precisar de telefonia para sua empresa&lt;/b&gt; → WhatsApp (22) 98812-4656&quot;</span>
         <span class="n">footer_html</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg_ui</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;footer_left_html&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">default_footer</span><span class="p">)</span>
 
-        <span class="c1"># Link do banner (WhatsApp/site)</span>
         <span class="n">footer_link</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg_ui</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;footer_link&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
-        <span class="c1"># Logo (opcional)</span>
         <span class="n">logo_path</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg_ui</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;footer_logo_path&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="n">logo_h</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg_ui</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;footer_logo_height&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="mi">28</span><span class="p">)</span>
 
@@ -1347,14 +1387,11 @@
         <span class="n">footer_row</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lbl_footer_logo</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">footer_row</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lbl_footer_left</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-        
-        <span class="c1"># Banner inteiro clicável</span>
         <span class="k">if</span> <span class="n">footer_link</span><span class="p">:</span>
             <span class="n">footer_wrap</span><span class="o">.</span><span class="n">setCursor</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">PointingHandCursor</span><span class="p">)</span>
             <span class="n">footer_wrap</span><span class="o">.</span><span class="n">mousePressEvent</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">ev</span><span class="p">:</span> <span class="n">QDesktopServices</span><span class="o">.</span><span class="n">openUrl</span><span class="p">(</span><span class="n">QUrl</span><span class="p">(</span><span class="n">footer_link</span><span class="p">))</span>
 
         <span class="n">root</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">footer_wrap</span><span class="p">)</span>
-        <span class="c1"># --- fim rodapé ---</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
 
@@ -1491,7 +1528,7 @@
 
         <span class="k">for</span> <span class="n">campo</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">campos</span><span class="p">:</span>
             <span class="n">label_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">campo</span><span class="o">.</span><span class="n">titulo</span><span class="si">}</span><span class="s2">  [</span><span class="si">{</span><span class="n">campo</span><span class="o">.</span><span class="n">tipo</span><span class="si">}</span><span class="s2">]&quot;</span>
-           
+
             <span class="k">if</span> <span class="n">campo</span><span class="o">.</span><span class="n">tipo</span> <span class="o">==</span> <span class="s2">&quot;email&quot;</span><span class="p">:</span>
                 <span class="n">emailw</span> <span class="o">=</span> <span class="n">EmailInputWidget</span><span class="p">(</span><span class="n">domains</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">email_domains</span><span class="p">)</span>
 
@@ -1501,12 +1538,21 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">emailw</span><span class="o">.</span><span class="n">set_email</span><span class="p">(</span><span class="n">prev_value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">campo</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
 
+                <span class="c1"># força QListView em combos internos do widget</span>
+                <span class="k">for</span> <span class="n">combo</span> <span class="ow">in</span> <span class="n">emailw</span><span class="o">.</span><span class="n">findChildren</span><span class="p">(</span><span class="n">QComboBox</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_force_combobox_popup_style</span><span class="p">(</span><span class="n">combo</span><span class="p">)</span>
+
                 <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="n">campo</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">emailw</span>
                 <span class="n">input_widget</span> <span class="o">=</span> <span class="n">emailw</span>
 
             <span class="k">elif</span> <span class="n">campo</span><span class="o">.</span><span class="n">tipo</span> <span class="o">==</span> <span class="s2">&quot;booleano&quot;</span><span class="p">:</span>
                 <span class="n">bw</span> <span class="o">=</span> <span class="n">BoolInputWidget</span><span class="p">()</span>
                 <span class="n">bw</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">prev_value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">campo</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+
+                <span class="c1"># força QListView em combos internos do widget</span>
+                <span class="k">for</span> <span class="n">combo</span> <span class="ow">in</span> <span class="n">bw</span><span class="o">.</span><span class="n">findChildren</span><span class="p">(</span><span class="n">QComboBox</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_force_combobox_popup_style</span><span class="p">(</span><span class="n">combo</span><span class="p">)</span>
+
                 <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="n">campo</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">bw</span>
                 <span class="n">input_widget</span> <span class="o">=</span> <span class="n">bw</span>
 
@@ -1525,16 +1571,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">icon_mgr</span><span class="o">.</span><span class="n">apply_button_icon</span><span class="p">(</span><span class="n">roww</span><span class="o">.</span><span class="n">btn_edit</span><span class="p">,</span> <span class="s2">&quot;edit_title&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">icon_mgr</span><span class="o">.</span><span class="n">apply_button_icon</span><span class="p">(</span><span class="n">roww</span><span class="o">.</span><span class="n">btn_del</span><span class="p">,</span> <span class="s2">&quot;delete_field&quot;</span><span class="p">,</span> <span class="n">white</span><span class="p">)</span>
 
-            <span class="c1"># estado do toggle</span>
             <span class="n">locked</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">campo</span><span class="p">,</span> <span class="s2">&quot;locked&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
             <span class="n">roww</span><span class="o">.</span><span class="n">set_locked</span><span class="p">(</span><span class="n">locked</span><span class="p">)</span>
             <span class="n">roww</span><span class="o">.</span><span class="n">lockToggled</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_field_lock_toggled</span><span class="p">)</span>
 
-            <span class="c1"># NOVO: ícone aberto/fechado no botão de cadeado</span>
             <span class="n">lock_icon_key</span> <span class="o">=</span> <span class="s2">&quot;lock_closed&quot;</span> <span class="k">if</span> <span class="n">locked</span> <span class="k">else</span> <span class="s2">&quot;lock_open&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">icon_mgr</span><span class="o">.</span><span class="n">apply_button_icon</span><span class="p">(</span><span class="n">roww</span><span class="o">.</span><span class="n">btn_lock</span><span class="p">,</span> <span class="n">lock_icon_key</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
 
-            <span class="c1"># se estiver bloqueado, desabilita ações</span>
             <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">campo</span><span class="p">,</span> <span class="s2">&quot;locked&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
                 <span class="n">roww</span><span class="o">.</span><span class="n">btn_edit</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
                 <span class="n">roww</span><span class="o">.</span><span class="n">btn_del</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
@@ -2395,6 +2438,7 @@
 <span class="sd">        None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">([])</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="s2">&quot;Fusion&quot;</span><span class="p">)</span>
 
     <span class="n">loader</span> <span class="o">=</span> <span class="n">LoadingScreen</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Validando acesso&quot;</span><span class="p">)</span>
     <span class="n">loader</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="s2">&quot;Preparando validação...&quot;</span><span class="p">)</span>

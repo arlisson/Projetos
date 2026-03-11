@@ -20,7 +20,7 @@ EXCEL_NUMBER_FORMAT: Dict[str, str] = {
     "texto": "@",
     "telefone": "@",
     "email": "@",
-    "numero": "0.00",
+    "numero": "General",
     "moeda": '"R$" #,##0.00',
     "data": "dd/mm/yyyy",
     "booleano": "@",

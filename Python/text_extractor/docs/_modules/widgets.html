@@ -241,8 +241,7 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for widgets</h1><div class="highlight"><pre>
-<span></span><span class="c1"># widgets.py</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
@@ -254,6 +253,8 @@
     <span class="n">QPushButton</span><span class="p">,</span>
     <span class="n">QLineEdit</span><span class="p">,</span>
     <span class="n">QComboBox</span><span class="p">,</span>
+    <span class="n">QListView</span><span class="p">,</span>
+    <span class="n">QFrame</span><span class="p">,</span>
 <span class="p">)</span>
 
 
@@ -268,24 +269,16 @@
 <span class="sd">        - Se o local contém &#39;@&#39;, considera colado completo e retorna ok=True</span>
 <span class="sd">        - Se local não vazio e domínio vazio =&gt; ok=False</span>
 <span class="sd">        - Se local vazio =&gt; retorna &quot;&quot; e ok=True (campo em branco)</span>
-<span class="sd">    Args:</span>
-<span class="sd">        parent (Optional[QWidget], optional): O widget pai opcional. Defaults to None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domains</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">parent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QWidget</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Inicializa o widget de entrada de e-mail com uma lista de domínios disponíveis para seleção. O widget é composto por um QLineEdit para a parte local do e-mail (antes do &#39;@&#39;) e um QComboBox para a parte do domínio (após o &#39;@&#39;). O método configura o layout do widget, adiciona os componentes necessários e preenche o QComboBox com a lista de domínios fornecida. A função set_domains() é chamada para garantir que a lista de domínios seja exibida corretamente, permitindo que o usuário selecione um domínio específico para compor seu endereço de e-mail. O widget também inclui métodos para obter e definir o e-mail completo, bem como para atualizar dinamicamente a lista de domínios enquanto preserva a seleção atual do usuário.</span>
-<span class="sd">        Args:</span>
-<span class="sd">            domains (List[str]): A lista de domínios a ser exibida no QComboBox. O método recebe uma lista de strings que representam os domínios disponíveis para seleção. Esses domínios são usados para preencher o QComboBox, permitindo que o usuário escolha um domínio específico para compor seu endereço de e-mail. A lista de domínios pode ser atualizada dinamicamente usando o método set_domains(), que garante que a seleção atual seja preservada sempre que a lista for modificada.</span>
-<span class="sd">            parent (Optional[QWidget], optional): O widget pai opcional. Defaults to None.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">inp_local</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inp_local</span><span class="o">.</span><span class="n">setPlaceholderText</span><span class="p">(</span><span class="s2">&quot;usuario (ou cole e-mail completo)&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cmb_domain</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cmb_domain</span><span class="o">.</span><span class="n">setEditable</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cmb_domain</span><span class="o">.</span><span class="n">setInsertPolicy</span><span class="p">(</span><span class="n">QComboBox</span><span class="o">.</span><span class="n">InsertAtTop</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_combo_popup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmb_domain</span><span class="p">)</span>
 
         <span class="n">layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -295,29 +288,42 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">set_domains</span><span class="p">(</span><span class="n">domains</span><span class="p">)</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_combo_popup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">combo</span><span class="p">:</span> <span class="n">QComboBox</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ajusta o popup do QComboBox para reduzir problemas de transparência</span>
+<span class="sd">        no Windows 11 e manter o popup vinculado ao combo correto.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">view</span> <span class="o">=</span> <span class="n">QListView</span><span class="p">(</span><span class="n">combo</span><span class="p">)</span>
+        <span class="n">combo</span><span class="o">.</span><span class="n">setView</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">setFrameShape</span><span class="p">(</span><span class="n">QFrame</span><span class="o">.</span><span class="n">NoFrame</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">viewport</span><span class="p">()</span><span class="o">.</span><span class="n">setAutoFillBackground</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">setAutoFillBackground</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">combo</span><span class="o">.</span><span class="n">setEditable</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
 <div class="viewcode-block" id="EmailInputWidget.set_domains">
 <a class="viewcode-back" href="../api/widgets.html#widgets.EmailInputWidget.set_domains">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_domains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domains</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Atualiza a lista de domínios disponíveis no QComboBox.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            domains (List[str]): A lista de domínios a ser exibida no QComboBox. O método atualiza o conteúdo do QComboBox com os domínios fornecidos, preservando a seleção atual do usuário sempre que possível.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cur</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cmb_domain</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">cmb_domain</span><span class="o">.</span><span class="n">setEditable</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># garante que não é editável</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cmb_domain</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
-        <span class="c1"># popula</span>
         <span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="p">(</span><span class="n">domains</span> <span class="ow">or</span> <span class="p">[])</span> <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
         <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cmb_domain</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
-        <span class="c1"># seleção:</span>
-        <span class="c1"># - se o domínio anterior ainda existir na lista, mantém</span>
-        <span class="c1"># - senão, marca a primeira opção (se existir)</span>
         <span class="k">if</span> <span class="n">cur</span> <span class="ow">and</span> <span class="n">cur</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cmb_domain</span><span class="o">.</span><span class="n">setCurrentText</span><span class="p">(</span><span class="n">cur</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmb_domain</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -329,34 +335,18 @@
 <div class="viewcode-block" id="EmailInputWidget.local">
 <a class="viewcode-back" href="../api/widgets.html#widgets.EmailInputWidget.local">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">local</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retorna a parte local do e-mail (antes do &#39;@&#39;) inserida pelo usuário. O método obtém o texto do QLineEdit, que representa a parte local do e-mail, e remove quaisquer espaços em branco extras antes de retornar o valor. Se o campo estiver vazio, o método retorna uma string vazia. Este método é usado para acessar a parte local do e-mail que o usuário digitou ou colou no campo de entrada, permitindo que outras partes do aplicativo possam compor o endereço de e-mail completo combinando a parte local com o domínio selecionado.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            str: A parte local do e-mail inserida pelo usuário, sem espaços em branco extras. Se o campo estiver vazio, retorna uma string vazia.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inp_local</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="EmailInputWidget.domain">
 <a class="viewcode-back" href="../api/widgets.html#widgets.EmailInputWidget.domain">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">domain</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Retorna a parte do domínio do e-mail (após o &#39;@&#39;) selecionada pelo usuário. O método obtém o texto atualmente selecionado no QComboBox, que representa a parte do domínio do e-mail, e remove quaisquer espaços em branco extras antes de retornar o valor. Se nenhum domínio estiver selecionado ou se o campo estiver vazio, o método retorna uma string vazia. Este método é usado para acessar a parte do domínio do e-mail que o usuário selecionou, permitindo que outras partes do aplicativo possam compor o endereço de e-mail completo combinando a parte local com o domínio selecionado.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            str: A parte do domínio do e-mail selecionada pelo usuário, sem espaços em branco extras. Se nenhum domínio estiver selecionado ou se o campo estiver vazio, retorna uma string vazia.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmb_domain</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="EmailInputWidget.set_parts">
 <a class="viewcode-back" href="../api/widgets.html#widgets.EmailInputWidget.set_parts">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_parts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">domain</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Define as partes local e de domínio do e-mail no widget. O método recebe a parte local e a parte do domínio como argumentos, limpa quaisquer espaços em branco extras e atualiza os campos correspondentes no QLineEdit e no QComboBox. A parte local é definida no QLineEdit, enquanto a parte do domínio é selecionada no QComboBox. Se a parte do domínio fornecida não estiver presente na lista de domínios do QComboBox, o método pode optar por adicionar o domínio à lista ou simplesmente deixar o campo de domínio vazio, dependendo da implementação desejada. Este método é útil para configurar o widget com um endereço de e-mail específico, dividindo-o em suas partes componentes para exibição e edição pelo usuário.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            local (str): A parte local do e-mail a ser definida no QLineEdit. O método limpa quaisquer espaços em branco extras antes de definir o valor no campo de entrada.</span>
-<span class="sd">            domain (str): A parte do domínio do e-mail a ser selecionada no QComboBox. O método limpa quaisquer espaços em branco extras antes de tentar selecionar o domínio na lista. Se o domínio não estiver presente na lista, o comportamento pode variar dependendo da implementação (por exemplo, adicionar o domínio à lista ou deixar o campo de domínio vazio).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inp_local</span><span class="o">.</span><span class="n">setText</span><span class="p">((</span><span class="n">local</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cmb_domain</span><span class="o">.</span><span class="n">setCurrentText</span><span class="p">((</span><span class="n">domain</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span></div>
 
@@ -364,11 +354,6 @@
 <div class="viewcode-block" id="EmailInputWidget.set_email">
 <a class="viewcode-back" href="../api/widgets.html#widgets.EmailInputWidget.set_email">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_email</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Define o endereço de e-mail completo no widget, dividindo-o em partes local e de domínio. O método recebe um endereço de e-mail completo como argumento, limpa quaisquer espaços em branco extras e verifica se o endereço contém o caractere &#39;@&#39;. Se o endereço contiver &#39;@&#39;, ele é dividido em parte local (antes do &#39;@&#39;) e parte de domínio (após o &#39;@&#39;), e os campos correspondentes no QLineEdit e no QComboBox são atualizados usando o método set_parts(). Se o endereço não contiver &#39;@&#39;, ele é tratado como a parte local do e-mail, e a parte do domínio é deixada vazia. Este método é útil para configurar o widget com um endereço de e-mail completo, permitindo que o usuário veja e edite as partes local e de domínio separadamente.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            email (str): O endereço de e-mail completo a ser definido no widget. O método limpa quaisquer espaços em branco extras antes de processar o endereço. Se o endereço contiver &#39;@&#39;, ele será dividido em parte local e parte de domínio; caso contrário, será tratado como parte local com domínio vazio.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="n">email</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="k">if</span> <span class="s2">&quot;@&quot;</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
             <span class="n">u</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -380,12 +365,6 @@
 <div class="viewcode-block" id="EmailInputWidget.get_email">
 <a class="viewcode-back" href="../api/widgets.html#widgets.EmailInputWidget.get_email">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_email</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Retorna o endereço de e-mail completo composto pela parte local e a parte do domínio, juntamente com um indicador de validade. O método obtém a parte local do QLineEdit e a parte do domínio do QComboBox, limpa quaisquer espaços em branco extras e verifica se a parte local contém o caractere &#39;@&#39;. Se a parte local contiver &#39;@&#39;, o método considera que o usuário colou um endereço de e-mail completo na parte local, e retorna esse valor como o endereço de e-mail completo, juntamente com um indicador de validade True. Se a parte local não contiver &#39;@&#39;, o método verifica se a parte local está vazia; se estiver vazia, retorna uma string vazia como o endereço de e-mail completo e um indicador de validade True (campo em branco é considerado válido). Se a parte local não estiver vazia e a parte do domínio estiver vazia, o método retorna a parte local como o endereço de e-mail completo e um indicador de validade False (indica que falta o domínio). Se ambas as partes estiverem presentes, o método combina a parte local com a parte do domínio para formar o endereço de e-mail completo e retorna esse valor juntamente com um indicador de validade True.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">                 Tuple[str, bool]: Uma tupla contendo o endereço de e-mail completo composto pela parte local e a parte do domínio, e um indicador de validade. O primeiro elemento da tupla é o endereço de e-mail completo resultante da combinação da parte local e do domínio, ou uma string vazia se a parte local estiver vazia. O segundo elemento é um booleano que indica se o endereço de e-mail é considerado válido (True) ou inválido (False) com base nas regras descritas acima.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-      
         <span class="n">local</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">local</span><span class="p">()</span>
         <span class="n">dom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain</span><span class="p">()</span>
 
@@ -409,15 +388,8 @@
 <div class="viewcode-block" id="FieldRowWidget">
 <a class="viewcode-back" href="../api/widgets.html#widgets.FieldRowWidget">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FieldRowWidget</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Widget para exibir um campo com opções de editar, excluir e bloquear. O widget é composto por um QLabel para exibir o título do campo, um widget de entrada (input_widget) para mostrar o valor do campo, e três botões: &quot;Editar&quot;, &quot;Excluir&quot; e um botão de bloqueio (cadeado). O botão de bloqueio é um QPushButton configurado como checkable, permitindo que o usuário bloqueie ou desbloqueie o campo. O widget emite sinais quando os botões são clicados: editRequested quando o botão &quot;Editar&quot; é clicado, deleteRequested quando o botão &quot;Excluir&quot; é clicado, e lockToggled quando o estado do botão de bloqueio é alterado. O layout do widget é organizado horizontalmente, com o botão de bloqueio posicionado antes do título, seguido pelo QLabel, o widget de entrada e os botões de ação. Este widget é útil para exibir campos de dados em uma interface de usuário, permitindo que os usuários interajam com os campos por meio das opções de edição, exclusão e bloqueio.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        QWidget (_type_): O widget base do PySide6 que é estendido para criar o FieldRowWidget personalizado. Este widget serve como a classe base para o FieldRowWidget, permitindo que ele seja integrado em interfaces de usuário criadas com PySide6.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">editRequested</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
     <span class="n">deleteRequested</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
-
-    <span class="c1"># NOVO: emite (field_id, locked)</span>
     <span class="n">lockToggled</span> <span class="o">=</span> <span class="n">Signal</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -427,18 +399,9 @@
         <span class="n">input_widget</span><span class="p">:</span> <span class="n">QWidget</span><span class="p">,</span>
         <span class="n">parent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QWidget</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Inicializa o widget de linha de campo com um identificador, texto de rótulo, widget de entrada e um widget pai opcional. O método configura o layout do widget, adiciona os componentes necessários (botão de bloqueio, rótulo, widget de entrada e botões de ação) e conecta os sinais dos botões para emitir eventos apropriados quando as ações são realizadas pelo usuário. O botão de bloqueio é configurado para emitir um sinal com o estado atual (bloqueado ou desbloqueado) sempre que for alternado, permitindo que outras partes do aplicativo respondam a essa mudança de estado. O layout é organizado horizontalmente para garantir uma apresentação clara e acessível dos elementos do campo.</span>
-<span class="sd">        Args:</span>
-<span class="sd">            field_id (str): O identificador único para o campo representado por este widget. Este valor é usado para identificar o campo específico quando os sinais de edição, exclusão ou bloqueio são emitidos, permitindo que outras partes do aplicativo saibam qual campo está sendo interagido.</span>
-<span class="sd">            label_text (str): O texto a ser exibido no QLabel como rótulo do campo. Este texto serve para identificar visualmente o campo para o usuário, indicando o tipo de informação que o campo representa.</span>
-<span class="sd">            input_widget (QWidget): O widget de entrada que será exibido ao lado do rótulo. Este widget é usado para mostrar o valor do campo e pode ser qualquer tipo de widget de entrada (por exemplo, QLineEdit, QComboBox, etc.) dependendo do tipo de dados que o campo representa.</span>
-<span class="sd">            parent (Optional[QWidget], optional): O widget pai opcional. Este valor é passado para o construtor da classe base QWidget, permitindo que o FieldRowWidget seja integrado em uma hierarquia de widgets dentro da interface de usuário do aplicativo. Se nenhum widget pai for fornecido, o FieldRowWidget será um widget independente.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">field_id</span> <span class="o">=</span> <span class="n">field_id</span>
 
-        <span class="c1"># NOVO: botão só com ícone (sem texto)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_lock</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_lock</span><span class="o">.</span><span class="n">setCheckable</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_lock</span><span class="o">.</span><span class="n">setFixedSize</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">)</span>
@@ -459,60 +422,37 @@
         <span class="n">row</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
         <span class="n">row</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
-        <span class="c1"># NOVO: cadeado antes do título</span>
         <span class="n">row</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btn_lock</span><span class="p">)</span>
         <span class="n">row</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lbl</span><span class="p">)</span>
-
         <span class="n">row</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">input_widget</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">row</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btn_edit</span><span class="p">)</span>
         <span class="n">row</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btn_del</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
 
-    
 <div class="viewcode-block" id="FieldRowWidget.set_locked">
 <a class="viewcode-back" href="../api/widgets.html#widgets.FieldRowWidget.set_locked">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_locked</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">locked</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Atualiza o estado do botão de bloqueio sem disparar o evento lockToggled. Este método é usado para definir o estado do botão de bloqueio (bloqueado ou desbloqueado) programaticamente, sem emitir o sinal lockToggled que normalmente seria acionado quando o usuário interage com o botão. Isso é útil para evitar loops de eventos ou para atualizar o estado do botão com base em mudanças externas sem causar efeitos colaterais indesejados. O método bloqueia temporariamente os sinais do botão de bloqueio, define o estado do botão de acordo com o valor fornecido e, em seguida, desbloqueia os sinais para permitir que futuras interações do usuário sejam processadas normalmente.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            locked (bool): O estado a ser definido para o botão de bloqueio. Se True, o botão será marcado como bloqueado; se False, será marcado como desbloqueado. O método garante que o estado do botão seja atualizado de acordo com o valor fornecido, sem disparar o evento lockToggled.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_lock</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_lock</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">locked</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_lock</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
 </div>
 
 
+
 <div class="viewcode-block" id="BoolInputWidget">
 <a class="viewcode-back" href="../api/widgets.html#widgets.BoolInputWidget">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BoolInputWidget</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Widget de entrada booleana baseado em QComboBox.</span>
-
-<span class="sd">    Exibe uma lista suspensa com as opções “Sim” e “Não” e fornece métodos</span>
-<span class="sd">    para ler e atribuir o valor selecionado, aceitando variações comuns de</span>
-<span class="sd">    entrada (ex.: &quot;yes&quot;, &quot;true&quot;, &quot;1&quot;, &quot;nao&quot;, &quot;false&quot;, &quot;0&quot;).</span>
-
-<span class="sd">    Uso típico:</span>
-<span class="sd">        w = BoolInputWidget()</span>
-<span class="sd">        w.set_value(&quot;true&quot;)   # seleciona &quot;Sim&quot;</span>
-<span class="sd">        w.value()             # retorna &quot;Sim&quot; ou &quot;Não&quot;         </span>
-<span class="sd">    Args:</span>
-<span class="sd">        parent (Optional[QWidget]): Widget pai do Qt (opcional).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QWidget</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Inicializa o widget com um QComboBox contendo as opções “Sim” e “Não” e</span>
-<span class="sd">        define um layout horizontal sem margens.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            parent (Optional[QWidget], optional): Widget pai do Qt. Defaults to None.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QWidget</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cmb</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
-        <span class="c1"># self.cmb.addItem(&quot;&quot;)      # vazio permitido</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_combo_popup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmb</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">cmb</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;Sim&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cmb</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;Não&quot;</span><span class="p">)</span>
 
@@ -521,49 +461,44 @@
         <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmb</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_combo_popup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">combo</span><span class="p">:</span> <span class="n">QComboBox</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ajusta o popup do QComboBox para reduzir problemas de transparência</span>
+<span class="sd">        no Windows 11 e manter o popup abaixo do combo correspondente.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">view</span> <span class="o">=</span> <span class="n">QListView</span><span class="p">(</span><span class="n">combo</span><span class="p">)</span>
+        <span class="n">combo</span><span class="o">.</span><span class="n">setView</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">setFrameShape</span><span class="p">(</span><span class="n">QFrame</span><span class="o">.</span><span class="n">NoFrame</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">viewport</span><span class="p">()</span><span class="o">.</span><span class="n">setAutoFillBackground</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">setAutoFillBackground</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
 <div class="viewcode-block" id="BoolInputWidget.value">
 <a class="viewcode-back" href="../api/widgets.html#widgets.BoolInputWidget.value">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Retorna o texto atualmente selecionado no combo (“Sim” ou “Não”),</span>
-<span class="sd">        removendo espaços em branco. Se não houver seleção válida, retorna</span>
-<span class="sd">        string vazia.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            str: Valor selecionado (“Sim”/“Não”) ou &quot;&quot;.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmb</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="BoolInputWidget.set_value">
 <a class="viewcode-back" href="../api/widgets.html#widgets.BoolInputWidget.set_value">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Define a seleção do combo com base na string fornecida, aceitando variações</span>
-<span class="sd">        comuns de verdadeiro/falso.</span>
-
-<span class="sd">        Normalização aplicada:</span>
-<span class="sd">        - {&quot;sim&quot;,&quot;s&quot;,&quot;yes&quot;,&quot;y&quot;,&quot;true&quot;,&quot;1&quot;} -&gt; &quot;Sim&quot;</span>
-<span class="sd">        - {&quot;não&quot;,&quot;nao&quot;,&quot;n&quot;,&quot;no&quot;,&quot;false&quot;,&quot;0&quot;} -&gt; &quot;Não&quot;</span>
-<span class="sd">        - Se `v` for vazio (ou apenas espaços), define &quot;&quot;.</span>
-<span class="sd">        - Se `v` não corresponder e não for &quot;Sim&quot;/&quot;Não&quot;, define &quot;&quot;.</span>
-
-<span class="sd">        Observação:</span>
-<span class="sd">        - Para o estado vazio funcionar, é necessário adicionar um item vazio no</span>
-<span class="sd">            QComboBox (linha comentada `self.cmb.addItem(&quot;&quot;)`).</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            v (str): Valor de entrada a ser normalizado e aplicado ao combo.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="c1"># aceita variações comuns</span>
         <span class="n">low</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
         <span class="k">if</span> <span class="n">low</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;sim&quot;</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">,</span> <span class="s2">&quot;yes&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">}:</span>
             <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;Sim&quot;</span>
         <span class="k">elif</span> <span class="n">low</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;não&quot;</span><span class="p">,</span> <span class="s2">&quot;nao&quot;</span><span class="p">,</span> <span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="s2">&quot;no&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">}:</span>
             <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;Não&quot;</span>
         <span class="k">elif</span> <span class="n">s</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;Sim&quot;</span><span class="p">,</span> <span class="s2">&quot;Não&quot;</span><span class="p">}:</span>
             <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">cmb</span><span class="o">.</span><span class="n">setCurrentText</span><span class="p">(</span><span class="n">s</span><span class="p">)</span></div>
 </div>
 
