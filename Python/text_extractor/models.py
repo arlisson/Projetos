@@ -14,6 +14,7 @@ FIELD_TYPES: List[str] = [
     "moeda",
     "data",
     "booleano",
+    "protocolo"
 ]
 
 EXCEL_NUMBER_FORMAT: Dict[str, str] = {
@@ -93,4 +94,6 @@ def infer_type_from_title(header: str) -> str:
         return "numero"
     if "ativo" in h or "status" in h:
         return "booleano"
+    if "protocolo" in h:
+        return "protocolo"
     return "texto"

@@ -257,6 +257,7 @@
     <span class="s2">&quot;moeda&quot;</span><span class="p">,</span>
     <span class="s2">&quot;data&quot;</span><span class="p">,</span>
     <span class="s2">&quot;booleano&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;protocolo&quot;</span>
 <span class="p">]</span>
 
 <span class="n">EXCEL_NUMBER_FORMAT</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
@@ -347,6 +348,8 @@
         <span class="k">return</span> <span class="s2">&quot;numero&quot;</span>
     <span class="k">if</span> <span class="s2">&quot;ativo&quot;</span> <span class="ow">in</span> <span class="n">h</span> <span class="ow">or</span> <span class="s2">&quot;status&quot;</span> <span class="ow">in</span> <span class="n">h</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;booleano&quot;</span>
+    <span class="k">if</span> <span class="s2">&quot;protocolo&quot;</span> <span class="ow">in</span> <span class="n">h</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;protocolo&quot;</span>
     <span class="k">return</span> <span class="s2">&quot;texto&quot;</span></div>
 
 </pre></div>

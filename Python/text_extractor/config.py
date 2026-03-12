@@ -19,6 +19,7 @@ def default_fields_config() -> dict:
     """
     # Agora com "abas"
     base_campos = [
+        {"id": "protocolo", "titulo": "Protocolo", "tipo": "protocolo", "fixo": True, "locked": False},
         {"id": "nome", "titulo": "Nome", "tipo": "texto", "fixo": True, "locked": False},
         {"id": "telefone", "titulo": "Telefone", "tipo": "telefone", "fixo": True, "locked": False},
         {"id": "email", "titulo": "Email", "tipo": "email", "fixo": True, "locked": False},

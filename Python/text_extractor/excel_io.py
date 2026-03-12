@@ -310,6 +310,7 @@ def append_row_typed(file_path: str, sheet_name: str, campos: List[Any], row_by_
     """
     wb = load_workbook(file_path)
     if sheet_name not in wb.sheetnames:
+        wb.close()
         raise ValueError(f"A aba '{sheet_name}' não existe na planilha.")
 
     ws = wb[sheet_name]
@@ -331,7 +332,29 @@ def append_row_typed(file_path: str, sheet_name: str, campos: List[Any], row_by_
             ws.cell(row=1, column=new_col).value = campo.titulo
             header_to_col[campo.titulo] = new_col
 
-    next_row = ws.max_row + 1
+    def first_empty_row() -> int:
+        """
+        Retorna a primeira linha realmente vazia para inserção.
+        A linha 1 é o cabeçalho, então os dados começam na 2.
+        """
+        row = 2
+        max_col = max(1, ws.max_column)
+
+        while True:
+            row_has_data = False
+
+            for col in range(1, max_col + 1):
+                value = ws.cell(row=row, column=col).value
+                if value not in (None, ""):
+                    row_has_data = True
+                    break
+
+            if not row_has_data:
+                return row
+
+            row += 1
+
+    next_row = first_empty_row()
 
     for campo in campos:
         col_idx = header_to_col[campo.titulo]
@@ -359,7 +382,6 @@ def append_row_typed(file_path: str, sheet_name: str, campos: List[Any], row_by_
             parsed_num = parse_br_number(raw_value)
 
             if parsed_num is None:
-                # fallback defensivo: grava como texto se vier algo inválido
                 cell.value = raw_value
                 cell.number_format = "@"
             else:

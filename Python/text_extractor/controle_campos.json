@@ -1,9 +1,16 @@
 {
   "arquivo_padrao": "PreencheFacil.xlsx",
-  "aba": "teste",
+  "aba": "Preenche Fácil",
   "abas": {
     "Preenche Fácil": {
       "campos": [
+        {
+          "id": "protocolo",
+          "titulo": "Protocolo",
+          "tipo": "protocolo",
+          "fixo": true,
+          "locked": false
+        },
         {
           "id": "nome",
           "titulo": "Nome",
@@ -15,51 +22,15 @@
           "id": "telefone",
           "titulo": "Telefone",
           "tipo": "telefone",
-          "fixo": false,
+          "fixo": true,
           "locked": false
         },
         {
           "id": "email",
           "titulo": "Email",
           "tipo": "email",
-          "fixo": false,
-          "locked": false
-        },
-        {
-          "id": "data_pagamento",
-          "titulo": "Data pagamento",
-          "tipo": "data",
-          "fixo": false,
-          "locked": false
-        },
-        {
-          "id": "teste",
-          "titulo": "Teste",
-          "tipo": "booleano",
-          "fixo": false,
-          "locked": false
-        }
-      ]
-    },
-    "teste campos": {
-      "campos": [
-        {
-          "id": "nome",
-          "titulo": "Nome",
-          "tipo": "texto",
           "fixo": true,
-          "locked": true
-        }
-      ]
-    },
-    "teste": {
-      "campos": [
-        {
-          "id": "numero",
-          "titulo": "Numero",
-          "tipo": "numero",
-          "fixo": false,
-          "locked": true
+          "locked": false
         }
       ]
     }

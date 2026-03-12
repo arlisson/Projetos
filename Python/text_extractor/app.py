@@ -168,6 +168,10 @@ class SettingsDialog(QDialog):
         self.btn_theme.setToolTip("Configurar o tema de cores do aplicativo")
         self.btn_domains = QPushButton("Domínios de e-mail")
         self.btn_domains.setToolTip("Configurar a lista de domínios sugeridos para campos de email")
+        self.btn_remove = QPushButton("Retirar Planilha")
+        self.btn_clear_sheet = QPushButton("Limpar seleção da planilha")
+        self.btn_clear_sheet.setToolTip("Desvincular a planilha Excel atual sem excluir o arquivo")
+        self.btn_clear_sheet.clicked.connect(self._clear_sheet_selection)
 
         self.btn_domains.setEnabled(True)
 
@@ -182,6 +186,7 @@ class SettingsDialog(QDialog):
         layout.addWidget(self.lbl)
         layout.addWidget(self.btn_theme)
         layout.addWidget(self.btn_domains)
+        layout.addWidget(self.btn_clear_sheet)
         layout.addStretch(1)
         layout.addWidget(btns)
         self.setLayout(layout)
@@ -201,6 +206,13 @@ class SettingsDialog(QDialog):
         """
         self.parent_app.open_email_domains()
         self.btn_domains.setEnabled(self.parent_app._has_email_fields())
+    
+    def _clear_sheet_selection(self) -> None:
+        """
+        Remove a planilha atualmente selecionada da aplicação,
+        sem excluir o arquivo físico do disco.
+        """
+        self.parent_app.clear_selected_sheet()
 
 
 class App(QWidget):
@@ -429,7 +441,7 @@ class App(QWidget):
             }}
 
             QComboBox::down-arrow {{
-                image: url("assets/icons/seta-baixo.png");
+                image: url("_internal/assets/icons/seta-baixo.png");
                 width: 12px;
                 height: 12px;
             }}
@@ -610,6 +622,58 @@ class App(QWidget):
             w = self.inputs.get(c.id)
             if isinstance(w, EmailInputWidget):
                 w.set_domains(self.email_domains)
+    
+    def clear_selected_sheet(self) -> None:
+        """
+        Limpa a seleção da planilha atual sem apagar o arquivo do disco.
+
+        Remove o vínculo da interface com a planilha, limpa a lista de abas,
+        atualiza a configuração persistida e mantém os campos do controle na UI.
+        """
+        if not self.file_path:
+            QMessageBox.information(self, "Info", "Nenhuma planilha está selecionada.")
+            return
+
+        msg = (
+            "Deseja realmente limpar a seleção da planilha atual?\n\n"
+            "Isso NÃO excluirá o arquivo do Excel do computador.\n"
+            "Apenas removerá o vínculo da planilha com o aplicativo."
+        )
+
+        if QMessageBox.question(self, "Confirmar", msg) != QMessageBox.Yes:
+            return
+
+        self.file_path = None
+        self.lbl_file.setText("Arquivo: (não selecionado)")
+
+        self.cmb_sheet.blockSignals(True)
+        self.cmb_sheet.clear()
+        self.cmb_sheet.blockSignals(False)
+
+        self._last_sheets_meta = []
+        self._sheet_last_sig = None        
+       
+
+        try:
+            save_sheet_config("")
+        except Exception:
+            pass
+
+        self._update_sheet_dependent_ui()
+        self.lbl_status.setText("Seleção da planilha removida com sucesso.")
+    
+    def _update_sheet_dependent_ui(self) -> None:
+        """
+        Habilita ou desabilita controles que dependem de uma planilha selecionada.
+        """
+        has_file = bool(self.file_path)
+
+        self.btn_new_sheet.setEnabled(has_file)
+        self.btn_refresh_sheets.setEnabled(has_file)
+        self.btn_save.setEnabled(has_file)
+        self.cmb_sheet.setEnabled(has_file)
+        
+        
 
     # ----------- Abas Excel (UI + Sync) -----------
 
@@ -1126,6 +1190,9 @@ class App(QWidget):
         if self.file_path:
             self.lbl_file.setText(f"Arquivo: {self.file_path}")
             self._reload_sheet_list()
+
+        self._update_sheet_dependent_ui()
+        
             
 
     def _build_footer(self) -> QWidget:
@@ -1281,7 +1348,11 @@ class App(QWidget):
 
             else:
                 inp = CursorStartLineEdit()
-                inp.setPlaceholderText(f"Digite ou cole: {campo.titulo}")
+                if campo.tipo == "protocolo":
+                    inp.setPlaceholderText("Clique em 'Protocolo' para gerar automaticamente")
+                else:
+                    inp.setPlaceholderText(f"Digite ou cole: {campo.titulo}")
+                
                 self._apply_input_mask(inp, campo.tipo)
                 inp.setText(prev_value.get(campo.id, ""))
                 self.inputs[campo.id] = inp
@@ -1348,6 +1419,7 @@ class App(QWidget):
         self.lbl_file.setText(f"Arquivo: {path}")
         save_sheet_config(path)
 
+        self._update_sheet_dependent_ui()
         # atualiza assinatura e lista de abas imediatamente
         try:
             self._sheet_last_sig = self._file_signature(path)
@@ -1355,6 +1427,7 @@ class App(QWidget):
             self._sheet_last_sig = None
 
         self._reload_sheet_list()
+        self._update_sheet_dependent_ui()
 
         if prepare:
             try:
@@ -1783,12 +1856,22 @@ class App(QWidget):
 
     # ---------- ações gerais ----------
     def generate_protocol(self) -> None:
-        """ Função responsável por gerar um protocolo no formato dd/MM/yy/hh/mm/ss\n
-            Exibe uma janela com o protocolo gerado.
-            Returns:
-                None
-        """ 
+        """
+        Gera um número de protocolo no formato ddMMyyHHmmss.
+        Se existir algum campo do tipo 'protocolo', preenche automaticamente
+        o primeiro campo encontrado com o valor gerado.
+        Não cria campo novo automaticamente.
+        """
         protocolo = datetime.now().strftime("%d%m%y%H%M%S")
+
+        # procura o primeiro campo do tipo protocolo
+        campo_protocolo = next((c for c in self.campos if c.tipo == "protocolo"), None)
+
+        # se existir, preenche o input correspondente
+        if campo_protocolo:
+            w = self.inputs.get(campo_protocolo.id)
+            if isinstance(w, QLineEdit):
+                w.setText(protocolo)
 
         dlg = QDialog(self)
         dlg.setWindowTitle("Protocolo gerado")
@@ -1812,18 +1895,35 @@ class App(QWidget):
         btn_close = buttons.addButton("Fechar", QDialogButtonBox.RejectRole)
 
         def copy_protocol() -> None:
-            """Função responsável por permitir copiar o protocolo gerado, clicando no botão 'copiar'
-            """
             QApplication.clipboard().setText(protocolo)
-            self.lbl_status.setText(f"Protocolo gerado e copiado: {protocolo}")
-            QMessageBox.information(self, "Copiado", "Protocolo copiado para a área de transferência.")
+
+            if campo_protocolo:
+                self.lbl_status.setText(
+                    f"Protocolo gerado, copiado e inserido no campo '{campo_protocolo.titulo}': {protocolo}"
+                )
+            else:
+                self.lbl_status.setText(
+                    f"Protocolo gerado e copiado: {protocolo}"
+                )
+
+            QMessageBox.information(
+                self,
+                "Copiado",
+                "Protocolo copiado para a área de transferência."
+            )
 
         btn_copy.clicked.connect(copy_protocol)
         btn_close.clicked.connect(dlg.reject)
 
         layout.addWidget(buttons)
 
-        self.lbl_status.setText(f"Protocolo gerado: {protocolo}")
+        if campo_protocolo:
+            self.lbl_status.setText(
+                f"Protocolo gerado e inserido no campo '{campo_protocolo.titulo}': {protocolo}"
+            )
+        else:
+            self.lbl_status.setText(f"Protocolo gerado: {protocolo}")
+
         dlg.exec()
     
     
@@ -1864,11 +1964,20 @@ class App(QWidget):
         total_locked = len(locked_fields)
         total_deletable = len(deletable_fields)
 
-        msg = (
-            f"Confirma excluir {total_deletable} campo(s)?\n\n"
-            "Isso também removerá as colunas correspondentes na planilha Excel.\n"
-            "Os dados dessas colunas serão removidos definitivamente."
-        )
+        if self.file_path:
+            msg = (
+                f"Confirma excluir {total_deletable} campo(s)?\n\n"
+                "Isso também removerá as colunas correspondentes na planilha Excel.\n"
+                "Os dados dessas colunas serão removidos definitivamente."
+            )
+        else:
+            msg = (
+                f"Confirma excluir {total_deletable} campo(s)?\n\n"
+                "Nenhuma planilha está selecionada no momento.\n"
+                "A exclusão afetará apenas os campos do controle do aplicativo."
+            )
+
+        
 
         if total_locked:
             msg += (

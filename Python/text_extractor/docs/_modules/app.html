@@ -419,6 +419,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_theme</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">&quot;Configurar o tema de cores do aplicativo&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_domains</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Domínios de e-mail&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_domains</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">&quot;Configurar a lista de domínios sugeridos para campos de email&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_remove</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Retirar Planilha&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_clear_sheet</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Limpar seleção da planilha&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_clear_sheet</span><span class="o">.</span><span class="n">setToolTip</span><span class="p">(</span><span class="s2">&quot;Desvincular a planilha Excel atual sem excluir o arquivo&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_clear_sheet</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_clear_sheet_selection</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">btn_domains</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
@@ -433,6 +437,7 @@
         <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lbl</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btn_theme</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btn_domains</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">btn_clear_sheet</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">btns</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
@@ -451,7 +456,14 @@
 <span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent_app</span><span class="o">.</span><span class="n">open_email_domains</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">btn_domains</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_app</span><span class="o">.</span><span class="n">_has_email_fields</span><span class="p">())</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_domains</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_app</span><span class="o">.</span><span class="n">_has_email_fields</span><span class="p">())</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_clear_sheet_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove a planilha atualmente selecionada da aplicação,</span>
+<span class="sd">        sem excluir o arquivo físico do disco.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent_app</span><span class="o">.</span><span class="n">clear_selected_sheet</span><span class="p">()</span></div>
 
 
 
@@ -686,7 +698,7 @@
 <span class="s2">            </span><span class="se">}}</span>
 
 <span class="s2">            QComboBox::down-arrow </span><span class="se">{{</span>
-<span class="s2">                image: url(&quot;assets/icons/seta-baixo.png&quot;);</span>
+<span class="s2">                image: url(&quot;_internal/assets/icons/seta-baixo.png&quot;);</span>
 <span class="s2">                width: 12px;</span>
 <span class="s2">                height: 12px;</span>
 <span class="s2">            </span><span class="se">}}</span>
@@ -870,6 +882,61 @@
             <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">EmailInputWidget</span><span class="p">):</span>
                 <span class="n">w</span><span class="o">.</span><span class="n">set_domains</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">email_domains</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="App.clear_selected_sheet">
+<a class="viewcode-back" href="../api/app.html#app.App.clear_selected_sheet">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_selected_sheet</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Limpa a seleção da planilha atual sem apagar o arquivo do disco.</span>
+
+<span class="sd">        Remove o vínculo da interface com a planilha, limpa a lista de abas,</span>
+<span class="sd">        atualiza a configuração persistida e mantém os campos do controle na UI.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">:</span>
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Info&quot;</span><span class="p">,</span> <span class="s2">&quot;Nenhuma planilha está selecionada.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;Deseja realmente limpar a seleção da planilha atual?</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;Isso NÃO excluirá o arquivo do Excel do computador.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;Apenas removerá o vínculo da planilha com o aplicativo.&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">question</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Confirmar&quot;</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span> <span class="o">!=</span> <span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lbl_file</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Arquivo: (não selecionado)&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmb_sheet</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmb_sheet</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmb_sheet</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_sheets_meta</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sheet_last_sig</span> <span class="o">=</span> <span class="kc">None</span>        
+       
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">save_sheet_config</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_sheet_dependent_ui</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lbl_status</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Seleção da planilha removida com sucesso.&quot;</span><span class="p">)</span></div>
+
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_sheet_dependent_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Habilita ou desabilita controles que dependem de uma planilha selecionada.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">has_file</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_new_sheet</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_refresh_sheets</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">btn_save</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmb_sheet</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">has_file</span><span class="p">)</span>
+        
+        
 
     <span class="c1"># ----------- Abas Excel (UI + Sync) -----------</span>
 
@@ -1401,6 +1468,9 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">lbl_file</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Arquivo: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_reload_sheet_list</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_sheet_dependent_ui</span><span class="p">()</span>
+        
             
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_build_footer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QWidget</span><span class="p">:</span>
@@ -1558,7 +1628,11 @@
 
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">inp</span> <span class="o">=</span> <span class="n">CursorStartLineEdit</span><span class="p">()</span>
-                <span class="n">inp</span><span class="o">.</span><span class="n">setPlaceholderText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Digite ou cole: </span><span class="si">{</span><span class="n">campo</span><span class="o">.</span><span class="n">titulo</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">campo</span><span class="o">.</span><span class="n">tipo</span> <span class="o">==</span> <span class="s2">&quot;protocolo&quot;</span><span class="p">:</span>
+                    <span class="n">inp</span><span class="o">.</span><span class="n">setPlaceholderText</span><span class="p">(</span><span class="s2">&quot;Clique em &#39;Protocolo&#39; para gerar automaticamente&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">inp</span><span class="o">.</span><span class="n">setPlaceholderText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Digite ou cole: </span><span class="si">{</span><span class="n">campo</span><span class="o">.</span><span class="n">titulo</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                
                 <span class="bp">self</span><span class="o">.</span><span class="n">_apply_input_mask</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">campo</span><span class="o">.</span><span class="n">tipo</span><span class="p">)</span>
                 <span class="n">inp</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">prev_value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">campo</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="n">campo</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">inp</span>
@@ -1626,6 +1700,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">lbl_file</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Arquivo: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">save_sheet_config</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_sheet_dependent_ui</span><span class="p">()</span>
         <span class="c1"># atualiza assinatura e lista de abas imediatamente</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_sheet_last_sig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file_signature</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
@@ -1633,6 +1708,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_sheet_last_sig</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_reload_sheet_list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_sheet_dependent_ui</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">prepare</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
@@ -2081,12 +2157,22 @@
 <div class="viewcode-block" id="App.generate_protocol">
 <a class="viewcode-back" href="../api/app.html#app.App.generate_protocol">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">generate_protocol</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Função responsável por gerar um protocolo no formato dd/MM/yy/hh/mm/ss\n</span>
-<span class="sd">            Exibe uma janela com o protocolo gerado.</span>
-<span class="sd">            Returns:</span>
-<span class="sd">                None</span>
-<span class="sd">        &quot;&quot;&quot;</span> 
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gera um número de protocolo no formato ddMMyyHHmmss.</span>
+<span class="sd">        Se existir algum campo do tipo &#39;protocolo&#39;, preenche automaticamente</span>
+<span class="sd">        o primeiro campo encontrado com o valor gerado.</span>
+<span class="sd">        Não cria campo novo automaticamente.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">protocolo</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">%m%y%H%M%S&quot;</span><span class="p">)</span>
+
+        <span class="c1"># procura o primeiro campo do tipo protocolo</span>
+        <span class="n">campo_protocolo</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">campos</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">tipo</span> <span class="o">==</span> <span class="s2">&quot;protocolo&quot;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># se existir, preenche o input correspondente</span>
+        <span class="k">if</span> <span class="n">campo_protocolo</span><span class="p">:</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">campo_protocolo</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">):</span>
+                <span class="n">w</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">protocolo</span><span class="p">)</span>
 
         <span class="n">dlg</span> <span class="o">=</span> <span class="n">QDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">dlg</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Protocolo gerado&quot;</span><span class="p">)</span>
@@ -2110,18 +2196,35 @@
         <span class="n">btn_close</span> <span class="o">=</span> <span class="n">buttons</span><span class="o">.</span><span class="n">addButton</span><span class="p">(</span><span class="s2">&quot;Fechar&quot;</span><span class="p">,</span> <span class="n">QDialogButtonBox</span><span class="o">.</span><span class="n">RejectRole</span><span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">copy_protocol</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Função responsável por permitir copiar o protocolo gerado, clicando no botão &#39;copiar&#39;</span>
-<span class="sd">            &quot;&quot;&quot;</span>
             <span class="n">QApplication</span><span class="o">.</span><span class="n">clipboard</span><span class="p">()</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">protocolo</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">lbl_status</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Protocolo gerado e copiado: </span><span class="si">{</span><span class="n">protocolo</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Copiado&quot;</span><span class="p">,</span> <span class="s2">&quot;Protocolo copiado para a área de transferência.&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">campo_protocolo</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lbl_status</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Protocolo gerado, copiado e inserido no campo &#39;</span><span class="si">{</span><span class="n">campo_protocolo</span><span class="o">.</span><span class="n">titulo</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">protocolo</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lbl_status</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Protocolo gerado e copiado: </span><span class="si">{</span><span class="n">protocolo</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+
+            <span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="s2">&quot;Copiado&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Protocolo copiado para a área de transferência.&quot;</span>
+            <span class="p">)</span>
 
         <span class="n">btn_copy</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">copy_protocol</span><span class="p">)</span>
         <span class="n">btn_close</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">dlg</span><span class="o">.</span><span class="n">reject</span><span class="p">)</span>
 
         <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">buttons</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">lbl_status</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Protocolo gerado: </span><span class="si">{</span><span class="n">protocolo</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">campo_protocolo</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lbl_status</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Protocolo gerado e inserido no campo &#39;</span><span class="si">{</span><span class="n">campo_protocolo</span><span class="o">.</span><span class="n">titulo</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">protocolo</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lbl_status</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Protocolo gerado: </span><span class="si">{</span><span class="n">protocolo</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
         <span class="n">dlg</span><span class="o">.</span><span class="n">exec</span><span class="p">()</span></div>
 
     
@@ -2165,11 +2268,20 @@
         <span class="n">total_locked</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">locked_fields</span><span class="p">)</span>
         <span class="n">total_deletable</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">deletable_fields</span><span class="p">)</span>
 
-        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Confirma excluir </span><span class="si">{</span><span class="n">total_deletable</span><span class="si">}</span><span class="s2"> campo(s)?</span><span class="se">\n\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;Isso também removerá as colunas correspondentes na planilha Excel.</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;Os dados dessas colunas serão removidos definitivamente.&quot;</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_path</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Confirma excluir </span><span class="si">{</span><span class="n">total_deletable</span><span class="si">}</span><span class="s2"> campo(s)?</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Isso também removerá as colunas correspondentes na planilha Excel.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Os dados dessas colunas serão removidos definitivamente.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Confirma excluir </span><span class="si">{</span><span class="n">total_deletable</span><span class="si">}</span><span class="s2"> campo(s)?</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Nenhuma planilha está selecionada no momento.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;A exclusão afetará apenas os campos do controle do aplicativo.&quot;</span>
+            <span class="p">)</span>
+
+        
 
         <span class="k">if</span> <span class="n">total_locked</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">+=</span> <span class="p">(</span>

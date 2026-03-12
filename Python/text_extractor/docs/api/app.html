@@ -348,6 +348,19 @@ Ao aceitar, salva as alterações e atualiza todos os widgets de e-mail ativos.<
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="app.App.clear_selected_sheet">
+<span class="sig-name descname"><span class="pre">clear_selected_sheet</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app.html#App.clear_selected_sheet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.App.clear_selected_sheet" title="Link to this definition">¶</a></dt>
+<dd><p>Limpa a seleção da planilha atual sem apagar o arquivo do disco.</p>
+<p>Remove o vínculo da interface com a planilha, limpa a lista de abas,
+atualiza a configuração persistida e mantém os campos do controle na UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="app.App.on_sheet_changed">
 <span class="sig-name descname"><span class="pre">on_sheet_changed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_sheet</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app.html#App.on_sheet_changed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.App.on_sheet_changed" title="Link to this definition">¶</a></dt>
 <dd><p>Atualiza a aba ativa e recarrega os campos correspondentes. Se a aba for nova,
@@ -549,14 +562,13 @@ atualiza o status.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="app.App.generate_protocol">
 <span class="sig-name descname"><span class="pre">generate_protocol</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/app.html#App.generate_protocol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.App.generate_protocol" title="Link to this definition">¶</a></dt>
-<dd><p>Função responsável por gerar um protocolo no formato dd/MM/yy/hh/mm/ss</p>
-<p>Exibe uma janela com o protocolo gerado.</p>
+<dd><p>Gera um número de protocolo no formato ddMMyyHHmmss.
+Se existir algum campo do tipo ‘protocolo’, preenche automaticamente
+o primeiro campo encontrado com o valor gerado.
+Não cria campo novo automaticamente.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -721,6 +733,7 @@ instancia e exibe a janela principal.</p>
 <li><a class="reference internal" href="#app.App"><code class="docutils literal notranslate"><span class="pre">App</span></code></a><ul>
 <li><a class="reference internal" href="#app.App.open_license"><code class="docutils literal notranslate"><span class="pre">App.open_license()</span></code></a></li>
 <li><a class="reference internal" href="#app.App.open_email_domains"><code class="docutils literal notranslate"><span class="pre">App.open_email_domains()</span></code></a></li>
+<li><a class="reference internal" href="#app.App.clear_selected_sheet"><code class="docutils literal notranslate"><span class="pre">App.clear_selected_sheet()</span></code></a></li>
 <li><a class="reference internal" href="#app.App.on_sheet_changed"><code class="docutils literal notranslate"><span class="pre">App.on_sheet_changed()</span></code></a></li>
 <li><a class="reference internal" href="#app.App.create_new_sheet"><code class="docutils literal notranslate"><span class="pre">App.create_new_sheet()</span></code></a></li>
 <li><a class="reference internal" href="#app.App.refresh_sheets"><code class="docutils literal notranslate"><span class="pre">App.refresh_sheets()</span></code></a></li>

@@ -588,6 +588,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">wb</span> <span class="o">=</span> <span class="n">load_workbook</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">sheet_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">wb</span><span class="o">.</span><span class="n">sheetnames</span><span class="p">:</span>
+        <span class="n">wb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;A aba &#39;</span><span class="si">{</span><span class="n">sheet_name</span><span class="si">}</span><span class="s2">&#39; não existe na planilha.&quot;</span><span class="p">)</span>
 
     <span class="n">ws</span> <span class="o">=</span> <span class="n">wb</span><span class="p">[</span><span class="n">sheet_name</span><span class="p">]</span>
@@ -609,7 +610,29 @@
             <span class="n">ws</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">new_col</span><span class="p">)</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">campo</span><span class="o">.</span><span class="n">titulo</span>
             <span class="n">header_to_col</span><span class="p">[</span><span class="n">campo</span><span class="o">.</span><span class="n">titulo</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_col</span>
 
-    <span class="n">next_row</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">max_row</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">first_empty_row</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retorna a primeira linha realmente vazia para inserção.</span>
+<span class="sd">        A linha 1 é o cabeçalho, então os dados começam na 2.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">max_col</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">ws</span><span class="o">.</span><span class="n">max_column</span><span class="p">)</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">row_has_data</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_col</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">col</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+                    <span class="n">row_has_data</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">break</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">row_has_data</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">row</span>
+
+            <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">next_row</span> <span class="o">=</span> <span class="n">first_empty_row</span><span class="p">()</span>
 
     <span class="k">for</span> <span class="n">campo</span> <span class="ow">in</span> <span class="n">campos</span><span class="p">:</span>
         <span class="n">col_idx</span> <span class="o">=</span> <span class="n">header_to_col</span><span class="p">[</span><span class="n">campo</span><span class="o">.</span><span class="n">titulo</span><span class="p">]</span>
@@ -637,7 +660,6 @@
             <span class="n">parsed_num</span> <span class="o">=</span> <span class="n">parse_br_number</span><span class="p">(</span><span class="n">raw_value</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">parsed_num</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="c1"># fallback defensivo: grava como texto se vier algo inválido</span>
                 <span class="n">cell</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">raw_value</span>
                 <span class="n">cell</span><span class="o">.</span><span class="n">number_format</span> <span class="o">=</span> <span class="s2">&quot;@&quot;</span>
             <span class="k">else</span><span class="p">:</span>
