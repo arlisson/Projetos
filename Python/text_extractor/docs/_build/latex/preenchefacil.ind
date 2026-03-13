@@ -1,0 +1,257 @@
+\begin{sphinxtheindex}
+\let\bigletter\sphinxstyleindexlettergroup
+\let\spxpagem \sphinxstyleindexpagemain
+\let\spxentry \sphinxstyleindexentry
+\let\spxextra \sphinxstyleindexextra
+
+  \bigletter A
+  \item \spxentry{abs\_path()}\spxextra{in module app}, \hyperpage{3}
+  \item \spxentry{abs\_path()}\spxextra{in module license\_dialog}, \hyperpage{20}
+  \item \spxentry{add\_field()}\spxextra{app.App method}, \hyperpage{6}
+  \item \spxentry{app}
+    \subitem \spxentry{module}, \hyperpage{3}
+  \item \spxentry{App}\spxextra{class in app}, \hyperpage{3}
+  \item \spxentry{app\_state\_dir()}\spxextra{in module online\_license}, \hyperpage{23}
+  \item \spxentry{app\_state\_dir()}\spxextra{in module user\_login}, \hyperpage{30}
+  \item \spxentry{append\_row\_typed()}\spxextra{in module excel\_io}, \hyperpage{16}
+  \item \spxentry{apply\_button\_icon()}\spxextra{icon\_manager.IconManager method}, \hyperpage{19}
+  \item \spxentry{apply\_column\_type\_rules()}\spxextra{in module excel\_io}, \hyperpage{16}
+  \item \spxentry{apply\_theme()}\spxextra{license\_dialog.LicenseDialog method}, \hyperpage{21}
+
+  \indexspace
+  \bigletter B
+  \item \spxentry{blend()}\spxextra{in module colors}, \hyperpage{9}
+  \item \spxentry{BoolInputWidget}\spxextra{class in widgets}, \hyperpage{32}
+
+  \indexspace
+  \bigletter C
+  \item \spxentry{cache\_path()}\spxextra{in module online\_license}, \hyperpage{23}
+  \item \spxentry{call\_api()}\spxextra{in module online\_license}, \hyperpage{25}
+  \item \spxentry{Campo}\spxextra{class in models}, \hyperpage{22}
+  \item \spxentry{cast\_value\_by\_type()}\spxextra{in module formatters}, \hyperpage{19}
+  \item \spxentry{cbData}\spxextra{simple\_lock.DATA\_BLOB attribute}, \hyperpage{28}
+  \item \spxentry{choose\_file()}\spxextra{app.App method}, \hyperpage{5}
+  \item \spxentry{clear\_cache()}\spxextra{icon\_manager.IconManager method}, \hyperpage{19}
+  \item \spxentry{clear\_cache()}\spxextra{in module online\_license}, \hyperpage{23}
+  \item \spxentry{clear\_fields()}\spxextra{app.App method}, \hyperpage{7}
+  \item \spxentry{clear\_login()}\spxextra{in module user\_login}, \hyperpage{30}
+  \item \spxentry{clear\_selected\_sheet()}\spxextra{app.App method}, \hyperpage{4}
+  \item \spxentry{close()}\spxextra{loading\_screen.LoadingScreen method}, \hyperpage{22}
+  \item \spxentry{colors}
+    \subitem \spxentry{module}, \hyperpage{8}
+  \item \spxentry{config}
+    \subitem \spxentry{module}, \hyperpage{10}
+  \item \spxentry{create\_new\_sheet()}\spxextra{app.App method}, \hyperpage{4}
+  \item \spxentry{CursorStartLineEdit}\spxextra{class in dialogs}, \hyperpage{14}
+
+  \indexspace
+  \bigletter D
+  \item \spxentry{DATA\_BLOB}\spxextra{class in simple\_lock}, \hyperpage{28}
+  \item \spxentry{default\_email\_domains\_config()}\spxextra{in module config}, \hyperpage{13}
+  \item \spxentry{default\_fields\_config()}\spxextra{in module config}, \hyperpage{10}
+  \item \spxentry{default\_ui\_config()}\spxextra{in module config}, \hyperpage{12}
+  \item \spxentry{delete\_all\_fields()}\spxextra{app.App method}, \hyperpage{6}
+  \item \spxentry{delete\_column\_by\_header()}\spxextra{in module excel\_io}, \hyperpage{17}
+  \item \spxentry{delete\_field()}\spxextra{app.App method}, \hyperpage{6}
+  \item \spxentry{delete\_sheet\_key()}\spxextra{in module config}, \hyperpage{14}
+  \item \spxentry{deleteRequested}\spxextra{widgets.FieldRowWidget attribute}, \hyperpage{32}
+  \item \spxentry{derive\_theme\_from\_background()}\spxextra{in module colors}, \hyperpage{9}
+  \item \spxentry{device\_id()}\spxextra{in module online\_license}, \hyperpage{25}
+  \item \spxentry{dialogs}
+    \subitem \spxentry{module}, \hyperpage{14}
+  \item \spxentry{digits\_only()}\spxextra{in module formatters}, \hyperpage{17}
+  \item \spxentry{domain()}\spxextra{widgets.EmailInputWidget method}, \hyperpage{31}
+  \item \spxentry{domains()}\spxextra{dialogs.EmailDomainsDialog method}, \hyperpage{15}
+  \item \spxentry{dpapi\_protect\_localmachine()}\spxextra{in module simple\_lock}, \hyperpage{28}
+  \item \spxentry{dpapi\_unprotect()}\spxextra{in module simple\_lock}, \hyperpage{29}
+
+  \indexspace
+  \bigletter E
+  \item \spxentry{edit\_field()}\spxextra{app.App method}, \hyperpage{6}
+  \item \spxentry{editRequested}\spxextra{widgets.FieldRowWidget attribute}, \hyperpage{32}
+  \item \spxentry{EmailDomainsDialog}\spxextra{class in dialogs}, \hyperpage{15}
+  \item \spxentry{EmailInputWidget}\spxextra{class in widgets}, \hyperpage{31}
+  \item \spxentry{ensure\_online\_license()}\spxextra{in module online\_license}, \hyperpage{25}
+  \item \spxentry{ensure\_or\_mark()}\spxextra{in module simple\_lock}, \hyperpage{29}
+  \item \spxentry{ensure\_sheet\_exists()}\spxextra{in module excel\_io}, \hyperpage{15}
+  \item \spxentry{ensure\_workbook()}\spxextra{in module excel\_io}, \hyperpage{16}
+  \item \spxentry{excel\_io}
+    \subitem \spxentry{module}, \hyperpage{15}
+  \item \spxentry{exe\_dir\_base()}\spxextra{in module simple\_lock}, \hyperpage{26}
+
+  \indexspace
+  \bigletter F
+  \item \spxentry{FieldRowWidget}\spxextra{class in widgets}, \hyperpage{32}
+  \item \spxentry{file\_exists()}\spxextra{in module app}, \hyperpage{3}
+  \item \spxentry{finish\_and\_close()}\spxextra{loading\_screen.LoadingScreen method}, 
+		\hyperpage{22}
+  \item \spxentry{fixo}\spxextra{models.Campo attribute}, \hyperpage{22}
+  \item \spxentry{focusInEvent()}\spxextra{dialogs.CursorStartLineEdit method}, \hyperpage{15}
+  \item \spxentry{formatters}
+    \subitem \spxentry{module}, \hyperpage{17}
+
+  \indexspace
+  \bigletter G
+  \item \spxentry{generate\_protocol()}\spxextra{app.App method}, \hyperpage{6}
+  \item \spxentry{get\_email()}\spxextra{widgets.EmailInputWidget method}, \hyperpage{32}
+  \item \spxentry{get\_last\_sheet\_path()}\spxextra{in module config}, \hyperpage{12}
+  \item \spxentry{get\_machine\_guid()}\spxextra{in module online\_license}, \hyperpage{24}
+  \item \spxentry{get\_sheet\_campos()}\spxextra{in module config}, \hyperpage{10}
+  \item \spxentry{get\_sheet\_headers()}\spxextra{in module excel\_io}, \hyperpage{16}
+
+  \indexspace
+  \bigletter H
+  \item \spxentry{hex\_to\_rgb()}\spxextra{in module colors}, \hyperpage{8}
+  \item \spxentry{hide()}\spxextra{loading\_screen.LoadingScreen method}, \hyperpage{22}
+  \item \spxentry{hsl\_to\_rgb()}\spxextra{in module colors}, \hyperpage{8}
+
+  \indexspace
+  \bigletter I
+  \item \spxentry{icon\_for\_key()}\spxextra{icon\_manager.IconManager method}, \hyperpage{19}
+  \item \spxentry{icon\_manager}
+    \subitem \spxentry{module}, \hyperpage{19}
+  \item \spxentry{IconManager}\spxextra{class in icon\_manager}, \hyperpage{19}
+  \item \spxentry{id}\spxextra{models.Campo attribute}, \hyperpage{22}
+  \item \spxentry{infer\_type\_from\_title()}\spxextra{in module models}, \hyperpage{23}
+  \item \spxentry{internal\_dir()}\spxextra{in module simple\_lock}, \hyperpage{26}
+  \item \spxentry{internal\_marker\_path()}\spxextra{in module simple\_lock}, \hyperpage{27}
+  \item \spxentry{is\_excel\_lock\_present()}\spxextra{in module excel\_io}, \hyperpage{16}
+  \item \spxentry{is\_login\_expired()}\spxextra{in module user\_login}, \hyperpage{30}
+
+  \indexspace
+  \bigletter L
+  \item \spxentry{license\_dialog}
+    \subitem \spxentry{module}, \hyperpage{20}
+  \item \spxentry{license\_path\_programdata()}\spxextra{in module simple\_lock}, \hyperpage{27}
+  \item \spxentry{LicenseDialog}\spxextra{class in license\_dialog}, \hyperpage{20}
+  \item \spxentry{list\_sheets()}\spxextra{in module excel\_io}, \hyperpage{15}
+  \item \spxentry{list\_sheets\_with\_ids()}\spxextra{in module excel\_io}, \hyperpage{15}
+  \item \spxentry{load\_cache()}\spxextra{in module online\_license}, \hyperpage{24}
+  \item \spxentry{load\_email\_domains\_config()}\spxextra{in module config}, \hyperpage{13}
+  \item \spxentry{load\_fields\_config()}\spxextra{in module config}, \hyperpage{11}
+  \item \spxentry{load\_login()}\spxextra{in module user\_login}, \hyperpage{30}
+  \item \spxentry{load\_sheet\_config()}\spxextra{in module config}, \hyperpage{11}
+  \item \spxentry{load\_ui\_config()}\spxextra{in module config}, \hyperpage{12}
+  \item \spxentry{loading\_screen}
+    \subitem \spxentry{module}, \hyperpage{21}
+  \item \spxentry{LoadingScreen}\spxextra{class in loading\_screen}, \hyperpage{21}
+  \item \spxentry{local()}\spxextra{widgets.EmailInputWidget method}, \hyperpage{31}
+  \item \spxentry{locked}\spxextra{models.Campo attribute}, \hyperpage{22}
+  \item \spxentry{lockToggled}\spxextra{widgets.FieldRowWidget attribute}, \hyperpage{32}
+  \item \spxentry{login\_path()}\spxextra{in module user\_login}, \hyperpage{30}
+  \item \spxentry{luminance()}\spxextra{in module colors}, \hyperpage{9}
+
+  \indexspace
+  \bigletter M
+  \item \spxentry{machine\_id()}\spxextra{in module simple\_lock}, \hyperpage{27}
+  \item \spxentry{machine\_id\_hash()}\spxextra{in module simple\_lock}, \hyperpage{28}
+  \item \spxentry{main()}\spxextra{in module app}, \hyperpage{7}
+  \item \spxentry{make\_unique\_id()}\spxextra{in module models}, \hyperpage{23}
+  \item \spxentry{models}
+    \subitem \spxentry{module}, \hyperpage{22}
+  \item \spxentry{module}
+    \subitem \spxentry{app}, \hyperpage{3}
+    \subitem \spxentry{colors}, \hyperpage{8}
+    \subitem \spxentry{config}, \hyperpage{10}
+    \subitem \spxentry{dialogs}, \hyperpage{14}
+    \subitem \spxentry{excel\_io}, \hyperpage{15}
+    \subitem \spxentry{formatters}, \hyperpage{17}
+    \subitem \spxentry{icon\_manager}, \hyperpage{19}
+    \subitem \spxentry{license\_dialog}, \hyperpage{20}
+    \subitem \spxentry{loading\_screen}, \hyperpage{21}
+    \subitem \spxentry{models}, \hyperpage{22}
+    \subitem \spxentry{online\_license}, \hyperpage{23}
+    \subitem \spxentry{simple\_lock}, \hyperpage{26}
+    \subitem \spxentry{user\_login}, \hyperpage{30}
+    \subitem \spxentry{widgets}, \hyperpage{31}
+  \item \spxentry{mousePressEvent()}\spxextra{dialogs.CursorStartLineEdit method}, \hyperpage{15}
+
+  \indexspace
+  \bigletter N
+  \item \spxentry{normalize\_bool\_ptbr()}\spxextra{in module formatters}, \hyperpage{18}
+  \item \spxentry{normalize\_masked\_text()}\spxextra{in module formatters}, \hyperpage{17}
+  \item \spxentry{now\_ts()}\spxextra{in module online\_license}, \hyperpage{24}
+
+  \indexspace
+  \bigletter O
+  \item \spxentry{on\_field\_lock\_toggled()}\spxextra{app.App method}, \hyperpage{5}
+  \item \spxentry{on\_sheet\_changed()}\spxextra{app.App method}, \hyperpage{4}
+  \item \spxentry{online\_license}
+    \subitem \spxentry{module}, \hyperpage{23}
+  \item \spxentry{open\_email\_domains()}\spxextra{app.App method}, \hyperpage{4}
+  \item \spxentry{open\_help()}\spxextra{app.App method}, \hyperpage{4}
+  \item \spxentry{open\_license()}\spxextra{app.App method}, \hyperpage{4}
+  \item \spxentry{open\_settings()}\spxextra{app.App method}, \hyperpage{4}
+  \item \spxentry{open\_theme\_settings()}\spxextra{app.App method}, \hyperpage{7}
+
+  \indexspace
+  \bigletter P
+  \item \spxentry{parse\_br\_date\_or\_text()}\spxextra{in module excel\_io}, \hyperpage{16}
+  \item \spxentry{parse\_br\_number()}\spxextra{in module excel\_io}, \hyperpage{16}
+  \item \spxentry{parse\_date\_any()}\spxextra{in module formatters}, \hyperpage{18}
+  \item \spxentry{parse\_decimal\_br()}\spxextra{in module formatters}, \hyperpage{18}
+  \item \spxentry{pbData}\spxextra{simple\_lock.DATA\_BLOB attribute}, \hyperpage{28}
+  \item \spxentry{programdata\_dir()}\spxextra{in module simple\_lock}, \hyperpage{27}
+  \item \spxentry{prompt\_email()}\spxextra{in module user\_login}, \hyperpage{31}
+
+  \indexspace
+  \bigletter R
+  \item \spxentry{read\_headers\_from\_excel()}\spxextra{in module excel\_io}, \hyperpage{16}
+  \item \spxentry{read\_license\_text()}\spxextra{in module license\_dialog}, \hyperpage{20}
+  \item \spxentry{refresh\_sheets()}\spxextra{app.App method}, \hyperpage{4}
+  \item \spxentry{rename\_column\_header()}\spxextra{in module excel\_io}, \hyperpage{17}
+  \item \spxentry{rename\_sheet\_key()}\spxextra{in module config}, \hyperpage{10}
+  \item \spxentry{render\_fields()}\spxextra{app.App method}, \hyperpage{5}
+  \item \spxentry{restore\_defaults()}\spxextra{dialogs.ThemeDialog method}, \hyperpage{14}
+  \item \spxentry{rgb\_to\_hex()}\spxextra{in module colors}, \hyperpage{8}
+  \item \spxentry{rgb\_to\_hsl()}\spxextra{in module colors}, \hyperpage{8}
+
+  \indexspace
+  \bigletter S
+  \item \spxentry{sanitize\_id()}\spxextra{in module models}, \hyperpage{22}
+  \item \spxentry{save\_cache()}\spxextra{in module online\_license}, \hyperpage{24}
+  \item \spxentry{save\_email\_domains\_config()}\spxextra{in module config}, \hyperpage{14}
+  \item \spxentry{save\_fields\_config()}\spxextra{in module config}, \hyperpage{11}
+  \item \spxentry{save\_lead()}\spxextra{app.App method}, \hyperpage{7}
+  \item \spxentry{save\_login()}\spxextra{in module user\_login}, \hyperpage{30}
+  \item \spxentry{save\_sheet\_config()}\spxextra{in module config}, \hyperpage{11}
+  \item \spxentry{save\_ui\_config()}\spxextra{in module config}, \hyperpage{13}
+  \item \spxentry{set\_domains()}\spxextra{widgets.EmailInputWidget method}, \hyperpage{31}
+  \item \spxentry{set\_email()}\spxextra{widgets.EmailInputWidget method}, \hyperpage{32}
+  \item \spxentry{set\_force\_cursor\_start()}\spxextra{dialogs.CursorStartLineEdit method}, 
+		\hyperpage{15}
+  \item \spxentry{set\_locked()}\spxextra{widgets.FieldRowWidget method}, \hyperpage{32}
+  \item \spxentry{set\_parts()}\spxextra{widgets.EmailInputWidget method}, \hyperpage{31}
+  \item \spxentry{set\_sheet\_campos()}\spxextra{in module config}, \hyperpage{10}
+  \item \spxentry{set\_value()}\spxextra{widgets.BoolInputWidget method}, \hyperpage{32}
+  \item \spxentry{SettingsDialog}\spxextra{class in app}, \hyperpage{3}
+  \item \spxentry{show()}\spxextra{loading\_screen.LoadingScreen method}, \hyperpage{21}
+  \item \spxentry{simple\_lock}
+    \subitem \spxentry{module}, \hyperpage{26}
+  \item \spxentry{strip\_mask\_chars()}\spxextra{in module formatters}, \hyperpage{18}
+  \item \spxentry{sync\_fields\_from\_existing\_excel()}\spxextra{app.App method}, \hyperpage{5}
+
+  \indexspace
+  \bigletter T
+  \item \spxentry{ThemeDialog}\spxextra{class in dialogs}, \hyperpage{14}
+  \item \spxentry{tipo}\spxextra{models.Campo attribute}, \hyperpage{22}
+  \item \spxentry{titulo}\spxextra{models.Campo attribute}, \hyperpage{22}
+
+  \indexspace
+  \bigletter U
+  \item \spxentry{update()}\spxextra{loading\_screen.LoadingScreen method}, \hyperpage{21}
+  \item \spxentry{user\_login}
+    \subitem \spxentry{module}, \hyperpage{30}
+
+  \indexspace
+  \bigletter V
+  \item \spxentry{value()}\spxextra{widgets.BoolInputWidget method}, \hyperpage{32}
+  \item \spxentry{values()}\spxextra{dialogs.ThemeDialog method}, \hyperpage{14}
+
+  \indexspace
+  \bigletter W
+  \item \spxentry{widgets}
+    \subitem \spxentry{module}, \hyperpage{31}
+  \item \spxentry{write\_headers\_from\_campos()}\spxextra{in module excel\_io}, \hyperpage{16}
+
+\end{sphinxtheindex}

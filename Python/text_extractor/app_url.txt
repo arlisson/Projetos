@@ -16,3 +16,7 @@ app.py
 
 
 python -m sphinx -b html -E docs/source docs
+
+python -m sphinx -M latexpdf docs/source docs\_build
+cd docs\_build\latex
+.\make.bat all-pdf

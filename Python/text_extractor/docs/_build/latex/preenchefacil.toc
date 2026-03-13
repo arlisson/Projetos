@@ -1,0 +1,18 @@
+\babel@toc {english}{}\relax 
+\contentsline {chapter}{\numberline {1}text\_extractor}{3}{chapter.1}%
+\contentsline {section}{\numberline {1.1}app module}{3}{section.1.1}%
+\contentsline {section}{\numberline {1.2}colors module}{8}{section.1.2}%
+\contentsline {section}{\numberline {1.3}config module}{10}{section.1.3}%
+\contentsline {section}{\numberline {1.4}dialogs module}{14}{section.1.4}%
+\contentsline {section}{\numberline {1.5}excel\_io module}{15}{section.1.5}%
+\contentsline {section}{\numberline {1.6}formatters module}{17}{section.1.6}%
+\contentsline {section}{\numberline {1.7}icon\_manager module}{19}{section.1.7}%
+\contentsline {section}{\numberline {1.8}license\_dialog module}{20}{section.1.8}%
+\contentsline {section}{\numberline {1.9}loading\_screen module}{21}{section.1.9}%
+\contentsline {section}{\numberline {1.10}models module}{22}{section.1.10}%
+\contentsline {section}{\numberline {1.11}online\_license module}{23}{section.1.11}%
+\contentsline {section}{\numberline {1.12}simple\_lock module}{26}{section.1.12}%
+\contentsline {section}{\numberline {1.13}user\_login module}{30}{section.1.13}%
+\contentsline {section}{\numberline {1.14}widgets module}{31}{section.1.14}%
+\contentsline {chapter}{Python Module Index}{33}{section*.149}%
+\contentsline {chapter}{Index}{35}{section*.150}%
