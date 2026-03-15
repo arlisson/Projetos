@@ -7,11 +7,8 @@ use serde_json::Value;
 
 #[command]
 fn buscar_produto_liga_cmd(url: String) -> Result<Value, String> {
-    // Ajuste o caminho conforme a estrutura do seu projeto.
-    // Aqui estou assumindo que o binário roda em `src-tauri/target/...`
-    // e que `scraping-server` está na raiz do projeto ao lado de `src-tauri`.
     let output = StdCommand::new("node")
-        .current_dir("../scraping-server") // ajuste se necessário
+        .current_dir("../scraping-server")
         .arg("dist/cli.js")
         .arg(&url)
         .output()
@@ -32,17 +29,14 @@ fn buscar_produto_liga_cmd(url: String) -> Result<Value, String> {
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        // plugin do banco
-        .plugin(
-            tauri_plugin_sql::Builder::default()
-                .build(),
-        )
-        // plugin HTTP (se você ainda usa em outras partes da app)
+        .plugin(tauri_plugin_sql::Builder::default().build())
         .plugin(tauri_plugin_http::init())
         .invoke_handler(tauri::generate_handler![
             log::init_logs,
             log::log_info,
             log::log_error,
+            log::read_logs,
+            log::clear_logs,
             buscar_produto_liga_cmd,
         ])
         .run(tauri::generate_context!())

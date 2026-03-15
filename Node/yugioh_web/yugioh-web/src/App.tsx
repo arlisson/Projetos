@@ -11,6 +11,8 @@ import { EditarCarta } from './views/Cartas/EditarCarta'
 import { EditarProduto } from './views/Produtos/EditarProduto'
 import { EditarVendasCartas } from './views/Cartas/EditarVendasCartas'
 import { EditarVendasProdutos } from './views/Produtos/EditarVendasProdutos'
+import { CadastrarCartasColecao } from './views/Cartas/CadastrarCartasColecao'
+import {Logs} from './views/Sistema/Logs'
 
 export default function App() {
 
@@ -27,13 +29,17 @@ export default function App() {
       <Route path="/cartas/vendas/listar" element={<ListarVendasCartas />} />
       <Route path="/cartas/vendas/editar" element={<EditarVendasCartas />} />
       <Route path="/cartas/editar" element={<EditarCarta />} />
-
+      <Route path="/cartas/cadastrar/cadastrar-colecao" element={<CadastrarCartasColecao/>}/>
+      
       {/* Produtos */}
       <Route path="/produtos/cadastrar" element={<CadastrarProduto />} />
       <Route path="/produtos/listar" element={<ListarProdutos />} />
       <Route path='/produtos/vendas/listar' element={<ListarVendasProdutos />} />
       <Route path="/produtos/vendas/editar" element={<EditarVendasProdutos />} />
       <Route path="/produtos/editar" element={<EditarProduto />} />
+
+      {/*Sistema*/}
+      <Route path="/log/visualizar" element={<Logs/>}/>
 
     </Routes>
   )
