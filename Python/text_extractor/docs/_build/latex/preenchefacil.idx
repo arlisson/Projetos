@@ -1,0 +1,174 @@
+\indexentry{module@\spxentry{module}!app@\spxentry{app}|hyperpage}{3}
+\indexentry{app@\spxentry{app}!module@\spxentry{module}|hyperpage}{3}
+\indexentry{abs\_path() (in module app)@\spxentry{abs\_path()}\spxextra{in module app}|hyperpage}{3}
+\indexentry{file\_exists() (in module app)@\spxentry{file\_exists()}\spxextra{in module app}|hyperpage}{3}
+\indexentry{SettingsDialog (class in app)@\spxentry{SettingsDialog}\spxextra{class in app}|hyperpage}{3}
+\indexentry{App (class in app)@\spxentry{App}\spxextra{class in app}|hyperpage}{3}
+\indexentry{open\_license() (app.App method)@\spxentry{open\_license()}\spxextra{app.App method}|hyperpage}{4}
+\indexentry{open\_email\_domains() (app.App method)@\spxentry{open\_email\_domains()}\spxextra{app.App method}|hyperpage}{4}
+\indexentry{clear\_selected\_sheet() (app.App method)@\spxentry{clear\_selected\_sheet()}\spxextra{app.App method}|hyperpage}{4}
+\indexentry{on\_sheet\_changed() (app.App method)@\spxentry{on\_sheet\_changed()}\spxextra{app.App method}|hyperpage}{4}
+\indexentry{create\_new\_sheet() (app.App method)@\spxentry{create\_new\_sheet()}\spxextra{app.App method}|hyperpage}{4}
+\indexentry{refresh\_sheets() (app.App method)@\spxentry{refresh\_sheets()}\spxextra{app.App method}|hyperpage}{4}
+\indexentry{open\_settings() (app.App method)@\spxentry{open\_settings()}\spxextra{app.App method}|hyperpage}{4}
+\indexentry{open\_help() (app.App method)@\spxentry{open\_help()}\spxextra{app.App method}|hyperpage}{4}
+\indexentry{render\_fields() (app.App method)@\spxentry{render\_fields()}\spxextra{app.App method}|hyperpage}{5}
+\indexentry{sync\_fields\_from\_existing\_excel() (app.App method)@\spxentry{sync\_fields\_from\_existing\_excel()}\spxextra{app.App method}|hyperpage}{5}
+\indexentry{choose\_file() (app.App method)@\spxentry{choose\_file()}\spxextra{app.App method}|hyperpage}{5}
+\indexentry{on\_field\_lock\_toggled() (app.App method)@\spxentry{on\_field\_lock\_toggled()}\spxextra{app.App method}|hyperpage}{5}
+\indexentry{add\_field() (app.App method)@\spxentry{add\_field()}\spxextra{app.App method}|hyperpage}{6}
+\indexentry{edit\_field() (app.App method)@\spxentry{edit\_field()}\spxextra{app.App method}|hyperpage}{6}
+\indexentry{delete\_field() (app.App method)@\spxentry{delete\_field()}\spxextra{app.App method}|hyperpage}{6}
+\indexentry{generate\_protocol() (app.App method)@\spxentry{generate\_protocol()}\spxextra{app.App method}|hyperpage}{6}
+\indexentry{delete\_all\_fields() (app.App method)@\spxentry{delete\_all\_fields()}\spxextra{app.App method}|hyperpage}{6}
+\indexentry{clear\_fields() (app.App method)@\spxentry{clear\_fields()}\spxextra{app.App method}|hyperpage}{7}
+\indexentry{save\_lead() (app.App method)@\spxentry{save\_lead()}\spxextra{app.App method}|hyperpage}{7}
+\indexentry{open\_theme\_settings() (app.App method)@\spxentry{open\_theme\_settings()}\spxextra{app.App method}|hyperpage}{7}
+\indexentry{main() (in module app)@\spxentry{main()}\spxextra{in module app}|hyperpage}{7}
+\indexentry{module@\spxentry{module}!colors@\spxentry{colors}|hyperpage}{8}
+\indexentry{colors@\spxentry{colors}!module@\spxentry{module}|hyperpage}{8}
+\indexentry{hex\_to\_rgb() (in module colors)@\spxentry{hex\_to\_rgb()}\spxextra{in module colors}|hyperpage}{8}
+\indexentry{rgb\_to\_hex() (in module colors)@\spxentry{rgb\_to\_hex()}\spxextra{in module colors}|hyperpage}{8}
+\indexentry{rgb\_to\_hsl() (in module colors)@\spxentry{rgb\_to\_hsl()}\spxextra{in module colors}|hyperpage}{8}
+\indexentry{hsl\_to\_rgb() (in module colors)@\spxentry{hsl\_to\_rgb()}\spxextra{in module colors}|hyperpage}{8}
+\indexentry{luminance() (in module colors)@\spxentry{luminance()}\spxextra{in module colors}|hyperpage}{9}
+\indexentry{blend() (in module colors)@\spxentry{blend()}\spxextra{in module colors}|hyperpage}{9}
+\indexentry{derive\_theme\_from\_background() (in module colors)@\spxentry{derive\_theme\_from\_background()}\spxextra{in module colors}|hyperpage}{9}
+\indexentry{module@\spxentry{module}!config@\spxentry{config}|hyperpage}{10}
+\indexentry{config@\spxentry{config}!module@\spxentry{module}|hyperpage}{10}
+\indexentry{default\_fields\_config() (in module config)@\spxentry{default\_fields\_config()}\spxextra{in module config}|hyperpage}{10}
+\indexentry{rename\_sheet\_key() (in module config)@\spxentry{rename\_sheet\_key()}\spxextra{in module config}|hyperpage}{10}
+\indexentry{get\_sheet\_campos() (in module config)@\spxentry{get\_sheet\_campos()}\spxextra{in module config}|hyperpage}{10}
+\indexentry{set\_sheet\_campos() (in module config)@\spxentry{set\_sheet\_campos()}\spxextra{in module config}|hyperpage}{10}
+\indexentry{load\_fields\_config() (in module config)@\spxentry{load\_fields\_config()}\spxextra{in module config}|hyperpage}{11}
+\indexentry{save\_fields\_config() (in module config)@\spxentry{save\_fields\_config()}\spxextra{in module config}|hyperpage}{11}
+\indexentry{load\_sheet\_config() (in module config)@\spxentry{load\_sheet\_config()}\spxextra{in module config}|hyperpage}{11}
+\indexentry{save\_sheet\_config() (in module config)@\spxentry{save\_sheet\_config()}\spxextra{in module config}|hyperpage}{11}
+\indexentry{get\_last\_sheet\_path() (in module config)@\spxentry{get\_last\_sheet\_path()}\spxextra{in module config}|hyperpage}{12}
+\indexentry{default\_ui\_config() (in module config)@\spxentry{default\_ui\_config()}\spxextra{in module config}|hyperpage}{12}
+\indexentry{load\_ui\_config() (in module config)@\spxentry{load\_ui\_config()}\spxextra{in module config}|hyperpage}{12}
+\indexentry{save\_ui\_config() (in module config)@\spxentry{save\_ui\_config()}\spxextra{in module config}|hyperpage}{13}
+\indexentry{default\_email\_domains\_config() (in module config)@\spxentry{default\_email\_domains\_config()}\spxextra{in module config}|hyperpage}{13}
+\indexentry{load\_email\_domains\_config() (in module config)@\spxentry{load\_email\_domains\_config()}\spxextra{in module config}|hyperpage}{13}
+\indexentry{save\_email\_domains\_config() (in module config)@\spxentry{save\_email\_domains\_config()}\spxextra{in module config}|hyperpage}{14}
+\indexentry{delete\_sheet\_key() (in module config)@\spxentry{delete\_sheet\_key()}\spxextra{in module config}|hyperpage}{14}
+\indexentry{module@\spxentry{module}!dialogs@\spxentry{dialogs}|hyperpage}{14}
+\indexentry{dialogs@\spxentry{dialogs}!module@\spxentry{module}|hyperpage}{14}
+\indexentry{ThemeDialog (class in dialogs)@\spxentry{ThemeDialog}\spxextra{class in dialogs}|hyperpage}{14}
+\indexentry{restore\_defaults() (dialogs.ThemeDialog method)@\spxentry{restore\_defaults()}\spxextra{dialogs.ThemeDialog method}|hyperpage}{14}
+\indexentry{values() (dialogs.ThemeDialog method)@\spxentry{values()}\spxextra{dialogs.ThemeDialog method}|hyperpage}{14}
+\indexentry{CursorStartLineEdit (class in dialogs)@\spxentry{CursorStartLineEdit}\spxextra{class in dialogs}|hyperpage}{14}
+\indexentry{set\_force\_cursor\_start() (dialogs.CursorStartLineEdit method)@\spxentry{set\_force\_cursor\_start()}\spxextra{dialogs.CursorStartLineEdit method}|hyperpage}{15}
+\indexentry{focusInEvent() (dialogs.CursorStartLineEdit method)@\spxentry{focusInEvent()}\spxextra{dialogs.CursorStartLineEdit method}|hyperpage}{15}
+\indexentry{mousePressEvent() (dialogs.CursorStartLineEdit method)@\spxentry{mousePressEvent()}\spxextra{dialogs.CursorStartLineEdit method}|hyperpage}{15}
+\indexentry{EmailDomainsDialog (class in dialogs)@\spxentry{EmailDomainsDialog}\spxextra{class in dialogs}|hyperpage}{15}
+\indexentry{domains() (dialogs.EmailDomainsDialog method)@\spxentry{domains()}\spxextra{dialogs.EmailDomainsDialog method}|hyperpage}{15}
+\indexentry{module@\spxentry{module}!excel\_io@\spxentry{excel\_io}|hyperpage}{15}
+\indexentry{excel\_io@\spxentry{excel\_io}!module@\spxentry{module}|hyperpage}{15}
+\indexentry{list\_sheets\_with\_ids() (in module excel\_io)@\spxentry{list\_sheets\_with\_ids()}\spxextra{in module excel\_io}|hyperpage}{15}
+\indexentry{list\_sheets() (in module excel\_io)@\spxentry{list\_sheets()}\spxextra{in module excel\_io}|hyperpage}{15}
+\indexentry{ensure\_sheet\_exists() (in module excel\_io)@\spxentry{ensure\_sheet\_exists()}\spxextra{in module excel\_io}|hyperpage}{15}
+\indexentry{is\_excel\_lock\_present() (in module excel\_io)@\spxentry{is\_excel\_lock\_present()}\spxextra{in module excel\_io}|hyperpage}{16}
+\indexentry{get\_sheet\_headers() (in module excel\_io)@\spxentry{get\_sheet\_headers()}\spxextra{in module excel\_io}|hyperpage}{16}
+\indexentry{read\_headers\_from\_excel() (in module excel\_io)@\spxentry{read\_headers\_from\_excel()}\spxextra{in module excel\_io}|hyperpage}{16}
+\indexentry{write\_headers\_from\_campos() (in module excel\_io)@\spxentry{write\_headers\_from\_campos()}\spxextra{in module excel\_io}|hyperpage}{16}
+\indexentry{ensure\_workbook() (in module excel\_io)@\spxentry{ensure\_workbook()}\spxextra{in module excel\_io}|hyperpage}{16}
+\indexentry{apply\_column\_type\_rules() (in module excel\_io)@\spxentry{apply\_column\_type\_rules()}\spxextra{in module excel\_io}|hyperpage}{16}
+\indexentry{parse\_br\_number() (in module excel\_io)@\spxentry{parse\_br\_number()}\spxextra{in module excel\_io}|hyperpage}{16}
+\indexentry{parse\_br\_date\_or\_text() (in module excel\_io)@\spxentry{parse\_br\_date\_or\_text()}\spxextra{in module excel\_io}|hyperpage}{16}
+\indexentry{append\_row\_typed() (in module excel\_io)@\spxentry{append\_row\_typed()}\spxextra{in module excel\_io}|hyperpage}{16}
+\indexentry{delete\_column\_by\_header() (in module excel\_io)@\spxentry{delete\_column\_by\_header()}\spxextra{in module excel\_io}|hyperpage}{17}
+\indexentry{rename\_column\_header() (in module excel\_io)@\spxentry{rename\_column\_header()}\spxextra{in module excel\_io}|hyperpage}{17}
+\indexentry{module@\spxentry{module}!formatters@\spxentry{formatters}|hyperpage}{17}
+\indexentry{formatters@\spxentry{formatters}!module@\spxentry{module}|hyperpage}{17}
+\indexentry{normalize\_masked\_text() (in module formatters)@\spxentry{normalize\_masked\_text()}\spxextra{in module formatters}|hyperpage}{17}
+\indexentry{digits\_only() (in module formatters)@\spxentry{digits\_only()}\spxextra{in module formatters}|hyperpage}{17}
+\indexentry{strip\_mask\_chars() (in module formatters)@\spxentry{strip\_mask\_chars()}\spxextra{in module formatters}|hyperpage}{18}
+\indexentry{parse\_decimal\_br() (in module formatters)@\spxentry{parse\_decimal\_br()}\spxextra{in module formatters}|hyperpage}{18}
+\indexentry{parse\_date\_any() (in module formatters)@\spxentry{parse\_date\_any()}\spxextra{in module formatters}|hyperpage}{18}
+\indexentry{normalize\_bool\_ptbr() (in module formatters)@\spxentry{normalize\_bool\_ptbr()}\spxextra{in module formatters}|hyperpage}{18}
+\indexentry{cast\_value\_by\_type() (in module formatters)@\spxentry{cast\_value\_by\_type()}\spxextra{in module formatters}|hyperpage}{19}
+\indexentry{module@\spxentry{module}!icon\_manager@\spxentry{icon\_manager}|hyperpage}{19}
+\indexentry{icon\_manager@\spxentry{icon\_manager}!module@\spxentry{module}|hyperpage}{19}
+\indexentry{IconManager (class in icon\_manager)@\spxentry{IconManager}\spxextra{class in icon\_manager}|hyperpage}{19}
+\indexentry{icon\_for\_key() (icon\_manager.IconManager method)@\spxentry{icon\_for\_key()}\spxextra{icon\_manager.IconManager method}|hyperpage}{19}
+\indexentry{apply\_button\_icon() (icon\_manager.IconManager method)@\spxentry{apply\_button\_icon()}\spxextra{icon\_manager.IconManager method}|hyperpage}{19}
+\indexentry{clear\_cache() (icon\_manager.IconManager method)@\spxentry{clear\_cache()}\spxextra{icon\_manager.IconManager method}|hyperpage}{19}
+\indexentry{module@\spxentry{module}!license\_dialog@\spxentry{license\_dialog}|hyperpage}{20}
+\indexentry{license\_dialog@\spxentry{license\_dialog}!module@\spxentry{module}|hyperpage}{20}
+\indexentry{abs\_path() (in module license\_dialog)@\spxentry{abs\_path()}\spxextra{in module license\_dialog}|hyperpage}{20}
+\indexentry{read\_license\_text() (in module license\_dialog)@\spxentry{read\_license\_text()}\spxextra{in module license\_dialog}|hyperpage}{20}
+\indexentry{LicenseDialog (class in license\_dialog)@\spxentry{LicenseDialog}\spxextra{class in license\_dialog}|hyperpage}{20}
+\indexentry{apply\_theme() (license\_dialog.LicenseDialog method)@\spxentry{apply\_theme()}\spxextra{license\_dialog.LicenseDialog method}|hyperpage}{21}
+\indexentry{module@\spxentry{module}!loading\_screen@\spxentry{loading\_screen}|hyperpage}{21}
+\indexentry{loading\_screen@\spxentry{loading\_screen}!module@\spxentry{module}|hyperpage}{21}
+\indexentry{LoadingScreen (class in loading\_screen)@\spxentry{LoadingScreen}\spxextra{class in loading\_screen}|hyperpage}{21}
+\indexentry{show() (loading\_screen.LoadingScreen method)@\spxentry{show()}\spxextra{loading\_screen.LoadingScreen method}|hyperpage}{21}
+\indexentry{update() (loading\_screen.LoadingScreen method)@\spxentry{update()}\spxextra{loading\_screen.LoadingScreen method}|hyperpage}{21}
+\indexentry{hide() (loading\_screen.LoadingScreen method)@\spxentry{hide()}\spxextra{loading\_screen.LoadingScreen method}|hyperpage}{22}
+\indexentry{close() (loading\_screen.LoadingScreen method)@\spxentry{close()}\spxextra{loading\_screen.LoadingScreen method}|hyperpage}{22}
+\indexentry{finish\_and\_close() (loading\_screen.LoadingScreen method)@\spxentry{finish\_and\_close()}\spxextra{loading\_screen.LoadingScreen method}|hyperpage}{22}
+\indexentry{module@\spxentry{module}!models@\spxentry{models}|hyperpage}{22}
+\indexentry{models@\spxentry{models}!module@\spxentry{module}|hyperpage}{22}
+\indexentry{Campo (class in models)@\spxentry{Campo}\spxextra{class in models}|hyperpage}{22}
+\indexentry{id (models.Campo attribute)@\spxentry{id}\spxextra{models.Campo attribute}|hyperpage}{22}
+\indexentry{titulo (models.Campo attribute)@\spxentry{titulo}\spxextra{models.Campo attribute}|hyperpage}{22}
+\indexentry{tipo (models.Campo attribute)@\spxentry{tipo}\spxextra{models.Campo attribute}|hyperpage}{22}
+\indexentry{fixo (models.Campo attribute)@\spxentry{fixo}\spxextra{models.Campo attribute}|hyperpage}{22}
+\indexentry{locked (models.Campo attribute)@\spxentry{locked}\spxextra{models.Campo attribute}|hyperpage}{22}
+\indexentry{sanitize\_id() (in module models)@\spxentry{sanitize\_id()}\spxextra{in module models}|hyperpage}{22}
+\indexentry{make\_unique\_id() (in module models)@\spxentry{make\_unique\_id()}\spxextra{in module models}|hyperpage}{23}
+\indexentry{infer\_type\_from\_title() (in module models)@\spxentry{infer\_type\_from\_title()}\spxextra{in module models}|hyperpage}{23}
+\indexentry{module@\spxentry{module}!online\_license@\spxentry{online\_license}|hyperpage}{23}
+\indexentry{online\_license@\spxentry{online\_license}!module@\spxentry{module}|hyperpage}{23}
+\indexentry{app\_state\_dir() (in module online\_license)@\spxentry{app\_state\_dir()}\spxextra{in module online\_license}|hyperpage}{23}
+\indexentry{cache\_path() (in module online\_license)@\spxentry{cache\_path()}\spxextra{in module online\_license}|hyperpage}{23}
+\indexentry{clear\_cache() (in module online\_license)@\spxentry{clear\_cache()}\spxextra{in module online\_license}|hyperpage}{23}
+\indexentry{now\_ts() (in module online\_license)@\spxentry{now\_ts()}\spxextra{in module online\_license}|hyperpage}{24}
+\indexentry{load\_cache() (in module online\_license)@\spxentry{load\_cache()}\spxextra{in module online\_license}|hyperpage}{24}
+\indexentry{save\_cache() (in module online\_license)@\spxentry{save\_cache()}\spxextra{in module online\_license}|hyperpage}{24}
+\indexentry{get\_machine\_guid() (in module online\_license)@\spxentry{get\_machine\_guid()}\spxextra{in module online\_license}|hyperpage}{24}
+\indexentry{device\_id() (in module online\_license)@\spxentry{device\_id()}\spxextra{in module online\_license}|hyperpage}{25}
+\indexentry{call\_api() (in module online\_license)@\spxentry{call\_api()}\spxextra{in module online\_license}|hyperpage}{25}
+\indexentry{ensure\_online\_license() (in module online\_license)@\spxentry{ensure\_online\_license()}\spxextra{in module online\_license}|hyperpage}{25}
+\indexentry{module@\spxentry{module}!simple\_lock@\spxentry{simple\_lock}|hyperpage}{26}
+\indexentry{simple\_lock@\spxentry{simple\_lock}!module@\spxentry{module}|hyperpage}{26}
+\indexentry{exe\_dir\_base() (in module simple\_lock)@\spxentry{exe\_dir\_base()}\spxextra{in module simple\_lock}|hyperpage}{26}
+\indexentry{internal\_dir() (in module simple\_lock)@\spxentry{internal\_dir()}\spxextra{in module simple\_lock}|hyperpage}{26}
+\indexentry{internal\_marker\_path() (in module simple\_lock)@\spxentry{internal\_marker\_path()}\spxextra{in module simple\_lock}|hyperpage}{27}
+\indexentry{programdata\_dir() (in module simple\_lock)@\spxentry{programdata\_dir()}\spxextra{in module simple\_lock}|hyperpage}{27}
+\indexentry{license\_path\_programdata() (in module simple\_lock)@\spxentry{license\_path\_programdata()}\spxextra{in module simple\_lock}|hyperpage}{27}
+\indexentry{machine\_id() (in module simple\_lock)@\spxentry{machine\_id()}\spxextra{in module simple\_lock}|hyperpage}{27}
+\indexentry{machine\_id\_hash() (in module simple\_lock)@\spxentry{machine\_id\_hash()}\spxextra{in module simple\_lock}|hyperpage}{28}
+\indexentry{DATA\_BLOB (class in simple\_lock)@\spxentry{DATA\_BLOB}\spxextra{class in simple\_lock}|hyperpage}{28}
+\indexentry{cbData (simple\_lock.DATA\_BLOB attribute)@\spxentry{cbData}\spxextra{simple\_lock.DATA\_BLOB attribute}|hyperpage}{28}
+\indexentry{pbData (simple\_lock.DATA\_BLOB attribute)@\spxentry{pbData}\spxextra{simple\_lock.DATA\_BLOB attribute}|hyperpage}{28}
+\indexentry{dpapi\_protect\_localmachine() (in module simple\_lock)@\spxentry{dpapi\_protect\_localmachine()}\spxextra{in module simple\_lock}|hyperpage}{28}
+\indexentry{dpapi\_unprotect() (in module simple\_lock)@\spxentry{dpapi\_unprotect()}\spxextra{in module simple\_lock}|hyperpage}{29}
+\indexentry{ensure\_or\_mark() (in module simple\_lock)@\spxentry{ensure\_or\_mark()}\spxextra{in module simple\_lock}|hyperpage}{29}
+\indexentry{module@\spxentry{module}!user\_login@\spxentry{user\_login}|hyperpage}{30}
+\indexentry{user\_login@\spxentry{user\_login}!module@\spxentry{module}|hyperpage}{30}
+\indexentry{app\_state\_dir() (in module user\_login)@\spxentry{app\_state\_dir()}\spxextra{in module user\_login}|hyperpage}{30}
+\indexentry{login\_path() (in module user\_login)@\spxentry{login\_path()}\spxextra{in module user\_login}|hyperpage}{30}
+\indexentry{load\_login() (in module user\_login)@\spxentry{load\_login()}\spxextra{in module user\_login}|hyperpage}{30}
+\indexentry{save\_login() (in module user\_login)@\spxentry{save\_login()}\spxextra{in module user\_login}|hyperpage}{30}
+\indexentry{clear\_login() (in module user\_login)@\spxentry{clear\_login()}\spxextra{in module user\_login}|hyperpage}{30}
+\indexentry{is\_login\_expired() (in module user\_login)@\spxentry{is\_login\_expired()}\spxextra{in module user\_login}|hyperpage}{30}
+\indexentry{prompt\_email() (in module user\_login)@\spxentry{prompt\_email()}\spxextra{in module user\_login}|hyperpage}{31}
+\indexentry{module@\spxentry{module}!widgets@\spxentry{widgets}|hyperpage}{31}
+\indexentry{widgets@\spxentry{widgets}!module@\spxentry{module}|hyperpage}{31}
+\indexentry{EmailInputWidget (class in widgets)@\spxentry{EmailInputWidget}\spxextra{class in widgets}|hyperpage}{31}
+\indexentry{set\_domains() (widgets.EmailInputWidget method)@\spxentry{set\_domains()}\spxextra{widgets.EmailInputWidget method}|hyperpage}{31}
+\indexentry{local() (widgets.EmailInputWidget method)@\spxentry{local()}\spxextra{widgets.EmailInputWidget method}|hyperpage}{31}
+\indexentry{domain() (widgets.EmailInputWidget method)@\spxentry{domain()}\spxextra{widgets.EmailInputWidget method}|hyperpage}{31}
+\indexentry{set\_parts() (widgets.EmailInputWidget method)@\spxentry{set\_parts()}\spxextra{widgets.EmailInputWidget method}|hyperpage}{31}
+\indexentry{set\_email() (widgets.EmailInputWidget method)@\spxentry{set\_email()}\spxextra{widgets.EmailInputWidget method}|hyperpage}{32}
+\indexentry{get\_email() (widgets.EmailInputWidget method)@\spxentry{get\_email()}\spxextra{widgets.EmailInputWidget method}|hyperpage}{32}
+\indexentry{FieldRowWidget (class in widgets)@\spxentry{FieldRowWidget}\spxextra{class in widgets}|hyperpage}{32}
+\indexentry{editRequested (widgets.FieldRowWidget attribute)@\spxentry{editRequested}\spxextra{widgets.FieldRowWidget attribute}|hyperpage}{32}
+\indexentry{deleteRequested (widgets.FieldRowWidget attribute)@\spxentry{deleteRequested}\spxextra{widgets.FieldRowWidget attribute}|hyperpage}{32}
+\indexentry{lockToggled (widgets.FieldRowWidget attribute)@\spxentry{lockToggled}\spxextra{widgets.FieldRowWidget attribute}|hyperpage}{32}
+\indexentry{set\_locked() (widgets.FieldRowWidget method)@\spxentry{set\_locked()}\spxextra{widgets.FieldRowWidget method}|hyperpage}{32}
+\indexentry{BoolInputWidget (class in widgets)@\spxentry{BoolInputWidget}\spxextra{class in widgets}|hyperpage}{32}
+\indexentry{value() (widgets.BoolInputWidget method)@\spxentry{value()}\spxextra{widgets.BoolInputWidget method}|hyperpage}{32}
+\indexentry{set\_value() (widgets.BoolInputWidget method)@\spxentry{set\_value()}\spxextra{widgets.BoolInputWidget method}|hyperpage}{32}

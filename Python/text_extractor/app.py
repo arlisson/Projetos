@@ -1,12 +1,12 @@
-# app.py (editado: footer via controle_ui.json e engrenagem abre tema + domínios)
+# app.py (editado: footer via controle_ui.json e engrenagem abre tema + domínios + abas com sync automático)
 from __future__ import annotations
+from datetime import datetime
 
 from license_dialog import LicenseDialog, read_license_text
 from user_login import prompt_email, clear_login
 from online_license import ensure_online_license, clear_cache
 from simple_lock import ensure_or_mark
 from loading_screen import LoadingScreen
-
 
 EMAIL_RETRY_CODES = {"no_license", "blocked", "device_limit", "not_activated", "revoked"}
 
@@ -15,8 +15,8 @@ import sys
 import os
 from typing import Dict, List, Optional, Any, Tuple
 
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QIcon
+from PySide6.QtCore import QUrl, Qt, QTimer
+from PySide6.QtGui import QDesktopServices, QIcon, QPixmap, QColor
 from PySide6.QtWidgets import (
     QApplication,
     QFileDialog,
@@ -32,6 +32,9 @@ from PySide6.QtWidgets import (
     QFrame,
     QDialog,
     QDialogButtonBox,
+    QComboBox,
+    QListView
+    
 )
 
 from colors import (
@@ -42,6 +45,7 @@ from colors import (
 )
 
 from config import (
+    get_sheet_campos,
     load_fields_config,
     save_fields_config,
     load_ui_config,
@@ -50,6 +54,9 @@ from config import (
     save_sheet_config,
     load_email_domains_config,
     save_email_domains_config,
+    set_sheet_campos,
+    rename_sheet_key,
+    delete_sheet_key,  # <-- necessário para refletir rename de abas no controle
 )
 
 from models import (
@@ -67,7 +74,9 @@ from formatters import (
 )
 
 from excel_io import (
+    ensure_sheet_exists,
     is_excel_lock_present,
+    list_sheets_with_ids,
     read_headers_from_excel,
     write_headers_from_campos,
     ensure_workbook,
@@ -75,6 +84,7 @@ from excel_io import (
     append_row_typed,
     delete_column_by_header,
     rename_column_header,
+    list_sheets, 
 )
 
 from dialogs import (
@@ -88,6 +98,27 @@ from widgets import EmailInputWidget, FieldRowWidget, BoolInputWidget
 
 
 def abs_path(p: str) -> str:
+    """    
+    Resolve um caminho de arquivo para um caminho absoluto.
+
+    Esta função é crucial para lidar com recursos em um aplicativo que pode ser
+    executado tanto em um ambiente de desenvolvimento quanto como um executável
+    "congelado" (por exemplo, com PyInstaller).
+
+    - Se o caminho já for absoluto, ele é retornado sem modificação.
+    - Se o caminho for relativo, a função determina o diretório base:
+        - Em um executável PyInstaller, usa o diretório temporário `_MEIPASS`.
+        - Em um script Python normal, usa o diretório do próprio script.
+    - O caminho relativo é então combinado com este diretório base.
+
+    Args:
+       
+        p (str): O caminho do arquivo a ser resolvido.
+
+    Returns:
+      
+        str: O caminho absoluto correspondente, ou uma string vazia se a entrada for nula/vazia.
+    """
     if not p:
         return ""
     if os.path.isabs(p):
@@ -97,12 +128,34 @@ def abs_path(p: str) -> str:
 
 
 def file_exists(p: str) -> bool:
+    """
+    Verifica se um arquivo existe e pode ser lido.
+
+    Args:
+        p (str): String que representa o caminho para o arquivo a ser verificado.
+
+    Returns:
+        bool: True se o arquivo existe e pode ser lido, False caso contrário.
+    """
     ap = abs_path(p)
     return bool(ap) and os.path.exists(ap)
 
 
 class SettingsDialog(QDialog):
+    """
+    Classe de diálogo para gerenciar as configurações globais do aplicativo, permitindo ao usuário acessar os ajustes de tema visual e a lista de domínios de e-mail sugeridos.
+    
+    Args:
+        QDialog (_type_): Objeto do tipo QDialog.
+    """
     def __init__(self, parent: "App"):
+        """
+        Funcção de inicialização do diálogo de configurações.
+        
+        Args:
+            parent (App): A instância principal do aplicativo que gerencia o estado e as configurações.
+            
+        """
         super().__init__(parent)
         self.setWindowTitle("Configurações")
         self.setModal(True)
@@ -112,8 +165,13 @@ class SettingsDialog(QDialog):
 
         self.lbl = QLabel("Escolha o que deseja editar:")
         self.btn_theme = QPushButton("Tema de cores")
+        self.btn_theme.setToolTip("Configurar o tema de cores do aplicativo")
         self.btn_domains = QPushButton("Domínios de e-mail")
-        # self.btn_domains.setEnabled(self.parent_app._has_email_fields())
+        self.btn_domains.setToolTip("Configurar a lista de domínios sugeridos para campos de email")
+        self.btn_remove = QPushButton("Retirar Planilha")
+        self.btn_clear_sheet = QPushButton("Limpar seleção da planilha")
+        self.btn_clear_sheet.setToolTip("Desvincular a planilha Excel atual sem excluir o arquivo")
+        self.btn_clear_sheet.clicked.connect(self._clear_sheet_selection)
 
         self.btn_domains.setEnabled(True)
 
@@ -128,20 +186,51 @@ class SettingsDialog(QDialog):
         layout.addWidget(self.lbl)
         layout.addWidget(self.btn_theme)
         layout.addWidget(self.btn_domains)
+        layout.addWidget(self.btn_clear_sheet)
         layout.addStretch(1)
         layout.addWidget(btns)
         self.setLayout(layout)
 
     def _open_theme(self) -> None:
+        """ 
+        Abre o diálogo de ajuste de tema de cores, permitindo ao usuário modificar a aparência visual do aplicativo.
+        
+        """
         self.parent_app.open_theme_settings()
 
     def _open_domains(self) -> None:
+        """
+        Abre o diálogo de gerenciamento de domínios de e-mail. Após o fechamento do diálogo, 
+        atualiza a lista de domínios no aplicativo e sincroniza os widgets de entrada de e-mail existentes.
+        
+        """
         self.parent_app.open_email_domains()
         self.btn_domains.setEnabled(self.parent_app._has_email_fields())
+    
+    def _clear_sheet_selection(self) -> None:
+        """
+        Remove a planilha atualmente selecionada da aplicação,
+        sem excluir o arquivo físico do disco.
+        """
+        self.parent_app.clear_selected_sheet()
 
 
 class App(QWidget):
+    """
+    Interface principal do aplicativo "Preenche Fácil".
+    Gerencia a configuração de campos, a interface de usuário dinâmica,
+    a integração com planilhas Excel e a persistência de dados.
+
+    
+    Args:
+        QWidget (_type_): Objeto do tipo QWidget. 
+    """
     def __init__(self):
+        """
+        Inicializa a aplicação, carrega as configurações de campos, UI e domínios de e-mail, 
+        e configura a interface do usuário e o monitoramento da planilha.        
+
+        """
         super().__init__()
 
         self.cfg_fields = load_fields_config(FIELD_TYPES)
@@ -153,12 +242,18 @@ class App(QWidget):
         self.sheet_name: str = self.cfg_fields.get("aba", "Preenche Fácil")
         self.file_path: Optional[str] = get_last_sheet_path()
 
-        self.campos: List[Campo] = [Campo(**c) for c in self.cfg_fields.get("campos", [])]
+        sheet_campos = get_sheet_campos(self.cfg_fields, self.sheet_name)
+        self.campos: List[Campo] = [Campo(**c) for c in (sheet_campos or [])]
 
         # inputs[field_id] = QLineEdit | EmailInputWidget
         self.inputs: Dict[str, Any] = {}
 
         self.icon_mgr = IconManager(self.cfg_ui, abs_path=abs_path, file_exists=file_exists)
+
+        # monitor state
+        self._sheet_last_sig = None  # (mtime, size)
+        self._sheet_monitor_timer: Optional[QTimer] = None
+        self._last_sheets_meta: List[Tuple[int, str]] = []
 
         self._apply_window_icon()
         self._build_ui()
@@ -167,20 +262,47 @@ class App(QWidget):
         if self.file_path:
             self._apply_file_path(self.file_path, prepare=True, silent=True)
 
+        # só começa o monitor depois da UI existir e depois de aplicar planilha
+        self._start_sheet_monitor()
+
     def open_license(self) -> None:
+        """
+        Abre o diálogo de informações da licença, exibindo o texto da licença
+        e aplicando o tema visual atual do aplicativo.
+        """
         theme = (self.cfg_ui.get("theme") or dict(DEFAULT_THEME))
         text = read_license_text()
         dlg = LicenseDialog(self, theme=theme, license_text=text)
         dlg.exec()
 
     def _apply_window_icon(self) -> None:
+        """
+        Aplica o ícone da janela do aplicativo a partir das configurações da UI.
+        """
         icon_path = self.cfg_ui.get("window_icon", "")
         if file_exists(icon_path):
             self.setWindowIcon(QIcon(abs_path(icon_path)))
 
+    def _force_combobox_popup_style(self, combo: QComboBox) -> None:
+        """
+        Força o uso de QListView no popup do QComboBox para evitar problemas
+        de renderização/transparência no Windows 11.
+        """
+        try:
+            combo.setView(QListView(combo))
+        except Exception:
+            pass
+
     # ---------- tema ----------
 
     def _apply_theme_from_config(self) -> None:
+        """
+        Aplica o tema visual do aplicativo com base nas configurações carregadas.
+        Calcula as cores derivadas a partir dos valores HSL do plano de fundo e
+        atualiza o folha de estilos (stylesheet) e os ícones.
+        
+        
+        """
         base_theme = dict(DEFAULT_THEME)
         base_theme.update(self.cfg_ui.get("theme", {}) or {})
 
@@ -201,6 +323,12 @@ class App(QWidget):
         self._apply_theme(derived)
 
     def _apply_theme(self, theme: dict) -> None:
+        """
+        Aplica o tema visual (cores e estilos) a todos os widgets da interface.
+
+        Args:
+            theme (dict): Dicionário contendo as cores hexadecimais para cada elemento da UI.
+        """
         bg = theme["background"]
         surface = theme["surface"]
         surface_alt = theme["surface_alt"]
@@ -209,6 +337,66 @@ class App(QWidget):
         primary = theme["primary"]
         danger = theme["danger"]
         border = theme["border"]
+
+        base_dark = QColor(surface)
+        is_light_theme = base_dark.lightness() > 140
+
+        def rgba(hex_color: str, a: int) -> str:
+            """
+            Define o estilo de cores do footer de propaganda.
+
+            Args:
+                hex_color (str): Cor em formato hexadecimal, como "#RRGGBB".
+                a (int): Valor do canal alfa (opacidade), entre 0 e 255.
+
+            Returns:
+                str: String no formato "rgba(r, g, b, a)", pronta para uso em estilos QSS.
+            """
+            c = QColor(hex_color)
+            return f"rgba({c.red()}, {c.green()}, {c.blue()}, {a})"
+
+        if is_light_theme:
+            mid_1 = rgba(surface, 252)
+            mid_2 = rgba(surface_alt, 248)
+            mid_3 = rgba(border, 120)
+
+            footer_grad = f"""
+                qlineargradient(
+                    x1:0, y1:0, x2:1, y2:0,
+                    stop:0.00 {rgba(surface_alt, 245)},
+                    stop:0.14 {rgba(surface, 248)},
+                    stop:0.28 {mid_2},
+                    stop:0.34 {mid_3},
+                    stop:0.44 {mid_2},
+                    stop:0.54 {rgba(surface, 248)},
+                    stop:0.64 {rgba(primary, 120)},
+                    stop:1.00 {rgba(primary, 170)}
+                )
+            """
+            footer_border = rgba(border, 110)
+            footer_btn_bg = "rgba(0, 0, 0, 0.02)"
+            footer_btn_hover = "rgba(0, 0, 0, 0.05)"
+        else:
+            mid_dark = QColor(surface)
+            mid_dark = mid_dark.darker(180)
+            mid_dark_rgba = f"rgba({mid_dark.red()}, {mid_dark.green()}, {mid_dark.blue()}, 255)"
+
+            footer_grad = f"""
+                qlineargradient(
+                    x1:0, y1:0, x2:1, y2:0,
+                    stop:0.00 {rgba(surface_alt, 235)},
+                    stop:0.14 {rgba(surface, 242)},
+                    stop:0.28 {rgba(surface, 248)},
+                    stop:0.34 {mid_dark_rgba},
+                    stop:0.44 {rgba(surface, 248)},
+                    stop:0.54 {rgba(surface_alt, 240)},
+                    stop:0.64 {rgba(primary, 170)},
+                    stop:1.00 {rgba(primary, 230)}
+                )
+            """
+            footer_border = rgba(border, 150)
+            footer_btn_bg = "rgba(255, 255, 255, 0.03)"
+            footer_btn_hover = "rgba(255, 255, 255, 0.06)"
 
         self.setStyleSheet(f"""
             QWidget {{
@@ -234,16 +422,59 @@ class App(QWidget):
                 color: {text};
                 border: 1px solid {border};
                 border-radius: 8px;
-                padding: 6px;
+                padding: 6px 34px 6px 10px;
                 min-width: 120px;
             }}
 
-            QComboBox QAbstractItemView {{
+            QComboBox:hover {{
+                border-color: {primary};
+            }}
+
+            QComboBox::drop-down {{
+                subcontrol-origin: padding;
+                subcontrol-position: top right;
+                width: 26px;
+                border-left: 1px solid {border};
+                background-color: {surface_alt};
+                border-top-right-radius: 8px;
+                border-bottom-right-radius: 8px;
+            }}
+
+            QComboBox::down-arrow {{
+                image: url("_internal/assets/icons/seta-baixo.png");
+                width: 12px;
+                height: 12px;
+            }}
+
+            QComboBox QAbstractItemView,
+            QComboBox QListView {{
                 background-color: {surface_alt};
                 color: {text};
                 border: 1px solid {border};
+                outline: 0;
+                padding: 4px;
                 selection-background-color: {primary};
                 selection-color: #FFFFFF;
+            }}
+
+            QComboBox QAbstractItemView::item,
+            QComboBox QListView::item {{
+                background-color: {surface_alt};
+                color: {text};
+                min-height: 24px;
+                padding: 6px 8px;
+            }}
+
+            QComboBox QAbstractItemView::item:selected,
+            QComboBox QListView::item:selected {{
+                background-color: {primary};
+                color: #FFFFFF;
+            }}
+
+            QComboBox QAbstractScrollArea,
+            QComboBox QAbstractItemView:enabled,
+            QComboBox QListView:enabled {{
+                background-color: {surface_alt};
             }}
 
             QScrollArea {{
@@ -288,11 +519,49 @@ class App(QWidget):
             QLabel#Status {{
                 color: {muted};
             }}
+
+            QWidget#PromoFooter {{
+                border: 1px solid {footer_border};
+                border-left: 6px solid {primary};
+                border-radius: 14px;
+                background-color: {footer_grad};
+            }}
+
+            QWidget#PromoFooter QLabel,
+            QWidget#PromoFooter QPushButton {{
+                background: transparent;
+            }}
+
+            QWidget#PromoFooter QLabel {{
+                font-size: 16px;
+                font-weight: 700;
+                color: {text};
+            }}
+
+            QWidget#PromoFooter QPushButton {{
+                background-color: {footer_btn_bg};
+                border: 1px solid {footer_border};
+                padding: 6px 10px;
+                border-radius: 10px;
+            }}
+
+            QWidget#PromoFooter QPushButton:hover {{
+                border-color: {primary};
+                background-color: {footer_btn_hover};
+            }}
         """)
 
         self._retint_all_icons(theme)
 
     def _retint_all_icons(self, theme: dict) -> None:
+        """
+        Atualiza a cor de todos os ícones da interface para que correspondam ao tema atual.
+    
+        
+        Args:
+            theme (dict): Um dicionário contendo cores hexadecimais para cada elemento da UI.
+        
+        """
         text = theme["text"]
         white = "#FFFFFF"
 
@@ -301,6 +570,12 @@ class App(QWidget):
         self.icon_mgr.apply_button_icon(self.btn_clear, "clear", text)
         self.icon_mgr.apply_button_icon(self.btn_save, "save_lead", white)
         self.icon_mgr.apply_button_icon(self.btn_settings, "settings", text)
+        self.icon_mgr.apply_button_icon(self.btn_refresh_sheets, "refresh", text)
+        self.icon_mgr.apply_button_icon(self.btn_help, "help", text)
+        self.icon_mgr.apply_button_icon(self.btn_license, "license", text)
+        self.icon_mgr.apply_button_icon(self.btn_delete, "delete", white)
+        self.icon_mgr.apply_button_icon(self.btn_protocol, "protocol", white)
+
 
         self._last_theme_for_fields = theme
         self.render_fields()
@@ -308,36 +583,448 @@ class App(QWidget):
     # ---------- domínios email ----------
 
     def _has_email_fields(self) -> bool:
+        """
+
+        Verifica se a lista de campos atual contém ao menos um campo do tipo 'email'.
+        
+        Returns:
+            bool: True se houver campos de e-mail, False caso contrário.
+        
+        
+        """
         return any(c.tipo == "email" for c in self.campos)
 
     def open_email_domains(self) -> None:
+        """
+        Abre o diálogo de gerenciamento de domínios de e-mail. 
+        Permite adicionar, editar ou remover domínios da lista de sugestões.
+        Ao aceitar, salva as alterações e atualiza todos os widgets de e-mail ativos.
+        
+        
+        """
         dlg = EmailDomainsDialog(self, domains=list(self.email_domains))
-        if dlg.exec() == dlg.accepted:
-            # sempre persiste, mesmo que não existam campos email
+        if dlg.exec() == QDialog.Accepted:
             self.email_domains = dlg.domains()
             self.cfg_email["dominios"] = list(self.email_domains)
             save_email_domains_config(self.cfg_email)
-
-            # se houver widgets de email renderizados, atualiza
             self._refresh_email_domain_widgets()
 
     def _refresh_email_domain_widgets(self) -> None:
+        """
+        Atualiza a lista de domínios em todos os widgets de entrada de e-mail ativos, 
+        preservando o texto já digitado pelo usuário.
+        
+
+        """
         for c in self.campos:
             if c.tipo != "email":
                 continue
             w = self.inputs.get(c.id)
             if isinstance(w, EmailInputWidget):
                 w.set_domains(self.email_domains)
+    
+    def clear_selected_sheet(self) -> None:
+        """
+        Limpa a seleção da planilha atual sem apagar o arquivo do disco.
+
+        Remove o vínculo da interface com a planilha, limpa a lista de abas,
+        atualiza a configuração persistida e mantém os campos do controle na UI.
+        """
+        if not self.file_path:
+            QMessageBox.information(self, "Info", "Nenhuma planilha está selecionada.")
+            return
+
+        msg = (
+            "Deseja realmente limpar a seleção da planilha atual?\n\n"
+            "Isso NÃO excluirá o arquivo do Excel do computador.\n"
+            "Apenas removerá o vínculo da planilha com o aplicativo."
+        )
+
+        if QMessageBox.question(self, "Confirmar", msg) != QMessageBox.Yes:
+            return
+
+        self.file_path = None
+        self.lbl_file.setText("Arquivo: (não selecionado)")
+
+        self.cmb_sheet.blockSignals(True)
+        self.cmb_sheet.clear()
+        self.cmb_sheet.blockSignals(False)
+
+        self._last_sheets_meta = []
+        self._sheet_last_sig = None        
+       
+
+        try:
+            save_sheet_config("")
+        except Exception:
+            pass
+
+        self._update_sheet_dependent_ui()
+        self.lbl_status.setText("Seleção da planilha removida com sucesso.")
+    
+    def _update_sheet_dependent_ui(self) -> None:
+        """
+        Habilita ou desabilita controles que dependem de uma planilha selecionada.
+        """
+        has_file = bool(self.file_path)
+
+        self.btn_new_sheet.setEnabled(has_file)
+        self.btn_refresh_sheets.setEnabled(has_file)
+        self.btn_save.setEnabled(has_file)
+        self.cmb_sheet.setEnabled(has_file)
+        
+        
+
+    # ----------- Abas Excel (UI + Sync) -----------
+
+    def _reload_sheet_list(self) -> None:
+        """Recarrega combobox de abas a partir do Excel e atualiza snapshot interno."""
+        if not self.file_path or not os.path.exists(self.file_path):
+            self.cmb_sheet.blockSignals(True)
+            self.cmb_sheet.clear()
+            self.cmb_sheet.blockSignals(False)
+            self._last_sheets_meta = []
+            return
+
+        meta: List[Tuple[int, str]] = []
+
+        # 1) tenta ler com IDs (melhor para detectar rename)
+        try:
+            meta = list_sheets_with_ids(self.file_path)
+        except Exception:
+            meta = []
+
+        # 2) fallback: lê só os nomes e cria IDs artificiais
+        if not meta:
+            try:
+                names = list_sheets(self.file_path)
+                meta = [(i + 1, name) for i, name in enumerate(names)]
+            except Exception:
+                meta = []
+
+        self._last_sheets_meta = meta
+        self._reload_sheet_list_from_meta(meta)
+
+    def _reload_sheet_list_from_meta(self, meta) -> None:
+        """
+        Atualiza o QComboBox de abas com base nos metadados fornecidos e sincroniza a aba selecionada.
+                
+        Args:
+            meta (_type_): List[Tuple[int, str]] 
+            
+        """
+        self.cmb_sheet.blockSignals(True)
+        self.cmb_sheet.clear()
+
+        titles = [t for _, t in meta]
+        for t in titles:
+            self.cmb_sheet.addItem(t)
+
+        if self.sheet_name in titles:
+            self.cmb_sheet.setCurrentText(self.sheet_name)
+        elif titles:
+            self.sheet_name = titles[0]
+            self.cfg_fields["aba"] = self.sheet_name
+            self.cmb_sheet.setCurrentIndex(0)
+
+        self.cmb_sheet.blockSignals(False)
+
+    def on_sheet_changed(self, new_sheet: str) -> None:
+        """
+        Atualiza a aba ativa e recarrega os campos correspondentes. Se a aba for nova, 
+        tenta sincronizar os cabeçalhos a partir do arquivo Excel.        
+
+        Args:
+            new_sheet (str): String representando a nova aba
+        """
+        if not new_sheet or not self.file_path:
+            return
+
+        self.sheet_name = new_sheet
+        self.cfg_fields["aba"] = self.sheet_name
+
+        sheet_campos = get_sheet_campos(self.cfg_fields, self.sheet_name)
+        if sheet_campos:
+            self.campos = [Campo(**c) for c in sheet_campos]
+            self.render_fields()
+            save_fields_config(self.cfg_fields)
+            return
+
+        self.sync_fields_from_existing_excel(self.file_path)
+
+    def create_new_sheet(self) -> None:
+        """Função responsável por criar uma nova aba na planilha
+        """
+        if not self.file_path:
+            QMessageBox.warning(self, "Atenção", "Selecione uma planilha primeiro.")
+            return
+
+        name, ok = QInputDialog.getText(self, "Nova aba", "Nome da nova aba:")
+        if not ok or not name.strip():
+            return
+
+        name = name.strip()
+
+        try:
+            ensure_sheet_exists(self.file_path, name)
+
+            headers = [c.titulo for c in self.campos]
+            ensure_workbook(self.file_path, name, headers)
+            apply_column_type_rules(self.file_path, name, self.campos)
+        except Exception as e:
+            QMessageBox.critical(self, "Erro", f"Falha ao criar aba: {e}")
+            return
+
+        self._reload_sheet_list()
+        self.cmb_sheet.setCurrentText(name)  # dispara on_sheet_changed
+
+    def _snapshot_current_inputs(self) -> Dict[str, str]:
+        """
+        Captura o estado atual de todos os campos de entrada, mapeando o título do campo ao seu valor textual.
+        Isso permite preservar os dados digitados pelo usuário durante operações de sincronização ou troca de abas.
+        
+        
+        Returns:
+            Dict[str, str]: Dicionário representando Título, Valor dos campos
+        """
+        by_title: Dict[str, str] = {}
+        for c in self.campos:
+            w = self.inputs.get(c.id)
+            if isinstance(w, EmailInputWidget):
+                val, _ = w.get_email()
+                by_title[c.titulo] = val or ""
+            elif isinstance(w, BoolInputWidget):
+                by_title[c.titulo] = w.value() or ""
+            elif isinstance(w, QLineEdit):
+                by_title[c.titulo] = w.text() or ""
+            else:
+                by_title[c.titulo] = ""
+        return by_title
+
+    def _restore_inputs_by_title(self, by_title: Dict[str, str]) -> None:
+        """
+        Restaura os valores dos campos de entrada a partir de um dicionário de títulos e valores.
+    
+        
+
+        Args:
+            by_title (Dict[str, str]): Dicionário contendo os títulos dos campos como chaves e seus respectivos valores atuais como valores.
+            
+        """
+        for c in self.campos:
+            if c.titulo not in by_title:
+                continue
+            w = self.inputs.get(c.id)
+            val = by_title.get(c.titulo, "")
+            if isinstance(w, EmailInputWidget):
+                w.set_email(val)
+            elif isinstance(w, BoolInputWidget):
+                w.set_value(val)
+            elif isinstance(w, QLineEdit):
+                w.setText(val)
+
+    def _maybe_sync_sheets_from_excel(self) -> None:
+        """
+        Verifica se houve mudanças nas abas do arquivo Excel (renomeação, exclusão ou adição)
+        e sincroniza o estado interno do aplicativo e o JSON de controle.
+        """
+        if not self.file_path or not os.path.exists(self.file_path):
+            return
+
+        try:
+            new_meta = list_sheets_with_ids(self.file_path)
+        except Exception:
+            new_meta = []
+
+        if not new_meta:
+            try:
+                names = list_sheets(self.file_path)
+                new_meta = [(i + 1, name) for i, name in enumerate(names)]
+            except Exception:
+                return
+
+        old_meta = self._last_sheets_meta or []
+
+        old_by_id = {sid: name for sid, name in old_meta}
+        new_by_id = {sid: name for sid, name in new_meta}
+
+        old_ids = set(old_by_id.keys())
+        new_ids = set(new_by_id.keys())
+
+        removed_ids = old_ids - new_ids
+        common_ids = old_ids & new_ids
+
+        changed = False
+        removed_names: List[str] = []
+        renamed_pairs: List[Tuple[str, str]] = []
+
+        # 1) Detecta renomeações pelo ID da aba
+        for sid in common_ids:
+            old_name = old_by_id[sid]
+            new_name = new_by_id[sid]
+            if old_name != new_name:
+                rename_sheet_key(self.cfg_fields, old_name, new_name)
+
+                if self.sheet_name == old_name:
+                    self.sheet_name = new_name
+                    self.cfg_fields["aba"] = new_name
+
+                renamed_pairs.append((old_name, new_name))
+                changed = True
+
+        # 2) Detecta exclusões e remove do JSON
+        for sid in removed_ids:
+            old_name = old_by_id[sid]
+            if delete_sheet_key(self.cfg_fields, old_name):
+                removed_names.append(old_name)
+                changed = True
+
+                # Se a aba atual foi removida, troca para uma válida depois
+                if self.sheet_name == old_name:
+                    self.sheet_name = ""
+
+        # 3) Salva controle se algo mudou
+        if changed:
+            available_titles = [name for _, name in new_meta]
+
+            if self.sheet_name not in available_titles:
+                self.sheet_name = available_titles[0] if available_titles else ""
+                self.cfg_fields["aba"] = self.sheet_name
+
+            save_fields_config(self.cfg_fields)
+
+        # 4) Atualiza combobox e snapshot interno
+        prev_sheet = self.sheet_name
+        self._last_sheets_meta = new_meta
+        self._reload_sheet_list_from_meta(new_meta)
+
+        # 5) Se a aba atual mudou por exclusão, carrega os campos corretos
+        if self.sheet_name and self.sheet_name != prev_sheet:
+            sheet_campos = get_sheet_campos(self.cfg_fields, self.sheet_name)
+            if sheet_campos:
+                self.campos = [Campo(**c) for c in sheet_campos]
+                self.render_fields()
+            else:
+                self.sync_fields_from_existing_excel(self.file_path)
+
+        # 6) Atualiza status
+        msgs = []
+
+        if renamed_pairs:
+            msgs.extend([f"Aba renomeada: '{old}' → '{new}'" for old, new in renamed_pairs])
+
+        if removed_names:
+            msgs.extend([f"Aba removida do controle: '{name}'" for name in removed_names])
+
+        if msgs:
+            self.lbl_status.setText(" | ".join(msgs))
+
+    def _maybe_sync_headers_from_excel(self) -> None:
+        """        Verifica se o cabeçalho da planilha Excel mudou em relação aos campos atuais do aplicativo.
+        Se houver divergência, sincroniza os campos automaticamente, preservando os valores
+        que o usuário já digitou nos inputs.
+        
+        """
+        if not self.file_path:
+            return
+
+        if self.focusWidget() and isinstance(self.focusWidget(), QLineEdit):
+            return
+
+        try:
+            _sheet_used, headers, has_header = read_headers_from_excel(self.file_path, self.sheet_name)
+        except Exception:
+            return
+
+        if not has_header or not headers:
+            return
+
+        current_titles = [c.titulo for c in self.campos]
+        if headers == current_titles:
+            return
+
+        draft = self._snapshot_current_inputs()
+
+        ok = self.sync_fields_from_existing_excel(self.file_path)
+        if not ok:
+            return
+
+        self._restore_inputs_by_title(draft)
+        self.lbl_status.setText("Campos atualizados automaticamente a partir do cabeçalho da planilha.")
+    
+    def refresh_sheets(self) -> None:
+        """  Atualiza a lista de abas (sheets) disponíveis no arquivo Excel selecionado e
+    mantém o estado da aba atual consistente com o conteúdo do arquivo.
+        """
+      
+        if not self.file_path or not os.path.exists(self.file_path):
+            QMessageBox.warning(self, "Atenção", "Selecione uma planilha primeiro.")
+            return
+
+        # Recarrega a lista de abas do arquivo
+        self._reload_sheet_list()
+
+        # Se a aba atual não existir mais, força fallback e carrega campos
+        titles = [self.cmb_sheet.itemText(i) for i in range(self.cmb_sheet.count())]
+        if self.sheet_name and self.sheet_name not in titles:
+            old = self.sheet_name
+
+            delete_sheet_key(self.cfg_fields, old)
+
+            self.sheet_name = titles[0] if titles else ""
+            self.cfg_fields["aba"] = self.sheet_name
+            save_fields_config(self.cfg_fields)
+
+            if self.sheet_name:
+                # tenta carregar do controle; se não existir, importa do Excel
+                sheet_campos = get_sheet_campos(self.cfg_fields, self.sheet_name)
+                if sheet_campos:
+                    self.campos = [Campo(**c) for c in sheet_campos]
+                    self.render_fields()
+                else:
+                    self.sync_fields_from_existing_excel(self.file_path)
+
+            self.lbl_status.setText(f"Aba '{old}' não existe mais. Alternando para '{self.sheet_name}'.")
+            return
+
+        # Aba existe: opcionalmente atualizar cabeçalhos desta aba também
+        self._maybe_sync_headers_from_excel()
+        self.lbl_status.setText("Abas atualizadas.")
 
     # ---------- configurações (engrenagem) ----------
 
     def open_settings(self) -> None:
+        """Função responsável por abrir o diálogo de configurações
+        """
         dlg = SettingsDialog(self)
         dlg.exec()
+
+    def open_help(self) -> None:    
+        """Acessa a página web com informações sobre o software
+        """    
+        try:
+            url = self.cfg_ui.get("help_url", "").strip()
+            if url:
+                QDesktopServices.openUrl(QUrl(url))
+            else:
+                QMessageBox.information(self, "Ajuda", "Nenhum link de ajuda configurado.")
+        except Exception:
+            QMessageBox.warning(self, "Erro", f"Não foi possível abrir o link de ajuda.\nErro:{Exception}")
 
     # ---------- build UI ----------
 
     def _build_ui(self) -> None:
+        """
+        Monta a interface principal da janela.
+
+        Cria os layouts e widgets (seleção de planilha, escolha de aba, área rolável
+        de campos, botões de ação, status e rodapé/banner), conecta os sinais aos
+        handlers e aplica o layout final. Ao final, renderiza os campos e, se já
+        houver um arquivo selecionado, atualiza o label e recarrega as abas.
+
+        Returns:
+            None
+        """
         self.setWindowTitle("Preenche Fácil - Avance")
         self.setMinimumWidth(490)
 
@@ -355,10 +1042,47 @@ class App(QWidget):
         self.btn_settings.setFixedWidth(44)
         self.btn_settings.clicked.connect(self.open_settings)
 
+        self.btn_help = QPushButton("")
+        self.btn_help.setToolTip("Ajuda")
+        self.btn_help.setFixedWidth(44)
+        self.btn_help.clicked.connect(self.open_help)
+
+        self.btn_license = QPushButton("")
+        self.btn_license.setToolTip("Licença de uso do software")
+        self.btn_license.setFixedWidth(44)
+        self.btn_license.clicked.connect(self.open_license)
+
         file_row.addWidget(self.btn_file)
         file_row.addWidget(self.lbl_file, 1)
         file_row.addWidget(self.btn_settings)
+        file_row.addWidget(self.btn_help)
+        file_row.addWidget(self.btn_license)
+
         root.addLayout(file_row)
+
+        sheet_row = QHBoxLayout()
+
+        self.cmb_sheet = QComboBox()
+        self.cmb_sheet.setMinimumWidth(180)
+        self._force_combobox_popup_style(self.cmb_sheet)
+        self.cmb_sheet.currentTextChanged.connect(self.on_sheet_changed)
+
+        self.btn_new_sheet = QPushButton("Nova aba")
+        self.btn_new_sheet.setToolTip("Criar nova aba na planilha")
+        self.btn_new_sheet.clicked.connect(self.create_new_sheet)
+
+        sheet_row.addWidget(QLabel("Aba:"))
+
+        self.btn_refresh_sheets = QPushButton("↻ Atualizar")
+        self.btn_refresh_sheets.setToolTip("Atualizar abas da planilha")
+        self.btn_refresh_sheets.setFixedWidth(100)
+        self.btn_refresh_sheets.clicked.connect(self.refresh_sheets)
+
+        sheet_row.addWidget(self.cmb_sheet, 1)
+        sheet_row.addWidget(self.btn_new_sheet)
+        sheet_row.addWidget(self.btn_refresh_sheets)
+
+        root.addLayout(sheet_row)
 
         self.fields_container = QWidget()
         self.fields_layout = QVBoxLayout()
@@ -372,18 +1096,40 @@ class App(QWidget):
         actions = QHBoxLayout()
 
         self.btn_add_field = QPushButton("Adicionar Campo")
+        self.btn_add_field.setToolTip("Adicionar novo campo de preenchimento")
+        self.btn_add_field.setCursor(Qt.PointingHandCursor)
+
         self.btn_save = QPushButton("Salvar (nova linha)")
+        self.btn_save.setToolTip("Salvar os dados preenchidos como nova linha na planilha")
+        self.btn_save.setCursor(Qt.PointingHandCursor)
+
         self.btn_clear = QPushButton("Limpar")
+        self.btn_clear.setToolTip("Limpar os campos para preencher com novos dados")
+        self.btn_clear.setCursor(Qt.PointingHandCursor)
+
+        self.btn_delete = QPushButton("Excluir campos")
+        self.btn_delete.setToolTip("Excluir todos os campos")
+        self.btn_delete.setCursor(Qt.PointingHandCursor)
+
+        self.btn_protocol = QPushButton("Protocolo")
+        self.btn_protocol.setToolTip("Gerador de protocolo")
+        self.btn_protocol.setCursor(Qt.PointingHandCursor)
 
         self.btn_save.setProperty("variant", "primary")
+        self.btn_delete.setProperty("variant", "danger")
+        self.btn_protocol.setProperty("variant", "primary")
 
         actions.addWidget(self.btn_add_field)
         actions.addWidget(self.btn_clear)
+        actions.addWidget(self.btn_delete)
         actions.addWidget(self.btn_save)
+        actions.addWidget(self.btn_protocol)
 
         self.btn_add_field.clicked.connect(self.add_field)
         self.btn_save.clicked.connect(self.save_lead)
         self.btn_clear.clicked.connect(self.clear_fields)
+        self.btn_delete.clicked.connect(self.delete_all_fields)
+        self.btn_protocol.clicked.connect(self.generate_protocol)
 
         root.addLayout(actions)
 
@@ -398,21 +1144,42 @@ class App(QWidget):
         sep.setFixedHeight(1)
         root.addWidget(sep)
 
-        footer_row = QHBoxLayout()
+        footer_wrap = QWidget()
+        footer_wrap.setObjectName("PromoFooter")
 
-        default_footer = "<b>Se precisar de telefonia para sua empresa -> WhatsApp (22) 98812-4656</b>"
+        footer_row = QHBoxLayout(footer_wrap)
+        footer_row.setContentsMargins(18, 16, 18, 16)
+        footer_row.setSpacing(10)
+
+        default_footer = "<b>Se precisar de telefonia para sua empresa</b> → WhatsApp (22) 98812-4656"
         footer_html = (self.cfg_ui.get("footer_left_html") or default_footer)
+
+        footer_link = (self.cfg_ui.get("footer_link") or "").strip()
+
+        logo_path = (self.cfg_ui.get("footer_logo_path") or "").strip()
+        logo_h = int(self.cfg_ui.get("footer_logo_height") or 28)
+
+        self.lbl_footer_logo = QLabel()
+        self.lbl_footer_logo.setFixedHeight(logo_h)
+        self.lbl_footer_logo.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+
+        if logo_path:
+            pix = QPixmap(abs_path(logo_path))
+            if not pix.isNull():
+                self.lbl_footer_logo.setPixmap(pix.scaledToHeight(logo_h, Qt.SmoothTransformation))
 
         self.lbl_footer_left = QLabel(footer_html)
         self.lbl_footer_left.setTextFormat(Qt.RichText)
+        self.lbl_footer_left.setWordWrap(True)
+        self.lbl_footer_left.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+
+        footer_row.addWidget(self.lbl_footer_logo, 0)
         footer_row.addWidget(self.lbl_footer_left, 1)
 
-        self.btn_license = QPushButton("Licença")
-        self.btn_license.clicked.connect(self.open_license)
-        footer_row.addWidget(self.btn_license, 0, Qt.AlignRight)
+        if footer_link:
+            footer_wrap.setCursor(Qt.PointingHandCursor)
+            footer_wrap.mousePressEvent = lambda ev: QDesktopServices.openUrl(QUrl(footer_link))
 
-        footer_wrap = QWidget()
-        footer_wrap.setLayout(footer_row)
         root.addWidget(footer_wrap)
 
         self.setLayout(root)
@@ -422,8 +1189,80 @@ class App(QWidget):
 
         if self.file_path:
             self.lbl_file.setText(f"Arquivo: {self.file_path}")
+            self._reload_sheet_list()
+
+        self._update_sheet_dependent_ui()
+        
+            
+
+    def _build_footer(self) -> QWidget:
+        """
+        Constrói e retorna o rodapé promocional da aplicação.
+
+        Monta um QWidget com layout horizontal contendo um logo (opcional) e um texto
+        HTML/CTA. Se houver um link configurado, torna o rodapé inteiro clicável e
+        abre a URL ao clique.
+
+        Returns:
+            QWidget: Widget do rodapé pronto para ser adicionado ao layout.
+        """
+        ui = self.cfg_ui  # ou como você já carrega controle_ui.json
+
+        footer = QWidget()
+        footer.setObjectName("promoFooter")
+
+        row = QHBoxLayout(footer)
+        row.setContentsMargins(12, 10, 12, 10)
+        row.setSpacing(10)
+
+        # Logo
+        self.lbl_footer_logo = QLabel()
+        self.lbl_footer_logo.setFixedHeight(int(ui.get("footer_logo_height", 28)))
+        self.lbl_footer_logo.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+
+        logo_path = ui.get("footer_logo_path", "")
+        if logo_path:
+            pix = QPixmap(abs_path(logo_path))  # use seu resolvedor (PyInstaller)
+            if not pix.isNull():
+                h = int(ui.get("footer_logo_height", 28))
+                self.lbl_footer_logo.setPixmap(pix.scaledToHeight(h, Qt.SmoothTransformation))
+
+        # Texto/CTA
+        self.lbl_footer_left = QLabel(ui.get("footer_left_html", ""))
+        self.lbl_footer_left.setTextFormat(Qt.RichText)
+        self.lbl_footer_left.setOpenExternalLinks(False)  # vamos tratar clique no banner todo
+        self.lbl_footer_left.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+       
+
+        row.addWidget(self.lbl_footer_logo, 0)
+        row.addWidget(self.lbl_footer_left, 1)
+        
+
+        # Banner clicável (WhatsApp/site)
+        link = ui.get("footer_link", "").strip()
+        if link:
+            footer.mousePressEvent = lambda ev: QDesktopServices.openUrl(QUrl(link))
+
+            # opcional: cursor “mão”
+            footer.setCursor(Qt.PointingHandCursor)
+
+        return footer
 
     def _apply_input_mask(self, inp: QLineEdit, tipo: str) -> None:
+        """
+        Aplica a máscara de entrada ao QLineEdit conforme o tipo informado.
+
+        Para tipos suportados (ex.: "telefone" e "data"), define uma InputMask
+        apropriada. Se o input for um CursorStartLineEdit, também ajusta o
+        comportamento do cursor para iniciar no começo quando aplicável.
+
+        Args:
+            inp (QLineEdit): Campo de entrada que receberá a máscara.
+            tipo (str): Tipo do campo (ex.: "telefone", "data" ou outros).
+
+        Returns:
+            None
+        """
         if isinstance(inp, CursorStartLineEdit):
             inp.set_force_cursor_start(tipo in ("telefone", "data"))
 
@@ -434,8 +1273,19 @@ class App(QWidget):
         else:
             inp.setInputMask("")
 
+    
     def render_fields(self) -> None:
-        # 1) Snapshot dos valores atuais antes de destruir os widgets
+        """
+        Renderiza a lista de campos na interface, recriando as linhas de entrada.
+
+        Preserva os valores já digitados (incluindo partes do e-mail), limpa o layout
+        atual e monta novamente os widgets conforme o tipo de cada campo (email,
+        booleano ou texto), conectando sinais de editar/excluir e aplicando ícones e
+        estado de bloqueio.
+
+        Returns:
+            None
+        """
         prev_value: Dict[str, str] = {}
         prev_email_parts: Dict[str, Tuple[str, str]] = {}
 
@@ -443,8 +1293,8 @@ class App(QWidget):
             try:
                 if isinstance(w, EmailInputWidget):
                     full, _ok = w.get_email()
-                    prev_value[cid] = full or ""                  # SEMPRE string
-                    prev_email_parts[cid] = (w.local(), w.domain())  # partes (opcional)
+                    prev_value[cid] = full or ""
+                    prev_email_parts[cid] = (w.local(), w.domain())
                 elif isinstance(w, BoolInputWidget):
                     prev_value[cid] = w.value()
                 elif isinstance(w, QLineEdit):
@@ -454,14 +1304,12 @@ class App(QWidget):
             except Exception:
                 prev_value[cid] = ""
 
-        # 2) Limpa o layout e remove widgets
         while self.fields_layout.count():
             item = self.fields_layout.takeAt(0)
             ww = item.widget()
             if ww:
                 ww.deleteLater()
 
-        # 3) Recria os campos
         self.inputs.clear()
 
         theme = getattr(self, "_last_theme_for_fields", dict(DEFAULT_THEME))
@@ -474,12 +1322,15 @@ class App(QWidget):
             if campo.tipo == "email":
                 emailw = EmailInputWidget(domains=self.email_domains)
 
-                # Se antes era email, restaura as partes; senão tenta usar o texto completo
                 if campo.id in prev_email_parts:
                     loc, dom = prev_email_parts[campo.id]
                     emailw.set_parts(loc, dom)
                 else:
                     emailw.set_email(prev_value.get(campo.id, ""))
+
+                # força QListView em combos internos do widget
+                for combo in emailw.findChildren(QComboBox):
+                    self._force_combobox_popup_style(combo)
 
                 self.inputs[campo.id] = emailw
                 input_widget = emailw
@@ -487,17 +1338,23 @@ class App(QWidget):
             elif campo.tipo == "booleano":
                 bw = BoolInputWidget()
                 bw.set_value(prev_value.get(campo.id, ""))
+
+                # força QListView em combos internos do widget
+                for combo in bw.findChildren(QComboBox):
+                    self._force_combobox_popup_style(combo)
+
                 self.inputs[campo.id] = bw
                 input_widget = bw
 
             else:
                 inp = CursorStartLineEdit()
-                inp.setPlaceholderText(f"Digite ou cole: {campo.titulo}")
+                if campo.tipo == "protocolo":
+                    inp.setPlaceholderText("Clique em 'Protocolo' para gerar automaticamente")
+                else:
+                    inp.setPlaceholderText(f"Digite ou cole: {campo.titulo}")
+                
                 self._apply_input_mask(inp, campo.tipo)
-
-                # Aqui SEMPRE vem string, nunca tupla
                 inp.setText(prev_value.get(campo.id, ""))
-
                 self.inputs[campo.id] = inp
                 input_widget = inp
 
@@ -508,6 +1365,19 @@ class App(QWidget):
             self.icon_mgr.apply_button_icon(roww.btn_edit, "edit_title", text)
             self.icon_mgr.apply_button_icon(roww.btn_del, "delete_field", white)
 
+            locked = bool(getattr(campo, "locked", False))
+            roww.set_locked(locked)
+            roww.lockToggled.connect(self.on_field_lock_toggled)
+
+            lock_icon_key = "lock_closed" if locked else "lock_open"
+            self.icon_mgr.apply_button_icon(roww.btn_lock, lock_icon_key, text)
+
+            if getattr(campo, "locked", False):
+                roww.btn_edit.setEnabled(False)
+                roww.btn_del.setEnabled(False)
+                roww.btn_edit.setToolTip("Campo protegido: não pode ser alterado.")
+                roww.btn_del.setToolTip("Campo protegido: não pode ser excluído.")
+
             self.fields_layout.addWidget(roww)
 
         self.fields_layout.addStretch(1)
@@ -515,14 +1385,49 @@ class App(QWidget):
     # ---------- persistência ----------
 
     def _persist_campos(self) -> None:
-        self.cfg_fields["campos"] = [c.__dict__ for c in self.campos]
+        """
+        Persiste a configuração de campos (campos) da aba atual.
+
+        Salva a lista de campos da aba em configuração, atualiza a aba selecionada
+        em `cfg_fields` e grava o arquivo de configuração.
+
+        Returns:
+            None
+        """
+        set_sheet_campos(self.cfg_fields, self.sheet_name, [c.__dict__ for c in self.campos])
         self.cfg_fields["aba"] = self.sheet_name
         save_fields_config(self.cfg_fields)
 
     def _apply_file_path(self, path: str, prepare: bool, silent: bool = False) -> None:
+        """
+        Aplica um novo caminho de planilha ao estado da aplicação.
+
+        Atualiza `self.file_path`, o label do arquivo e salva a configuração. Em
+        seguida, recalcula a assinatura do arquivo e recarrega a lista de abas.
+        Se `prepare` for True, garante que a planilha/aba exista com os cabeçalhos
+        atuais e aplica regras de tipo de coluna.
+
+        Args:
+            path (str): Caminho do arquivo de planilha selecionado.
+            prepare (bool): Se True, prepara a planilha (cria/ajusta cabeçalhos e regras).
+            silent (bool, optional): Se True, evita mensagens de sucesso no status.
+
+        Returns:
+            None
+        """
         self.file_path = path
         self.lbl_file.setText(f"Arquivo: {path}")
         save_sheet_config(path)
+
+        self._update_sheet_dependent_ui()
+        # atualiza assinatura e lista de abas imediatamente
+        try:
+            self._sheet_last_sig = self._file_signature(path)
+        except Exception:
+            self._sheet_last_sig = None
+
+        self._reload_sheet_list()
+        self._update_sheet_dependent_ui()
 
         if prepare:
             try:
@@ -534,9 +1439,109 @@ class App(QWidget):
             except Exception as e:
                 self.lbl_status.setText(f"Erro ao preparar planilha: {e}")
 
+    # ---------- monitor de mudanças do arquivo ----------
+
+    def _start_sheet_monitor(self) -> None:
+        """
+        Inicia o monitoramento de mudanças na planilha usando um QTimer.
+
+        Se ainda não houver monitor ativo, cria um timer periódico para chamar
+        `_check_sheet_changed()`. Também executa uma checagem inicial e, se existir
+        um arquivo válido, registra a assinatura atual e tenta sincronizar abas e/ou
+        cabeçalhos com o Excel quando esses métodos estiverem disponíveis.
+
+        Returns:
+            None
+        """
+        if self._sheet_monitor_timer is not None:
+            return               
+
+        self._sheet_monitor_timer = QTimer(self)
+        self._sheet_monitor_timer.setInterval(1200)
+        self._sheet_monitor_timer.timeout.connect(self._check_sheet_changed)
+        self._sheet_monitor_timer.start()
+
+        # roda uma vez no início
+        self._check_sheet_changed()
+
+        # rodar uma vez no início (se existir planilha)
+        if self.file_path and os.path.exists(self.file_path):
+            try:
+                self._sheet_last_sig = self._file_signature(self.file_path)
+            except Exception:
+                self._sheet_last_sig = None
+
+            if hasattr(self, "_maybe_sync_sheets_from_excel"):
+                self._maybe_sync_sheets_from_excel()
+            if hasattr(self, "_maybe_sync_headers_from_excel"):
+                self._maybe_sync_headers_from_excel()
+
+    def _file_signature(self, path: str):
+        """
+        Gera uma “assinatura” simples do arquivo para detectar alterações.
+
+        A assinatura é composta pelo tempo de modificação (mtime) e pelo tamanho do
+        arquivo, ambos convertidos para inteiro.
+
+        Args:
+            path (str): Caminho do arquivo.
+
+        Returns:
+            tuple[int, int]: Par (mtime, size) do arquivo.
+        """
+        st = os.stat(path)
+        return (int(st.st_mtime), int(st.st_size))
+
+    def _check_sheet_changed(self) -> None:
+        """
+        Verifica se o arquivo de planilha foi alterado e dispara sincronizações.
+
+        Sempre tenta sincronizar a lista de abas e, caso a assinatura do arquivo
+        (mtime/tamanho) tenha mudado desde a última verificação, sincroniza também
+        os cabeçalhos da aba.
+
+        Returns:
+            None
+        """
+        if not self.file_path or not os.path.exists(self.file_path):
+            return
+
+        # 1) Sempre tenta sincronizar abas (deleção/rename/criação)
+        # (se não mudou, a função retorna rápido)
+        self._maybe_sync_sheets_from_excel()
+
+        # 2) Só sincroniza cabeçalho quando o arquivo mudar de fato
+        try:
+            sig = self._file_signature(self.file_path)
+        except Exception:
+            return
+
+        if self._sheet_last_sig is None:
+            self._sheet_last_sig = sig
+            return
+
+        if sig != self._sheet_last_sig:
+            self._sheet_last_sig = sig
+            self._maybe_sync_headers_from_excel()
+
     # ---------- sincronizar campos ----------
 
     def sync_fields_from_existing_excel(self, path: str) -> bool:
+        """
+        Sincroniza os campos do controle com o cabeçalho existente na planilha.
+
+        Lê os cabeçalhos da aba, cria cabeçalho se estiver ausente, ou então mapeia
+        cada coluna para um Campo (reaproveitando id/tipo quando possível e inferindo
+        para novos títulos). Ao final, persiste a configuração, aplica regras de
+        tipos de coluna e re-renderiza os campos na UI.
+
+        Args:
+            path (str): Caminho do arquivo Excel.
+
+        Returns:
+            bool: True se a sincronização foi concluída com sucesso; False em caso de erro
+            ou ausência de cabeçalho válido.
+        """
         try:
             sheet_used, headers, has_header = read_headers_from_excel(path, self.sheet_name)
         except Exception as e:
@@ -576,6 +1581,7 @@ class App(QWidget):
                 cid = old.id
                 tipo = old.tipo if old.tipo in FIELD_TYPES else "texto"
                 fixo = old.fixo
+                locked = getattr(old, "locked", False)
                 used_ids.add(cid)
             else:
                 cid = make_unique_id(sanitize_id(h), used_ids)
@@ -583,8 +1589,9 @@ class App(QWidget):
                 if tipo not in FIELD_TYPES:
                     tipo = "texto"
                 fixo = False
+                locked = False
 
-            new_campos.append(Campo(id=cid, titulo=h, tipo=tipo, fixo=fixo))
+            new_campos.append(Campo(id=cid, titulo=h, tipo=tipo, fixo=fixo, locked=locked))
 
         self.campos = new_campos
         self._persist_campos()
@@ -599,6 +1606,16 @@ class App(QWidget):
         return True
 
     def choose_file(self) -> None:
+        """
+        Abre o diálogo para escolher/criar uma planilha Excel e aplica a seleção.
+
+        Se o arquivo já existir, pergunta se o usuário deseja importar os campos a
+        partir do cabeçalho (linha 1). Caso aceite, sincroniza os campos do app com
+        a planilha; caso contrário, mantém os campos atuais e prepara a planilha.
+
+        Returns:
+            None
+        """
         path, _ = QFileDialog.getSaveFileName(
             self,
             "Escolher planilha",
@@ -632,9 +1649,43 @@ class App(QWidget):
 
         self._apply_file_path(path, prepare=True, silent=False)
 
-    # ---------- ações de campos ----------
+    
+
+    # ---------- ações de campos ----------]
+ 
+    def on_field_lock_toggled(self, field_id: str, locked: bool) -> None:
+        """
+        Atualiza o estado de bloqueio de um campo e persiste a alteração.
+
+        Localiza o Campo pelo `field_id`, ajusta o atributo `locked`, salva a
+        configuração e re-renderiza a lista de campos para refletir o novo estado.
+
+        Args:
+            field_id (str): ID do campo cujo bloqueio foi alterado.
+            locked (bool): Novo estado de bloqueio (True = bloqueado).
+
+        Returns:
+            None
+        """
+        campo = next((c for c in self.campos if c.id == field_id), None)
+        if not campo:
+            return
+
+        campo.locked = bool(locked)
+        self._persist_campos()
+        self.render_fields()
 
     def add_field(self) -> None:
+        """
+        Adiciona um novo campo de preenchimento.
+
+        Solicita ao usuário o título e o tipo do campo, valida duplicidade de título,
+        gera um ID único, salva no controle, re-renderiza a UI e (se houver planilha
+        selecionada) tenta garantir/atualizar as colunas no Excel.
+
+        Returns:
+            None
+        """
         title, ok = QInputDialog.getText(self, "Novo campo", "Título do campo:")
         if not ok or not title.strip():
             return
@@ -653,7 +1704,7 @@ class App(QWidget):
         used_ids = {c.id for c in self.campos}
         cid = make_unique_id(sanitize_id(title), used_ids)
 
-        self.campos.append(Campo(id=cid, titulo=title, tipo=tipo, fixo=False))
+        self.campos.append(Campo(id=cid, titulo=title, tipo=tipo, fixo=False, locked=False))
         self._persist_campos()
 
         self.render_fields()
@@ -668,10 +1719,29 @@ class App(QWidget):
                 self.lbl_status.setText(f"Campo criado, mas falhou ao atualizar Excel: {e}")
 
     def edit_field(self, field_id: str) -> None:
+        """
+        Edita o título e/ou o tipo de um campo existente.
+
+        Impede edição de campos bloqueados, abre diálogos para alterar título e tipo,
+        valida duplicidade, persiste a mudança e tenta refletir no Excel (renomeando
+        o cabeçalho e reaplicando regras de tipos). Após re-renderizar, restaura o
+        valor previamente digitado, ajustando-o quando há troca entre tipos com/sem
+        máscara (telefone/data) e e-mail.
+
+        Args:
+            field_id (str): ID do campo a ser editado.
+
+        Returns:
+            None
+        """
         campo = next((c for c in self.campos if c.id == field_id), None)
         if not campo:
             return
 
+        if getattr(campo, "locked", False):
+            QMessageBox.warning(self, "Campo protegido", "Este campo está bloqueado e não pode ser alterado.")
+            return
+        
         old_tipo = campo.tipo
 
         old_value = ""
@@ -741,8 +1811,26 @@ class App(QWidget):
         self.lbl_status.setText("Campo atualizado (título/tipo).")
 
     def delete_field(self, field_id: str) -> None:
+        """
+        Exclui um campo do controle (e a coluna correspondente no Excel, quando possível).
+
+        Bloqueia a exclusão de campos protegidos, solicita confirmação do usuário,
+        remove o campo da lista, persiste a alteração e tenta remover a coluna na
+        planilha e reaplicar as regras de tipos. Em seguida, re-renderiza a UI e
+        atualiza o status.
+
+        Args:
+            field_id (str): ID do campo a ser excluído.
+
+        Returns:
+            None
+        """
         campo = next((c for c in self.campos if c.id == field_id), None)
         if not campo:
+            return
+        
+        if getattr(campo, "locked", False):
+            QMessageBox.warning(self, "Campo protegido", "Este campo está bloqueado e não pode ser excluído.")
             return
 
         msg = (
@@ -767,8 +1855,193 @@ class App(QWidget):
         self.lbl_status.setText("Campo excluído (e coluna removida, quando aplicável).")
 
     # ---------- ações gerais ----------
+    def generate_protocol(self) -> None:
+        """
+        Gera um número de protocolo no formato ddMMyyHHmmss.
+        Se existir algum campo do tipo 'protocolo', preenche automaticamente
+        o primeiro campo encontrado com o valor gerado.
+        Não cria campo novo automaticamente.
+        """
+        protocolo = datetime.now().strftime("%d%m%y%H%M%S")
+
+        # procura o primeiro campo do tipo protocolo
+        campo_protocolo = next((c for c in self.campos if c.tipo == "protocolo"), None)
+
+        # se existir, preenche o input correspondente
+        if campo_protocolo:
+            w = self.inputs.get(campo_protocolo.id)
+            if isinstance(w, QLineEdit):
+                w.setText(protocolo)
+
+        dlg = QDialog(self)
+        dlg.setWindowTitle("Protocolo gerado")
+        dlg.setModal(True)
+        dlg.setMinimumWidth(360)
+
+        layout = QVBoxLayout(dlg)
+
+        lbl = QLabel("Protocolo gerado:")
+        layout.addWidget(lbl)
+
+        inp_protocol = QLineEdit()
+        inp_protocol.setReadOnly(True)
+        inp_protocol.setText(protocolo)
+        inp_protocol.setAlignment(Qt.AlignCenter)
+        inp_protocol.selectAll()
+        layout.addWidget(inp_protocol)
+
+        buttons = QDialogButtonBox()
+        btn_copy = buttons.addButton("Copiar", QDialogButtonBox.ActionRole)
+        btn_close = buttons.addButton("Fechar", QDialogButtonBox.RejectRole)
+
+        def copy_protocol() -> None:
+            QApplication.clipboard().setText(protocolo)
+
+            if campo_protocolo:
+                self.lbl_status.setText(
+                    f"Protocolo gerado, copiado e inserido no campo '{campo_protocolo.titulo}': {protocolo}"
+                )
+            else:
+                self.lbl_status.setText(
+                    f"Protocolo gerado e copiado: {protocolo}"
+                )
+
+            QMessageBox.information(
+                self,
+                "Copiado",
+                "Protocolo copiado para a área de transferência."
+            )
+
+        btn_copy.clicked.connect(copy_protocol)
+        btn_close.clicked.connect(dlg.reject)
+
+        layout.addWidget(buttons)
+
+        if campo_protocolo:
+            self.lbl_status.setText(
+                f"Protocolo gerado e inserido no campo '{campo_protocolo.titulo}': {protocolo}"
+            )
+        else:
+            self.lbl_status.setText(f"Protocolo gerado: {protocolo}")
+
+        dlg.exec()
+    
+    
+    def delete_all_fields(self) -> None:
+        """
+        Exclui todos os campos não protegidos do controle e, quando possível,
+        remove também as colunas correspondentes na planilha Excel.
+
+        A função:
+        - verifica se há campos cadastrados;
+        - impede a exclusão de campos protegidos;
+        - solicita confirmação do usuário;
+        - remove do controle apenas os campos permitidos;
+        - persiste a alteração;
+        - tenta remover as colunas correspondentes no Excel;
+        - reaplica as regras de tipo nas colunas restantes;
+        - re-renderiza a interface e atualiza o status.
+
+        Returns:
+            None
+        """
+        if not self.campos:
+            QMessageBox.information(self, "Nenhum campo", "Não há campos para excluir.")
+            return
+
+        locked_fields = [c for c in self.campos if getattr(c, "locked", False)]
+        deletable_fields = [c for c in self.campos if not getattr(c, "locked", False)]
+
+        if not deletable_fields:
+            QMessageBox.warning(
+                self,
+                "Exclusão bloqueada",
+                "Todos os campos estão protegidos e não podem ser excluídos."
+            )
+            return
+
+        total = len(self.campos)
+        total_locked = len(locked_fields)
+        total_deletable = len(deletable_fields)
+
+        if self.file_path:
+            msg = (
+                f"Confirma excluir {total_deletable} campo(s)?\n\n"
+                "Isso também removerá as colunas correspondentes na planilha Excel.\n"
+                "Os dados dessas colunas serão removidos definitivamente."
+            )
+        else:
+            msg = (
+                f"Confirma excluir {total_deletable} campo(s)?\n\n"
+                "Nenhuma planilha está selecionada no momento.\n"
+                "A exclusão afetará apenas os campos do controle do aplicativo."
+            )
+
+        
+
+        if total_locked:
+            msg += (
+                f"\n\n{total_locked} campo(s) protegido(s) não serão excluídos."
+            )
+
+        if QMessageBox.question(self, "Confirmar exclusão em massa", msg) != QMessageBox.Yes:
+            return
+
+        field_titles_to_delete = [c.titulo for c in deletable_fields]
+
+        # Mantém apenas os campos protegidos
+        self.campos = locked_fields
+        self._persist_campos()
+
+        excel_errors = []
+
+        try:
+            if self.file_path:
+                for titulo in field_titles_to_delete:
+                    try:
+                        delete_column_by_header(self.file_path, self.sheet_name, titulo)
+                    except Exception as e:
+                        excel_errors.append(f"{titulo}: {e}")
+
+                try:
+                    apply_column_type_rules(self.file_path, self.sheet_name, self.campos)
+                except Exception as e:
+                    excel_errors.append(f"Falha ao reaplicar regras de tipo: {e}")
+
+        except Exception as e:
+            excel_errors.append(str(e))
+
+        self.render_fields()
+
+        if excel_errors:
+            self.lbl_status.setText(
+                "Campos removidos do controle, mas houve falhas ao atualizar o Excel."
+            )
+            QMessageBox.warning(
+                self,
+                "Exclusão concluída com ressalvas",
+                "Os campos foram removidos do controle, mas ocorreram erros ao atualizar a planilha:\n\n"
+                + "\n".join(excel_errors)
+            )
+        else:
+            if total_locked:
+                self.lbl_status.setText(
+                    f"{total_deletable} campo(s) excluído(s). {total_locked} protegido(s) foram mantidos."
+                )
+            else:
+                self.lbl_status.setText("Todos os campos foram excluídos com sucesso.")
+    
 
     def clear_fields(self) -> None:
+        """
+        Limpa os valores preenchidos nos campos da interface.
+
+        Zera os QLineEdit e, no caso de e-mail, mantém o domínio e limpa apenas a
+        parte local. Também atualiza a mensagem de status.
+
+        Returns:
+            None
+        """
         for _, w in self.inputs.items():
             if isinstance(w, EmailInputWidget):
                 w.set_parts("", w.domain())
@@ -777,6 +2050,18 @@ class App(QWidget):
         self.lbl_status.setText("Campos limpos.")
 
     def save_lead(self) -> None:
+        """
+        Salva os dados preenchidos como uma nova linha na planilha.
+
+        Valida se há arquivo selecionado, verifica possível bloqueio do Excel,
+        coleta os valores dos campos (tratando e-mail e booleano), normaliza texto
+        com máscara e evita salvar quando tudo estiver vazio. Em seguida, tenta
+        gravar a linha com novas tentativas em caso de PermissionError e, ao
+        concluir, limpa os campos e informa o usuário.
+
+        Returns:
+            None
+        """
         if not self.file_path:
             QMessageBox.warning(self, "Atenção", "Selecione uma planilha primeiro.")
             return
@@ -810,7 +2095,7 @@ class App(QWidget):
                     return
                 row_by_title[c.titulo] = email_final
                 continue
-            
+
             if c.tipo == "booleano" and isinstance(w, BoolInputWidget):
                 row_by_title[c.titulo] = w.value()
                 continue
@@ -870,6 +2155,16 @@ class App(QWidget):
     # ---------- tema ----------
 
     def open_theme_settings(self) -> None:
+        """
+        Abre o diálogo de tema e permite ajustar a cor de fundo (HSL) em tempo real.
+
+        Aplica uma prévia do tema conforme os sliders mudam. Se o usuário confirmar,
+        salva as novas configurações (background_hsl e theme) e aplica o tema
+        derivado. Se cancelar, restaura o tema/configuração anterior.
+
+        Returns:
+            None
+        """
         hsl = self.cfg_ui.get("background_hsl", {}) or {}
         h = int(hsl.get("h", 210))
         s = int(hsl.get("s", 49))
@@ -881,6 +2176,15 @@ class App(QWidget):
         dlg = ThemeDialog(self, h, s, l)
 
         def on_change():
+            """
+            Atualiza a prévia do tema conforme os valores do diálogo mudam.
+
+            Lê os valores HSL do `dlg`, converte para RGB/hex, deriva um tema a partir da
+            cor de fundo (mesclando com o tema anterior) e aplica o resultado na UI.
+
+            Returns:
+                None
+            """
             hh, ss, ll = dlg.values()
             rr, gg, bb = hsl_to_rgb(hh, ss, ll)
             bg_hex = rgb_to_hex(rr, gg, bb)
@@ -895,7 +2199,7 @@ class App(QWidget):
 
         on_change()
 
-        if dlg.exec() == dlg.accepted:
+        if dlg.exec() == QDialog.Accepted:
             hh, ss, ll = dlg.values()
             rr, gg, bb = hsl_to_rgb(hh, ss, ll)
             bg_hex = rgb_to_hex(rr, gg, bb)
@@ -917,7 +2221,19 @@ class App(QWidget):
 
 
 def main() -> None:
+    """
+    Ponto de entrada da aplicação.
+
+    Inicializa o QApplication e uma tela de carregamento, solicita o e-mail do
+    usuário e valida a licença online (com tentativas quando aplicável). Em
+    seguida, valida/marca o dispositivo localmente e, se tudo estiver ok,
+    instancia e exibe a janela principal.
+
+    Returns:
+        None
+    """
     app = QApplication([])
+    app.setStyle("Fusion")
 
     loader = LoadingScreen(app, title="Validando acesso")
     loader.show("Preparando validação...")

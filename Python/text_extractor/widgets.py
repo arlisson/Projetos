@@ -1,4 +1,3 @@
-# widgets.py
 from __future__ import annotations
 
 from typing import List, Optional, Tuple
@@ -11,6 +10,8 @@ from PySide6.QtWidgets import (
     QPushButton,
     QLineEdit,
     QComboBox,
+    QListView,
+    QFrame,
 )
 
 
@@ -20,6 +21,9 @@ class EmailInputWidget(QWidget):
     - QLineEdit (parte local) + QComboBox (domínio)
     - Monta e lê email final
     - Atualiza lista de domínios preservando seleção
+        - Se o local contém '@', considera colado completo e retorna ok=True
+        - Se local não vazio e domínio vazio => ok=False
+        - Se local vazio => retorna "" e ok=True (campo em branco)
     """
 
     def __init__(self, domains: List[str], parent: Optional[QWidget] = None):
@@ -29,8 +33,7 @@ class EmailInputWidget(QWidget):
         self.inp_local.setPlaceholderText("usuario (ou cole e-mail completo)")
 
         self.cmb_domain = QComboBox()
-        self.cmb_domain.setEditable(True)
-        self.cmb_domain.setInsertPolicy(QComboBox.InsertAtTop)
+        self._prepare_combo_popup(self.cmb_domain)
 
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
@@ -40,22 +43,40 @@ class EmailInputWidget(QWidget):
 
         self.set_domains(domains)
 
+    def _prepare_combo_popup(self, combo: QComboBox) -> None:
+        """
+        Ajusta o popup do QComboBox para reduzir problemas de transparência
+        no Windows 11 e manter o popup vinculado ao combo correto.
+        """
+        view = QListView(combo)
+        combo.setView(view)
+
+        try:
+            view.setFrameShape(QFrame.NoFrame)
+        except Exception:
+            pass
+
+        try:
+            view.viewport().setAutoFillBackground(True)
+            view.setAutoFillBackground(True)
+        except Exception:
+            pass
+
+        try:
+            combo.setEditable(False)
+        except Exception:
+            pass
+
     def set_domains(self, domains: List[str]) -> None:
         cur = (self.domain() or "").strip()
 
         self.cmb_domain.blockSignals(True)
-
-        self.cmb_domain.setEditable(False)  # garante que não é editável
         self.cmb_domain.clear()
 
-        # popula
         items = [str(d).strip() for d in (domains or []) if str(d).strip()]
         for d in items:
             self.cmb_domain.addItem(d)
 
-        # seleção:
-        # - se o domínio anterior ainda existir na lista, mantém
-        # - senão, marca a primeira opção (se existir)
         if cur and cur in items:
             self.cmb_domain.setCurrentText(cur)
         elif self.cmb_domain.count() > 0:
@@ -82,13 +103,6 @@ class EmailInputWidget(QWidget):
             self.set_parts(s, "")
 
     def get_email(self) -> Tuple[str, bool]:
-        """
-        Retorna (email_final, ok).
-        Regras:
-        - Se o local contém '@', considera colado completo e retorna ok=True
-        - Se local não vazio e domínio vazio => ok=False
-        - Se local vazio => retorna "" e ok=True (campo em branco)
-        """
         local = self.local()
         dom = self.domain()
 
@@ -110,6 +124,7 @@ class EmailInputWidget(QWidget):
 class FieldRowWidget(QWidget):
     editRequested = Signal(str)
     deleteRequested = Signal(str)
+    lockToggled = Signal(str, bool)
 
     def __init__(
         self,
@@ -120,6 +135,13 @@ class FieldRowWidget(QWidget):
     ):
         super().__init__(parent)
         self.field_id = field_id
+
+        self.btn_lock = QPushButton()
+        self.btn_lock.setCheckable(True)
+        self.btn_lock.setFixedSize(28, 28)
+        self.btn_lock.setToolTip("Bloquear/desbloquear este campo")
+
+        self.btn_lock.toggled.connect(lambda checked: self.lockToggled.emit(self.field_id, bool(checked)))
 
         self.lbl = QLabel(label_text)
         self.lbl.setMinimumWidth(160)
@@ -133,6 +155,8 @@ class FieldRowWidget(QWidget):
 
         row = QHBoxLayout()
         row.setContentsMargins(0, 0, 0, 0)
+
+        row.addWidget(self.btn_lock)
         row.addWidget(self.lbl)
         row.addWidget(input_widget, 1)
         row.addWidget(self.btn_edit)
@@ -140,19 +164,23 @@ class FieldRowWidget(QWidget):
 
         self.setLayout(row)
 
-# widgets.py (adicione)
+    def set_locked(self, locked: bool) -> None:
+        self.btn_lock.blockSignals(True)
+        self.btn_lock.setChecked(bool(locked))
+        self.btn_lock.blockSignals(False)
 
 
 class BoolInputWidget(QWidget):
     """
-    Booleano como seleção (não texto).
-    Guarda: "" | "Sim" | "Não"
+    Widget de entrada booleana baseado em QComboBox.
     """
+
     def __init__(self, parent: Optional[QWidget] = None):
         super().__init__(parent)
 
         self.cmb = QComboBox()
-        # self.cmb.addItem("")      # vazio permitido
+        self._prepare_combo_popup(self.cmb)
+
         self.cmb.addItem("Sim")
         self.cmb.addItem("Não")
 
@@ -161,17 +189,37 @@ class BoolInputWidget(QWidget):
         layout.addWidget(self.cmb, 1)
         self.setLayout(layout)
 
+    def _prepare_combo_popup(self, combo: QComboBox) -> None:
+        """
+        Ajusta o popup do QComboBox para reduzir problemas de transparência
+        no Windows 11 e manter o popup abaixo do combo correspondente.
+        """
+        view = QListView(combo)
+        combo.setView(view)
+
+        try:
+            view.setFrameShape(QFrame.NoFrame)
+        except Exception:
+            pass
+
+        try:
+            view.viewport().setAutoFillBackground(True)
+            view.setAutoFillBackground(True)
+        except Exception:
+            pass
+
     def value(self) -> str:
         return (self.cmb.currentText() or "").strip()
 
     def set_value(self, v: str) -> None:
         s = (v or "").strip()
-        # aceita variações comuns
         low = s.lower()
+
         if low in {"sim", "s", "yes", "y", "true", "1"}:
             s = "Sim"
         elif low in {"não", "nao", "n", "no", "false", "0"}:
             s = "Não"
         elif s not in {"", "Sim", "Não"}:
             s = ""
+
         self.cmb.setCurrentText(s)

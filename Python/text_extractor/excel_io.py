@@ -1,8 +1,8 @@
 # excel_io.py
 from __future__ import annotations
-
+from datetime import datetime
 import os
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Tuple
 
 from openpyxl import Workbook, load_workbook
 from openpyxl.worksheet.datavalidation import DataValidation
@@ -11,6 +11,31 @@ from openpyxl.utils import get_column_letter
 from models import Campo, EXCEL_NUMBER_FORMAT
 from formatters import cast_value_by_type
 
+def list_sheets_with_ids(path: str) -> List[Tuple[int, str]]:
+    """
+    Lê um arquivo Excel e retorna uma lista de tuplas contendo o ID da planilha e o nome de cada aba presente no arquivo. O método utiliza a biblioteca openpyxl para carregar o arquivo e iterar sobre as planilhas, extraindo o ID (que pode ser obtido de diferentes atributos dependendo da versão do openpyxl) e o título de cada aba, retornando-os em uma lista estruturada.
+    Args:
+        path (str): Caminho do arquivo Excel a ser lido.
+
+    Returns:
+            list[Tuple[int, str]]: Lista de tuplas, onde cada tupla contém o ID da planilha (int) e o nome da aba (str) presente no arquivo Excel.
+    """
+    wb = load_workbook(path)
+    out: List[Tuple[int, str]] = []
+    for ws in wb.worksheets:
+        sid = int(getattr(ws, "sheet_id", None) or getattr(ws, "sheetId", None) or ws._id)
+        out.append((sid, ws.title))
+    return out
+
+def list_sheets(path: str) -> list[str]:
+    wb = load_workbook(path)
+    return list(wb.sheetnames)
+
+def ensure_sheet_exists(path: str, sheet_name: str) -> None:
+    wb = load_workbook(path)
+    if sheet_name not in wb.sheetnames:
+        wb.create_sheet(sheet_name)
+        wb.save(path)
 
 def is_excel_lock_present(xlsx_path: str) -> bool:
     folder = os.path.dirname(xlsx_path) or "."
@@ -77,6 +102,13 @@ def write_headers_from_campos(path: str, sheet_name: str, campos: List[Campo]) -
 
 
 def ensure_workbook(path: str, sheet_name: str, headers: List[str]) -> None:
+    """
+    Garante que o arquivo Excel exista, que a aba exista e que a linha 1 tenha os cabeçalhos (títulos) especificados.
+    Args:
+        path (str): Caminho do arquivo Excel.
+        sheet_name (str): Nome da aba onde os dados serão escritos.
+        headers (List[str]): Lista de cabeçalhos (títulos) a serem garantidos na linha 1 da aba. Se a aba já existir, os cabeçalhos serão mesclados com os existentes, mantendo a ordem dos novos e sem duplicatas.
+    """
     if not os.path.exists(path):
         wb = Workbook()
         ws = wb.active
@@ -110,6 +142,9 @@ def ensure_workbook(path: str, sheet_name: str, headers: List[str]) -> None:
 
 
 def apply_column_type_rules(path: str, sheet_name: str, campos: List[Campo]) -> None:
+    """
+    Aplica regras de formatação e validação de dados nas colunas do Excel com base nos tipos definidos nos campos do app.
+    """
     if not path or not os.path.exists(path):
         return
 
@@ -137,7 +172,15 @@ def apply_column_type_rules(path: str, sheet_name: str, campos: List[Campo]) -> 
 
         col_idx = header_to_col[c.titulo]
         col_letter = get_column_letter(col_idx)
-        fmt = EXCEL_NUMBER_FORMAT.get(c.tipo, "@")
+
+        if c.tipo == "numero":
+            fmt = "General"
+        elif c.tipo == "moeda":
+            fmt = EXCEL_NUMBER_FORMAT.get("moeda", '"R$" #,##0.00')
+        elif c.tipo == "data":
+            fmt = EXCEL_NUMBER_FORMAT.get("data", "DD/MM/YYYY")
+        else:
+            fmt = EXCEL_NUMBER_FORMAT.get(c.tipo, "@")
 
         for r in range(2, max_row + 1):
             ws.cell(row=r, column=col_idx).number_format = fmt
@@ -179,34 +222,201 @@ def apply_column_type_rules(path: str, sheet_name: str, campos: List[Campo]) -> 
             dv.add(rng)
 
     wb.save(path)
+    wb.close()
 
+def _next_data_row(ws) -> int:
+    """
+    Retorna o índice da próxima linha vazia (base 1) na planilha, considerando a linha 1 como cabeçalho. A função verifica cada linha a partir da linha 2 e considera a linha "ocupada" se qualquer célula nessa linha tiver um valor diferente de None ou vazio. Quando encontra uma linha onde todas as células estão vazias, retorna o índice dessa linha como a próxima linha disponível para inserção de dados.
+    Args:
+        ws (_type_): Worksheet do openpyxl.
 
-def append_row_typed(path: str, sheet_name: str, campos: List[Campo], row_by_title: Dict[str, str]) -> None:
-    headers = [c.titulo for c in campos]
-    ensure_workbook(path, sheet_name, headers)
+    Returns:
+        int: Índice da próxima linha vazia (base 1).
+    """
+    # começa em 2 (linha 1 é cabeçalho)
+    r = 2
+    # considera “ocupada” se qualquer célula da linha tiver valor
+    while True:
+        if any(cell.value not in (None, "") for cell in ws[r]):
+            r += 1
+            continue
+        return r
+    
+def parse_br_number(value: str):
+    """
+    Converte texto numérico para int ou float, aceitando padrão brasileiro.
 
-    wb = load_workbook(path)
+    Exemplos aceitos:
+    - 10
+    - 10,5
+    - 1.234,56
+
+    Retorna:
+    - int, se for inteiro
+    - float, se tiver parte decimal
+    - None, se não for número válido
+    """
+    value = (value or "").strip()
+    if not value:
+        return None
+
+    # remove separador de milhar e converte vírgula decimal para ponto
+    normalized = value.replace(".", "").replace(",", ".")
+
+    try:
+        num = float(normalized)
+    except ValueError:
+        return None
+
+    if num.is_integer():
+        return int(num)
+
+    return num
+
+def parse_br_date_or_text(value: str):
+    """
+    Retorna datetime se a data for válida e suportada pelo Excel.
+    Se for anterior a 1900, retorna o texto original.
+    Se não for uma data válida, retorna o texto original.
+    """
+    value = (value or "").strip()
+    if not value:
+        return ""
+
+    try:
+        dt = datetime.strptime(value, "%d/%m/%Y")
+    except ValueError:
+        return value
+
+    if dt.year < 1900:
+        return value
+
+    return dt
+
+def append_row_typed(file_path: str, sheet_name: str, campos: List[Any], row_by_title: Dict[str, str]) -> None:
+    """
+    Adiciona uma nova linha na planilha, respeitando o tipo de cada campo.
+
+    Regras principais:
+    - texto/email/telefone/... -> grava como texto
+    - booleano -> grava como texto
+    - numero:
+        * grava como int/float
+        * sem forçar casas decimais
+    - data:
+        * se ano >= 1900, grava como datetime com formato DD/MM/YYYY
+        * se ano < 1900, grava como texto
+    - campos vazios -> célula vazia
+    """
+    wb = load_workbook(file_path)
+    if sheet_name not in wb.sheetnames:
+        wb.close()
+        raise ValueError(f"A aba '{sheet_name}' não existe na planilha.")
+
     ws = wb[sheet_name]
 
-    existing = [c.value for c in ws[1]]
-    existing = [v for v in existing if v is not None]
-    col_idx = {h: (existing.index(h) + 1) for h in existing}
+    if ws.max_row < 1:
+        headers = [c.titulo for c in campos]
+        ws.append(headers)
 
-    next_row = ws.max_row + 1
+    headers_in_sheet = []
+    for col_idx in range(1, ws.max_column + 1):
+        cell_value = ws.cell(row=1, column=col_idx).value
+        headers_in_sheet.append("" if cell_value is None else str(cell_value).strip())
 
-    for c in campos:
-        h = c.titulo
-        if h not in col_idx:
+    header_to_col = {title: idx + 1 for idx, title in enumerate(headers_in_sheet) if title}
+
+    for campo in campos:
+        if campo.titulo not in header_to_col:
+            new_col = ws.max_column + 1
+            ws.cell(row=1, column=new_col).value = campo.titulo
+            header_to_col[campo.titulo] = new_col
+
+    def first_empty_row() -> int:
+        """
+        Retorna a primeira linha realmente vazia para inserção.
+        A linha 1 é o cabeçalho, então os dados começam na 2.
+        """
+        row = 2
+        max_col = max(1, ws.max_column)
+
+        while True:
+            row_has_data = False
+
+            for col in range(1, max_col + 1):
+                value = ws.cell(row=row, column=col).value
+                if value not in (None, ""):
+                    row_has_data = True
+                    break
+
+            if not row_has_data:
+                return row
+
+            row += 1
+
+    next_row = first_empty_row()
+
+    for campo in campos:
+        col_idx = header_to_col[campo.titulo]
+        cell = ws.cell(row=next_row, column=col_idx)
+
+        raw_value = row_by_title.get(campo.titulo, "")
+        raw_value = "" if raw_value is None else str(raw_value).strip()
+
+        if raw_value == "":
+            cell.value = ""
+            cell.number_format = "General"
             continue
 
-        value = cast_value_by_type(c.tipo, row_by_title.get(h, ""))
-        cell = ws.cell(row=next_row, column=col_idx[h], value=value)
-        cell.number_format = EXCEL_NUMBER_FORMAT.get(c.tipo, "@")
+        if campo.tipo == "data":
+            parsed = parse_br_date_or_text(raw_value)
 
-    wb.save(path)
+            if isinstance(parsed, datetime):
+                cell.value = parsed
+                cell.number_format = "DD/MM/YYYY"
+            else:
+                cell.value = parsed
+                cell.number_format = "@"
 
+        elif campo.tipo == "numero":
+            parsed_num = parse_br_number(raw_value)
+
+            if parsed_num is None:
+                cell.value = raw_value
+                cell.number_format = "@"
+            else:
+                cell.value = parsed_num
+                cell.number_format = "General"
+
+        elif campo.tipo == "moeda":
+            parsed_num = parse_br_number(raw_value)
+
+            if parsed_num is None:
+                cell.value = raw_value
+                cell.number_format = "@"
+            else:
+                cell.value = float(parsed_num)
+                cell.number_format = EXCEL_NUMBER_FORMAT.get("moeda", '"R$" #,##0.00')
+
+        elif campo.tipo == "booleano":
+            cell.value = raw_value
+            cell.number_format = "@"
+
+        else:
+            cell.value = raw_value
+            cell.number_format = "@"
+
+    wb.save(file_path)
+    wb.close()
 
 def delete_column_by_header(path: str, sheet_name: str, header_name: str) -> None:
+    """
+    Exclui uma coluna do arquivo Excel com base no nome do cabeçalho. O método verifica se o arquivo e a aba existem, se a linha 1 contém o cabeçalho especificado e, se todas as condições forem atendidas, exclui a coluna correspondente ao cabeçalho fornecido.
+    Args:
+        path (str): Caminho do arquivo Excel.
+        sheet_name (str): Nome da aba onde a coluna será excluída.
+        header_name (str): Nome do cabeçalho da coluna a ser excluída.
+    """
     if not path or not os.path.exists(path):
         return
 
@@ -231,6 +441,14 @@ def delete_column_by_header(path: str, sheet_name: str, header_name: str) -> Non
 
 
 def rename_column_header(path: str, sheet_name: str, old_header: str, new_header: str) -> None:
+    """
+    Renomeia o cabeçalho de uma coluna no arquivo Excel. O método verifica se o arquivo e a aba existem, se a linha 1 contém o cabeçalho antigo especificado e, se todas as condições forem atendidas, atualiza o valor do cabeçalho para o novo nome fornecido.
+    Args:
+        path (str): Caminho do arquivo Excel.
+        sheet_name (str): Nome da aba onde a coluna será renomeada.
+        old_header (str): Nome do cabeçalho atual da coluna a ser renomeada.
+        new_header (str): Novo nome do cabeçalho da coluna.
+    """
     if not path or not os.path.exists(path):
         return
 

@@ -1,30 +1,38 @@
 {
-  "arquivo_padrao": "leads.xlsx",
-  "aba": "Sheet1",
-  "campos": [
-    {
-      "id": "telefone",
-      "titulo": "telefone",
-      "tipo": "telefone",
-      "fixo": true
-    },
-    {
-      "id": "nome",
-      "titulo": "Email",
-      "tipo": "email",
-      "fixo": true
-    },
-    {
-      "id": "email",
-      "titulo": "Data",
-      "tipo": "data",
-      "fixo": false
-    },
-    {
-      "id": "possui_conta",
-      "titulo": "Possui conta",
-      "tipo": "booleano",
-      "fixo": false
+  "arquivo_padrao": "PreencheFacil.xlsx",
+  "aba": "Preenche Fácil",
+  "abas": {
+    "Preenche Fácil": {
+      "campos": [
+        {
+          "id": "protocolo",
+          "titulo": "Protocolo",
+          "tipo": "protocolo",
+          "fixo": true,
+          "locked": false
+        },
+        {
+          "id": "nome",
+          "titulo": "Nome",
+          "tipo": "texto",
+          "fixo": true,
+          "locked": false
+        },
+        {
+          "id": "telefone",
+          "titulo": "Telefone",
+          "tipo": "telefone",
+          "fixo": true,
+          "locked": false
+        },
+        {
+          "id": "email",
+          "titulo": "Email",
+          "tipo": "email",
+          "fixo": true,
+          "locked": false
+        }
+      ]
     }
-  ]
+  }
 }
