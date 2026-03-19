@@ -937,7 +937,11 @@ class App(QWidget):
             return
 
         if not has_header or not headers:
-            return
+            self.campos = []
+            self._persist_campos()
+            self.render_fields()
+            self.lbl_status.setText("A planilha ficou sem cabeçalho. Os campos foram removidos do aplicativo.")
+            return True
 
         current_titles = [c.titulo for c in self.campos]
         if headers == current_titles:
