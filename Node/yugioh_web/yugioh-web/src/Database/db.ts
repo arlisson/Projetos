@@ -998,6 +998,42 @@ export async function buscarColecao(nome:String) {
   }
 }
 
+export async function garantirRaridade(nome: string): Promise<number | null> {
+  try {
+    const nomeLimpo = String(nome || '').trim().toUpperCase()
+
+    if (!nomeLimpo) {
+      return null
+    }
+
+    const db = await getDb()
+
+    const existente = await db.select<{ id_raridade: number }[]>(
+      `SELECT id_raridade FROM raridade WHERE UPPER(nome) = ? LIMIT 1`,
+      [nomeLimpo]
+    )
+
+    if (existente.length > 0) {
+      return existente[0].id_raridade
+    }
+
+    await db.execute(
+      `INSERT INTO raridade (nome) VALUES (?)`,
+      [nomeLimpo]
+    )
+
+    const criada = await db.select<{ id_raridade: number }[]>(
+      `SELECT id_raridade FROM raridade WHERE UPPER(nome) = ? LIMIT 1`,
+      [nomeLimpo]
+    )
+
+    return criada.length > 0 ? criada[0].id_raridade : null
+  } catch (err) {
+    await logError(`Erro ao garantir raridade: ${String(err)}`)
+    return null
+  }
+}
+
 export async function inserirCarta(carta: InserirCartaPayload): Promise<boolean> {
   
     try {
@@ -1359,3 +1395,4 @@ export async function atualizarVendaProduto(id: number, venda: AtualizarVendaPro
     return false;
   }
 }
+
