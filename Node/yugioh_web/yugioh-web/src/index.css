@@ -37,16 +37,22 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.6rem 1.6rem;
+  gap: 1rem;
+  padding: 0.6rem 2.2rem 0.6rem 1.6rem;
   border-bottom: 1px solid var(--color-border);
   background: radial-gradient(circle at top, #111827, #020617);
   box-shadow: var(--shadow-soft);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
 }
 
 .topbar-left {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  min-width: 0;
+  flex: 1;
 }
 
 .app-logo {
@@ -67,6 +73,8 @@ body {
   display: flex;
   align-items: center;
   gap: 1rem;
+  padding-right: 0.75rem;
+  flex-shrink: 0;
 }
 
 .topbar-nav-item {
@@ -92,9 +100,10 @@ body {
 
 .dropdown-menu {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 0.35rem);
   left: 0;
   min-width: 180px;
+  max-width: min(260px, calc(100vw - 40px));
   background-color: #020617;
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
@@ -102,7 +111,17 @@ body {
   box-shadow: var(--shadow-soft);
   display: none;
   z-index: 20;
-  box-sizing: border-box; 
+  box-sizing: border-box;
+}
+
+.topbar-nav-item:last-child .dropdown-menu {
+  left: auto;
+  right: 0;
+}
+
+.topbar-nav-button,
+.app-title {
+  white-space: nowrap;
 }
 
 .topbar-nav-item:hover .dropdown-menu {
@@ -873,4 +892,100 @@ body {
 
 .modal-actions button:hover {
   background-color: #1e293b;
+}
+
+.form-history-section {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto 1.5rem auto;
+  padding: 0 1.6rem;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.form-history-section .chart-card {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.form-history-section .chart-placeholder {
+  width: 100%;
+  max-width: 100%;
+  height: 240px;
+  min-height: 240px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.chart-filters {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.chart-filter-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: var(--color-text);
+}
+
+.chart-filter-item input {
+  width: 135px;
+  max-width: 100%;
+  padding: 0.3rem 0.45rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  background-color: #020617;
+  color: var(--color-text);
+  font-size: 0.8rem;
+  box-sizing: border-box;
+}
+
+.chart-clear-button {
+  padding: 0.32rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-primary);
+  background: transparent;
+  color: var(--color-primary);
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.chart-clear-button:hover {
+  background-color: rgba(59, 130, 246, 0.12);
+}
+
+@media (max-width: 1100px) {
+  .form-history-section {
+    padding: 0 1.6rem 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .form-history-section {
+    padding: 0 1rem 1rem;
+  }
+
+  .form-history-section .chart-placeholder {
+    height: 220px;
+    min-height: 220px;
+  }
+
+  .chart-filter-item input {
+    width: 120px;
+  }
 }

@@ -12,7 +12,9 @@ import { EditarProduto } from './views/Produtos/EditarProduto'
 import { EditarVendasCartas } from './views/Cartas/EditarVendasCartas'
 import { EditarVendasProdutos } from './views/Produtos/EditarVendasProdutos'
 import { CadastrarCartasColecao } from './views/Cartas/CadastrarCartasColecao'
+import RaridadeQualidade from './views/Gestao/RaridadeQualidade'
 import {Logs} from './views/Sistema/Logs'
+import BancoDeDados from './views/Gestao/BancoDeDados'
 
 export default function App() {
 
@@ -40,6 +42,8 @@ export default function App() {
 
       {/*Sistema*/}
       <Route path="/log/visualizar" element={<Logs/>}/>
+      <Route path="/raridade-qualidade/gestao" element={<RaridadeQualidade/>}/>
+      <Route path='/database/gestao' element={<BancoDeDados/>}/>
 
     </Routes>
   )

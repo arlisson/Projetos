@@ -1,18 +1,22 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Topbar } from '../../components/topBar'
 import { Footer } from '../../components/footer'
 import { FormField } from '../../components/formField'
 import { FormSelect } from '../../components/formSelect'
 import { Button } from '../../components/botao'
+import { Grafico } from '../../components/grafico'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { buscarProdutoId,
+import {
+  buscarProdutoId,
   deletar,
   type InserirProdutoPayload,
   atualizarProduto,
   todayStr,
   type InserirVendaProdutoPayload,
-  venderProduto
- } from '../../Database/db'
+  venderProduto,
+  buscarHistoricoPrecos,
+  type HistoricoPrecos,
+} from '../../Database/db'
 import { type ProdutoLiga, buscarProdutoLiga } from '../../../scraping/webScraping'
 import { logError } from '../../services/logger'
 
@@ -22,7 +26,6 @@ export function EditarProduto() {
   const [link, setLink] = useState('')
   const [nome, setNome] = useState('')
   const [urlImagem, setUrlImagem] = useState('')
-  // const [caminhoImagemLocal, setCaminhoImagemLocal] = useState('')
   const [precoCompra, setPrecoCompra] = useState('')
   const [precoAtual, setPrecoAtual] = useState('')
   const [dataCompra, setDataCompra] = useState('')
@@ -31,61 +34,129 @@ export function EditarProduto() {
 
   const [modalVenderAberto, setModalVenderAberto] = useState(false)
   const [quantidadeVenda, setQuantidadeVenda] = useState('')
-  const [valorVenda, setValorVenda] = useState('');
+  const [valorVenda, setValorVenda] = useState('')
 
-  // Futuramente estes valores virão do banco
+  const [historicoPrecos, setHistoricoPrecos] = useState<HistoricoPrecos[]>([])
+  const [carregandoHistorico, setCarregandoHistorico] = useState(false)
+
   const opcoesOrigem = [
     { value: 'myp', label: 'MyPCards' },
     { value: 'liga', label: 'Liga Yugioh' },
-    
   ]
 
   const [searchParams] = useSearchParams()
-    const idParam = searchParams.get('id')
-    const idProduto = idParam ? Number(idParam) : null
+  const idParam = searchParams.get('id')
+  const idProduto = idParam ? Number(idParam) : null
 
   useEffect(() => {
-    // Carregar dados do produto pelo idProduto
     if (!idProduto) return
+
+    const produtoId = idProduto
+
     async function carregarProduto() {
       try {
-        const produtoDetalhado = await buscarProdutoId(idProduto!)
+        const produtoDetalhado = await buscarProdutoId(produtoId)
         if (produtoDetalhado) {
           setLink(produtoDetalhado.link || '')
           setNome(produtoDetalhado.nome_produto || '')
           setUrlImagem(produtoDetalhado.imagem || '')
-          // setCaminhoImagemLocal(produtoDetalhado.imagem_salva || '')
-          setPrecoCompra(produtoDetalhado.preco_compra?.toString() || '')
-          setPrecoAtual(produtoDetalhado.preco_atual?.toString() || '')
+          setPrecoCompra(
+            produtoDetalhado.preco_compra !== null &&
+              produtoDetalhado.preco_compra !== undefined
+              ? produtoDetalhado.preco_compra.toString()
+              : '',
+          )
+          setPrecoAtual(
+            produtoDetalhado.preco_atual !== null &&
+              produtoDetalhado.preco_atual !== undefined
+              ? produtoDetalhado.preco_atual.toString()
+              : '',
+          )
           setDataCompra(produtoDetalhado.data_compra || '')
-          setQuantidade(produtoDetalhado.quantidade?.toString() || '')
-          if(produtoDetalhado.origem?.toUpperCase() === 'MYPCARDS') {
-              setOrigem('myp')
-          }else if(produtoDetalhado.origem?.toUpperCase() === 'LIGA YUGIOH') {
-              setOrigem('liga')
-          }else{
-              setOrigem('')
-          }
+          setQuantidade(
+            produtoDetalhado.quantidade !== null &&
+              produtoDetalhado.quantidade !== undefined
+              ? produtoDetalhado.quantidade.toString()
+              : '',
+          )
 
+          if (produtoDetalhado.origem?.toUpperCase() === 'MYPCARDS') {
+            setOrigem('myp')
+          } else if (produtoDetalhado.origem?.toUpperCase() === 'LIGA YUGIOH') {
+            setOrigem('liga')
+          } else {
+            setOrigem('')
+          }
         }
       } catch (err) {
-        //console.error('Erro ao carregar produto:', err)
+        await logError('Erro ao carregar produto: ' + String(err))
+        alert('Erro ao carregar produto.')
       }
     }
 
-    carregarProduto()
+    async function carregarHistoricoProduto() {
+      try {
+        setCarregandoHistorico(true)
+        const historico = await buscarHistoricoPrecos('produto', produtoId)
+        setHistoricoPrecos(
+          Array.isArray(historico) ? (historico as HistoricoPrecos[]) : [],
+        )
+      } catch (err) {
+        setHistoricoPrecos([])
+        await logError('Erro ao carregar histórico do produto: ' + String(err))
+      } finally {
+        setCarregandoHistorico(false)
+      }
+    }
+
+    void carregarProduto()
+    void carregarHistoricoProduto()
   }, [idProduto])
 
+  const dadosGraficoHistorico = useMemo(() => {
+    return historicoPrecos
+      .filter((item) => item.preco !== null && item.preco !== undefined && item.data)
+      .map((item) => ({
+        data: item.data,
+        preco: Number(item.preco),
+        origem: item.origem ?? '',
+      }))
+      .sort(
+        (a, b) =>
+          new Date(a.data).getTime() - new Date(b.data).getTime(),
+      )
+  }, [historicoPrecos])
 
+  async function recarregarHistorico(): Promise<void> {
+    if (!idProduto) return
+
+    try {
+      setCarregandoHistorico(true)
+      const historicoAtualizado = await buscarHistoricoPrecos('produto', idProduto)
+      setHistoricoPrecos(
+        Array.isArray(historicoAtualizado)
+          ? (historicoAtualizado as HistoricoPrecos[])
+          : [],
+      )
+    } catch (error) {
+      await logError('Erro ao recarregar histórico do produto: ' + String(error))
+    } finally {
+      setCarregandoHistorico(false)
+    }
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if(!nome || !precoCompra || !precoAtual || !dataCompra || !quantidade){
+
+    if (!nome || !precoCompra || !precoAtual || !dataCompra || !quantidade) {
       alert('Por favor, preencha todos os campos obrigatórios.')
       return
     }
+
     try {
-      const origemFormatada = origem === 'myp' ? 'MyPCards' : origem === 'liga' ? 'Liga Yugioh' : ''
+      const origemFormatada =
+        origem === 'myp' ? 'MyPCards' : origem === 'liga' ? 'Liga Yugioh' : ''
+
       const payload: InserirProdutoPayload = {
         link,
         nome_produto: nome,
@@ -94,16 +165,22 @@ export function EditarProduto() {
         preco_atual: parseFloat(precoAtual),
         data_compra: dataCompra,
         quantidade: parseInt(quantidade, 10),
-        origem: origemFormatada
+        origem: origemFormatada,
       }
-      confirm('Salvar alterações do produto "'+nome+'"?') && atualizarProduto(idProduto!, payload)
-      .then(() => {
-        alert('Produto "'+nome+'" atualizado com sucesso.')
-        
-      })
+
+      confirm(`Salvar alterações do produto "${nome}"?`) &&
+        atualizarProduto(idProduto!, payload).then(async (ok) => {
+          if (!ok) {
+            alert(`Erro ao atualizar produto "${nome}".`)
+            return
+          }
+
+          alert(`Produto "${nome}" atualizado com sucesso.`)
+          await recarregarHistorico()
+        })
     } catch (error) {
       alert('Erro ao salvar produto: ' + error)
-      logError('Erro ao salvar produto: ' + error)
+      void logError('Erro ao salvar produto: ' + error)
     }
   }
 
@@ -112,12 +189,18 @@ export function EditarProduto() {
       alert('Por favor, insira uma URL para buscar o produto.')
       return
     }
+
     try {
       buscarProdutoLiga(link).then((produto: ProdutoLiga | null) => {
         if (produto) {
           setNome(produto.nome)
           setUrlImagem(produto.imagem)
-          setPrecoAtual(produto.preco_atual.replace('R$ ', '').replace('.', '').replace(',', '.'))
+          setPrecoAtual(
+            produto.preco_atual
+              .replace('R$ ', '')
+              .replace('.', '')
+              .replace(',', '.'),
+          )
           setOrigem('liga')
         } else {
           alert('Produto não encontrado ou erro ao buscar.')
@@ -133,81 +216,89 @@ export function EditarProduto() {
   }
 
   async function handleExcluir(): Promise<void> {
-        try{
-          if (confirm('Confirma a exclusão de "'+nome+'"? Esta ação não pode ser desfeita.')) {
-            await deletar('produto', idProduto!)
-            alert('Produto "'+nome+'" excluído com sucesso.')
-            navigate(-1)
-          }
-        } catch (error) {
-          alert('Erro ao excluir produto: ' + error)
-          logError('Erro ao excluir produto: ' + error)
-        }
+    try {
+      if (confirm(`Confirma a exclusão de "${nome}"? Esta ação não pode ser desfeita.`)) {
+        await deletar('produto', idProduto!)
+        alert(`Produto "${nome}" excluído com sucesso.`)
+        navigate(-1)
+      }
+    } catch (error) {
+      alert('Erro ao excluir produto: ' + error)
+      await logError('Erro ao excluir produto: ' + error)
     }
+  }
 
-   function handleVender(): void {
+  function handleVender(): void {
     setQuantidadeVenda('')
+    setValorVenda('')
     setModalVenderAberto(true)
   }
 
   async function confirmarVenda(): Promise<void> {
-      const qtd = Number(quantidadeVenda)
-  
-      if (!Number.isFinite(qtd) || qtd <= 0) {
-        alert('Informe uma quantidade válida.')
-        return
-      }else if (qtd > Number(quantidade)) {
-        alert('Quantidade a vender não pode ser maior que a quantidade em estoque.')
-        return
-      }
-  
-      if (valorVenda){
-        const valor = Number(valorVenda)
-        if (!Number.isFinite(valor) || valor <= 0) {
-          alert('Informe um valor de venda válido.')
-          return
-        }
-      }
-  
-      try {
-        const payloadVenda: InserirVendaProdutoPayload = {
-          id_produto: idProduto!,
-          preco_venda: valorVenda ? parseFloat(valorVenda) : null,
-          data_venda: todayStr(),
-          quantidade: qtd
-        }
-        const origemFormatada = origem === 'myp' ? 'MyPCards' : origem === 'liga' ? 'Liga Yugioh' : ''
-        const payloadProduto: InserirProdutoPayload = {
-          link,
-          nome_produto: nome,
-          imagem: urlImagem,
-          preco_compra: parseFloat(precoCompra),
-          preco_atual: parseFloat(precoAtual),
-          data_compra: dataCompra,
-          quantidade: parseInt(quantidade, 10) - qtd,
-          origem: origemFormatada
+    const qtd = Number(quantidadeVenda)
 
-        }
-  
-        await venderProduto(payloadProduto, payloadVenda, qtd)
-        alert(`${qtd} unidade(s) de ${nome} vendida(s).`)
-        setModalVenderAberto(false)
-        setQuantidade(String(Number(quantidade) - qtd))
-      } catch (err) {
-        alert(`Erro ao registrar venda do produto:${nome}\n ${err}`)
+    if (!Number.isFinite(qtd) || qtd <= 0) {
+      alert('Informe uma quantidade válida.')
+      return
+    } else if (qtd > Number(quantidade)) {
+      alert('Quantidade a vender não pode ser maior que a quantidade em estoque.')
+      return
+    }
+
+    if (valorVenda) {
+      const valor = Number(valorVenda)
+      if (!Number.isFinite(valor) || valor <= 0) {
+        alert('Informe um valor de venda válido.')
+        return
       }
     }
-  
-    function cancelarVenda(): void {
+
+    try {
+      const payloadVenda: InserirVendaProdutoPayload = {
+        id_produto: idProduto!,
+        preco_venda: valorVenda ? parseFloat(valorVenda) : null,
+        data_venda: todayStr(),
+        quantidade: qtd,
+      }
+
+      const origemFormatada =
+        origem === 'myp' ? 'MyPCards' : origem === 'liga' ? 'Liga Yugioh' : ''
+
+      const payloadProduto: InserirProdutoPayload = {
+        link,
+        nome_produto: nome,
+        imagem: urlImagem,
+        preco_compra: parseFloat(precoCompra),
+        preco_atual: parseFloat(precoAtual),
+        data_compra: dataCompra,
+        quantidade: parseInt(quantidade, 10) - qtd,
+        origem: origemFormatada,
+      }
+
+      const ok = await venderProduto(payloadProduto, payloadVenda, qtd)
+
+      if (!ok) {
+        alert(`Erro ao registrar venda do produto: ${nome}`)
+        return
+      }
+
+      alert(`${qtd} unidade(s) de ${nome} vendida(s).`)
       setModalVenderAberto(false)
+      setQuantidade(String(Number(quantidade) - qtd))
+    } catch (err) {
+      alert(`Erro ao registrar venda do produto: ${nome}\n${err}`)
     }
+  }
+
+  function cancelarVenda(): void {
+    setModalVenderAberto(false)
+  }
 
   return (
     <div className="app-shell">
       <Topbar pageTitle="Editar produto" />
 
       <main className="form-page-content">
-        {/* Coluna esquerda – formulário */}
         <section className="form-page-left">
           <h2 className="section-title">Editar {nome}</h2>
           <p className="section-subtitle">
@@ -215,7 +306,6 @@ export function EditarProduto() {
           </p>
 
           <form onSubmit={handleSubmit}>
-            {/* Link + botão de scraping */}
             <div className="form-row-inline">
               <FormField
                 label="Link"
@@ -236,7 +326,6 @@ export function EditarProduto() {
               </Button>
             </div>
 
-            {/* Nome */}
             <FormField
               label="Nome"
               name="nome"
@@ -246,7 +335,6 @@ export function EditarProduto() {
               required
             />
 
-            {/* URL da imagem */}
             <FormField
               label="URL da imagem"
               name="urlImagem"
@@ -256,17 +344,6 @@ export function EditarProduto() {
               placeholder="Link direto para a imagem, se houver"
             />
 
-            {/* Caminho da imagem local */}
-            {/* <FormField
-              label="Caminho para imagem local"
-              name="caminhoImagemLocal"
-              kind="texto"
-              value={caminhoImagemLocal}
-              onChange={setCaminhoImagemLocal}
-              placeholder="Caminho/local no disco após download"
-            /> */}
-
-            {/* Preços */}
             <div className="form-row-inline">
               <FormField
                 label="Preço de compra"
@@ -288,7 +365,6 @@ export function EditarProduto() {
               />
             </div>
 
-            {/* Data e quantidade */}
             <div className="form-row-inline">
               <FormField
                 label="Data da compra"
@@ -308,7 +384,6 @@ export function EditarProduto() {
               />
             </div>
 
-            {/* Origem (dropdown) */}
             <FormSelect
               label="Origem"
               name="origem"
@@ -318,7 +393,6 @@ export function EditarProduto() {
               placeholder="Selecione a origem"
             />
 
-            {/* Ações */}
             <div className="form-actions">
               <Button type="submit">Salvar produto</Button>
               <Button type="button" variant="outline" onClick={handleCancelar}>
@@ -327,53 +401,52 @@ export function EditarProduto() {
               <Button type="button" variant="outline" onClick={handleVender}>
                 Vender Produto
               </Button>
-               <Button type="button" variant="danger" onClick={handleExcluir}>
+              <Button type="button" variant="danger" onClick={handleExcluir}>
                 Excluir Produto
               </Button>
             </div>
           </form>
         </section>
+
         {modalVenderAberto && (
-        <div className="modal-backdrop">
-          <div className="modal-card">
-            <div className="modal-title">Vender Produto</div>
-            <div className="modal-body">
-              <label className="modal-label">
-                Quantidade a vender:
-                <input
-                  type="number"
-                  min={1}
-                  className="modal-input"
-                  value={quantidadeVenda}
-                  onChange={(e) => setQuantidadeVenda(e.target.value)}
-                  autoFocus
-                />
-              </label>
-              <label className="modal-label">
-                Valor da venda:
-                <input
-                  type="number"
-                  min={1}
-                  className="modal-input"
-                  value={valorVenda}
-                  onChange={(e) => setValorVenda(e.target.value)}
-                  
-                />
-              </label>
-            </div>
-            <div className="modal-actions">
-              <button type="button" onClick={confirmarVenda}>
-                Confirmar
-              </button>
-              <button type="button" onClick={cancelarVenda}>
-                Cancelar
-              </button>
+          <div className="modal-backdrop">
+            <div className="modal-card">
+              <div className="modal-title">Vender Produto</div>
+              <div className="modal-body">
+                <label className="modal-label">
+                  Quantidade a vender:
+                  <input
+                    type="number"
+                    min={1}
+                    className="modal-input"
+                    value={quantidadeVenda}
+                    onChange={(e) => setQuantidadeVenda(e.target.value)}
+                    autoFocus
+                  />
+                </label>
+                <label className="modal-label">
+                  Valor da venda:
+                  <input
+                    type="number"
+                    min={1}
+                    className="modal-input"
+                    value={valorVenda}
+                    onChange={(e) => setValorVenda(e.target.value)}
+                  />
+                </label>
+              </div>
+              <div className="modal-actions">
+                <button type="button" onClick={confirmarVenda}>
+                  Confirmar
+                </button>
+                <button type="button" onClick={cancelarVenda}>
+                  Cancelar
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-        {/* Coluna direita – imagem do produto */}
         <aside className="form-page-right">
           <div className="form-image-label">Imagem do produto</div>
           <div className="form-image-placeholder">
@@ -384,13 +457,28 @@ export function EditarProduto() {
                 className="card-image-preview"
               />
             ) : (
-              <>
-                Pré-visualização da imagem do produto.                               
-              </>
+              <>Pré-visualização da imagem do produto.</>
             )}
           </div>
         </aside>
       </main>
+
+      {idProduto && (
+        <section className="form-history-section">
+          <Grafico
+            title={`Histórico de preços${nome ? ` - ${nome}` : ''}`}
+            data={dadosGraficoHistorico}
+            series={[{ key: 'preco', label: 'Preço' }]}
+            dateKey="data"
+            height={220}
+            emptyMessage={
+              carregandoHistorico
+                ? 'Carregando histórico de preços...'
+                : 'Nenhum histórico de preços encontrado para este produto.'
+            }
+          />
+        </section>
+      )}
 
       <Footer appName="YU-GI-OH! Manager" />
     </div>

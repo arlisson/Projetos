@@ -1,6 +1,6 @@
 // src/services/database.ts
 import Database from '@tauri-apps/plugin-sql'
-import { logError, logInfo } from '../services/logger'
+import { logError } from '../services/logger'
 
 // mesmo arquivo do Python: DB_PATH = "yugioh.db"
 const DB_URL = 'sqlite:yugioh.db'
@@ -1035,41 +1035,88 @@ export async function garantirRaridade(nome: string): Promise<number | null> {
 }
 
 export async function inserirCarta(carta: InserirCartaPayload): Promise<boolean> {
-  
-    try {
-      const db = await getDb()
-      await db.execute(
-        `INSERT INTO carta (link_site, nome, codigo, preco_da_compra, preco_atual, data_da_compra, quantidade, imagem, imagem_salva, origem, raridade, qualidade, colecao, data_scraping) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          carta.link_site,
-          carta.nome.toUpperCase(),
-          carta.codigo?.toUpperCase(),
-          carta.preco_da_compra,
-          carta.preco_atual,
-          carta.data_da_compra,
-          carta.quantidade,
-          carta.imagem,
-          carta.imagem_salva,
-          carta.origem?.toUpperCase(),
-          carta.raridade,
-          carta.qualidade,
-          carta.colecao,
-          todayStr()
-        ]
-      )
-      const last_id = await db.select<{ last_insert_rowid: number }[]>(
-        `SELECT last_insert_rowid() as last_insert_rowid`
-      )
-      registrarHistoricoLucro();
-      registrarHistoricoGenerico('carta', last_id[0].last_insert_rowid, carta.preco_atual ?? null, todayStr(), carta.origem ?? 'MYPCards');
+  try {
+    const db = await getDb()
+    await db.execute(
+      `INSERT INTO carta (link_site, nome, codigo, preco_da_compra, preco_atual, data_da_compra, quantidade, imagem, imagem_salva, origem, raridade, qualidade, colecao, data_scraping) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        carta.link_site,
+        carta.nome.toUpperCase(),
+        carta.codigo?.toUpperCase(),
+        carta.preco_da_compra,
+        carta.preco_atual,
+        carta.data_da_compra,
+        carta.quantidade,
+        carta.imagem,
+        carta.imagem_salva,
+        carta.origem?.toUpperCase(),
+        carta.raridade,
+        carta.qualidade,
+        carta.colecao,
+        todayStr()
+      ]
+    )
 
-      return true;
-    } catch (err) {
-      //console.error('Erro ao inserir a carta:', err)
-      await logError('Erro ao inserir a carta: ' + String(err))
-      return false;
+    const lastId = await db.select<{ last_insert_rowid: number }[]>(
+      `SELECT last_insert_rowid() as last_insert_rowid`
+    )
+
+    registrarHistoricoLucro()
+    await salvarHistoricoPrecoCarta(
+      lastId[0].last_insert_rowid,
+      carta.preco_atual ?? null,
+      todayStr(),
+      carta.origem ?? 'MYPCards'
+    )
+
+    return true
+  } catch (err) {
+    await logError('Erro ao inserir a carta: ' + String(err))
+    return false
+  }
+}
+
+export async function salvarHistoricoPrecoCarta(
+  idCarta: number,
+  preco: number | null,
+  data: string = todayStr(),
+  origem: string = 'MYPCards',
+): Promise<void> {
+  try {
+    const db = await getDb()
+
+    const existentes = await db.select<{ id_historico_precos: number }[]>(
+      `
+      SELECT id_historico_precos
+      FROM historico_precos
+      WHERE id_carta = ?
+        AND DATE(data) = DATE(?)
+      LIMIT 1
+      `,
+      [idCarta, data],
+    )
+
+    if (existentes.length > 0) {
+      await db.execute(
+        `
+        UPDATE historico_precos
+        SET preco = ?, origem = ?, data = ?
+        WHERE id_historico_precos = ?
+        `,
+        [preco, origem, data, existentes[0].id_historico_precos],
+      )
+    } else {
+      await db.execute(
+        `
+        INSERT INTO historico_precos (id_carta, id_produto, data, preco, origem)
+        VALUES (?, NULL, ?, ?, ?)
+        `,
+        [idCarta, data, preco, origem],
+      )
     }
-  
+  } catch (err) {
+    await logError('Erro ao salvar histórico de preço da carta: ' + String(err))
+  }
 }
 
 export async function buscarCartaId( id: number ): Promise<CartaDetalhada | null> {
@@ -1396,3 +1443,181 @@ export async function atualizarVendaProduto(id: number, venda: AtualizarVendaPro
   }
 }
 
+export type TipoCadastroBase = 'raridade' | 'qualidade'
+
+export interface ItemCadastroBase {
+  id: number
+  nome: string
+}
+
+function getIdColumnByTipo(tipo: TipoCadastroBase): string {
+  return tipo === 'raridade' ? 'id_raridade' : 'id_qualidade'
+}
+
+export async function listarCadastroBase(
+  tipo: TipoCadastroBase,
+): Promise<ItemCadastroBase[]> {
+  try {
+    const db = await getDb()
+    const idCol = getIdColumnByTipo(tipo)
+
+    const rows = await db.select<ItemCadastroBase[]>(
+      `
+      SELECT ${idCol} AS id, nome
+      FROM ${tipo}
+      ORDER BY nome ASC
+      `,
+    )
+
+    return rows
+  } catch (err) {
+    await logError(`Erro ao listar ${tipo}: ` + String(err))
+    return []
+  }
+}
+
+export async function inserirCadastroBase(
+  tipo: TipoCadastroBase,
+  nome: string,
+): Promise<boolean> {
+  try {
+    const db = await getDb()
+    const nomeLimpo = String(nome || '').trim().toUpperCase()
+
+    if (!nomeLimpo) {
+      return false
+    }
+
+    const existente = await db.select<{ id: number }[]>(
+      `
+      SELECT ${getIdColumnByTipo(tipo)} AS id
+      FROM ${tipo}
+      WHERE UPPER(nome) = ?
+      LIMIT 1
+      `,
+      [nomeLimpo],
+    )
+
+    if (existente.length > 0) {
+      return false
+    }
+
+    await db.execute(
+      `INSERT INTO ${tipo} (nome) VALUES (?)`,
+      [nomeLimpo],
+    )
+
+    return true
+  } catch (err) {
+    await logError(`Erro ao inserir ${tipo}: ` + String(err))
+    return false
+  }
+}
+
+export async function atualizarCadastroBase(
+  tipo: TipoCadastroBase,
+  id: number,
+  nome: string,
+): Promise<boolean> {
+  try {
+    const db = await getDb()
+    const nomeLimpo = String(nome || '').trim().toUpperCase()
+
+    if (!nomeLimpo) {
+      return false
+    }
+
+    const idCol = getIdColumnByTipo(tipo)
+
+    const duplicado = await db.select<{ id: number }[]>(
+      `
+      SELECT ${idCol} AS id
+      FROM ${tipo}
+      WHERE UPPER(nome) = ?
+        AND ${idCol} <> ?
+      LIMIT 1
+      `,
+      [nomeLimpo, id],
+    )
+
+    if (duplicado.length > 0) {
+      return false
+    }
+
+    await db.execute(
+      `
+      UPDATE ${tipo}
+      SET nome = ?
+      WHERE ${idCol} = ?
+      `,
+      [nomeLimpo, id],
+    )
+
+    return true
+  } catch (err) {
+    await logError(`Erro ao atualizar ${tipo}: ` + String(err))
+    return false
+  }
+}
+
+export async function excluirCadastroBase(
+  tipo: TipoCadastroBase,
+  id: number,
+): Promise<{ ok: boolean; motivo?: string }> {
+  try {
+    const db = await getDb()
+    const idCol = getIdColumnByTipo(tipo)
+
+    if (tipo === 'raridade') {
+      const uso = await db.select<{ total: number }[]>(
+        `
+        SELECT COUNT(*) AS total
+        FROM carta
+        WHERE raridade = ?
+        `,
+        [id],
+      )
+
+      if ((uso[0]?.total ?? 0) > 0) {
+        return {
+          ok: false,
+          motivo: 'Não é possível excluir a raridade porque ela está vinculada a cartas cadastradas.',
+        }
+      }
+    }
+
+    if (tipo === 'qualidade') {
+      const uso = await db.select<{ total: number }[]>(
+        `
+        SELECT COUNT(*) AS total
+        FROM carta
+        WHERE qualidade = ?
+        `,
+        [id],
+      )
+
+      if ((uso[0]?.total ?? 0) > 0) {
+        return {
+          ok: false,
+          motivo: 'Não é possível excluir a qualidade porque ela está vinculada a cartas cadastradas.',
+        }
+      }
+    }
+
+    await db.execute(
+      `
+      DELETE FROM ${tipo}
+      WHERE ${idCol} = ?
+      `,
+      [id],
+    )
+
+    return { ok: true }
+  } catch (err) {
+    await logError(`Erro ao excluir ${tipo}: ` + String(err))
+    return {
+      ok: false,
+      motivo: 'Erro interno ao excluir registro.',
+    }
+  }
+}
