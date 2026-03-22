@@ -30,15 +30,32 @@ export interface ProdutoLiga {
   link_site: string
 }
 
-function normalizarPreco(valor?: string): string {
-  if (!valor) return '0.00'
+function normalizarPreco(valor: string): string {
+  const texto = String(valor || '').trim()
 
-  return valor
-    .replace(/\s+/g, ' ')
-    .replace('R$', '')
-    .replace(/\./g, '')
-    .replace(',', '.')
-    .trim()
+  if (!texto) return '0.00'
+
+  const valoresComRS = [
+    ...texto.matchAll(/R\$\s*(\d{1,3}(?:\.\d{3})*,\d{2}|\d+(?:[.,]\d{2})?)/g),
+  ].map((m) => m[1])
+
+  if (valoresComRS.length > 0) {
+    const escolhido =
+      valoresComRS.length >= 2
+        ? valoresComRS[1]
+        : valoresComRS[valoresComRS.length - 1]
+
+    return escolhido.replace(/\./g, '').replace(',', '.')
+  }
+
+  const matches = texto.match(/\d{1,3}(?:\.\d{3})*,\d{2}|\d+(?:[.,]\d{2})?/g)
+
+  if (!matches || matches.length === 0) {
+    return '0.00'
+  }
+
+  const escolhido = matches.length >= 2 ? matches[1] : matches[0]
+  return escolhido.replace(/\./g, '').replace(',', '.')
 }
 
 function setPage(url: string, page: number): string {
