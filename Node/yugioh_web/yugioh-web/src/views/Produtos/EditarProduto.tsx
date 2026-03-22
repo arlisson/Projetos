@@ -36,6 +36,12 @@ export function EditarProduto() {
   const [quantidadeVenda, setQuantidadeVenda] = useState('')
   const [valorVenda, setValorVenda] = useState('')
 
+  const [modalAtualizarAberto, setModalAtualizarAberto] = useState(false)
+  const [modalExcluirAberto, setModalExcluirAberto] = useState(false)
+  const [salvandoAtualizacao, setSalvandoAtualizacao] = useState(false)
+  const [excluindoProduto, setExcluindoProduto] = useState(false)
+  const [buscandoScraping, setBuscandoScraping] = useState(false)
+
   const [historicoPrecos, setHistoricoPrecos] = useState<HistoricoPrecos[]>([])
   const [carregandoHistorico, setCarregandoHistorico] = useState(false)
 
@@ -115,16 +121,15 @@ export function EditarProduto() {
 
   const dadosGraficoHistorico = useMemo(() => {
     return historicoPrecos
-      .filter((item) => item.preco !== null && item.preco !== undefined && item.data)
+      .filter(
+        (item) => item.preco !== null && item.preco !== undefined && item.data,
+      )
       .map((item) => ({
         data: item.data,
         preco: Number(item.preco),
         origem: item.origem ?? '',
       }))
-      .sort(
-        (a, b) =>
-          new Date(a.data).getTime() - new Date(b.data).getTime(),
-      )
+      .sort((a, b) => new Date(a.data).getTime() - new Date(b.data).getTime())
   }, [historicoPrecos])
 
   async function recarregarHistorico(): Promise<void> {
@@ -145,13 +150,38 @@ export function EditarProduto() {
     }
   }
 
+  function validarFormulario(): boolean {
+    if (!nome || !precoCompra || !precoAtual || !dataCompra || !quantidade) {
+      alert('Por favor, preencha todos os campos obrigatórios.')
+      return false
+    }
+
+    return true
+  }
+
+  function handleFormKeyDown(e: React.KeyboardEvent<HTMLFormElement>) {
+    if (e.key !== 'Enter') return
+
+    const target = e.target as HTMLElement
+    const tag = target.tagName.toLowerCase()
+
+    if (tag !== 'textarea') {
+      e.preventDefault()
+    }
+  }
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
 
-    if (!nome || !precoCompra || !precoAtual || !dataCompra || !quantidade) {
-      alert('Por favor, preencha todos os campos obrigatórios.')
-      return
-    }
+    if (!validarFormulario()) return
+
+    setModalAtualizarAberto(true)
+  }
+
+  async function confirmarAtualizacao(): Promise<void> {
+    if (!idProduto || salvandoAtualizacao) return
+
+    setSalvandoAtualizacao(true)
 
     try {
       const origemFormatada =
@@ -168,46 +198,57 @@ export function EditarProduto() {
         origem: origemFormatada,
       }
 
-      confirm(`Salvar alterações do produto "${nome}"?`) &&
-        atualizarProduto(idProduto!, payload).then(async (ok) => {
-          if (!ok) {
-            alert(`Erro ao atualizar produto "${nome}".`)
-            return
-          }
+      const ok = await atualizarProduto(idProduto, payload)
 
-          alert(`Produto "${nome}" atualizado com sucesso.`)
-          await recarregarHistorico()
-        })
+      if (!ok) {
+        alert(`Erro ao atualizar produto "${nome}".`)
+        return
+      }
+
+      setModalAtualizarAberto(false)
+      alert(`Produto "${nome}" atualizado com sucesso.`)
+      await recarregarHistorico()
     } catch (error) {
       alert('Erro ao salvar produto: ' + error)
       void logError('Erro ao salvar produto: ' + error)
+    } finally {
+      setSalvandoAtualizacao(false)
     }
   }
 
-  function handleScraping() {
-    if (!link) {
+  function cancelarAtualizacao(): void {
+    if (salvandoAtualizacao) return
+    setModalAtualizarAberto(false)
+  }
+
+  async function handleScraping() {
+    if (!link.trim()) {
       alert('Por favor, insira uma URL para buscar o produto.')
       return
     }
 
+    setBuscandoScraping(true)
+
     try {
-      buscarProdutoLiga(link).then((produto: ProdutoLiga | null) => {
-        if (produto) {
-          setNome(produto.nome)
-          setUrlImagem(produto.imagem)
-          setPrecoAtual(
-            produto.preco_atual
-              .replace('R$ ', '')
-              .replace('.', '')
-              .replace(',', '.'),
-          )
-          setOrigem('liga')
-        } else {
-          alert('Produto não encontrado ou erro ao buscar.')
-        }
-      })
+      const produto: ProdutoLiga | null = await buscarProdutoLiga(link)
+
+      if (produto) {
+        setNome(produto.nome || '')
+        setUrlImagem(produto.imagem || '')
+        setPrecoAtual(
+          produto.preco_atual
+            .replace('R$ ', '')
+            .replace(/\./g, '')
+            .replace(',', '.'),
+        )
+        setOrigem('liga')
+      } else {
+        alert('Produto não encontrado ou erro ao buscar.')
+      }
     } catch (error) {
       alert('Erro ao buscar o produto: ' + error)
+    } finally {
+      setBuscandoScraping(false)
     }
   }
 
@@ -215,17 +256,31 @@ export function EditarProduto() {
     navigate(-1)
   }
 
-  async function handleExcluir(): Promise<void> {
+  function handleExcluir(): void {
+    setModalExcluirAberto(true)
+  }
+
+  async function confirmarExclusao(): Promise<void> {
+    if (!idProduto || excluindoProduto) return
+
+    setExcluindoProduto(true)
+
     try {
-      if (confirm(`Confirma a exclusão de "${nome}"? Esta ação não pode ser desfeita.`)) {
-        await deletar('produto', idProduto!)
-        alert(`Produto "${nome}" excluído com sucesso.`)
-        navigate(-1)
-      }
+      await deletar('produto', idProduto)
+      setModalExcluirAberto(false)
+      alert(`Produto "${nome}" excluído com sucesso.`)
+      navigate(-1)
     } catch (error) {
       alert('Erro ao excluir produto: ' + error)
       await logError('Erro ao excluir produto: ' + error)
+    } finally {
+      setExcluindoProduto(false)
     }
+  }
+
+  function cancelarExclusao(): void {
+    if (excluindoProduto) return
+    setModalExcluirAberto(false)
   }
 
   function handleVender(): void {
@@ -305,7 +360,7 @@ export function EditarProduto() {
             Preencha os dados básicos do produto antes de salvar.
           </p>
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} onKeyDown={handleFormKeyDown}>
             <div className="form-row-inline">
               <FormField
                 label="Link"
@@ -321,8 +376,9 @@ export function EditarProduto() {
                 variant="outline"
                 size="sm"
                 onClick={handleScraping}
+                disabled={buscandoScraping || salvandoAtualizacao || excluindoProduto}
               >
-                Buscar via scraping
+                {buscandoScraping ? 'Buscando...' : 'Buscar via scraping'}
               </Button>
             </div>
 
@@ -394,15 +450,32 @@ export function EditarProduto() {
             />
 
             <div className="form-actions">
-              <Button type="submit">Salvar produto</Button>
-              <Button type="button" variant="outline" onClick={handleCancelar}>
+              <Button type="submit" disabled={salvandoAtualizacao || excluindoProduto}>
+                {salvandoAtualizacao ? 'Salvando...' : 'Salvar produto'}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleCancelar}
+                disabled={salvandoAtualizacao || excluindoProduto}
+              >
                 Cancelar
               </Button>
-              <Button type="button" variant="outline" onClick={handleVender}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleVender}
+                disabled={salvandoAtualizacao || excluindoProduto}
+              >
                 Vender Produto
               </Button>
-              <Button type="button" variant="danger" onClick={handleExcluir}>
-                Excluir Produto
+              <Button
+                type="button"
+                variant="danger"
+                onClick={handleExcluir}
+                disabled={salvandoAtualizacao || excluindoProduto}
+              >
+                {excluindoProduto ? 'Excluindo...' : 'Excluir Produto'}
               </Button>
             </div>
           </form>
@@ -478,6 +551,63 @@ export function EditarProduto() {
             }
           />
         </section>
+      )}
+
+      {modalAtualizarAberto && (
+        <div className="confirm-modal-backdrop">
+          <div className="confirm-modal-card">
+            <h3 className="confirm-modal-title">Confirmar atualização</h3>
+            <p className="confirm-modal-text">
+              Deseja realmente salvar as alterações do produto "{nome}"?
+            </p>
+            <div className="confirm-modal-actions">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={cancelarAtualizacao}
+                disabled={salvandoAtualizacao}
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="button"
+                onClick={confirmarAtualizacao}
+                disabled={salvandoAtualizacao}
+              >
+                {salvandoAtualizacao ? 'Salvando...' : 'Confirmar'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {modalExcluirAberto && (
+        <div className="confirm-modal-backdrop">
+          <div className="confirm-modal-card">
+            <h3 className="confirm-modal-title">Confirmar exclusão</h3>
+            <p className="confirm-modal-text">
+              Confirma a exclusão de "{nome}"? Esta ação não pode ser desfeita.
+            </p>
+            <div className="confirm-modal-actions">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={cancelarExclusao}
+                disabled={excluindoProduto}
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="button"
+                variant="danger"
+                onClick={confirmarExclusao}
+                disabled={excluindoProduto}
+              >
+                {excluindoProduto ? 'Excluindo...' : 'Excluir'}
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
 
       <Footer appName="YU-GI-OH! Manager" />

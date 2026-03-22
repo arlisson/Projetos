@@ -4,89 +4,160 @@ import { Footer } from '../../components/footer'
 import { FormField } from '../../components/formField'
 import { FormSelect } from '../../components/formSelect'
 import { Button } from '../../components/botao'
-import { type ProdutoLiga, 
-  buscarProdutoLiga, 
-  } from '../../../scraping/webScraping'
-
-import {inserirProduto,
-  type InserirProdutoPayload } from '../../Database/db'
+import {
+  type ProdutoLiga,
+  buscarProdutoLiga,
+} from '../../../scraping/webScraping'
+import {
+  inserirProduto,
+  type InserirProdutoPayload,
+} from '../../Database/db'
 
 export function CadastrarProduto() {
   const [link, setLink] = useState('')
   const [nome, setNome] = useState('')
   const [urlImagem, setUrlImagem] = useState('')
-  // const [caminhoImagemLocal, setCaminhoImagemLocal] = useState('')
   const [precoCompra, setPrecoCompra] = useState('')
   const [precoAtual, setPrecoAtual] = useState('')
   const [dataCompra, setDataCompra] = useState('')
   const [quantidade, setQuantidade] = useState('')
   const [origem, setOrigem] = useState('')
 
-  // Futuramente estes valores virão do banco
-   const opcoesOrigem = [
+  const [buscandoScraping, setBuscandoScraping] = useState(false)
+  const [modalSalvarAberto, setModalSalvarAberto] = useState(false)
+  const [salvando, setSalvando] = useState(false)
+
+  const opcoesOrigem = [
     { value: 'myp', label: 'MyPCards' },
     { value: 'liga', label: 'Liga Yugioh' },
-    
   ]
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    const origemMapeada = origem === 'liga' ? 'Liga Yugioh' : origem === 'myp' ? 'MyPCards' : origem
-    const novoProduto: InserirProdutoPayload = {
-      link,
-      nome_produto: nome,
-      imagem: urlImagem,
-      //imagem_salva: '', // caminhoImagemLocal,
-      preco_compra: parseFloat(precoCompra),
-      preco_atual: parseFloat(precoAtual),
-      data_compra: dataCompra,
-      quantidade: parseInt(quantidade),
-      origem: origemMapeada,
+  function limparFormulario() {
+    setLink('')
+    setNome('')
+    setUrlImagem('')
+    setPrecoCompra('')
+    setPrecoAtual('')
+    setDataCompra('')
+    setQuantidade('')
+    setOrigem('')
+  }
+
+  function validarFormulario(): boolean {
+    if (
+      !nome ||
+      !precoCompra ||
+      !precoAtual ||
+      !dataCompra ||
+      !quantidade ||
+      !origem
+    ) {
+      alert('Por favor, preencha todos os campos obrigatórios.')
+      return false
     }
-    try {
-      confirm('Deseja realmente cadastrar este produto?') &&
-      inserirProduto(novoProduto).then(() => {
-        alert('Produto cadastrado com sucesso!')
-        // Limpar o formulário após o cadastro
-        setLink('')
-        setNome('')
-        setUrlImagem('')
-        // setCaminhoImagemLocal('')
-        setPrecoCompra('')
-        setPrecoAtual('')
-        setDataCompra('')
-        setQuantidade('')
-        setOrigem('')
-      })
-     
-    } catch (error) {
-      alert('Erro ao cadastrar produto: ' + error)
+
+    return true
+  }
+
+  function handleFormKeyDown(e: React.KeyboardEvent<HTMLFormElement>) {
+    if (e.key !== 'Enter') return
+
+    const target = e.target as HTMLElement
+    const tag = target.tagName.toLowerCase()
+
+    if (tag !== 'textarea') {
+      e.preventDefault()
     }
   }
 
-  function handleScraping() {
-    if (!link) {
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+
+    if (!validarFormulario()) return
+
+    setModalSalvarAberto(true)
+  }
+
+  async function confirmarSalvar() {
+    if (salvando) return
+
+    setSalvando(true)
+
+    try {
+      const origemMapeada =
+        origem === 'liga'
+          ? 'Liga Yugioh'
+          : origem === 'myp'
+          ? 'MyPCards'
+          : origem
+
+      const novoProduto: InserirProdutoPayload = {
+        link,
+        nome_produto: nome,
+        imagem: urlImagem,
+        preco_compra: parseFloat(precoCompra),
+        preco_atual: parseFloat(precoAtual),
+        data_compra: dataCompra,
+        quantidade: parseInt(quantidade, 10),
+        origem: origemMapeada,
+      }
+
+      const ok = await inserirProduto(novoProduto)
+
+      if (!ok) {
+        alert('Erro ao cadastrar produto.')
+        return
+      }
+
+      setModalSalvarAberto(false)
+      alert('Produto cadastrado com sucesso!')
+      limparFormulario()
+    } catch (error) {
+      alert('Erro ao cadastrar produto: ' + error)
+    } finally {
+      setSalvando(false)
+    }
+  }
+
+  function cancelarSalvar() {
+    if (salvando) return
+    setModalSalvarAberto(false)
+  }
+
+  async function handleScraping() {
+    if (!link.trim()) {
       alert('Por favor, insira uma URL para buscar o produto.')
       return
     }
+
+    setBuscandoScraping(true)
+
     try {
-      buscarProdutoLiga(link).then((produto: ProdutoLiga | null) => {
-        if (produto) {
-          setNome(produto.nome)
-          setUrlImagem(produto.imagem)
-          setPrecoAtual(produto.preco_atual.replace('R$ ', '').replace('.', '').replace(',', '.'))
-          setOrigem('liga')
-        } else {
-          alert('Produto não encontrado ou erro ao buscar.')
-        }
-      })  
+      const produto: ProdutoLiga | null = await buscarProdutoLiga(link)
+
+      if (produto) {
+        setNome(produto.nome || '')
+        setUrlImagem(produto.imagem || '')
+        setPrecoAtual(
+          produto.preco_atual
+            .replace('R$ ', '')
+            .replace(/\./g, '')
+            .replace(',', '.'),
+        )
+        setOrigem('liga')
+      } else {
+        alert('Produto não encontrado ou erro ao buscar.')
+      }
     } catch (error) {
       alert('Erro ao buscar o produto: ' + error)
+    } finally {
+      setBuscandoScraping(false)
     }
   }
 
   function handleCancelar() {
-    alert('Ação de cancelar ainda não implementada.')
+    if (salvando || buscandoScraping) return
+    limparFormulario()
   }
 
   return (
@@ -94,15 +165,13 @@ export function CadastrarProduto() {
       <Topbar pageTitle="Cadastrar produto" />
 
       <main className="form-page-content">
-        {/* Coluna esquerda – formulário */}
         <section className="form-page-left">
           <h2 className="section-title">Cadastrar novo produto</h2>
           <p className="section-subtitle">
             Preencha os dados básicos do produto antes de salvar.
           </p>
 
-          <form onSubmit={handleSubmit}>
-            {/* Link + botão de scraping */}
+          <form onSubmit={handleSubmit} onKeyDown={handleFormKeyDown}>
             <div className="form-row-inline">
               <FormField
                 label="Link"
@@ -118,12 +187,12 @@ export function CadastrarProduto() {
                 variant="outline"
                 size="sm"
                 onClick={handleScraping}
+                disabled={buscandoScraping || salvando}
               >
-                Buscar via scraping
+                {buscandoScraping ? 'Buscando...' : 'Buscar via scraping'}
               </Button>
             </div>
 
-            {/* Nome */}
             <FormField
               label="Nome"
               name="nome"
@@ -133,7 +202,6 @@ export function CadastrarProduto() {
               required
             />
 
-            {/* URL da imagem */}
             <FormField
               label="URL da imagem"
               name="urlImagem"
@@ -143,17 +211,6 @@ export function CadastrarProduto() {
               placeholder="Link direto para a imagem, se houver"
             />
 
-            {/* Caminho da imagem local */}
-            {/* <FormField
-              label="Caminho para imagem local"
-              name="caminhoImagemLocal"
-              kind="texto"
-              value={caminhoImagemLocal}
-              onChange={setCaminhoImagemLocal}
-              placeholder="Caminho/local no disco após download"
-            /> */}
-
-            {/* Preços */}
             <div className="form-row-inline">
               <FormField
                 label="Preço de compra"
@@ -175,7 +232,6 @@ export function CadastrarProduto() {
               />
             </div>
 
-            {/* Data e quantidade */}
             <div className="form-row-inline">
               <FormField
                 label="Data da compra"
@@ -195,7 +251,6 @@ export function CadastrarProduto() {
               />
             </div>
 
-            {/* Origem (dropdown) */}
             <FormSelect
               label="Origem"
               name="origem"
@@ -203,19 +258,25 @@ export function CadastrarProduto() {
               onChange={setOrigem}
               options={opcoesOrigem}
               placeholder="Selecione a origem"
+              required
             />
 
-            {/* Ações */}
             <div className="form-actions">
-              <Button type="submit">Salvar produto</Button>
-              <Button type="button" variant="outline" onClick={handleCancelar}>
+              <Button type="submit" disabled={salvando || buscandoScraping}>
+                {salvando ? 'Salvando...' : 'Salvar produto'}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleCancelar}
+                disabled={salvando || buscandoScraping}
+              >
                 Cancelar
               </Button>
             </div>
           </form>
         </section>
 
-        {/* Coluna direita – imagem do produto */}
         <aside className="form-page-right">
           <div className="form-image-label">Imagem do produto</div>
           <div className="form-image-placeholder">
@@ -226,13 +287,41 @@ export function CadastrarProduto() {
                 className="card-image-preview"
               />
             ) : (
-              <>
-                Pré-visualização da imagem do produto.                               
-              </>
+              <>Pré-visualização da imagem do produto.</>
             )}
           </div>
         </aside>
       </main>
+
+      {modalSalvarAberto && (
+        <div className="confirm-modal-backdrop">
+          <div className="confirm-modal-card">
+            <h3 className="confirm-modal-title">Confirmar cadastro</h3>
+            <p className="confirm-modal-text">
+              Deseja realmente cadastrar este produto?
+            </p>
+
+            <div className="confirm-modal-actions">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={cancelarSalvar}
+                disabled={salvando}
+              >
+                Cancelar
+              </Button>
+
+              <Button
+                type="button"
+                onClick={confirmarSalvar}
+                disabled={salvando}
+              >
+                {salvando ? 'Salvando...' : 'Confirmar'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Footer appName="YU-GI-OH! Manager" />
     </div>

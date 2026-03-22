@@ -36,12 +36,17 @@ export default function BancoDeDados() {
   const [info, setInfo] = useState<DatabaseInfo>(infoInicial)
   const [carregando, setCarregando] = useState(false)
   const [processandoArquivo, setProcessandoArquivo] = useState(false)
+  const [processandoLimpeza, setProcessandoLimpeza] = useState(false)
 
   const [clearMode, setClearMode] =
     useState<ClearDatabaseMode>('operacional')
 
   const [mensagem, setMensagem] = useState('')
   const [erro, setErro] = useState('')
+
+  const [modalImportacaoAberto, setModalImportacaoAberto] = useState(false)
+  const [modalLimpezaAberto, setModalLimpezaAberto] = useState(false)
+  const [arquivoImportacaoPendente, setArquivoImportacaoPendente] = useState('')
 
   async function carregarInfo() {
     setCarregando(true)
@@ -117,17 +122,29 @@ export default function BancoDeDados() {
         return
       }
 
-      const confirmar = window.confirm(
-        'A importação substituirá o banco atual. Deseja continuar?',
-      )
+      setArquivoImportacaoPendente(origem)
+      setModalImportacaoAberto(true)
+    } catch (e) {
+      await logError('Erro ao selecionar arquivo para importação: ' + String(e))
+      setErro('Falha ao selecionar o arquivo de importação.')
+    } finally {
+      setProcessandoArquivo(false)
+    }
+  }
 
-      if (!confirmar) {
-        return
-      }
+  async function confirmarImportacao() {
+    if (!arquivoImportacaoPendente) return
 
-      await importDatabase(origem)
-      await logInfo('Banco importado com sucesso de: ' + origem)
+    setMensagem('')
+    setErro('')
+    setProcessandoArquivo(true)
+
+    try {
+      await importDatabase(arquivoImportacaoPendente)
+      await logInfo('Banco importado com sucesso de: ' + arquivoImportacaoPendente)
       setMensagem('Banco importado com sucesso.')
+      setModalImportacaoAberto(false)
+      setArquivoImportacaoPendente('')
       await carregarInfo()
     } catch (e) {
       await logError('Erro ao importar banco: ' + String(e))
@@ -137,31 +154,46 @@ export default function BancoDeDados() {
     }
   }
 
-  async function handleLimparDados() {
+  function cancelarImportacao() {
+    if (processandoArquivo) return
+    setModalImportacaoAberto(false)
+    setArquivoImportacaoPendente('')
+  }
+
+  function handleLimparDados() {
     setMensagem('')
     setErro('')
+    setModalLimpezaAberto(true)
+  }
 
-    const descricao =
-      clearMode === 'operacional'
-        ? 'limpar cartas, produtos, vendas e históricos, mantendo coleções, raridades e qualidades'
-        : 'limpar todos os dados, incluindo coleções, raridades e qualidades, mantendo apenas a estrutura'
-
-    const confirmar = window.confirm(
-      `Confirma ${descricao}? Essa ação não pode ser desfeita.`,
-    )
-
-    if (!confirmar) return
+  async function confirmarLimpeza() {
+    setMensagem('')
+    setErro('')
+    setProcessandoLimpeza(true)
 
     try {
       await clearDatabaseData(clearMode)
       await logInfo(`Limpeza de banco executada. Modo: ${clearMode}`)
       setMensagem('Dados do banco apagados com sucesso.')
+      setModalLimpezaAberto(false)
       await carregarInfo()
     } catch (e) {
       await logError('Erro ao limpar dados do banco: ' + String(e))
       setErro('Falha ao apagar os dados do banco.')
+    } finally {
+      setProcessandoLimpeza(false)
     }
   }
+
+  function cancelarLimpeza() {
+    if (processandoLimpeza) return
+    setModalLimpezaAberto(false)
+  }
+
+  const descricaoLimpeza =
+    clearMode === 'operacional'
+      ? 'Você está prestes a limpar cartas, produtos, vendas e históricos, mantendo coleções, raridades e qualidades.'
+      : 'Você está prestes a limpar todo o conteúdo do banco, incluindo coleções, raridades e qualidades, mantendo apenas a estrutura.'
 
   return (
     <div className="app-shell">
@@ -183,7 +215,7 @@ export default function BancoDeDados() {
             type="button"
             variant="outline"
             onClick={carregarInfo}
-            disabled={carregando || processandoArquivo}
+            disabled={carregando || processandoArquivo || processandoLimpeza}
           >
             {carregando ? 'Atualizando...' : 'Atualizar informações'}
           </Button>
@@ -329,7 +361,7 @@ export default function BancoDeDados() {
                 <Button
                   type="button"
                   onClick={handleEscolherExportacao}
-                  disabled={processandoArquivo || carregando}
+                  disabled={processandoArquivo || carregando || processandoLimpeza}
                   fullWidth
                 >
                   {processandoArquivo ? 'Processando...' : 'Exportar banco'}
@@ -359,7 +391,7 @@ export default function BancoDeDados() {
                   type="button"
                   variant="outline"
                   onClick={handleEscolherImportacao}
-                  disabled={processandoArquivo || carregando}
+                  disabled={processandoArquivo || carregando || processandoLimpeza}
                   fullWidth
                 >
                   {processandoArquivo ? 'Processando...' : 'Importar banco'}
@@ -465,15 +497,77 @@ export default function BancoDeDados() {
                   type="button"
                   variant="danger"
                   onClick={handleLimparDados}
-                  disabled={carregando || processandoArquivo}
+                  disabled={carregando || processandoArquivo || processandoLimpeza}
                 >
-                  Apagar dados
+                  {processandoLimpeza ? 'Apagando...' : 'Apagar dados'}
                 </Button>
               </div>
             </div>
           </div>
         </section>
       </main>
+
+      {modalImportacaoAberto && (
+        <div className="confirm-modal-backdrop">
+          <div className="confirm-modal-card">
+            <h3 className="confirm-modal-title">Confirmar importação</h3>
+            <p className="confirm-modal-text">
+              A importação substituirá o banco atual pelo arquivo selecionado.
+              Esta ação não pode ser desfeita.
+            </p>
+
+            <div className="confirm-modal-actions">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={cancelarImportacao}
+                disabled={processandoArquivo}
+              >
+                Cancelar
+              </Button>
+
+              <Button
+                type="button"
+                onClick={confirmarImportacao}
+                disabled={processandoArquivo}
+              >
+                {processandoArquivo ? 'Importando...' : 'Confirmar'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {modalLimpezaAberto && (
+        <div className="confirm-modal-backdrop">
+          <div className="confirm-modal-card">
+            <h3 className="confirm-modal-title">Confirmar limpeza</h3>
+            <p className="confirm-modal-text">
+              {descricaoLimpeza} Esta ação não pode ser desfeita.
+            </p>
+
+            <div className="confirm-modal-actions">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={cancelarLimpeza}
+                disabled={processandoLimpeza}
+              >
+                Cancelar
+              </Button>
+
+              <Button
+                type="button"
+                variant="danger"
+                onClick={confirmarLimpeza}
+                disabled={processandoLimpeza}
+              >
+                {processandoLimpeza ? 'Apagando...' : 'Confirmar'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>

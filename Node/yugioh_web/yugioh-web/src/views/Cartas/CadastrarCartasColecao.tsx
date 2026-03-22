@@ -72,10 +72,12 @@ export function CadastrarCartasColecao() {
   const [linkColecao, setLinkColecao] = useState('')
   const [dataCompra, setDataCompra] = useState('')
   const [valorPagoPadrao, setValorPagoPadrao] = useState('')
+  const [qualidadePadrao, setQualidadePadrao] = useState('')
   const [carregando, setCarregando] = useState(false)
   const [salvando, setSalvando] = useState(false)
   const [filtro, setFiltro] = useState('')
   const [cartas, setCartas] = useState<CartaSelecionavel[]>([])
+  const [modalSalvarAberto, setModalSalvarAberto] = useState(false)
 
   const [opcoesQualidade, setOpcoesQualidade] = useState<OpcaoSelect[]>([])
   const [opcoesRaridade, setOpcoesRaridade] = useState<OpcaoSelect[]>([])
@@ -129,14 +131,15 @@ export function CadastrarCartasColecao() {
     return encontrada ? String(encontrada.id_colecao) : ''
   }
 
-  async function resolverOuCriarRaridadeId(raridadeNome: string): Promise<string> {
+  async function resolverOuCriarRaridadeId(
+    raridadeNome: string,
+  ): Promise<string> {
     const nomeLimpo = String(raridadeNome || '').trim()
 
     if (!nomeLimpo) return ''
 
     const encontrada = opcoesRaridade.find(
-      (item) =>
-        item.label.trim().toLowerCase() === nomeLimpo.toLowerCase(),
+      (item) => item.label.trim().toLowerCase() === nomeLimpo.toLowerCase(),
     )
 
     if (encontrada) {
@@ -144,8 +147,6 @@ export function CadastrarCartasColecao() {
     }
 
     const id = await garantirRaridade(nomeLimpo)
-   
-      
 
     if (!id) return ''
 
@@ -205,7 +206,7 @@ export function CadastrarCartasColecao() {
           selecionada: true,
           precoPago: valorPagoPadrao.trim(),
           raridadeId,
-          qualidadeId: '',
+          qualidadeId: qualidadePadrao.trim(),
           colecaoId,
           quantidade: '1',
         })
@@ -247,6 +248,19 @@ export function CadastrarCartasColecao() {
     )
   }
 
+  function aplicarQualidadePadraoNasSelecionadas() {
+    if (!qualidadePadrao.trim()) {
+      alert('Selecione uma qualidade padrão para aplicar.')
+      return
+    }
+
+    setCartas((prev) =>
+      prev.map((c) =>
+        c.selecionada ? { ...c, qualidadeId: qualidadePadrao } : c,
+      ),
+    )
+  }
+
   const cartasFiltradas = useMemo(() => {
     const termo = filtro.trim().toLowerCase()
 
@@ -261,40 +275,53 @@ export function CadastrarCartasColecao() {
     )
   }, [cartas, filtro])
 
-  async function handleSalvar() {
+  function validarAntesDeSalvar(): boolean {
     const selecionadas = cartas.filter((c) => c.selecionada)
 
     if (!linkColecao.trim() || !dataCompra.trim()) {
       alert('Preencha o link da coleção e a data da compra.')
-      return
+      return false
     }
 
     if (!selecionadas.length) {
       alert('Selecione ao menos uma carta.')
-      return
+      return false
     }
 
     for (const carta of selecionadas) {
       if (!carta.precoPago.trim()) {
         alert(`Informe o preço pago para a carta "${carta.nome}".`)
-        return
+        return false
       }
 
       if (!carta.raridadeId) {
         alert(`Selecione a raridade comprada para a carta "${carta.nome}".`)
-        return
+        return false
       }
 
       if (!carta.qualidadeId) {
         alert(`Selecione a qualidade comprada para a carta "${carta.nome}".`)
-        return
+        return false
       }
 
       if (!carta.quantidade.trim() || Number(carta.quantidade) <= 0) {
         alert(`Informe uma quantidade válida para a carta "${carta.nome}".`)
-        return
+        return false
       }
     }
+
+    return true
+  }
+
+  function handleSalvar() {
+    if (!validarAntesDeSalvar()) return
+    setModalSalvarAberto(true)
+  }
+
+  async function confirmarSalvar() {
+    const selecionadas = cartas.filter((c) => c.selecionada)
+
+    if (salvando || !selecionadas.length) return
 
     setSalvando(true)
 
@@ -318,6 +345,7 @@ export function CadastrarCartasColecao() {
         await inserirCarta(payload)
       }
 
+      setModalSalvarAberto(false)
       alert('Cartas cadastradas com sucesso.')
       handleCancelar()
     } catch (error) {
@@ -328,12 +356,20 @@ export function CadastrarCartasColecao() {
     }
   }
 
+  function cancelarSalvar() {
+    if (salvando) return
+    setModalSalvarAberto(false)
+  }
+
   function handleCancelar() {
+    if (salvando) return
+
     setCartas([])
     setFiltro('')
     setLinkColecao('')
     setDataCompra('')
     setValorPagoPadrao('')
+    setQualidadePadrao('')
   }
 
   return (
@@ -388,12 +424,25 @@ export function CadastrarCartasColecao() {
               onChange={setValorPagoPadrao}
               placeholder="Valor inicial para todas as cartas"
             />
+
+            <FormSelect
+              label="Qualidade padrão"
+              name="qualidadePadrao"
+              value={qualidadePadrao}
+              onChange={setQualidadePadrao}
+              options={opcoesQualidade}
+              placeholder="Selecione a qualidade padrão"
+            />
           </div>
 
           {!carregando && cartas.length > 0 && (
             <div
               className="form-actions"
-              style={{ justifyContent: 'flex-start', marginTop: '0.5rem' }}
+              style={{
+                justifyContent: 'flex-start',
+                marginTop: '0.5rem',
+                flexWrap: 'wrap',
+              }}
             >
               <Button
                 type="button"
@@ -402,6 +451,15 @@ export function CadastrarCartasColecao() {
                 disabled={!valorPagoPadrao.trim() || salvando}
               >
                 Aplicar valor padrão nas selecionadas
+              </Button>
+
+              <Button
+                type="button"
+                variant="outline"
+                onClick={aplicarQualidadePadraoNasSelecionadas}
+                disabled={!qualidadePadrao.trim() || salvando}
+              >
+                Aplicar qualidade padrão nas selecionadas
               </Button>
             </div>
           )}
@@ -414,6 +472,41 @@ export function CadastrarCartasColecao() {
 
           {!carregando && cartas.length > 0 && (
             <>
+              <div
+                className="form-actions"
+                style={{
+                  justifyContent: 'flex-start',
+                  marginTop: '1rem',
+                  flexWrap: 'wrap',
+                }}
+              >
+                <Button
+                  type="button"
+                  onClick={handleSalvar}
+                  disabled={carregando || salvando || cartas.length === 0}
+                >
+                  {salvando ? 'Salvando...' : 'Salvar cartas selecionadas'}
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => selecionarTodas(true)}
+                  disabled={salvando}
+                >
+                  Selecionar todas
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => selecionarTodas(false)}
+                  disabled={salvando}
+                >
+                  Desmarcar todas
+                </Button>
+              </div>
+
               <div className="form-row-inline" style={{ marginTop: '1rem' }}>
                 <FormField
                   label="Filtrar cartas"
@@ -423,27 +516,6 @@ export function CadastrarCartasColecao() {
                   onChange={setFiltro}
                   placeholder="Nome, código, raridade ou coleção"
                 />
-              </div>
-
-              <div
-                className="form-actions"
-                style={{ justifyContent: 'flex-start', marginTop: '1rem' }}
-              >
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => selecionarTodas(true)}
-                >
-                  Selecionar todas
-                </Button>
-
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => selecionarTodas(false)}
-                >
-                  Desmarcar todas
-                </Button>
               </div>
 
               <div style={{ marginTop: '1.5rem' }}>
@@ -580,14 +652,6 @@ export function CadastrarCartasColecao() {
           <div className="form-actions" style={{ marginTop: '1.5rem' }}>
             <Button
               type="button"
-              onClick={handleSalvar}
-              disabled={carregando || salvando || cartas.length === 0}
-            >
-              {salvando ? 'Salvando...' : 'Salvar cartas selecionadas'}
-            </Button>
-
-            <Button
-              type="button"
               variant="outline"
               onClick={handleCancelar}
               disabled={carregando || salvando}
@@ -597,6 +661,34 @@ export function CadastrarCartasColecao() {
           </div>
         </section>
       </main>
+
+      {modalSalvarAberto && (
+        <div className="confirm-modal-backdrop">
+          <div className="confirm-modal-card">
+            <h3 className="confirm-modal-title">Confirmar cadastro</h3>
+            <p className="confirm-modal-text">
+              Deseja realmente cadastrar as cartas selecionadas desta coleção?
+            </p>
+            <div className="confirm-modal-actions">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={cancelarSalvar}
+                disabled={salvando}
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="button"
+                onClick={confirmarSalvar}
+                disabled={salvando}
+              >
+                {salvando ? 'Salvando...' : 'Confirmar'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>
