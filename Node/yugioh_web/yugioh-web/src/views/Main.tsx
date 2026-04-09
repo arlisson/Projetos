@@ -1,45 +1,27 @@
+import { useEffect, useRef, useState } from 'react'
 import { Topbar } from '../components/topBar'
 import { Financeiro } from '../components/financeiro'
-import { Grafico } from '../components/grafico' 
+import { Grafico } from '../components/grafico'
 import { CarrosselItem } from '../components/carrosselItem'
-import  { Footer } from '../components/footer'
-import { buscarHistoricoPrecos,
-  calculaTotalGasto,  
+import { Footer } from '../components/footer'
+import {
+  buscarHistoricoPrecos,
+  calculaTotalGasto,
   type HistoricoLucro,
   type ResumoLucro,
   buscarTodasCartas,
   buscarTodosProdutos,
-  precoMaximoMinimo } from '../Database/db'
-import { useEffect, useState } from 'react'
-
-
-
-// Dados estáticos de exemplo para o carrossel
-// const destaqueItems = [
-//   {
-//     name: 'Nome da carta de exemplo',
-//     kind: 'Carta' as const,
-//     currentPrice: 'R$ 0,00',
-//     maxPrice: 'R$ 0,00',
-//     minPrice: 'R$ 0,00',
-//   },
-//   {
-//     name: 'Nome do produto de exemplo',
-//     kind: 'Produto' as const,
-//     currentPrice: 'R$ 0,00',
-//     maxPrice: 'R$ 0,00',
-//     minPrice: 'R$ 0,00',
-//   },
-//   {
-//     name: 'Outro item em destaque',
-//     kind: 'Carta' as const,
-//     currentPrice: 'R$ 0,00',
-//     maxPrice: 'R$ 0,00',
-//     minPrice: 'R$ 0,00',
-//   },
-// ]
+  precoMaximoMinimo,
+} from '../Database/db'
+import {
+  iniciarAtualizacaoDiaria,
+  getDailyUpdateStatus,
+  subscribeDailyUpdateStatus,
+  type DailyUpdateStatus,
+} from '../services/dailyPriceUpdate'
 
 type ItemKind = 'Carta' | 'Produto'
+
 type DestaqueItem = {
   id: string | number
   name: string
@@ -48,21 +30,21 @@ type DestaqueItem = {
   currentPrice: string
   maxPrice: string
   minPrice: string
-  rarity?: string // Apenas para cartas
+  rarity?: string
 }
 
 function formatBRL(value: number) {
-  return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+  return value.toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  })
 }
 
-
-
-
 export function Main() {
-
   const ITEM_W = 260
-  const GAP_PX = 14 // ~0.9rem (se 1rem=16px). Ajuste se necessário.
+  const GAP_PX = 14
   const INTERVAL_MS = 2500
+
   const [index, setIndex] = useState(0)
   const [paused, setPaused] = useState(false)
 
@@ -75,127 +57,169 @@ export function Main() {
   const [quantidadeProdutos, setQuantidadeProdutos] = useState<number>(0)
   const [destaqueItems, setDestaqueItems] = useState<DestaqueItem[]>([])
 
+  const [updateStatus, setUpdateStatus] = useState<DailyUpdateStatus>(
+    getDailyUpdateStatus(),
+  )
+
+  const updateStartedRef = useRef(false)
+
   const {
-  lucro_cartas = 0,
-  lucro_produtos = 0,
-  total_vendas_cartas = 0,
-  total_vendas_produtos = 0,
-  lucro_total = 0,
-} = resumoLucro ?? {}
+    lucro_cartas = 0,
+    lucro_produtos = 0,
+    total_vendas_cartas = 0,
+    total_vendas_produtos = 0,
+    lucro_total = 0,
+  } = resumoLucro ?? {}
 
-  useEffect(() => {
-    async function carregarDados() {
-      
-      // 1) Resumo (objeto único)
-      const resumo = (await buscarHistoricoPrecos(undefined, undefined, true
-        )) as ResumoLucro
-      setResumoLucro(resumo)
-      
-      // 2) Histórico de lucro (array)
-      const histLucro = (await buscarHistoricoPrecos(
-        'lucro',
-      )) as HistoricoLucro[]
-      setHistoricoLucro(histLucro)
-      
-     
-    
-      const totalGasto = await calculaTotalGasto()
-      setTotalGasto(totalGasto.totalGasto)
+  async function carregarDashboard() {
+    const resumo = (await buscarHistoricoPrecos(
+      undefined,
+      undefined,
+      true,
+    )) as ResumoLucro
+    setResumoLucro(resumo)
 
-      const gastoCartas = totalGasto.gastoCartasEstoque + totalGasto.gastoCartasVendidas
-      setTotalGastoCartas(gastoCartas)
+    const histLucro = (await buscarHistoricoPrecos(
+      'lucro',
+    )) as HistoricoLucro[]
+    setHistoricoLucro(histLucro)
 
-      const gastoProdutos = totalGasto.gastoProdutosEstoque + totalGasto.gastoProdutosVendidos
-      setTotalGastoProdutos(gastoProdutos)
+    const totalGasto = await calculaTotalGasto()
+    setTotalGasto(totalGasto.totalGasto)
 
-      const quantidadeC = await buscarTodasCartas()   
-      setQuantidadeCartas(quantidadeC.length)
+    const gastoCartas =
+      totalGasto.gastoCartasEstoque + totalGasto.gastoCartasVendidas
+    setTotalGastoCartas(gastoCartas)
 
-      const quantidadeP = await buscarTodosProdutos()
-      setQuantidadeProdutos(quantidadeP.length)
+    const gastoProdutos =
+      totalGasto.gastoProdutosEstoque + totalGasto.gastoProdutosVendidos
+    setTotalGastoProdutos(gastoProdutos)
 
-     const cartasMap = await Promise.all(
-        quantidadeC.map(async (c: any) => {
-          const { preco_maximo, preco_minimo } = await precoMaximoMinimo('carta', c.id_carta)
+    const cartas = await buscarTodasCartas()
+    setQuantidadeCartas(cartas.length)
 
-          const atual = Number(c.preco_atual ?? 0)
-          const max = preco_maximo ?? atual
-          const min = preco_minimo ?? atual
+    const produtos = await buscarTodosProdutos()
+    setQuantidadeProdutos(produtos.length)
 
-          return {
-            id: c.id_carta,
-            name: c.nome,
-            kind: 'Carta' as const,
-            imageUrl: c.imagem,
-            currentPrice: formatBRL(atual),
-            maxPrice: formatBRL(max),
-            minPrice: formatBRL(min),
-            rarity: c.raridade_nome
-          }
-        })
-      )
+    const cartasMap = await Promise.all(
+      cartas.map(async (c: any) => {
+        const { preco_maximo, preco_minimo } = await precoMaximoMinimo(
+          'carta',
+          c.id_carta,
+        )
 
-      const produtosMap = await Promise.all(
-        quantidadeP.map(async (p: any) => {
-          const { preco_maximo, preco_minimo } = await precoMaximoMinimo('produto', p.id_produto)
+        const atual = Number(c.preco_atual ?? 0)
+        const max = preco_maximo ?? atual
+        const min = preco_minimo ?? atual
 
-          const atual = Number(p.preco_atual ?? p.preco ?? 0)
-          const max = preco_maximo ?? atual
-          const min = preco_minimo ?? atual
+        return {
+          id: c.id_carta,
+          name: c.nome,
+          kind: 'Carta' as const,
+          imageUrl: c.imagem,
+          currentPrice: formatBRL(atual),
+          maxPrice: formatBRL(max),
+          minPrice: formatBRL(min),
+          rarity: c.raridade_nome,
+        }
+      }),
+    )
 
-          return {
-            id: p.id_produto,
-            name: p.nome_produto,
-            kind: 'Produto' as const,
-            imageUrl: p.imagem,
-            currentPrice: formatBRL(atual),
-            maxPrice: formatBRL(max),
-            minPrice: formatBRL(min),
-          }
-        })
-      )
+    const produtosMap = await Promise.all(
+      produtos.map(async (p: any) => {
+        const { preco_maximo, preco_minimo } = await precoMaximoMinimo(
+          'produto',
+          p.id_produto,
+        )
 
-      
-    // Exemplo: pega os 10 “destaques” pelos mais caros (ajuste o critério)
-    const top = [...cartasMap, ...produtosMap]
-      .sort((a, b) => {
-        const pa = Number(String(a.currentPrice).replace(/[^\d,]/g, '').replace(',', '.')) || 0
-        const pb = Number(String(b.currentPrice).replace(/[^\d,]/g, '').replace(',', '.')) || 0
-        return pb - pa
-      })
-      
+        const atual = Number(p.preco_atual ?? p.preco ?? 0)
+        const max = preco_maximo ?? atual
+        const min = preco_minimo ?? atual
+
+        return {
+          id: p.id_produto,
+          name: p.nome_produto,
+          kind: 'Produto' as const,
+          imageUrl: p.imagem,
+          currentPrice: formatBRL(atual),
+          maxPrice: formatBRL(max),
+          minPrice: formatBRL(min),
+        }
+      }),
+    )
+
+    const top = [...cartasMap, ...produtosMap].sort((a, b) => {
+      const pa =
+        Number(
+          String(a.currentPrice).replace(/[^\d,]/g, '').replace(',', '.'),
+        ) || 0
+      const pb =
+        Number(
+          String(b.currentPrice).replace(/[^\d,]/g, '').replace(',', '.'),
+        ) || 0
+      return pb - pa
+    })
+
     setDestaqueItems(top)
   }
 
-    carregarDados()
-    
-    
+  useEffect(() => {
+    void carregarDashboard()
   }, [])
 
   useEffect(() => {
-  if (destaqueItems.length <= 1) return
+    const unsubscribe = subscribeDailyUpdateStatus((status) => {
+      setUpdateStatus(status)
+    })
 
-  const t = window.setInterval(() => {
-    if (paused) return
-    setIndex((prev) => (prev + 1) % destaqueItems.length)
-  }, INTERVAL_MS)
+    return unsubscribe
+  }, [])
 
-  return () => window.clearInterval(t)
-}, [paused, destaqueItems.length])
+  useEffect(() => {
+    if (updateStartedRef.current) return
+    updateStartedRef.current = true
+
+    async function iniciar() {
+      const statusAntes = getDailyUpdateStatus()
+      const estavaExecutando = statusAntes.executando
+
+      const resultado = await iniciarAtualizacaoDiaria()
+
+      if (!estavaExecutando && resultado.etapa === 'finalizado') {
+        await carregarDashboard()
+      }
+    }
+
+    void iniciar()
+  }, [])
+
+  useEffect(() => {
+    if (!updateStatus.executando && updateStatus.etapa === 'finalizado') {
+      void carregarDashboard()
+    }
+  }, [updateStatus.executando, updateStatus.etapa])
+
+  useEffect(() => {
+    if (destaqueItems.length <= 1) return
+
+    const t = window.setInterval(() => {
+      if (paused) return
+      setIndex((prev) => (prev + 1) % destaqueItems.length)
+    }, INTERVAL_MS)
+
+    return () => window.clearInterval(t)
+  }, [paused, destaqueItems.length])
 
   return (
     <div className="app-shell">
-      {/* HEADER / MENU SUPERIOR COMPONENTIZADO */}
       <Topbar pageTitle="Painel inicial" />
 
-      {/* CONTEÚDO PRINCIPAL */}
       <main className="dashboard-content">
-        {/* 1) CARROSSEL LOGO ABAIXO DO HEADER */}
         <section className="carousel-wrapper">
           <div className="section-header">
             <h2 className="section-title">Cartas e produtos em destaque</h2>
             <span className="section-header-caption">
-              Componente estático. Os itens reais virão do banco de dados.
+              Itens com base nos maiores preços atuais cadastrados.
             </span>
           </div>
 
@@ -210,11 +234,9 @@ export function Main() {
                 transform: `translateX(-${index * (ITEM_W + GAP_PX)}px)`,
               }}
             >
-              
-                <div className="carousel-track">
-                {destaqueItems.map((item) => (
+              {destaqueItems.map((item) => (
+                <div key={`${item.kind}-${item.id}`} className="carousel-slide">
                   <CarrosselItem
-                    key={`${item.kind}-${item.id}`}
                     name={item.name}
                     kind={item.kind}
                     imageUrl={item.imageUrl || null}
@@ -223,75 +245,69 @@ export function Main() {
                     minPrice={item.minPrice}
                     rarity={item.kind === 'Carta' ? item.rarity : undefined}
                   />
-                ))}
-              </div>
-
-            
+                </div>
+              ))}
             </div>
           </div>
-
         </section>
 
-        {/* 2) DADOS FINANCEIROS (LUCROS NO TOPO) */}
         <section className="section-block">
           <h2 className="section-title">Dados financeiros</h2>
           <p className="section-subtitle">
-            Valores referentes a cartas e produtos: total gasto, lucros
-            separados e lucro total. (Apenas layout; dados reais virão do banco.)
+            Valores referentes a cartas e produtos cadastrados, vendas e lucro
+            consolidado.
           </p>
-
-           <div className="summary-grid">
-           <Financeiro
-              label="Total gasto (cartas + produtos)"
-              value={total_gasto}
-              footer="Soma do total gasto em cartas e produtos."
-            />        
-          </div>
 
           <div className="summary-grid">
             <Financeiro
+              label="Total gasto geral"
+              value={total_gasto}
+              footer="Soma do valor investido em cartas e produtos."
+            />
+            <Financeiro
               label="Total gasto Cartas"
               value={totalGastoCartas}
-              footer="Soma de todos os valores investidos em cartas."
+              footer="Considerando apenas operações com cartas."
             />
             <Financeiro
               label="Lucro em cartas"
-              value={lucro_cartas+total_vendas_cartas}
+              value={lucro_cartas + total_vendas_cartas}
               isCurrency
               footer="Considerando apenas operações com cartas."
             />
             <Financeiro
               label="Total Cartas Cadastradas"
               value={quantidadeCartas}
-              footer='Total unitário de cartas cadastradas no sistema.'
+              footer="Total unitário de cartas cadastradas no sistema."
               isCurrency={false}
             />
-            </div>
-            <div className="summary-grid">
+          </div>
+
+          <div className="summary-grid">
             <Financeiro
               label="Total gasto Produtos"
               value={totalGastoProdutos}
-              footer='Considerando apenas operações com Produtos'
+              footer="Considerando apenas operações com produtos."
             />
             <Financeiro
               label="Lucro em produtos"
-              value={lucro_produtos+total_vendas_produtos}
+              value={lucro_produtos + total_vendas_produtos}
               footer="Considerando apenas operações com produtos."
             />
             <Financeiro
               label="Total Produtos Cadastrados"
               value={quantidadeProdutos}
-              footer='Total unitário de produtos cadastrados no sistema.'
+              footer="Total unitário de produtos cadastrados no sistema."
               isCurrency={false}
             />
-            
           </div>
+
           <div className="summary-grid">
             <Financeiro
               label="Vendas em Cartas"
               value={total_vendas_cartas}
               footer="Considerando apenas operações com cartas."
-            />            
+            />
             <Financeiro
               label="Vendas em Produtos"
               value={total_vendas_produtos}
@@ -303,27 +319,65 @@ export function Main() {
               footer="Lucro combinado de cartas + produtos."
             />
           </div>
-         
 
-
-          {/* Banner sobre atualização automática via scraping */}
-          <div className="info-banner">
+          <div className="info-banner info-banner-update">
             <div>
               <div className="info-banner-title">
-                Atualização automática de preços (scraping)
+                Atualização automática diária de preços
               </div>
+
+              <div className="info-banner-text">{updateStatus.mensagem}</div>
+
               <div className="info-banner-text">
-                Ao iniciar o sistema, os preços de cartas e produtos serão
-                atualizados via scraping. (Funcionalidade ainda não implementada.)
+                Última atualização registrada:{' '}
+                <strong>{updateStatus.ultimaAtualizacao || 'nenhuma'}</strong>
               </div>
+
+              {(updateStatus.executando ||
+                updateStatus.etapa === 'finalizado') && (
+                <div className="update-progress-list">
+                  <div className="info-banner-text">
+                    Cartas: <strong>{updateStatus.cartasAtualizadas}</strong> /{' '}
+                    {updateStatus.totalCartas}
+                  </div>
+
+                  <div className="info-banner-text">
+                    Produtos: <strong>{updateStatus.produtosAtualizados}</strong> /{' '}
+                    {updateStatus.totalProdutos}
+                  </div>
+
+                  {updateStatus.nomeItemAtual && (
+                    <div className="info-banner-text">
+                      Atualizando agora:{' '}
+                      <strong>{updateStatus.nomeItemAtual}</strong>
+                    </div>
+                  )}
+
+                  {updateStatus.executando && updateStatus.total > 0 && (
+                    <div className="info-banner-text">
+                      Progresso da etapa atual: <strong>{updateStatus.atual}</strong> /{' '}
+                      {updateStatus.total}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
+
             <div className="info-banner-text">
-              Status: <strong>não implementado</strong>
+              Status:{' '}
+              <strong>
+                {updateStatus.executando
+                  ? 'em execução'
+                  : updateStatus.etapa === 'finalizado'
+                    ? 'concluído'
+                    : updateStatus.etapa === 'erro'
+                      ? 'erro'
+                      : 'aguardando'}
+              </strong>
             </div>
           </div>
         </section>
 
-        {/* 3) HISTÓRICO DE LUCROS – GRÁFICOS EMPILHADOS EM LARGURA TOTAL */}
         <section className="section-block">
           <div className="section-header">
             <h2 className="section-title">Histórico de Lucros</h2>
@@ -337,34 +391,27 @@ export function Main() {
               title="Lucro total (cartas + produtos)"
               data={historicoLucro}
               dateKey="data"
-              series={[
-                { key: 'lucro_total', label: 'Lucro total' },
-              ]}
+              series={[{ key: 'lucro_total', label: 'Lucro total' }]}
             />
 
-            {/* Lucro apenas de cartas */}
             <Grafico
               title="Lucro em cartas"
               data={historicoLucro}
               dateKey="data"
-              series={[
-                { key: 'lucro_cartas', label: 'Lucro cartas' },
-              ]}
+              series={[{ key: 'lucro_cartas', label: 'Lucro cartas' }]}
             />
 
-            {/* Lucro apenas de produtos */}
             <Grafico
               title="Lucro em produtos"
               data={historicoLucro}
               dateKey="data"
-              series={[
-                { key: 'lucro_produtos', label: 'Lucro produtos' },
-              ]}
-            />    
+              series={[{ key: 'lucro_produtos', label: 'Lucro produtos' }]}
+            />
           </div>
         </section>
       </main>
-      <Footer />
+
+      <Footer appName="YU-GI-OH! Manager" />
     </div>
   )
 }

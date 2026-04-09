@@ -1,5 +1,6 @@
 // src-tauri/src/lib.rs
 mod log;
+mod db_admin;
 
 use std::process::Command as StdCommand;
 use tauri::command;
@@ -31,6 +32,8 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_sql::Builder::default().build())
         .plugin(tauri_plugin_http::init())
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_fs::init())
         .invoke_handler(tauri::generate_handler![
             log::init_logs,
             log::log_info,
@@ -38,6 +41,10 @@ pub fn run() {
             log::read_logs,
             log::clear_logs,
             buscar_produto_liga_cmd,
+            db_admin::get_database_info,
+            db_admin::export_database,
+            db_admin::import_database,
+            db_admin::clear_database_data,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

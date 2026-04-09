@@ -1,27 +1,31 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Topbar } from '../../components/topBar'
 import { Footer } from '../../components/footer'
 import { FormField } from '../../components/formField'
 import { FormSelect } from '../../components/formSelect'
 import { Button } from '../../components/botao'
-import { listarRaridadeQualidade,
-   listarColecoes,
-   type QualidadeDB, 
-   type RaridadeDB, 
-   type OpcaoSelect, 
-   buscarQualidadeRaridadeId,
-   buscarColecao,
-   inserirColecao,
-   buscarCartaId,
-   deletar,
-   atualizarCarta,
-   type InserirCartaPayload,
-   type InserirVendaCartaPayload,
-   venderCarta,
-   todayStr
-   } from '../../Database/db'
+import { Grafico } from '../../components/grafico'
+import {
+  listarRaridadeQualidade,
+  listarColecoes,
+  type QualidadeDB,
+  type RaridadeDB,
+  type OpcaoSelect,
+  buscarQualidadeRaridadeId,
+  buscarColecao,
+  inserirColecao,
+  buscarCartaId,
+  deletar,
+  atualizarCarta,
+  type InserirCartaPayload,
+  type InserirVendaCartaPayload,
+  venderCarta,
+  todayStr,
+  buscarHistoricoPrecos,
+  type HistoricoPrecos,
+} from '../../Database/db'
 import { buscarCartaMyp, type CartaMyP } from '../../../scraping/webScraping'
-import { useSearchParams,useNavigate } from 'react-router-dom'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import { logError } from '../../services/logger'
 
 async function buscarCarta(url: string, chave?: string): Promise<CartaMyP[]> {
@@ -29,87 +33,21 @@ async function buscarCarta(url: string, chave?: string): Promise<CartaMyP[]> {
   return carta
 }
 
-
-
 export function EditarCarta() {
-    const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
-    const idParam = searchParams.get('id')
-    const idCarta = idParam ? Number(idParam) : null
-    const [quantidadeVenda, setQuantidadeVenda] = useState('');
-    const [valorVenda, setValorVenda] = useState('');
-    const [modalVenderAberto, setModalVenderAberto] = useState(false)
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const idParam = searchParams.get('id')
+  const idCarta = idParam ? Number(idParam) : null
 
-  
-    useEffect(() => {
-        if (!idCarta) return
-        async function carregarDadosCarta() {
-            const carta = await buscarCartaId(idCarta!)
-            if (carta) {
-                setLinkCarta(carta.link_site || '')
-                setNome(carta.nome || '')
-                setCodigo(carta.codigo || '')
-                setPrecoPago(carta.preco_da_compra ? String(carta.preco_da_compra) : '')
-                setPrecoAtual(carta.preco_atual ? String(carta.preco_atual) : '')
-                setDataCompra(carta.data_da_compra ? carta.data_da_compra.toString().split('T')[0] : '')
-                setQuantidade(carta.quantidade ? String(carta.quantidade) : '')
-                setUrlImagem(carta.imagem || '')
-                if(carta.origem?.toUpperCase() === 'MYPCARDS') {
-                    setOrigem('myp')
-                }else if(carta.origem?.toUpperCase() === 'LIGA YUGIOH') {
-                    setOrigem('liga')
-                }else{
-                    setOrigem('')
-                }
-                
-                setRaridade(carta.raridade ? String(carta.raridade) : '')
-                setQualidade(carta.qualidade ? String(carta.qualidade) : '')
-                setColecao(carta.colecao ? String(carta.colecao) : '')
-            }
-        }
+  const [quantidadeVenda, setQuantidadeVenda] = useState('')
+  const [valorVenda, setValorVenda] = useState('')
+  const [modalVenderAberto, setModalVenderAberto] = useState(false)
 
-
-
-
-        async function carregarQualidades() {
-            const dados_qualidade = (await listarRaridadeQualidade(
-            'qualidade'
-            )) as unknown as QualidadeDB[]      
-
-        
-
-        const opcoes = dados_qualidade.map((q) => ({
-          value: String(q.id_qualidade), // ou q.nome, se preferir
-          label: q.nome,
-        }))
-
-        setOpcoesQualidade(opcoes)
-
-        const dados_raridade = (await listarRaridadeQualidade(
-          'raridade'
-        )) as unknown as RaridadeDB[]
-        const opcoes_raridade = dados_raridade.map((r) => ({
-          value: String(r.id_raridade), // ou r.nome, se preferir
-          label: r.nome,
-        }))
-        setOpcoesRaridade(opcoes_raridade)
-
-        const dados_colecao = (await listarColecoes()) as unknown as {
-          id_colecao: number
-          nome: string
-        }[]
-        const opcoes_colecao = dados_colecao.map((c) => ({
-          value: String(c.id_colecao), // ou c.nome, se preferir
-          label: c.nome,
-        }))
-        setOpcoesColecao(opcoes_colecao)
-      }
-
-        void carregarQualidades()
-        void carregarDadosCarta()
-    }, [idCarta])
-
-
+  const [modalAtualizarAberto, setModalAtualizarAberto] = useState(false)
+  const [modalExcluirAberto, setModalExcluirAberto] = useState(false)
+  const [salvandoAtualizacao, setSalvandoAtualizacao] = useState(false)
+  const [excluindoCarta, setExcluindoCarta] = useState(false)
+  const [buscandoScraping, setBuscandoScraping] = useState(false)
 
   const [linkCarta, setLinkCarta] = useState('')
   const [nome, setNome] = useState('')
@@ -119,7 +57,6 @@ export function EditarCarta() {
   const [dataCompra, setDataCompra] = useState('')
   const [quantidade, setQuantidade] = useState('')
   const [urlImagem, setUrlImagem] = useState('')
-  //const [localImagem, setLocalImagem] = useState('')
 
   const [origem, setOrigem] = useState('')
   const [raridade, setRaridade] = useState('')
@@ -129,24 +66,202 @@ export function EditarCarta() {
   const [opcoesQualidade, setOpcoesQualidade] = useState<OpcaoSelect[]>([])
   const [opcoesColecao, setOpcoesColecao] = useState<OpcaoSelect[]>([])
 
-  
+  const [historicoPrecos, setHistoricoPrecos] = useState<HistoricoPrecos[]>([])
+  const [carregandoHistorico, setCarregandoHistorico] = useState(false)
 
-  // Estes arrays futuramente virão do banco de dados
+  useEffect(() => {
+    if (!idCarta) return
+
+    async function carregarDadosCarta() {
+      try {
+        const carta = await buscarCartaId(idCarta!)
+        if (carta) {
+          setLinkCarta(carta.link_site || '')
+          setNome(carta.nome || '')
+          setCodigo(carta.codigo || '')
+          setPrecoPago(
+            carta.preco_da_compra !== null && carta.preco_da_compra !== undefined
+              ? String(carta.preco_da_compra)
+              : '',
+          )
+          setPrecoAtual(
+            carta.preco_atual !== null && carta.preco_atual !== undefined
+              ? String(carta.preco_atual)
+              : '',
+          )
+          setDataCompra(
+            carta.data_da_compra
+              ? carta.data_da_compra.toString().split('T')[0]
+              : '',
+          )
+          setQuantidade(
+            carta.quantidade !== null && carta.quantidade !== undefined
+              ? String(carta.quantidade)
+              : '',
+          )
+          setUrlImagem(carta.imagem || '')
+
+          if (carta.origem?.toUpperCase() === 'MYPCARDS') {
+            setOrigem('myp')
+          } else if (carta.origem?.toUpperCase() === 'LIGA YUGIOH') {
+            setOrigem('liga')
+          } else {
+            setOrigem('')
+          }
+
+          setRaridade(carta.raridade ? String(carta.raridade) : '')
+          setQualidade(carta.qualidade ? String(carta.qualidade) : '')
+          setColecao(carta.colecao ? String(carta.colecao) : '')
+        }
+      } catch (error) {
+        await logError('Erro ao carregar dados da carta: ' + String(error))
+        alert('Erro ao carregar dados da carta.')
+      }
+    }
+
+    async function carregarHistoricoCarta() {
+      try {
+        setCarregandoHistorico(true)
+        const historico = await buscarHistoricoPrecos('carta', idCarta!)
+        setHistoricoPrecos(
+          Array.isArray(historico) ? (historico as HistoricoPrecos[]) : [],
+        )
+      } catch (error) {
+        setHistoricoPrecos([])
+        await logError('Erro ao carregar histórico da carta: ' + String(error))
+      } finally {
+        setCarregandoHistorico(false)
+      }
+    }
+
+    async function carregarQualidades() {
+      try {
+        const dadosQualidade = (await listarRaridadeQualidade(
+          'qualidade',
+        )) as unknown as QualidadeDB[]
+
+        setOpcoesQualidade(
+          dadosQualidade.map((q) => ({
+            value: String(q.id_qualidade),
+            label: q.nome,
+          })),
+        )
+
+        const dadosRaridade = (await listarRaridadeQualidade(
+          'raridade',
+        )) as unknown as RaridadeDB[]
+
+        setOpcoesRaridade(
+          dadosRaridade.map((r) => ({
+            value: String(r.id_raridade),
+            label: r.nome,
+          })),
+        )
+
+        const dadosColecao = (await listarColecoes()) as unknown as {
+          id_colecao: number
+          nome: string
+        }[]
+
+        setOpcoesColecao(
+          dadosColecao.map((c) => ({
+            value: String(c.id_colecao),
+            label: c.nome,
+          })),
+        )
+      } catch (error) {
+        await logError('Erro ao carregar opções da tela: ' + String(error))
+      }
+    }
+
+    void carregarQualidades()
+    void carregarDadosCarta()
+    void carregarHistoricoCarta()
+  }, [idCarta])
+
+  const dadosGraficoHistorico = useMemo(() => {
+    return historicoPrecos
+      .filter(
+        (item) => item.preco !== null && item.preco !== undefined && item.data,
+      )
+      .map((item) => ({
+        data: item.data,
+        preco: Number(item.preco),
+        origem: item.origem ?? '',
+      }))
+      .sort((a, b) => new Date(a.data).getTime() - new Date(b.data).getTime())
+  }, [historicoPrecos])
+
   const opcoesOrigem = [
     { value: 'myp', label: 'MyPCards' },
-    { value: 'liga', label: 'Liga Yugioh' },   
-  ] 
+    { value: 'liga', label: 'Liga Yugioh' },
+  ]
 
+  async function recarregarHistorico(): Promise<void> {
+    if (!idCarta) return
+
+    try {
+      setCarregandoHistorico(true)
+      const historicoAtualizado = await buscarHistoricoPrecos('carta', idCarta)
+      setHistoricoPrecos(
+        Array.isArray(historicoAtualizado)
+          ? (historicoAtualizado as HistoricoPrecos[])
+          : [],
+      )
+    } catch (error) {
+      await logError('Erro ao recarregar histórico da carta: ' + String(error))
+    } finally {
+      setCarregandoHistorico(false)
+    }
+  }
+
+  function validarFormulario(): boolean {
+    if (
+      !nome ||
+      !codigo ||
+      !precoPago ||
+      !precoAtual ||
+      !dataCompra ||
+      !quantidade ||
+      !origem ||
+      !raridade ||
+      !colecao
+    ) {
+      alert('Por favor, preencha todos os campos obrigatórios.')
+      return false
+    }
+
+    return true
+  }
+
+  function handleFormKeyDown(e: React.KeyboardEvent<HTMLFormElement>) {
+    if (e.key !== 'Enter') return
+
+    const target = e.target as HTMLElement
+    const tag = target.tagName.toLowerCase()
+
+    if (tag !== 'textarea') {
+      e.preventDefault()
+    }
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    // Validar campos obrigatórios
-    if (!nome || !codigo || !precoPago || !precoAtual || !dataCompra || !quantidade || !origem || !raridade || !colecao) {
-      alert('Por favor, preencha todos os campos obrigatórios.')
-      return
-    }
+
+    if (!validarFormulario()) return
+
+    setModalAtualizarAberto(true)
+  }
+
+  async function confirmarAtualizacao(): Promise<void> {
+    if (!idCarta || salvandoAtualizacao) return
+
+    setSalvandoAtualizacao(true)
+
     try {
-      const origemFormatada = origem === 'myp' ? 'MyPCards' : origem === 'liga' ? 'Liga Yugioh' : ''
+      const origemFormatada =
+        origem === 'myp' ? 'MyPCards' : origem === 'liga' ? 'Liga Yugioh' : ''
+
       const payload: InserirCartaPayload = {
         link_site: linkCarta,
         imagem: urlImagem,
@@ -159,73 +274,98 @@ export function EditarCarta() {
         origem: origemFormatada,
         raridade: raridade ? parseInt(raridade, 10) : null,
         qualidade: qualidade ? parseInt(qualidade, 10) : null,
-        colecao: colecao || null
+        colecao: colecao || null,
       }
-      confirm('Salvar alterações da carta "'+nome+'"?') && atualizarCarta(idCarta!, payload)
-      .then(() => {
-        alert('Carta "'+nome+'" atualizada com sucesso.')
-        
-      })       
-        
-     
+
+      const ok = await atualizarCarta(idCarta, payload)
+
+      if (!ok) {
+        alert(`Erro ao atualizar carta "${nome}".`)
+        return
+      }
+
+      setModalAtualizarAberto(false)
+      alert(`Carta "${nome}" atualizada com sucesso.`)
+      await recarregarHistorico()
     } catch (error) {
       alert('Erro ao salvar carta: ' + error)
-      logError('Erro ao salvar carta: ' + error)
+      void logError('Erro ao salvar carta: ' + error)
+    } finally {
+      setSalvandoAtualizacao(false)
     }
-    
+  }
+
+  function cancelarAtualizacao(): void {
+    if (salvandoAtualizacao) return
+    setModalAtualizarAberto(false)
   }
 
   async function handleScraping() {
+    if (!linkCarta.trim()) {
+      alert('Informe o link da carta antes de buscar via scraping.')
+      return
+    }
+
     if (raridade === '') {
       alert('Por favor, selecione a raridade antes de buscar via scraping.')
       return
     }
+
+    setBuscandoScraping(true)
+
     try {
-      const raridadeNome = await buscarQualidadeRaridadeId(parseInt(raridade, 10), 'raridade')
+      const raridadeNome = await buscarQualidadeRaridadeId(
+        parseInt(raridade, 10),
+        'raridade',
+      )
       const cartas = await buscarCarta(linkCarta, raridadeNome || undefined)
+
       if (cartas.length > 0) {
         const carta = cartas[0]
         const colecaoEncontrada = await buscarColecao(carta.colecao)
 
-      if (colecaoEncontrada) {
-        // Já existe no banco: só seleciona
-        setColecao(String(colecaoEncontrada.id_colecao))
-      } else {
-        // Insere nova coleção
-        const novoId = await inserirColecao(carta.colecao, '')
+        if (colecaoEncontrada) {
+          setColecao(String(colecaoEncontrada.id_colecao))
+        } else {
+          const novoId = await inserirColecao(carta.colecao, '')
 
-        // Recarrega todas as coleções para atualizar as opções
-        const dados_colecao = (await listarColecoes()) as {
-          id_colecao: number
-          nome: string
-        }[]
+          const dadosColecao = (await listarColecoes()) as {
+            id_colecao: number
+            nome: string
+          }[]
 
-        const opcoes_colecao: OpcaoSelect[] = dados_colecao.map((c) => ({
-          value: String(c.id_colecao),
-          label: c.nome,
-        }))
+          setOpcoesColecao(
+            dadosColecao.map((c) => ({
+              value: String(c.id_colecao),
+              label: c.nome,
+            })),
+          )
 
-        setOpcoesColecao(opcoes_colecao)
+          setColecao(String(novoId))
+        }
 
-        // Seleciona a nova coleção (id recém inserido)
-        setColecao(String(novoId))
-      }
         setNome(carta.nome || '')
         setCodigo(carta.codigo || '')
         setUrlImagem(carta.imagem || '')
-        setPrecoAtual(carta.preco_atual ? String(carta.preco_atual) : '')
-        if(carta.origem.toUpperCase()==='MYPCARDS'){
+        setPrecoAtual(
+          carta.preco_atual !== null && carta.preco_atual !== undefined
+            ? String(carta.preco_atual)
+            : '',
+        )
+
+        if (carta.origem.toUpperCase() === 'MYPCARDS') {
           setOrigem('myp')
-        }else{
+        } else {
           setOrigem(carta.origem || '')
         }
-
       } else {
         alert('Nenhuma carta encontrada no link fornecido.')
       }
     } catch (error) {
       console.error('Erro ao buscar carta:', error)
-      alert('Erro ao buscar carta.' + String(error))
+      alert('Erro ao buscar carta. ' + String(error))
+    } finally {
+      setBuscandoScraping(false)
     }
   }
 
@@ -233,21 +373,36 @@ export function EditarCarta() {
     navigate(-1)
   }
 
-  async function handleExcluir(): Promise<void> {
-      try{
-        if (confirm('Confirma a exclusão de "'+nome+'"? Esta ação não pode ser desfeita.')) {
-          await deletar('carta', idCarta!)
-          alert('Carta "'+nome+'" excluída com sucesso.')
-          navigate(-1)
-        }
-      } catch (error) {
-        alert('Erro ao excluir carta: ' + error)
-        logError('Erro ao excluir carta: ' + error)
-      }
+  function handleExcluir(): void {
+    setModalExcluirAberto(true)
   }
 
-   function handleVender(): void {
+  async function confirmarExclusao(): Promise<void> {
+    if (!idCarta || excluindoCarta) return
+
+    setExcluindoCarta(true)
+
+    try {
+      await deletar('carta', idCarta)
+      setModalExcluirAberto(false)
+      alert(`Carta "${nome}" excluída com sucesso.`)
+      navigate(-1)
+    } catch (error) {
+      alert('Erro ao excluir carta: ' + error)
+      await logError('Erro ao excluir carta: ' + error)
+    } finally {
+      setExcluindoCarta(false)
+    }
+  }
+
+  function cancelarExclusao(): void {
+    if (excluindoCarta) return
+    setModalExcluirAberto(false)
+  }
+
+  function handleVender(): void {
     setQuantidadeVenda('')
+    setValorVenda('')
     setModalVenderAberto(true)
   }
 
@@ -257,12 +412,12 @@ export function EditarCarta() {
     if (!Number.isFinite(qtd) || qtd <= 0) {
       alert('Informe uma quantidade válida.')
       return
-    }else if (qtd > Number(quantidade)) {
+    } else if (qtd > Number(quantidade)) {
       alert('Quantidade a vender não pode ser maior que a quantidade em estoque.')
       return
     }
 
-    if (valorVenda){
+    if (valorVenda) {
       const valor = Number(valorVenda)
       if (!Number.isFinite(valor) || valor <= 0) {
         alert('Informe um valor de venda válido.')
@@ -275,9 +430,12 @@ export function EditarCarta() {
         id_carta: idCarta!,
         preco_da_venda: valorVenda ? parseFloat(valorVenda) : null,
         data_da_venda: todayStr(),
-        quantidade: null
+        quantidade: qtd,
       }
-      const origemFormatada = origem === 'myp' ? 'MyPCards' : origem === 'liga' ? 'Liga Yugioh' : ''
+
+      const origemFormatada =
+        origem === 'myp' ? 'MyPCards' : origem === 'liga' ? 'Liga Yugioh' : ''
+
       const payloadCarta: InserirCartaPayload = {
         link_site: linkCarta,
         imagem: urlImagem,
@@ -290,15 +448,21 @@ export function EditarCarta() {
         origem: origemFormatada,
         raridade: raridade ? parseInt(raridade, 10) : null,
         qualidade: qualidade ? parseInt(qualidade, 10) : null,
-        colecao: colecao || null
+        colecao: colecao || null,
       }
 
-      await venderCarta(payloadCarta, payload, qtd)
+      const ok = await venderCarta(payloadCarta, payload, qtd)
+
+      if (!ok) {
+        alert(`Erro ao registrar venda da carta: ${nome}`)
+        return
+      }
+
       alert(`${qtd} unidade(s) de ${nome} vendida(s).`)
       setModalVenderAberto(false)
       setQuantidade(String(Number(quantidade) - qtd))
     } catch (err) {
-      alert(`Erro ao registrar venda da carta:${nome}\n ${err}`)
+      alert(`Erro ao registrar venda da carta: ${nome}\n${err}`)
     }
   }
 
@@ -311,15 +475,13 @@ export function EditarCarta() {
       <Topbar pageTitle="Editar carta" />
 
       <main className="form-page-content">
-        {/* Coluna esquerda – formulário */}
         <section className="form-page-left">
           <h2 className="section-title">Editar {nome}</h2>
           <p className="section-subtitle">
             Preencha os dados básicos da carta antes de salvar.
           </p>
 
-          <form onSubmit={handleSubmit}>
-            {/* Link da carta + scraping */}
+          <form onSubmit={handleSubmit} onKeyDown={handleFormKeyDown}>
             <div className="form-row-inline">
               <FormField
                 label="Link da carta"
@@ -335,12 +497,12 @@ export function EditarCarta() {
                 variant="outline"
                 size="sm"
                 onClick={handleScraping}
+                disabled={buscandoScraping}
               >
-                Buscar via scraping
+                {buscandoScraping ? 'Buscando...' : 'Buscar via scraping'}
               </Button>
             </div>
 
-            {/* Nome */}
             <FormField
               label="Nome"
               name="nome"
@@ -350,7 +512,6 @@ export function EditarCarta() {
               required
             />
 
-            {/* Código */}
             <FormField
               label="Código"
               name="codigo"
@@ -360,7 +521,6 @@ export function EditarCarta() {
               required
             />
 
-            {/* Preços */}
             <div className="form-row-inline">
               <FormField
                 label="Preço pago"
@@ -382,7 +542,6 @@ export function EditarCarta() {
               />
             </div>
 
-            {/* Data + quantidade */}
             <div className="form-row-inline">
               <FormField
                 label="Data da compra"
@@ -402,7 +561,6 @@ export function EditarCarta() {
               />
             </div>
 
-            {/* URLs de imagem */}
             <FormField
               label="URL da imagem"
               name="urlImagem"
@@ -412,16 +570,6 @@ export function EditarCarta() {
               placeholder="Link direto para a imagem, se houver"
             />
 
-            {/* <FormField
-              label="Local da imagem baixada"
-              name="localImagem"
-              kind="texto"
-              value={localImagem}
-              onChange={setLocalImagem}
-              placeholder="Caminho/local no disco após download"
-            /> */}
-
-            {/* Dropdowns: origem, raridade, qualidade, coleção */}
             <div className="form-row-inline">
               <FormSelect
                 label="Origem"
@@ -431,7 +579,6 @@ export function EditarCarta() {
                 options={opcoesOrigem}
                 placeholder="Selecione a origem"
                 required
-                
               />
               <FormSelect
                 label="Raridade"
@@ -464,7 +611,6 @@ export function EditarCarta() {
               />
             </div>
 
-            {/* Ações */}
             <div className="form-actions">
               <Button type="submit">Salvar carta</Button>
               <Button type="button" variant="outline" onClick={handleCancelar}>
@@ -481,46 +627,44 @@ export function EditarCarta() {
         </section>
 
         {modalVenderAberto && (
-        <div className="modal-backdrop">
-          <div className="modal-card">
-            <div className="modal-title">Vender carta</div>
-            <div className="modal-body">
-              <label className="modal-label">
-                Quantidade a vender:
-                <input
-                  type="number"
-                  min={1}
-                  className="modal-input"
-                  value={quantidadeVenda}
-                  onChange={(e) => setQuantidadeVenda(e.target.value)}
-                  autoFocus
-                />
-              </label>
-              <label className="modal-label">
-                Valor da venda:
-                <input
-                  type="number"
-                  min={1}
-                  className="modal-input"
-                  value={valorVenda}
-                  onChange={(e) => setValorVenda(e.target.value)}
-                  
-                />
-              </label>
-            </div>
-            <div className="modal-actions">
-              <button type="button" onClick={confirmarVenda}>
-                Confirmar
-              </button>
-              <button type="button" onClick={cancelarVenda}>
-                Cancelar
-              </button>
+          <div className="modal-backdrop">
+            <div className="modal-card">
+              <div className="modal-title">Vender carta</div>
+              <div className="modal-body">
+                <label className="modal-label">
+                  Quantidade a vender:
+                  <input
+                    type="number"
+                    min={1}
+                    className="modal-input"
+                    value={quantidadeVenda}
+                    onChange={(e) => setQuantidadeVenda(e.target.value)}
+                    autoFocus
+                  />
+                </label>
+                <label className="modal-label">
+                  Valor da venda:
+                  <input
+                    type="number"
+                    min={1}
+                    className="modal-input"
+                    value={valorVenda}
+                    onChange={(e) => setValorVenda(e.target.value)}
+                  />
+                </label>
+              </div>
+              <div className="modal-actions">
+                <button type="button" onClick={confirmarVenda}>
+                  Confirmar
+                </button>
+                <button type="button" onClick={cancelarVenda}>
+                  Cancelar
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-        {/* Coluna direita – imagem da carta */}        
         <aside className="form-page-right">
           <div className="form-image-label">Imagem da carta</div>
 
@@ -532,16 +676,87 @@ export function EditarCarta() {
                 className="card-image-preview"
               />
             ) : (
-              <>
-                Pré-visualização da imagem da carta.                               
-              </>
+              <>Pré-visualização da imagem da carta.</>
             )}
           </div>
         </aside>
-
       </main>
 
-      <Footer  />
+      {idCarta && (
+        <section className="form-history-section">
+          <Grafico
+            title={`Histórico de preços${nome ? ` - ${nome}` : ''}`}
+            data={dadosGraficoHistorico}
+            series={[{ key: 'preco', label: 'Preço' }]}
+            dateKey="data"
+            height={220}
+            emptyMessage={
+              carregandoHistorico
+                ? 'Carregando histórico de preços...'
+                : 'Nenhum histórico de preços encontrado para esta carta.'
+            }
+          />
+        </section>
+      )}
+
+      {modalAtualizarAberto && (
+        <div className="confirm-modal-backdrop">
+          <div className="confirm-modal-card">
+            <h3 className="confirm-modal-title">Confirmar atualização</h3>
+            <p className="confirm-modal-text">
+              Deseja realmente salvar as alterações da carta "{nome}"?
+            </p>
+            <div className="confirm-modal-actions">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={cancelarAtualizacao}
+                disabled={salvandoAtualizacao}
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="button"
+                onClick={confirmarAtualizacao}
+                disabled={salvandoAtualizacao}
+              >
+                {salvandoAtualizacao ? 'Salvando...' : 'Confirmar'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {modalExcluirAberto && (
+        <div className="confirm-modal-backdrop">
+          <div className="confirm-modal-card">
+            <h3 className="confirm-modal-title">Confirmar exclusão</h3>
+            <p className="confirm-modal-text">
+              Confirma a exclusão de "{nome}"? Esta ação não pode ser desfeita.
+            </p>
+            <div className="confirm-modal-actions">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={cancelarExclusao}
+                disabled={excluindoCarta}
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="button"
+                variant="danger"
+                onClick={confirmarExclusao}
+                disabled={excluindoCarta}
+              >
+                {excluindoCarta ? 'Excluindo...' : 'Excluir'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <Footer />
     </div>
   )
 }

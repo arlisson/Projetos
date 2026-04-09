@@ -573,7 +573,7 @@ class App(QWidget):
         self.icon_mgr.apply_button_icon(self.btn_refresh_sheets, "refresh", text)
         self.icon_mgr.apply_button_icon(self.btn_help, "help", text)
         self.icon_mgr.apply_button_icon(self.btn_license, "license", text)
-        self.icon_mgr.apply_button_icon(self.btn_delete, "delete", white)
+        # self.icon_mgr.apply_button_icon(self.btn_delete, "delete", white)
         self.icon_mgr.apply_button_icon(self.btn_protocol, "protocol", white)
 
 
@@ -937,7 +937,11 @@ class App(QWidget):
             return
 
         if not has_header or not headers:
-            return
+            self.campos = []
+            self._persist_campos()
+            self.render_fields()
+            self.lbl_status.setText("A planilha ficou sem cabeçalho. Os campos foram removidos do aplicativo.")
+            return True
 
         current_titles = [c.titulo for c in self.campos]
         if headers == current_titles:
@@ -1107,28 +1111,29 @@ class App(QWidget):
         self.btn_clear.setToolTip("Limpar os campos para preencher com novos dados")
         self.btn_clear.setCursor(Qt.PointingHandCursor)
 
-        self.btn_delete = QPushButton("Excluir campos")
-        self.btn_delete.setToolTip("Excluir todos os campos")
-        self.btn_delete.setCursor(Qt.PointingHandCursor)
+        # self.btn_delete = QPushButton("Excluir campos")
+        # self.btn_delete.setToolTip("Excluir todos os campos")
+        # self.btn_delete.setCursor(Qt.PointingHandCursor)
 
         self.btn_protocol = QPushButton("Protocolo")
         self.btn_protocol.setToolTip("Gerador de protocolo")
         self.btn_protocol.setCursor(Qt.PointingHandCursor)
 
         self.btn_save.setProperty("variant", "primary")
-        self.btn_delete.setProperty("variant", "danger")
+        # self.btn_delete.setProperty("variant", "danger")
         self.btn_protocol.setProperty("variant", "primary")
+        self.btn_clear.setProperty("variant","danger")
 
         actions.addWidget(self.btn_add_field)
         actions.addWidget(self.btn_clear)
-        actions.addWidget(self.btn_delete)
+        # actions.addWidget(self.btn_delete)
         actions.addWidget(self.btn_save)
         actions.addWidget(self.btn_protocol)
 
         self.btn_add_field.clicked.connect(self.add_field)
         self.btn_save.clicked.connect(self.save_lead)
         self.btn_clear.clicked.connect(self.clear_fields)
-        self.btn_delete.clicked.connect(self.delete_all_fields)
+        # self.btn_delete.clicked.connect(self.delete_all_fields)
         self.btn_protocol.clicked.connect(self.generate_protocol)
 
         root.addLayout(actions)
@@ -1363,7 +1368,7 @@ class App(QWidget):
             roww.deleteRequested.connect(self.delete_field)
 
             self.icon_mgr.apply_button_icon(roww.btn_edit, "edit_title", text)
-            self.icon_mgr.apply_button_icon(roww.btn_del, "delete_field", white)
+            # self.icon_mgr.apply_button_icon(roww.btn_del, "delete_field", white)
 
             locked = bool(getattr(campo, "locked", False))
             roww.set_locked(locked)
@@ -1374,9 +1379,9 @@ class App(QWidget):
 
             if getattr(campo, "locked", False):
                 roww.btn_edit.setEnabled(False)
-                roww.btn_del.setEnabled(False)
+                # roww.btn_del.setEnabled(False)
                 roww.btn_edit.setToolTip("Campo protegido: não pode ser alterado.")
-                roww.btn_del.setToolTip("Campo protegido: não pode ser excluído.")
+                # roww.btn_del.setToolTip("Campo protegido: não pode ser excluído.")
 
             self.fields_layout.addWidget(roww)
 

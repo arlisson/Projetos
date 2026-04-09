@@ -147,11 +147,12 @@ class FieldRowWidget(QWidget):
         self.lbl.setMinimumWidth(160)
 
         self.btn_edit = QPushButton("Editar")
-        self.btn_del = QPushButton("Excluir")
-        self.btn_del.setProperty("variant", "danger")
+        self.btn_edit.setProperty("variant","danger")
+        # self.btn_del = QPushButton("Excluir")
+        # self.btn_del.setProperty("variant", "danger")
 
         self.btn_edit.clicked.connect(lambda: self.editRequested.emit(self.field_id))
-        self.btn_del.clicked.connect(lambda: self.deleteRequested.emit(self.field_id))
+        # self.btn_del.clicked.connect(lambda: self.deleteRequested.emit(self.field_id))
 
         row = QHBoxLayout()
         row.setContentsMargins(0, 0, 0, 0)
@@ -160,7 +161,7 @@ class FieldRowWidget(QWidget):
         row.addWidget(self.lbl)
         row.addWidget(input_widget, 1)
         row.addWidget(self.btn_edit)
-        row.addWidget(self.btn_del)
+        # row.addWidget(self.btn_del)
 
         self.setLayout(row)
 

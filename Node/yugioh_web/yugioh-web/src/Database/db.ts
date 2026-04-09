@@ -1,6 +1,6 @@
 // src/services/database.ts
 import Database from '@tauri-apps/plugin-sql'
-import { logError, logInfo } from '../services/logger'
+import { logError } from '../services/logger'
 
 // mesmo arquivo do Python: DB_PATH = "yugioh.db"
 const DB_URL = 'sqlite:yugioh.db'
@@ -998,42 +998,152 @@ export async function buscarColecao(nome:String) {
   }
 }
 
-export async function inserirCarta(carta: InserirCartaPayload): Promise<boolean> {
-  
-    try {
-      const db = await getDb()
-      await db.execute(
-        `INSERT INTO carta (link_site, nome, codigo, preco_da_compra, preco_atual, data_da_compra, quantidade, imagem, imagem_salva, origem, raridade, qualidade, colecao, data_scraping) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          carta.link_site,
-          carta.nome.toUpperCase(),
-          carta.codigo?.toUpperCase(),
-          carta.preco_da_compra,
-          carta.preco_atual,
-          carta.data_da_compra,
-          carta.quantidade,
-          carta.imagem,
-          carta.imagem_salva,
-          carta.origem?.toUpperCase(),
-          carta.raridade,
-          carta.qualidade,
-          carta.colecao,
-          todayStr()
-        ]
-      )
-      const last_id = await db.select<{ last_insert_rowid: number }[]>(
-        `SELECT last_insert_rowid() as last_insert_rowid`
-      )
-      registrarHistoricoLucro();
-      registrarHistoricoGenerico('carta', last_id[0].last_insert_rowid, carta.preco_atual ?? null, todayStr(), carta.origem ?? 'MYPCards');
+export async function garantirRaridade(nome: string): Promise<number | null> {
+  try {
+    const nomeLimpo = String(nome || '').trim().toUpperCase()
 
-      return true;
-    } catch (err) {
-      //console.error('Erro ao inserir a carta:', err)
-      await logError('Erro ao inserir a carta: ' + String(err))
-      return false;
+    if (!nomeLimpo) {
+      return null
     }
-  
+
+    const db = await getDb()
+
+    const existente = await db.select<{ id_raridade: number }[]>(
+      `SELECT id_raridade FROM raridade WHERE UPPER(nome) = ? LIMIT 1`,
+      [nomeLimpo]
+    )
+
+    if (existente.length > 0) {
+      return existente[0].id_raridade
+    }
+
+    await db.execute(
+      `INSERT INTO raridade (nome) VALUES (?)`,
+      [nomeLimpo]
+    )
+
+    const criada = await db.select<{ id_raridade: number }[]>(
+      `SELECT id_raridade FROM raridade WHERE UPPER(nome) = ? LIMIT 1`,
+      [nomeLimpo]
+    )
+
+    return criada.length > 0 ? criada[0].id_raridade : null
+  } catch (err) {
+    await logError(`Erro ao garantir raridade: ${String(err)}`)
+    return null
+  }
+}
+
+export async function inserirCarta(carta: InserirCartaPayload): Promise<boolean> {
+  try {
+    const db = await getDb()
+
+    const inserida = await db.select<{ id_carta: number }[]>(
+      `
+      INSERT INTO carta (
+        link_site, nome, codigo, preco_da_compra, preco_atual,
+        data_da_compra, quantidade, imagem, imagem_salva,
+        origem, raridade, qualidade, colecao, data_scraping
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      RETURNING id_carta
+      `,
+      [
+        carta.link_site,
+        carta.nome.toUpperCase(),
+        carta.codigo?.toUpperCase(),
+        carta.preco_da_compra,
+        carta.preco_atual,
+        carta.data_da_compra,
+        carta.quantidade,
+        carta.imagem,
+        carta.imagem_salva,
+        carta.origem?.toUpperCase(),
+        carta.raridade,
+        carta.qualidade,
+        carta.colecao,
+        todayStr(),
+      ]
+    )
+
+    if (!inserida.length || !inserida[0].id_carta) {
+      throw new Error('Não foi possível obter o id da carta inserida.')
+    }
+
+    const idCarta = inserida[0].id_carta
+
+    await registrarHistoricoLucro()
+
+    await salvarHistoricoPrecoCarta(
+      idCarta,
+      carta.preco_atual ?? null,
+      todayStr(),
+      carta.origem ?? 'MYPCards'
+    )
+
+    return true
+  } catch (err) {
+    await logError('Erro ao inserir a carta: ' + String(err))
+    return false
+  }
+}
+
+export async function salvarHistoricoPrecoCarta(
+  idCarta: number,
+  preco: number | null,
+  data: string = todayStr(),
+  origem: string = 'MYPCards',
+): Promise<void> {
+  try {
+    const db = await getDb()
+
+    const cartaExiste = await db.select<{ id_carta: number }[]>(
+      `
+      SELECT id_carta
+      FROM carta
+      WHERE id_carta = ?
+      LIMIT 1
+      `,
+      [idCarta],
+    )
+
+    if (cartaExiste.length === 0) {
+      throw new Error(`Carta com id ${idCarta} não existe.`)
+    }
+
+    const existentes = await db.select<{ id_historico_precos: number }[]>(
+      `
+      SELECT id_historico_precos
+      FROM historico_precos
+      WHERE id_carta = ?
+        AND DATE(data) = DATE(?)
+      LIMIT 1
+      `,
+      [idCarta, data],
+    )
+
+    if (existentes.length > 0) {
+      await db.execute(
+        `
+        UPDATE historico_precos
+        SET preco = ?, origem = ?, data = ?
+        WHERE id_historico_precos = ?
+        `,
+        [preco, origem, data, existentes[0].id_historico_precos],
+      )
+    } else {
+      await db.execute(
+        `
+        INSERT INTO historico_precos (id_carta, id_produto, data, preco, origem)
+        VALUES (?, NULL, ?, ?, ?)
+        `,
+        [idCarta, data, preco, origem],
+      )
+    }
+  } catch (err) {
+    await logError('Erro ao salvar histórico de preço da carta: ' + String(err))
+    throw err
+  }
 }
 
 export async function buscarCartaId( id: number ): Promise<CartaDetalhada | null> {
@@ -1357,5 +1467,370 @@ export async function atualizarVendaProduto(id: number, venda: AtualizarVendaPro
     //console.error('Erro ao atualizar a venda do produto:', err)
     await logError('Erro ao atualizar a venda do produto: ' + String(err))
     return false;
+  }
+}
+
+export type TipoCadastroBase = 'raridade' | 'qualidade'
+
+export interface ItemCadastroBase {
+  id: number
+  nome: string
+}
+
+function getIdColumnByTipo(tipo: TipoCadastroBase): string {
+  return tipo === 'raridade' ? 'id_raridade' : 'id_qualidade'
+}
+
+export async function listarCadastroBase(
+  tipo: TipoCadastroBase,
+): Promise<ItemCadastroBase[]> {
+  try {
+    const db = await getDb()
+    const idCol = getIdColumnByTipo(tipo)
+
+    const rows = await db.select<ItemCadastroBase[]>(
+      `
+      SELECT ${idCol} AS id, nome
+      FROM ${tipo}
+      ORDER BY nome ASC
+      `,
+    )
+
+    return rows
+  } catch (err) {
+    await logError(`Erro ao listar ${tipo}: ` + String(err))
+    return []
+  }
+}
+
+export async function inserirCadastroBase(
+  tipo: TipoCadastroBase,
+  nome: string,
+): Promise<boolean> {
+  try {
+    const db = await getDb()
+    const nomeLimpo = String(nome || '').trim().toUpperCase()
+
+    if (!nomeLimpo) {
+      return false
+    }
+
+    const existente = await db.select<{ id: number }[]>(
+      `
+      SELECT ${getIdColumnByTipo(tipo)} AS id
+      FROM ${tipo}
+      WHERE UPPER(nome) = ?
+      LIMIT 1
+      `,
+      [nomeLimpo],
+    )
+
+    if (existente.length > 0) {
+      return false
+    }
+
+    await db.execute(
+      `INSERT INTO ${tipo} (nome) VALUES (?)`,
+      [nomeLimpo],
+    )
+
+    return true
+  } catch (err) {
+    await logError(`Erro ao inserir ${tipo}: ` + String(err))
+    return false
+  }
+}
+
+export async function atualizarCadastroBase(
+  tipo: TipoCadastroBase,
+  id: number,
+  nome: string,
+): Promise<boolean> {
+  try {
+    const db = await getDb()
+    const nomeLimpo = String(nome || '').trim().toUpperCase()
+
+    if (!nomeLimpo) {
+      return false
+    }
+
+    const idCol = getIdColumnByTipo(tipo)
+
+    const duplicado = await db.select<{ id: number }[]>(
+      `
+      SELECT ${idCol} AS id
+      FROM ${tipo}
+      WHERE UPPER(nome) = ?
+        AND ${idCol} <> ?
+      LIMIT 1
+      `,
+      [nomeLimpo, id],
+    )
+
+    if (duplicado.length > 0) {
+      return false
+    }
+
+    await db.execute(
+      `
+      UPDATE ${tipo}
+      SET nome = ?
+      WHERE ${idCol} = ?
+      `,
+      [nomeLimpo, id],
+    )
+
+    return true
+  } catch (err) {
+    await logError(`Erro ao atualizar ${tipo}: ` + String(err))
+    return false
+  }
+}
+
+export async function excluirCadastroBase(
+  tipo: TipoCadastroBase,
+  id: number,
+): Promise<{ ok: boolean; motivo?: string }> {
+  try {
+    const db = await getDb()
+    const idCol = getIdColumnByTipo(tipo)
+
+    if (tipo === 'raridade') {
+      const uso = await db.select<{ total: number }[]>(
+        `
+        SELECT COUNT(*) AS total
+        FROM carta
+        WHERE raridade = ?
+        `,
+        [id],
+      )
+
+      if ((uso[0]?.total ?? 0) > 0) {
+        return {
+          ok: false,
+          motivo: 'Não é possível excluir a raridade porque ela está vinculada a cartas cadastradas.',
+        }
+      }
+    }
+
+    if (tipo === 'qualidade') {
+      const uso = await db.select<{ total: number }[]>(
+        `
+        SELECT COUNT(*) AS total
+        FROM carta
+        WHERE qualidade = ?
+        `,
+        [id],
+      )
+
+      if ((uso[0]?.total ?? 0) > 0) {
+        return {
+          ok: false,
+          motivo: 'Não é possível excluir a qualidade porque ela está vinculada a cartas cadastradas.',
+        }
+      }
+    }
+
+    await db.execute(
+      `
+      DELETE FROM ${tipo}
+      WHERE ${idCol} = ?
+      `,
+      [id],
+    )
+
+    return { ok: true }
+  } catch (err) {
+    await logError(`Erro ao excluir ${tipo}: ` + String(err))
+    return {
+      ok: false,
+      motivo: 'Erro interno ao excluir registro.',
+    }
+  }
+}
+
+export interface CartaEstoqueAtualizacao {
+  id_carta: number
+  nome: string
+  link_site?: string | null
+  raridade_nome?: string | null
+  preco_atual?: number | null
+  codigo?: string | null
+  data_da_compra?: string | null
+  preco_da_compra?: number | null
+  quantidade?: number | null
+  imagem?: string | null
+  imagem_salva?: string | null
+  origem?: string | null
+  raridade?: number | null
+  qualidade?: number | null
+  colecao?: string | null
+}
+
+export interface ProdutoEstoqueAtualizacao {
+  id_produto: number
+  nome_produto: string
+  link?: string | null
+  preco_atual?: number | null
+  data_compra?: string | null
+  preco_compra?: number | null
+  quantidade?: number | null
+  imagem?: string | null
+  imagem_salva?: string | null
+  origem?: string | null
+}
+
+export async function buscarCartasEmEstoque(): Promise<CartaEstoqueAtualizacao[]> {
+  try {
+    const db = await getDb()
+    return await db.select<CartaEstoqueAtualizacao[]>(
+      `
+      SELECT
+        c.id_carta,
+        c.nome,
+        c.link_site,
+        c.preco_atual,
+        c.codigo,
+        c.data_da_compra,
+        c.preco_da_compra,
+        c.quantidade,
+        c.imagem,
+        c.imagem_salva,
+        c.origem,
+        c.raridade,
+        c.qualidade,
+        c.colecao,
+        r.nome AS raridade_nome
+      FROM carta c
+      LEFT JOIN raridade r ON r.id_raridade = c.raridade
+      WHERE COALESCE(c.quantidade, 0) > 0
+      ORDER BY c.nome ASC
+      `,
+    )
+  } catch (err) {
+    await logError('Erro ao buscar cartas em estoque: ' + String(err))
+    return []
+  }
+}
+
+export async function buscarProdutosEmEstoque(): Promise<ProdutoEstoqueAtualizacao[]> {
+  try {
+    const db = await getDb()
+    return await db.select<ProdutoEstoqueAtualizacao[]>(
+      `
+      SELECT
+        id_produto,
+        nome_produto,
+        link,
+        preco_atual,
+        data_compra,
+        preco_compra,
+        quantidade,
+        imagem,
+        imagem_salva,
+        origem
+      FROM produto
+      WHERE COALESCE(quantidade, 0) > 0
+      ORDER BY nome_produto ASC
+      `,
+    )
+  } catch (err) {
+    await logError('Erro ao buscar produtos em estoque: ' + String(err))
+    return []
+  }
+}
+
+export async function atualizarPrecoCartaPorScraping(
+  idCarta: number,
+  novoPreco: number | null,
+  dataScraping: string = todayStr(),
+  origem: string = 'MyPCards',
+): Promise<boolean> {
+  try {
+    const db = await getDb()
+
+    await db.execute(
+      `
+      UPDATE carta
+      SET preco_atual = ?, data_scraping = ?, origem = ?
+      WHERE id_carta = ?
+      `,
+      [novoPreco, dataScraping, origem.toUpperCase(), idCarta],
+    )
+
+    await salvarHistoricoPrecoCarta(idCarta, novoPreco, dataScraping, origem)
+    return true
+  } catch (err) {
+    await logError('Erro ao atualizar preço da carta por scraping: ' + String(err))
+    return false
+  }
+}
+
+export async function salvarHistoricoPrecoProduto(
+  idProduto: number,
+  preco: number | null,
+  data: string = todayStr(),
+  origem: string = 'Liga Yugioh',
+): Promise<void> {
+  try {
+    const db = await getDb()
+
+    const existentes = await db.select<{ id_historico_precos: number }[]>(
+      `
+      SELECT id_historico_precos
+      FROM historico_precos
+      WHERE id_produto = ?
+        AND DATE(data) = DATE(?)
+      LIMIT 1
+      `,
+      [idProduto, data],
+    )
+
+    if (existentes.length > 0) {
+      await db.execute(
+        `
+        UPDATE historico_precos
+        SET preco = ?, origem = ?, data = ?
+        WHERE id_historico_precos = ?
+        `,
+        [preco, origem, data, existentes[0].id_historico_precos],
+      )
+    } else {
+      await db.execute(
+        `
+        INSERT INTO historico_precos (id_carta, id_produto, data, preco, origem)
+        VALUES (NULL, ?, ?, ?, ?)
+        `,
+        [idProduto, data, preco, origem],
+      )
+    }
+  } catch (err) {
+    await logError('Erro ao salvar histórico de preço do produto: ' + String(err))
+  }
+}
+
+export async function atualizarPrecoProdutoPorScraping(
+  idProduto: number,
+  novoPreco: number | null,
+  dataScraping: string = todayStr(),
+  origem: string = 'Liga Yugioh',
+): Promise<boolean> {
+  try {
+    const db = await getDb()
+
+    await db.execute(
+      `
+      UPDATE produto
+      SET preco_atual = ?, data_scraping = ?, origem = ?
+      WHERE id_produto = ?
+      `,
+      [novoPreco, dataScraping, origem.toUpperCase(), idProduto],
+    )
+
+    await salvarHistoricoPrecoProduto(idProduto, novoPreco, dataScraping, origem)
+    return true
+  } catch (err) {
+    await logError('Erro ao atualizar preço do produto por scraping: ' + String(err))
+    return false
   }
 }

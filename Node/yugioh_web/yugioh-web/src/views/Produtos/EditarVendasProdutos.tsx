@@ -5,12 +5,12 @@ import { FormField } from '../../components/formField'
 import { FormSelect } from '../../components/formSelect'
 import { Button } from '../../components/botao'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { 
-  deletarVendaProduto,  
-  buscarVendaProdutoId, 
+import {
+  deletarVendaProduto,
+  buscarVendaProdutoId,
   atualizarVendaProduto,
-  type AtualizarVendaProdutoPayload
- } from '../../Database/db'
+  type AtualizarVendaProdutoPayload,
+} from '../../Database/db'
 import { type ProdutoLiga, buscarProdutoLiga } from '../../../scraping/webScraping'
 import { logError } from '../../services/logger'
 
@@ -20,7 +20,6 @@ export function EditarVendasProdutos() {
   const [link, setLink] = useState('')
   const [nome, setNome] = useState('')
   const [urlImagem, setUrlImagem] = useState('')
-  // const [caminhoImagemLocal, setCaminhoImagemLocal] = useState('')
   const [precoCompra, setPrecoCompra] = useState('')
   const [precoAtual, setPrecoAtual] = useState('')
   const [dataCompra, setDataCompra] = useState('')
@@ -29,99 +28,155 @@ export function EditarVendasProdutos() {
   const [dataVenda, setDataVenda] = useState('')
   const [precoVenda, setPrecoVenda] = useState('')
 
-  // Futuramente estes valores virão do banco
+  const [buscandoScraping, setBuscandoScraping] = useState(false)
+  const [modalAtualizarAberto, setModalAtualizarAberto] = useState(false)
+  const [modalExcluirAberto, setModalExcluirAberto] = useState(false)
+  const [salvandoAtualizacao, setSalvandoAtualizacao] = useState(false)
+  const [excluindoVenda, setExcluindoVenda] = useState(false)
+
   const opcoesOrigem = [
     { value: 'myp', label: 'MyPCards' },
     { value: 'liga', label: 'Liga Yugioh' },
-    
   ]
 
   const [searchParams] = useSearchParams()
-    const idParam = searchParams.get('id')
-    const idProduto = idParam ? Number(idParam) : null
+  const idParam = searchParams.get('id')
+  const idProduto = idParam ? Number(idParam) : null
 
   useEffect(() => {
-    // Carregar dados do produto pelo idProduto
     if (!idProduto) return
+
     async function carregarProduto() {
       try {
         const produtoDetalhado = await buscarVendaProdutoId(idProduto!)
+
         if (produtoDetalhado) {
           setLink(produtoDetalhado.link || '')
           setNome(produtoDetalhado.nome_produto || '')
           setUrlImagem(produtoDetalhado.imagem || '')
-          // setCaminhoImagemLocal(produtoDetalhado.imagem_salva || '')
           setPrecoCompra(produtoDetalhado.preco_compra?.toString() || '')
           setPrecoAtual(produtoDetalhado.preco_atual?.toString() || '')
           setDataCompra(produtoDetalhado.data_compra || '')
           setQuantidade(produtoDetalhado.quantidade?.toString() || '')
           setDataVenda(produtoDetalhado.data_venda || '')
           setPrecoVenda(produtoDetalhado.preco_venda?.toString() || '')
-          setDataVenda(produtoDetalhado.data_venda || '')
-          setPrecoVenda(produtoDetalhado.preco_venda?.toString() || '')
 
-          if(produtoDetalhado.origem?.toUpperCase() === 'MYPCARDS') {
-              setOrigem('myp')
-          }else if(produtoDetalhado.origem?.toUpperCase() === 'LIGA YUGIOH') {
-              setOrigem('liga')
-          }else{
-              setOrigem('')
+          if (produtoDetalhado.origem?.toUpperCase() === 'MYPCARDS') {
+            setOrigem('myp')
+          } else if (produtoDetalhado.origem?.toUpperCase() === 'LIGA YUGIOH') {
+            setOrigem('liga')
+          } else {
+            setOrigem('')
           }
-
         }
       } catch (err) {
-        //console.error('Erro ao carregar produto:', err)
+        await logError('Erro ao carregar venda do produto: ' + String(err))
+        alert('Erro ao carregar venda do produto.')
       }
     }
 
-    carregarProduto()
+    void carregarProduto()
   }, [idProduto])
 
-
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if(!nome || !precoCompra || !precoAtual || !dataCompra || !quantidade){
+  function validarFormulario(): boolean {
+    if (
+      !nome ||
+      !precoCompra ||
+      !precoAtual ||
+      !dataCompra ||
+      !quantidade ||
+      !dataVenda ||
+      !precoVenda
+    ) {
       alert('Por favor, preencha todos os campos obrigatórios.')
-      return
+      return false
     }
-    try {
-      
-      const payload: AtualizarVendaProdutoPayload = {
-        id_produto: idProduto!,
-        preco_venda: precoVenda ? parseFloat(precoVenda) : null,
-        data_venda: dataVenda || null,
-        quantidade: quantidade ? parseInt(quantidade, 10) : null
-      }
-      confirm('Salvar alterações do produto "'+nome+'"?') && atualizarVendaProduto(idProduto!, payload)
-      .then(() => {
-        alert('Produto "'+nome+'" atualizado com sucesso.')
-        
-      })
-    } catch (error) {
-      alert('Erro ao salvar produto: ' + error)
-      logError('Erro ao salvar produto: ' + error)
+
+    return true
+  }
+
+  function handleFormKeyDown(e: React.KeyboardEvent<HTMLFormElement>) {
+    if (e.key !== 'Enter') return
+
+    const target = e.target as HTMLElement
+    const tag = target.tagName.toLowerCase()
+
+    if (tag !== 'textarea') {
+      e.preventDefault()
     }
   }
 
-  function handleScraping() {
-    if (!link) {
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+
+    if (!validarFormulario()) return
+
+    setModalAtualizarAberto(true)
+  }
+
+  async function confirmarAtualizacao(): Promise<void> {
+    if (!idProduto || salvandoAtualizacao) return
+
+    setSalvandoAtualizacao(true)
+
+    try {
+      const payload: AtualizarVendaProdutoPayload = {
+        id_produto: idProduto,
+        preco_venda: precoVenda ? parseFloat(precoVenda) : null,
+        data_venda: dataVenda || null,
+        quantidade: quantidade ? parseInt(quantidade, 10) : null,
+      }
+
+      const ok = await atualizarVendaProduto(idProduto, payload)
+
+      if (!ok) {
+        alert(`Erro ao atualizar venda do produto "${nome}".`)
+        return
+      }
+
+      setModalAtualizarAberto(false)
+      alert(`Venda do produto "${nome}" atualizada com sucesso.`)
+    } catch (error) {
+      alert('Erro ao salvar produto: ' + error)
+      void logError('Erro ao salvar produto: ' + error)
+    } finally {
+      setSalvandoAtualizacao(false)
+    }
+  }
+
+  function cancelarAtualizacao(): void {
+    if (salvandoAtualizacao) return
+    setModalAtualizarAberto(false)
+  }
+
+  async function handleScraping() {
+    if (!link.trim()) {
       alert('Por favor, insira uma URL para buscar o produto.')
       return
     }
+
+    setBuscandoScraping(true)
+
     try {
-      buscarProdutoLiga(link).then((produto: ProdutoLiga | null) => {
-        if (produto) {
-          setNome(produto.nome)
-          setUrlImagem(produto.imagem)
-          setPrecoAtual(produto.preco_atual.replace('R$ ', '').replace('.', '').replace(',', '.'))
-          setOrigem('liga')
-        } else {
-          alert('Produto não encontrado ou erro ao buscar.')
-        }
-      })
+      const produto: ProdutoLiga | null = await buscarProdutoLiga(link)
+
+      if (produto) {
+        setNome(produto.nome || '')
+        setUrlImagem(produto.imagem || '')
+        setPrecoAtual(
+          produto.preco_atual
+            .replace('R$ ', '')
+            .replace(/\./g, '')
+            .replace(',', '.'),
+        )
+        setOrigem('liga')
+      } else {
+        alert('Produto não encontrado ou erro ao buscar.')
+      }
     } catch (error) {
       alert('Erro ao buscar o produto: ' + error)
+    } finally {
+      setBuscandoScraping(false)
     }
   }
 
@@ -129,33 +184,45 @@ export function EditarVendasProdutos() {
     navigate(-1)
   }
 
-  async function handleExcluir(): Promise<void> {
-        try{
-          if (confirm('Confirma a exclusão de "'+nome+'"? Esta ação não pode ser desfeita.')) {
-            await deletarVendaProduto(idProduto!)
-            alert('Venda "'+nome+'" excluído com sucesso.')
-            navigate(-1)
-          }
-        } catch (error) {
-          alert('Erro ao excluir venda: ' + error)
-          logError('Erro ao excluir venda: ' + error)
-        }
+  function handleExcluir(): void {
+    setModalExcluirAberto(true)
+  }
+
+  async function confirmarExclusao(): Promise<void> {
+    if (!idProduto || excluindoVenda) return
+
+    setExcluindoVenda(true)
+
+    try {
+      await deletarVendaProduto(idProduto)
+      setModalExcluirAberto(false)
+      alert(`Venda "${nome}" excluída com sucesso.`)
+      navigate(-1)
+    } catch (error) {
+      alert('Erro ao excluir venda: ' + error)
+      await logError('Erro ao excluir venda: ' + error)
+    } finally {
+      setExcluindoVenda(false)
     }
+  }
+
+  function cancelarExclusao(): void {
+    if (excluindoVenda) return
+    setModalExcluirAberto(false)
+  }
 
   return (
     <div className="app-shell">
       <Topbar pageTitle="Editar produto" />
 
       <main className="form-page-content">
-        {/* Coluna esquerda – formulário */}
         <section className="form-page-left">
           <h2 className="section-title">Editar {nome}</h2>
           <p className="section-subtitle">
             Preencha os dados básicos do produto antes de salvar.
           </p>
 
-          <form onSubmit={handleSubmit}>
-            {/* Link + botão de scraping */}
+          <form onSubmit={handleSubmit} onKeyDown={handleFormKeyDown}>
             <div className="form-row-inline">
               <FormField
                 label="Link"
@@ -171,12 +238,12 @@ export function EditarVendasProdutos() {
                 variant="outline"
                 size="sm"
                 onClick={handleScraping}
+                disabled={buscandoScraping || salvandoAtualizacao || excluindoVenda}
               >
-                Buscar via scraping
+                {buscandoScraping ? 'Buscando...' : 'Buscar via scraping'}
               </Button>
             </div>
 
-            {/* Nome */}
             <FormField
               label="Nome"
               name="nome"
@@ -186,7 +253,6 @@ export function EditarVendasProdutos() {
               readOnly
             />
 
-            {/* URL da imagem */}
             <FormField
               label="URL da imagem"
               name="urlImagem"
@@ -196,17 +262,6 @@ export function EditarVendasProdutos() {
               placeholder="Link direto para a imagem, se houver"
             />
 
-            {/* Caminho da imagem local */}
-            {/* <FormField
-              label="Caminho para imagem local"
-              name="caminhoImagemLocal"
-              kind="texto"
-              value={caminhoImagemLocal}
-              onChange={setCaminhoImagemLocal}
-              placeholder="Caminho/local no disco após download"
-            /> */}
-
-            {/* Preços */}
             <div className="form-row-inline">
               <FormField
                 label="Preço de compra"
@@ -228,7 +283,6 @@ export function EditarVendasProdutos() {
               />
             </div>
 
-            {/* Data e quantidade */}
             <div className="form-row-inline">
               <FormField
                 label="Data da compra"
@@ -267,7 +321,6 @@ export function EditarVendasProdutos() {
               />
             </div>
 
-            {/* Origem (dropdown) */}
             <FormSelect
               label="Origem"
               name="origem"
@@ -278,20 +331,30 @@ export function EditarVendasProdutos() {
               readonly
             />
 
-            {/* Ações */}
             <div className="form-actions">
-              <Button type="submit">Salvar produto</Button>
-              <Button type="button" variant="outline" onClick={handleCancelar}>
+              <Button type="submit" disabled={salvandoAtualizacao || excluindoVenda}>
+                {salvandoAtualizacao ? 'Salvando...' : 'Salvar produto'}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleCancelar}
+                disabled={salvandoAtualizacao || excluindoVenda}
+              >
                 Cancelar
               </Button>
-               <Button type="button" variant="danger" onClick={handleExcluir}>
-                Excluir Venda
+              <Button
+                type="button"
+                variant="danger"
+                onClick={handleExcluir}
+                disabled={salvandoAtualizacao || excluindoVenda}
+              >
+                {excluindoVenda ? 'Excluindo...' : 'Excluir Venda'}
               </Button>
             </div>
           </form>
         </section>
 
-        {/* Coluna direita – imagem do produto */}
         <aside className="form-page-right">
           <div className="form-image-label">Imagem do produto</div>
           <div className="form-image-placeholder">
@@ -302,13 +365,69 @@ export function EditarVendasProdutos() {
                 className="card-image-preview"
               />
             ) : (
-              <>
-                Pré-visualização da imagem do produto.                               
-              </>
+              <>Pré-visualização da imagem do produto.</>
             )}
           </div>
         </aside>
       </main>
+
+      {modalAtualizarAberto && (
+        <div className="confirm-modal-backdrop">
+          <div className="confirm-modal-card">
+            <h3 className="confirm-modal-title">Confirmar atualização</h3>
+            <p className="confirm-modal-text">
+              Deseja realmente salvar as alterações da venda do produto "{nome}"?
+            </p>
+            <div className="confirm-modal-actions">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={cancelarAtualizacao}
+                disabled={salvandoAtualizacao}
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="button"
+                onClick={confirmarAtualizacao}
+                disabled={salvandoAtualizacao}
+              >
+                {salvandoAtualizacao ? 'Salvando...' : 'Confirmar'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {modalExcluirAberto && (
+        <div className="confirm-modal-backdrop">
+          <div className="confirm-modal-card">
+            <h3 className="confirm-modal-title">Confirmar exclusão</h3>
+            <p className="confirm-modal-text">
+              Confirma a exclusão da venda "{nome}"? Esta ação não pode ser
+              desfeita.
+            </p>
+            <div className="confirm-modal-actions">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={cancelarExclusao}
+                disabled={excluindoVenda}
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="button"
+                variant="danger"
+                onClick={confirmarExclusao}
+                disabled={excluindoVenda}
+              >
+                {excluindoVenda ? 'Excluindo...' : 'Excluir'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Footer appName="YU-GI-OH! Manager" />
     </div>

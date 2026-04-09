@@ -21,6 +21,7 @@ export function Logs() {
   const [nivel, setNivel] = useState('TODOS')
   const [carregando, setCarregando] = useState(true)
   const [limpando, setLimpando] = useState(false)
+  const [modalLimpezaAberto, setModalLimpezaAberto] = useState(false)
 
   async function carregarLogs() {
     setCarregando(true)
@@ -36,12 +37,12 @@ export function Logs() {
     void carregarLogs()
   }, [])
 
-  async function handleLimparLogs() {
-    const confirmar = window.confirm(
-      'Deseja realmente apagar todos os logs?',
-    )
+  function handleLimparLogs() {
+    setModalLimpezaAberto(true)
+  }
 
-    if (!confirmar) return
+  async function confirmarLimpezaLogs() {
+    if (limpando) return
 
     setLimpando(true)
     try {
@@ -53,10 +54,16 @@ export function Logs() {
       }
 
       setLogs([])
+      setModalLimpezaAberto(false)
       alert('Logs apagados com sucesso.')
     } finally {
       setLimpando(false)
     }
+  }
+
+  function cancelarLimpezaLogs() {
+    if (limpando) return
+    setModalLimpezaAberto(false)
   }
 
   const niveisDisponiveis = useMemo(() => {
@@ -110,6 +117,7 @@ export function Logs() {
                   display: 'block',
                   marginBottom: '0.45rem',
                   fontSize: '0.95rem',
+                  color: 'var(--color-text)',
                 }}
               >
                 Nível
@@ -124,13 +132,28 @@ export function Logs() {
                   borderRadius: '12px',
                   border: '1px solid rgba(255,255,255,0.08)',
                   background: 'rgba(255,255,255,0.02)',
-                  color: 'white',
+                  color: '#f8fafc',
                   padding: '0 0.9rem',
                   outline: 'none',
+                  appearance: 'none',
+                  WebkitAppearance: 'none',
+                  MozAppearance: 'none',
+                  backgroundImage:
+                    "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='none'><path d='M6 8L10 12L14 8' stroke='%23f8fafc' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/></svg>\")",
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'right 0.9rem center',
+                  paddingRight: '2.4rem',
                 }}
               >
                 {niveisDisponiveis.map((item) => (
-                  <option key={item} value={item}>
+                  <option
+                    key={item}
+                    value={item}
+                    style={{
+                      background: '#0f172a',
+                      color: '#f8fafc',
+                    }}
+                  >
                     {item}
                   </option>
                 ))}
@@ -171,6 +194,7 @@ export function Logs() {
                   borderRadius: '12px',
                   padding: '1rem',
                   background: 'rgba(255,255,255,0.02)',
+                  color: 'var(--color-text)',
                 }}
               >
                 Nenhum log encontrado.
@@ -211,8 +235,10 @@ export function Logs() {
                           flexWrap: 'wrap',
                         }}
                       >
-                        <strong>{nivelAtual || 'INFO'}</strong>
-                        <span style={{ opacity: 0.85 }}>
+                        <strong style={{ color: '#f8fafc' }}>
+                          {nivelAtual || 'INFO'}
+                        </strong>
+                        <span style={{ opacity: 0.85, color: '#cbd5e1' }}>
                           {formatarDataHora(log.timestamp)}
                         </span>
                       </div>
@@ -222,6 +248,7 @@ export function Logs() {
                           whiteSpace: 'pre-wrap',
                           wordBreak: 'break-word',
                           lineHeight: 1.5,
+                          color: '#e5e7eb',
                         }}
                       >
                         {log.message || log.raw || '-'}
@@ -234,6 +261,38 @@ export function Logs() {
           </div>
         </section>
       </main>
+
+      {modalLimpezaAberto && (
+        <div className="confirm-modal-backdrop">
+          <div className="confirm-modal-card">
+            <h3 className="confirm-modal-title">Confirmar exclusão</h3>
+            <p className="confirm-modal-text">
+              Deseja realmente apagar todos os logs? Esta ação não pode ser
+              desfeita.
+            </p>
+
+            <div className="confirm-modal-actions">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={cancelarLimpezaLogs}
+                disabled={limpando}
+              >
+                Cancelar
+              </Button>
+
+              <Button
+                type="button"
+                variant="danger"
+                onClick={confirmarLimpezaLogs}
+                disabled={limpando}
+              >
+                {limpando ? 'Apagando...' : 'Confirmar'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>
