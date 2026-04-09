@@ -1151,7 +1151,7 @@ class App(QWidget):
         footer_row.setContentsMargins(18, 16, 18, 16)
         footer_row.setSpacing(10)
 
-        default_footer = "<b>Se precisar de telefonia para sua empresa</b> → WhatsApp (22) 98812-4656"
+        default_footer = "<b>Se precisar de telefonia para sua empresa</b> → WhatsApp (21) 99501-2737"
         footer_html = (self.cfg_ui.get("footer_left_html") or default_footer)
 
         footer_link = (self.cfg_ui.get("footer_link") or "").strip()

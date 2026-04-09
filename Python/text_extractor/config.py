@@ -264,7 +264,7 @@ def default_ui_config() -> dict:
             "border": "#1F2A44",
         },
         "background_hsl": {"h": 210, "s": 49, "l": 8},
-        "footer_left_html": "<b>Se precisar de telefonia para sua empresa</b> → WhatsApp (22) 98812-4656",
+        "footer_left_html": "<b>Se precisar de telefonia para sua empresa</b> → WhatsApp (21) 99501-2737",
         "footer_link": "https://hub-avance.vercel.app",
         "footer_logo_path": "assets/icons/A.png",
         "footer_logo_height": 28,
