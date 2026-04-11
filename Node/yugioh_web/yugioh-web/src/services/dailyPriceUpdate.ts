@@ -146,7 +146,7 @@ export async function jaAtualizadoHoje(): Promise<boolean> {
   return controle.ultima_atualizacao === todayStr()
 }
 
-function normalizarNumero(valor: string | number): number {
+function normalizarNumeroCarta(valor: string | number): number {
   if (typeof valor === 'number') {
     return Number.isFinite(valor) ? valor : 0
   }
@@ -171,6 +171,43 @@ function normalizarNumero(valor: string | number): number {
   }
 
   const numero = Number(texto)
+  return Number.isFinite(numero) ? numero : 0
+}
+
+function normalizarNumeroProduto(valor: string | number): number {
+  if (typeof valor === 'number') {
+    return Number.isFinite(valor) ? valor : 0
+  }
+
+  const texto = String(valor || '').trim()
+
+  if (!texto) return 0
+
+  const valoresComRS = [
+    ...texto.matchAll(/R\$\s*(\d{1,3}(?:\.\d{3})*,\d{2}|\d+(?:[.,]\d{2})?)/g),
+  ].map((m) => m[1])
+
+  if (valoresComRS.length > 0) {
+    const escolhido =
+      valoresComRS.length >= 2
+        ? valoresComRS[1]
+        : valoresComRS[valoresComRS.length - 1]
+
+    const numero = Number(escolhido.replace(/\./g, '').replace(',', '.'))
+    return Number.isFinite(numero) ? numero : 0
+  }
+
+  const matches = texto.match(
+    /\d{1,3}(?:\.\d{3})*,\d{2}|\d+(?:[.,]\d{2})?/g,
+  )
+
+  if (!matches || matches.length === 0) {
+    return 0
+  }
+
+  const escolhido = matches.length >= 2 ? matches[1] : matches[0]
+  const numero = Number(escolhido.replace(/\./g, '').replace(',', '.'))
+
   return Number.isFinite(numero) ? numero : 0
 }
 
@@ -234,7 +271,7 @@ async function runDailyUpdate(): Promise<DailyUpdateStatus> {
         const primeira = retorno?.[0]
 
         if (primeira) {
-          const novoPreco = normalizarNumero(primeira.preco_atual)
+          const novoPreco = normalizarNumeroCarta(primeira.preco_atual)
           const precoAnterior = carta.preco_atual ?? null
 
           await atualizarPrecoCartaPorScraping(
@@ -289,7 +326,7 @@ async function runDailyUpdate(): Promise<DailyUpdateStatus> {
         const retorno = await buscarProdutoLiga(produto.link)
 
         if (retorno) {
-          const novoPreco = normalizarNumero(retorno.preco_atual)
+          const novoPreco = normalizarNumeroProduto(retorno.preco_atual)
           const precoAnterior = produto.preco_atual ?? null
 
           await atualizarPrecoProdutoPorScraping(
