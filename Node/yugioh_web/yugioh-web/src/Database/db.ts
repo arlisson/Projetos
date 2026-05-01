@@ -967,9 +967,30 @@ export async function buscarQualidadeRaridadeId(id: number, tabela: 'qualidade' 
 export async function inserirColecao(nome: string, codigo: string): Promise<number | null> {
   try {
     const db = await getDb()
+    const nomeLimpo = String(nome || '').trim().toUpperCase()
+    const codigoLimpo = String(codigo || '').trim().toUpperCase()
+
+    if (!nomeLimpo) {
+      return null
+    }
+
+    const existente = await db.select<{ id_colecao: number }[]>(
+      `
+      SELECT id_colecao
+      FROM colecao
+      WHERE UPPER(nome) = ?
+      LIMIT 1
+      `,
+      [nomeLimpo],
+    )
+
+    if (existente.length > 0) {
+      return null
+    }
+
     await db.execute(
       `INSERT INTO colecao (nome, codigo) VALUES (?, ?)`,
-      [nome.toUpperCase(), codigo]
+      [nomeLimpo, codigoLimpo]
     )
     const result = await db.select<{ id_colecao: number }[]>(
       `SELECT last_insert_rowid() as id_colecao`
@@ -995,6 +1016,107 @@ export async function buscarColecao(nome:String) {
     //console.error(`Erro ao buscar coleção:`, err)
     await logError(`Erro ao buscar coleção: ` + String(err))
     return null    
+  }
+}
+
+export async function atualizarColecao(
+  id: number,
+  nome: string,
+  codigo: string,
+): Promise<boolean> {
+  try {
+    const db = await getDb()
+    const nomeLimpo = String(nome || '').trim().toUpperCase()
+    const codigoLimpo = String(codigo || '').trim().toUpperCase()
+
+    if (!nomeLimpo) {
+      return false
+    }
+
+    const duplicada = await db.select<{ id_colecao: number }[]>(
+      `
+      SELECT id_colecao
+      FROM colecao
+      WHERE UPPER(nome) = ?
+        AND id_colecao <> ?
+      LIMIT 1
+      `,
+      [nomeLimpo, id],
+    )
+
+    if (duplicada.length > 0) {
+      return false
+    }
+
+    await db.execute(
+      `
+      UPDATE colecao
+      SET nome = ?, codigo = ?
+      WHERE id_colecao = ?
+      `,
+      [nomeLimpo, codigoLimpo, id],
+    )
+
+    return true
+  } catch (err) {
+    await logError(`Erro ao atualizar colecao: ` + String(err))
+    return false
+  }
+}
+
+export async function excluirColecao(
+  id: number,
+): Promise<{ ok: boolean; motivo?: string }> {
+  try {
+    const db = await getDb()
+
+    const usoCartas = await db.select<{ total: number }[]>(
+      `
+      SELECT COUNT(*) AS total
+      FROM carta
+      WHERE colecao = ?
+      `,
+      [id],
+    )
+
+    if ((usoCartas[0]?.total ?? 0) > 0) {
+      return {
+        ok: false,
+        motivo: 'Nao e possivel excluir a colecao porque ela esta vinculada a cartas cadastradas.',
+      }
+    }
+
+    const usoVendas = await db.select<{ total: number }[]>(
+      `
+      SELECT COUNT(*) AS total
+      FROM venda
+      WHERE colecao = ?
+      `,
+      [id],
+    )
+
+    if ((usoVendas[0]?.total ?? 0) > 0) {
+      return {
+        ok: false,
+        motivo: 'Nao e possivel excluir a colecao porque ela esta vinculada a vendas cadastradas.',
+      }
+    }
+
+    await db.execute(
+      `
+      DELETE FROM colecao
+      WHERE id_colecao = ?
+      `,
+      [id],
+    )
+
+    return { ok: true }
+  } catch (err) {
+    await logError(`Erro ao excluir colecao: ` + String(err))
+    return {
+      ok: false,
+      motivo: 'Erro interno ao excluir colecao.',
+    }
   }
 }
 

@@ -12,6 +12,7 @@ import {
   type OpcaoSelect,
   buscarQualidadeRaridadeId,
   buscarColecao,
+  inserirColecao,
   type InserirCartaPayload,
   inserirCarta,
 } from '../../Database/db'
@@ -20,6 +21,16 @@ import { buscarCartaMyp, type CartaMyP } from '../../../scraping/webScraping'
 async function buscarCarta(url: string, chave?: string): Promise<CartaMyP[]> {
   const carta = await buscarCartaMyp(url, chave)
   return carta
+}
+
+function extrairCodigoColecao(codigoCarta: string): string {
+  const codigoLimpo = String(codigoCarta || '').trim()
+  if (!codigoLimpo) return ''
+
+  const separador = codigoLimpo.includes('-') ? '-' : '_'
+  const [codigoColecao] = codigoLimpo.split(separador)
+
+  return codigoColecao || ''
 }
 
 export function CadastrarCarta() {
@@ -40,6 +51,7 @@ export function CadastrarCarta() {
   const [opcoesRaridade, setOpcoesRaridade] = useState<OpcaoSelect[]>([])
   const [opcoesQualidade, setOpcoesQualidade] = useState<OpcaoSelect[]>([])
   const [opcoesColecao, setOpcoesColecao] = useState<OpcaoSelect[]>([])
+  const [colecaoPendenteSelecao, setColecaoPendenteSelecao] = useState('')
 
   const [confirmarCadastroAberto, setConfirmarCadastroAberto] = useState(false)
   const [salvando, setSalvando] = useState(false)
@@ -89,6 +101,19 @@ export function CadastrarCarta() {
 
     void carregarDados()
   }, [])
+
+  useEffect(() => {
+    if (!colecaoPendenteSelecao) return
+
+    const existeOpcao = opcoesColecao.some(
+      (opcao) => opcao.value === colecaoPendenteSelecao,
+    )
+
+    if (!existeOpcao) return
+
+    setColecao(colecaoPendenteSelecao)
+    setColecaoPendenteSelecao('')
+  }, [colecaoPendenteSelecao, opcoesColecao])
 
   function limparFormulario() {
     setLinkCarta('')
@@ -194,10 +219,11 @@ export function CadastrarCarta() {
     setConfirmarCadastroAberto(false)
   }
 
-  async function recarregarColecoes() {
+  async function recarregarColecoes(idSelecionado?: number | string | null) {
     const dadosColecao = (await listarColecoes()) as {
       id_colecao: number
       nome: string
+      codigo: string
     }[]
 
     setOpcoesColecao(
@@ -207,7 +233,56 @@ export function CadastrarCarta() {
       })),
     )
 
+    if (idSelecionado !== undefined && idSelecionado !== null) {
+      setColecaoPendenteSelecao(String(idSelecionado))
+    }
+
     return dadosColecao
+  }
+
+  async function selecionarColecaoDoScraping(
+    nomeColecao: string,
+    codigoCarta: string,
+  ): Promise<number | null> {
+    const nomeLimpo = String(nomeColecao || '').trim()
+
+    if (!nomeLimpo) {
+      await recarregarColecoes()
+      setColecao('')
+      return null
+    }
+
+    const existente = await buscarColecao(nomeLimpo)
+
+    if (existente) {
+      await recarregarColecoes(existente.id_colecao)
+      setColecao(String(existente.id_colecao))
+      return existente.id_colecao
+    }
+
+    const idCriado = await inserirColecao(
+      nomeLimpo,
+      extrairCodigoColecao(codigoCarta),
+    )
+
+    const colecoesAtualizadas = await recarregarColecoes(idCriado)
+    const criadaOuEncontrada =
+      idCriado != null
+        ? colecoesAtualizadas.find((item) => item.id_colecao === idCriado)
+        : colecoesAtualizadas.find(
+            (item) =>
+              item.nome.trim().toUpperCase() === nomeLimpo.toUpperCase(),
+          )
+
+    if (!criadaOuEncontrada) {
+      setColecao('')
+      return null
+    }
+
+    setColecao(String(criadaOuEncontrada.id_colecao))
+    setColecaoPendenteSelecao(String(criadaOuEncontrada.id_colecao))
+
+    return criadaOuEncontrada.id_colecao
   }
 
   async function handleScraping() {
@@ -238,9 +313,38 @@ export function CadastrarCarta() {
 
       const carta = cartas[0]
 
-      const colecaoEncontrada = await buscarColecao(carta.colecao)
+      await selecionarColecaoDoScraping(carta.colecao, carta.codigo)
+
+      const nomeColecao = String(carta.colecao || '').trim()
+      let colecaoEncontrada = nomeColecao
+        ? await buscarColecao(nomeColecao)
+        : null
+
+      if (!colecaoEncontrada && nomeColecao) {
+        const idColecaoCriada = await inserirColecao(
+          nomeColecao,
+          extrairCodigoColecao(carta.codigo),
+        )
+
+        const colecoesAtualizadas = await recarregarColecoes(idColecaoCriada)
+        if (idColecaoCriada != null) {
+          setColecao(String(idColecaoCriada))
+        }
+        const colecaoCriada =
+          idColecaoCriada != null
+            ? colecoesAtualizadas.find(
+                (item) => item.id_colecao === idColecaoCriada,
+              )
+            : colecoesAtualizadas.find(
+                (item) =>
+                  item.nome.trim().toUpperCase() === nomeColecao.toUpperCase(),
+              )
+
+        colecaoEncontrada = colecaoCriada ?? null
+      }
 
       if (colecaoEncontrada) {
+        await recarregarColecoes(colecaoEncontrada.id_colecao)
         setColecao(String(colecaoEncontrada.id_colecao))
       } else {
         await recarregarColecoes()
@@ -406,6 +510,7 @@ export function CadastrarCarta() {
               />
               <FormSelect
                 label="Coleção"
+                key={`colecao-${colecao}-${opcoesColecao.length}`}
                 name="colecao"
                 value={colecao}
                 onChange={setColecao}

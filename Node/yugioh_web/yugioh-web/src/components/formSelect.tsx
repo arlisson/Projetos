@@ -64,6 +64,13 @@ export function FormSelect({
     if (readonly && open) setOpen(false)
   }, [readonly, open])
 
+  // Quando o valor vem de fora (ex.: preenchimento por scraping),
+  // sincroniza o texto visivel com o label selecionado.
+  useEffect(() => {
+    setQuery(selected?.label ?? '')
+    setOpen(false)
+  }, [value, selected?.label])
+
   function handleSelect(opt: Option) {
     if (readonly) return
     onChange(opt.value)
@@ -92,7 +99,7 @@ export function FormSelect({
           name={name}
           required={required}
           className="form-select-input"
-          value={open ? query : selected?.label ?? ''}
+          value={query}
           placeholder={placeholder}
           onChange={(e) => {
             if (readonly) return

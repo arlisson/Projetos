@@ -15,6 +15,7 @@ import { CadastrarCartasColecao } from './views/Cartas/CadastrarCartasColecao'
 import RaridadeQualidade from './views/Gestao/RaridadeQualidade'
 import {Logs} from './views/Sistema/Logs'
 import BancoDeDados from './views/Gestao/BancoDeDados'
+import Colecoes from './views/Gestao/Colecoes'
 
 export default function App() {
 
@@ -43,6 +44,7 @@ export default function App() {
       {/*Sistema*/}
       <Route path="/log/visualizar" element={<Logs/>}/>
       <Route path="/raridade-qualidade/gestao" element={<RaridadeQualidade/>}/>
+      <Route path="/colecoes/gestao" element={<Colecoes/>}/>
       <Route path='/database/gestao' element={<BancoDeDados/>}/>
 
     </Routes>
