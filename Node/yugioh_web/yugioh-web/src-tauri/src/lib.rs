@@ -3,14 +3,35 @@ mod log;
 mod db_admin;
 
 use std::process::Command as StdCommand;
+use std::path::PathBuf;
 use tauri::command;
 use serde_json::Value;
 
 #[command]
 fn buscar_produto_liga_cmd(url: String) -> Result<Value, String> {
+    let scraping_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .ok_or_else(|| "Nao foi possivel resolver o diretorio do projeto.".to_string())?
+        .join("scraping-server");
+    let cli_path = scraping_dir.join("dist").join("cli.js");
+
+    if !scraping_dir.is_dir() {
+        return Err(format!(
+            "Diretorio do scraping-server nao encontrado: {}",
+            scraping_dir.display()
+        ));
+    }
+
+    if !cli_path.is_file() {
+        return Err(format!(
+            "Arquivo do scraper nao encontrado: {}. Execute `npm run build` em scraping-server.",
+            cli_path.display()
+        ));
+    }
+
     let output = StdCommand::new("node")
-        .current_dir("../scraping-server")
-        .arg("dist/cli.js")
+        .current_dir(&scraping_dir)
+        .arg(&cli_path)
         .arg(&url)
         .output()
         .map_err(|e| format!("Erro ao executar Node: {e}"))?;
