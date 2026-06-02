@@ -14,6 +14,7 @@ import { EditarVendasProdutos } from './views/Produtos/EditarVendasProdutos'
 import { CadastrarCartasColecao } from './views/Cartas/CadastrarCartasColecao'
 import RaridadeQualidade from './views/Gestao/RaridadeQualidade'
 import {Logs} from './views/Sistema/Logs'
+import { ScraperConfigs } from './views/Sistema/ScraperConfigs'
 import BancoDeDados from './views/Gestao/BancoDeDados'
 import Colecoes from './views/Gestao/Colecoes'
 
@@ -43,6 +44,7 @@ export default function App() {
 
       {/*Sistema*/}
       <Route path="/log/visualizar" element={<Logs/>}/>
+      <Route path="/scrapers/gestao" element={<ScraperConfigs/>}/>
       <Route path="/raridade-qualidade/gestao" element={<RaridadeQualidade/>}/>
       <Route path="/colecoes/gestao" element={<Colecoes/>}/>
       <Route path='/database/gestao' element={<BancoDeDados/>}/>

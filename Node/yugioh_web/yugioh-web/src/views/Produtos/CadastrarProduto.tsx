@@ -12,6 +12,7 @@ import {
   inserirProduto,
   type InserirProdutoPayload,
 } from '../../Database/db'
+import { normalizePriceText, parsePriceNumber } from '../../utils/price'
 
 export function CadastrarProduto() {
   const [link, setLink] = useState('')
@@ -95,8 +96,8 @@ export function CadastrarProduto() {
         link,
         nome_produto: nome,
         imagem: urlImagem,
-        preco_compra: parseFloat(precoCompra),
-        preco_atual: parseFloat(precoAtual),
+        preco_compra: parsePriceNumber(precoCompra),
+        preco_atual: parsePriceNumber(precoAtual),
         data_compra: dataCompra,
         quantidade: parseInt(quantidade, 10),
         origem: origemMapeada,
@@ -138,12 +139,7 @@ export function CadastrarProduto() {
       if (produto) {
         setNome(produto.nome || '')
         setUrlImagem(produto.imagem || '')
-        setPrecoAtual(
-          produto.preco_atual
-            .replace('R$ ', '')
-            .replace(/\./g, '')
-            .replace(',', '.'),
-        )
+        setPrecoAtual(normalizePriceText(produto.preco_atual))
         setOrigem('liga')
       } else {
         alert('Produto não encontrado ou erro ao buscar.')

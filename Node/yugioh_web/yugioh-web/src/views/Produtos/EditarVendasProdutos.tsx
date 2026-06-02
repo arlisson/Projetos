@@ -13,6 +13,7 @@ import {
 } from '../../Database/db'
 import { type ProdutoLiga, buscarProdutoLiga } from '../../../scraping/webScraping'
 import { logError } from '../../services/logger'
+import { normalizePriceText, parsePriceNumber } from '../../utils/price'
 
 export function EditarVendasProdutos() {
   const navigate = useNavigate()
@@ -122,7 +123,7 @@ export function EditarVendasProdutos() {
     try {
       const payload: AtualizarVendaProdutoPayload = {
         id_produto: idProduto,
-        preco_venda: precoVenda ? parseFloat(precoVenda) : null,
+        preco_venda: precoVenda ? parsePriceNumber(precoVenda) : null,
         data_venda: dataVenda || null,
         quantidade: quantidade ? parseInt(quantidade, 10) : null,
       }
@@ -163,12 +164,7 @@ export function EditarVendasProdutos() {
       if (produto) {
         setNome(produto.nome || '')
         setUrlImagem(produto.imagem || '')
-        setPrecoAtual(
-          produto.preco_atual
-            .replace('R$ ', '')
-            .replace(/\./g, '')
-            .replace(',', '.'),
-        )
+        setPrecoAtual(normalizePriceText(produto.preco_atual))
         setOrigem('liga')
       } else {
         alert('Produto não encontrado ou erro ao buscar.')

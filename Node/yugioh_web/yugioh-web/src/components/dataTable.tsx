@@ -1,5 +1,6 @@
 // src/components/ui/DataTable.tsx
 import React, { useMemo, useState } from 'react'
+import { parsePriceNumber } from '../utils/price'
 
 
 
@@ -79,11 +80,7 @@ export function DataTable<T>({
           typeof raw === 'number'
             ? raw
             : raw != null && raw !== ''
-            ? Number(
-                String(raw)
-                  .replace('.', '')
-                  .replace(',', '.'),
-              )
+            ? parsePriceNumber(String(raw))
             : 0
 
         if (!Number.isNaN(num)) total += num
@@ -112,19 +109,11 @@ export function DataTable<T>({
       const na =
         typeof va === 'number'
           ? va
-          : Number(
-              String(va)
-                .replace('.', '')
-                .replace(',', '.'),
-            )
+          : parsePriceNumber(String(va))
       const nb =
         typeof vb === 'number'
           ? vb
-          : Number(
-              String(vb)
-                .replace('.', '')
-                .replace(',', '.'),
-            )
+          : parsePriceNumber(String(vb))
 
       if (!Number.isNaN(na) && !Number.isNaN(nb)) {
         if (na < nb) return -1 * dirFactor

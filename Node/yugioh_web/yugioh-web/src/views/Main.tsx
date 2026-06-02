@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Topbar } from '../components/topBar'
 import { Financeiro } from '../components/financeiro'
 import { Grafico } from '../components/grafico'
 import { CarrosselItem } from '../components/carrosselItem'
 import { Footer } from '../components/footer'
+import { Button } from '../components/botao'
 import {
   buscarHistoricoPrecos,
   calculaTotalGasto,
@@ -16,7 +17,9 @@ import {
 import {
   iniciarAtualizacaoDiaria,
   getDailyUpdateStatus,
+  lerControleAtualizacao,
   subscribeDailyUpdateStatus,
+  type DailyUpdateScope,
   type DailyUpdateStatus,
 } from '../services/dailyPriceUpdate'
 
@@ -60,8 +63,8 @@ export function Main() {
   const [updateStatus, setUpdateStatus] = useState<DailyUpdateStatus>(
     getDailyUpdateStatus(),
   )
-
-  const updateStartedRef = useRef(false)
+  const [selectedUpdateScope, setSelectedUpdateScope] =
+    useState<DailyUpdateScope>('geral')
 
   const {
     lucro_cartas = 0,
@@ -168,6 +171,18 @@ export function Main() {
   }, [])
 
   useEffect(() => {
+    async function carregarUltimaAtualizacao() {
+      const controle = await lerControleAtualizacao()
+      setUpdateStatus((current) => ({
+        ...current,
+        ultimaAtualizacao: controle.ultima_atualizacao,
+      }))
+    }
+
+    void carregarUltimaAtualizacao()
+  }, [])
+
+  useEffect(() => {
     const unsubscribe = subscribeDailyUpdateStatus((status) => {
       setUpdateStatus(status)
     })
@@ -175,23 +190,15 @@ export function Main() {
     return unsubscribe
   }, [])
 
-  useEffect(() => {
-    if (updateStartedRef.current) return
-    updateStartedRef.current = true
+  async function handleAtualizarPrecos(scope: DailyUpdateScope) {
+    if (updateStatus.executando) return
 
-    async function iniciar() {
-      const statusAntes = getDailyUpdateStatus()
-      const estavaExecutando = statusAntes.executando
+    const resultado = await iniciarAtualizacaoDiaria(scope)
 
-      const resultado = await iniciarAtualizacaoDiaria()
-
-      if (!estavaExecutando && resultado.etapa === 'finalizado') {
-        await carregarDashboard()
-      }
+    if (resultado.etapa === 'finalizado') {
+      await carregarDashboard()
     }
-
-    void iniciar()
-  }, [])
+  }
 
   useEffect(() => {
     if (!updateStatus.executando && updateStatus.etapa === 'finalizado') {
@@ -323,7 +330,7 @@ export function Main() {
           <div className="info-banner info-banner-update">
             <div>
               <div className="info-banner-title">
-                Atualização automática diária de preços
+                Atualizacao manual de precos
               </div>
 
               <div className="info-banner-text">{updateStatus.mensagem}</div>
@@ -363,17 +370,48 @@ export function Main() {
               )}
             </div>
 
-            <div className="info-banner-text">
-              Status:{' '}
-              <strong>
-                {updateStatus.executando
-                  ? 'em execução'
-                  : updateStatus.etapa === 'finalizado'
-                    ? 'concluído'
-                    : updateStatus.etapa === 'erro'
-                      ? 'erro'
-                      : 'aguardando'}
-              </strong>
+            <div className="update-action-panel">
+              <div className="update-action-row">
+                <label className="update-scope-field">
+                  <span>Atualizar</span>
+                  <select
+                    value={selectedUpdateScope}
+                    onChange={(event) =>
+                      setSelectedUpdateScope(
+                        event.target.value as DailyUpdateScope,
+                      )
+                    }
+                    disabled={updateStatus.executando}
+                    className="update-scope-select"
+                  >
+                    <option value="geral">Tudo</option>
+                    <option value="cartas">Somente cartas</option>
+                    <option value="produtos">Somente produtos</option>
+                  </select>
+                </label>
+
+                <Button
+                  type="button"
+                  onClick={() => handleAtualizarPrecos(selectedUpdateScope)}
+                  disabled={updateStatus.executando}
+                  className="update-submit-button"
+                >
+                  {updateStatus.executando ? 'Atualizando...' : 'Atualizar'}
+                </Button>
+              </div>
+
+              <div className="info-banner-text">
+                Status:{' '}
+                <strong>
+                  {updateStatus.executando
+                    ? 'em execucao'
+                    : updateStatus.etapa === 'finalizado'
+                      ? 'concluido'
+                      : updateStatus.etapa === 'erro'
+                        ? 'erro'
+                        : 'aguardando'}
+                </strong>
+              </div>
             </div>
           </div>
         </section>

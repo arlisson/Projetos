@@ -10,6 +10,7 @@ import {
 } from '../Database/db'
 import { buscarCartaMyp, buscarProdutoLiga } from '../../scraping/webScraping'
 import { logError, logInfo } from './logger'
+import { parsePriceNumber } from '../utils/price'
 
 export type DailyUpdateEtapa =
   | 'idle'
@@ -17,6 +18,8 @@ export type DailyUpdateEtapa =
   | 'produtos'
   | 'finalizado'
   | 'erro'
+
+export type DailyUpdateScope = 'cartas' | 'produtos' | 'geral'
 
 export interface DailyUpdateStatus {
   executando: boolean
@@ -42,7 +45,7 @@ const CONTROLE_ARQUIVO = 'atualizacao_diaria.json'
 let currentStatus: DailyUpdateStatus = {
   executando: false,
   etapa: 'idle',
-  mensagem: 'Aguardando verificação diária.',
+  mensagem: 'Atualizacao manual aguardando comando.',
   atual: 0,
   total: 0,
   nomeItemAtual: '',
@@ -99,7 +102,7 @@ async function getControlePath(): Promise<string> {
       await mkdir(dir, { recursive: true })
     }
   } catch (err) {
-    await logError(`Erro ao garantir diretório de controle "${dir}": ${String(err)}`)
+    await logError(`Erro ao garantir diretorio de controle "${dir}": ${String(err)}`)
     throw err
   }
 
@@ -124,7 +127,7 @@ export async function lerControleAtualizacao(): Promise<ControleAtualizacaoJson>
       ultima_atualizacao: parsed?.ultima_atualizacao ?? null,
     }
   } catch (err) {
-    await logError('Erro ao ler controle de atualização diária: ' + String(err))
+    await logError('Erro ao ler controle de atualizacao diaria: ' + String(err))
     return { ultima_atualizacao: null }
   }
 }
@@ -137,7 +140,7 @@ export async function salvarControleAtualizacao(data: string): Promise<void> {
     }
     await writeTextFile(path, JSON.stringify(payload, null, 2))
   } catch (err) {
-    await logError('Erro ao salvar controle de atualização diária: ' + String(err))
+    await logError('Erro ao salvar controle de atualizacao diaria: ' + String(err))
   }
 }
 
@@ -175,205 +178,202 @@ function normalizarNumeroCarta(valor: string | number): number {
 }
 
 function normalizarNumeroProduto(valor: string | number): number {
-  if (typeof valor === 'number') {
-    return Number.isFinite(valor) ? valor : 0
-  }
-
-  const texto = String(valor || '').trim()
-
-  if (!texto) return 0
-
-  const valoresComRS = [
-    ...texto.matchAll(/R\$\s*(\d{1,3}(?:\.\d{3})*,\d{2}|\d+(?:[.,]\d{2})?)/g),
-  ].map((m) => m[1])
-
-  if (valoresComRS.length > 0) {
-    const escolhido =
-      valoresComRS.length >= 2
-        ? valoresComRS[1]
-        : valoresComRS[valoresComRS.length - 1]
-
-    const numero = Number(escolhido.replace(/\./g, '').replace(',', '.'))
-    return Number.isFinite(numero) ? numero : 0
-  }
-
-  const matches = texto.match(
-    /\d{1,3}(?:\.\d{3})*,\d{2}|\d+(?:[.,]\d{2})?/g,
-  )
-
-  if (!matches || matches.length === 0) {
-    return 0
-  }
-
-  const escolhido = matches.length >= 2 ? matches[1] : matches[0]
-  const numero = Number(escolhido.replace(/\./g, '').replace(',', '.'))
-
-  return Number.isFinite(numero) ? numero : 0
+  return parsePriceNumber(valor)
 }
 
-async function runDailyUpdate(): Promise<DailyUpdateStatus> {
+async function atualizarCartasEstoque(
+  cartas: Awaited<ReturnType<typeof buscarCartasEmEstoque>>,
+): Promise<void> {
+  setStatus({
+    etapa: 'cartas',
+    atual: 0,
+    total: cartas.length,
+    nomeItemAtual: '',
+    mensagem: 'Atualizando cartas...',
+  })
+
+  for (let i = 0; i < cartas.length; i++) {
+    const carta = cartas[i]
+
+    setStatus({
+      etapa: 'cartas',
+      atual: i + 1,
+      total: cartas.length,
+      nomeItemAtual: carta.nome,
+      mensagem: `Atualizando carta ${i + 1}/${cartas.length}: ${carta.nome}`,
+    })
+
+    if (!carta.id_carta || !carta.link_site) {
+      setStatus({ cartasAtualizadas: i + 1 })
+      continue
+    }
+
+    try {
+      const retorno = await buscarCartaMyp(
+        carta.link_site,
+        carta.raridade_nome || undefined,
+      )
+      const primeira = retorno?.[0]
+
+      if (primeira) {
+        const novoPreco = normalizarNumeroCarta(primeira.preco_atual)
+        const precoAnterior = carta.preco_atual ?? null
+
+        await atualizarPrecoCartaPorScraping(
+          carta.id_carta,
+          novoPreco,
+          todayStr(),
+          'MyPCards',
+        )
+
+        if (precoAnterior !== novoPreco) {
+          await logInfo(
+            `Preco alterado para carta ${carta.nome} - ${carta.codigo ?? ''}: de ${String(precoAnterior)} para ${String(novoPreco)}`,
+          )
+        }
+      }
+    } catch (err) {
+      await logError(`Erro ao atualizar carta ID ${carta.id_carta}: ${String(err)}`)
+    }
+
+    setStatus({
+      cartasAtualizadas: i + 1,
+    })
+
+    await new Promise((resolve) => setTimeout(resolve, 30))
+  }
+}
+
+async function atualizarProdutosEstoque(
+  produtos: Awaited<ReturnType<typeof buscarProdutosEmEstoque>>,
+): Promise<void> {
+  setStatus({
+    etapa: 'produtos',
+    atual: 0,
+    total: produtos.length,
+    nomeItemAtual: '',
+    mensagem: 'Atualizando produtos...',
+  })
+
+  for (let i = 0; i < produtos.length; i++) {
+    const produto = produtos[i]
+
+    setStatus({
+      etapa: 'produtos',
+      atual: i + 1,
+      total: produtos.length,
+      nomeItemAtual: produto.nome_produto,
+      mensagem: `Atualizando produto ${i + 1}/${produtos.length}: ${produto.nome_produto}`,
+    })
+
+    if (!produto.id_produto || !produto.link) {
+      setStatus({ produtosAtualizados: i + 1 })
+      continue
+    }
+
+    try {
+      const retorno = await buscarProdutoLiga(produto.link)
+
+      if (retorno) {
+        const novoPreco = normalizarNumeroProduto(retorno.preco_atual)
+        const precoAnterior = produto.preco_atual ?? null
+
+        await atualizarPrecoProdutoPorScraping(
+          produto.id_produto,
+          novoPreco,
+          todayStr(),
+          'Liga Yugioh',
+        )
+
+        if (precoAnterior !== novoPreco) {
+          await logInfo(
+            `Preco alterado para produto ${produto.nome_produto}: de ${String(precoAnterior)} para ${String(novoPreco)}`,
+          )
+        }
+      }
+    } catch (err) {
+      await logError(`Erro ao atualizar produto ID ${produto.id_produto}: ${String(err)}`)
+    }
+
+    setStatus({
+      produtosAtualizados: i + 1,
+    })
+
+    await new Promise((resolve) => setTimeout(resolve, 30))
+  }
+}
+
+async function runDailyUpdate(
+  scope: DailyUpdateScope = 'geral',
+): Promise<DailyUpdateStatus> {
   const controle = await lerControleAtualizacao()
 
   setStatus({
     ultimaAtualizacao: controle.ultima_atualizacao,
   })
 
-  if (controle.ultima_atualizacao === todayStr()) {
-    setStatus({
-      executando: false,
-      etapa: 'finalizado',
-      mensagem: 'Preços já atualizados hoje.',
-      atual: 0,
-      total: 0,
-      nomeItemAtual: '',
-    })
-    return getDailyUpdateStatus()
-  }
-
   const cartas = await buscarCartasEmEstoque()
   const produtos = await buscarProdutosEmEstoque()
+  const deveAtualizarCartas = scope === 'cartas' || scope === 'geral'
+  const deveAtualizarProdutos = scope === 'produtos' || scope === 'geral'
 
   setStatus({
     executando: true,
-    etapa: 'cartas',
-    mensagem: 'Iniciando atualização diária...',
+    etapa: deveAtualizarCartas ? 'cartas' : 'produtos',
+    mensagem:
+      scope === 'cartas'
+        ? 'Iniciando atualizacao de cartas...'
+        : scope === 'produtos'
+          ? 'Iniciando atualizacao de produtos...'
+          : 'Iniciando atualizacao geral de precos...',
     atual: 0,
-    total: cartas.length,
+    total: deveAtualizarCartas ? cartas.length : produtos.length,
     nomeItemAtual: '',
-    totalCartas: cartas.length,
-    totalProdutos: produtos.length,
+    totalCartas: deveAtualizarCartas ? cartas.length : 0,
+    totalProdutos: deveAtualizarProdutos ? produtos.length : 0,
     cartasAtualizadas: 0,
     produtosAtualizados: 0,
   })
 
   try {
-    for (let i = 0; i < cartas.length; i++) {
-      const carta = cartas[i]
-
-      setStatus({
-        etapa: 'cartas',
-        atual: i + 1,
-        total: cartas.length,
-        nomeItemAtual: carta.nome,
-        mensagem: `Atualizando carta ${i + 1}/${cartas.length}: ${carta.nome}`,
-      })
-
-      if (!carta.id_carta || !carta.link_site) {
-        setStatus({ cartasAtualizadas: i + 1 })
-        continue
-      }
-
-      try {
-        const retorno = await buscarCartaMyp(
-          carta.link_site,
-          carta.raridade_nome || undefined,
-        )
-        const primeira = retorno?.[0]
-
-        if (primeira) {
-          const novoPreco = normalizarNumeroCarta(primeira.preco_atual)
-          const precoAnterior = carta.preco_atual ?? null
-
-          await atualizarPrecoCartaPorScraping(
-            carta.id_carta,
-            novoPreco,
-            todayStr(),
-            'MyPCards',
-          )
-
-          if (precoAnterior !== novoPreco) {
-            await logInfo(
-              `Preço alterado para carta ${carta.nome} - ${carta.codigo ?? ''}: de ${String(precoAnterior)} para ${String(novoPreco)}`,
-            )
-          }
-        }
-      } catch (err) {
-        await logError(`Erro ao atualizar carta ID ${carta.id_carta}: ${String(err)}`)
-      }
-
-      setStatus({
-        cartasAtualizadas: i + 1,
-      })
-
-      await new Promise((resolve) => setTimeout(resolve, 30))
+    if (deveAtualizarCartas) {
+      await atualizarCartasEstoque(cartas)
     }
 
-    setStatus({
-      etapa: 'produtos',
-      atual: 0,
-      total: produtos.length,
-      nomeItemAtual: '',
-      mensagem: 'Atualizando produtos...',
-    })
-
-    for (let i = 0; i < produtos.length; i++) {
-      const produto = produtos[i]
-
-      setStatus({
-        etapa: 'produtos',
-        atual: i + 1,
-        total: produtos.length,
-        nomeItemAtual: produto.nome_produto,
-        mensagem: `Atualizando produto ${i + 1}/${produtos.length}: ${produto.nome_produto}`,
-      })
-
-      if (!produto.id_produto || !produto.link) {
-        setStatus({ produtosAtualizados: i + 1 })
-        continue
-      }
-
-      try {
-        const retorno = await buscarProdutoLiga(produto.link)
-
-        if (retorno) {
-          const novoPreco = normalizarNumeroProduto(retorno.preco_atual)
-          const precoAnterior = produto.preco_atual ?? null
-
-          await atualizarPrecoProdutoPorScraping(
-            produto.id_produto,
-            novoPreco,
-            todayStr(),
-            'Liga Yugioh',
-          )
-
-          if (precoAnterior !== novoPreco) {
-            await logInfo(
-              `Preço alterado para produto ${produto.nome_produto}: de ${String(precoAnterior)} para ${String(novoPreco)}`,
-            )
-          }
-        }
-      } catch (err) {
-        await logError(`Erro ao atualizar produto ID ${produto.id_produto}: ${String(err)}`)
-      }
-
-      setStatus({
-        produtosAtualizados: i + 1,
-      })
-
-      await new Promise((resolve) => setTimeout(resolve, 30))
+    if (deveAtualizarProdutos) {
+      await atualizarProdutosEstoque(produtos)
     }
 
     await registrarHistoricoLucro()
-    await salvarControleAtualizacao(todayStr())
+
+    if (scope === 'geral') {
+      await salvarControleAtualizacao(todayStr())
+    }
 
     setStatus({
       executando: false,
       etapa: 'finalizado',
-      mensagem: 'Atualização concluída com sucesso.',
+      mensagem:
+        scope === 'cartas'
+          ? 'Atualizacao de cartas concluida com sucesso.'
+          : scope === 'produtos'
+            ? 'Atualizacao de produtos concluida com sucesso.'
+            : 'Atualizacao geral concluida com sucesso.',
       atual: 0,
       total: 0,
       nomeItemAtual: '',
-      ultimaAtualizacao: todayStr(),
+      ultimaAtualizacao:
+        scope === 'geral' ? todayStr() : controle.ultima_atualizacao,
     })
 
     return getDailyUpdateStatus()
   } catch (err) {
-    await logError('Erro geral ao atualizar preços e lucros: ' + String(err))
+    await logError('Erro geral ao atualizar precos e lucros: ' + String(err))
 
     setStatus({
       executando: false,
       etapa: 'erro',
-      mensagem: 'Erro ao atualizar preços.',
+      mensagem: 'Erro ao atualizar precos.',
     })
 
     return getDailyUpdateStatus()
@@ -382,7 +382,9 @@ async function runDailyUpdate(): Promise<DailyUpdateStatus> {
   }
 }
 
-export async function iniciarAtualizacaoDiaria(): Promise<DailyUpdateStatus> {
+export async function iniciarAtualizacaoDiaria(
+  scope: DailyUpdateScope = 'geral',
+): Promise<DailyUpdateStatus> {
   if (runningPromise) {
     return runningPromise
   }
@@ -391,6 +393,6 @@ export async function iniciarAtualizacaoDiaria(): Promise<DailyUpdateStatus> {
     return getDailyUpdateStatus()
   }
 
-  runningPromise = runDailyUpdate()
+  runningPromise = runDailyUpdate(scope)
   return runningPromise
 }

@@ -1,6 +1,10 @@
-// scraping-server/src/buscarProdutoLiga.ts
 import * as cheerio from 'cheerio'
 import { chromium } from 'playwright'
+import {
+  extractConfiguredData,
+  type ScraperSiteConfig,
+} from './configurableExtractor'
+import { DEFAULT_LIGA_CONFIG } from './scraperDefaults'
 
 const HEADERS = {
   'User-Agent':
@@ -19,35 +23,47 @@ export interface ProdutoLiga {
 }
 
 export async function buscarProdutoLiga(url: string): Promise<ProdutoLiga | null> {
+  return buscarProdutoLigaConfiguravel(url, DEFAULT_LIGA_CONFIG)
+}
+
+export async function buscarProdutoLigaConfiguravel(
+  url: string,
+  config: ScraperSiteConfig = DEFAULT_LIGA_CONFIG,
+): Promise<ProdutoLiga | null> {
   let browser
+
   try {
     browser = await chromium.launch({ headless: true })
 
     const page = await browser.newPage({ extraHTTPHeaders: HEADERS })
     await page.goto(url, { waitUntil: 'domcontentloaded' })
 
-    // Espera o JS renderizar o preço
-    await page.waitForSelector('.price', { timeout: 15000 })
+    const priceSelectors = config.fields.price?.selectors?.filter(Boolean) || [
+      '.price',
+    ]
+    await page.waitForSelector(priceSelectors.join(', '), { timeout: 15000 })
 
     const html = await page.content()
     const $ = cheerio.load(html)
+    const values = extractConfiguredData($, config, url)
 
-    const produtos = $('div.item-name')
     const nome =
-      produtos.length > 0 ? produtos.first().text().trim() : 'Não encontrado'
+      String(values.name || '').trim() ||
+      $('div.item-name').first().text().trim() ||
+      'Nao encontrado'
 
-    const imagemEl = $('img#featuredImage').first()
-    const src = imagemEl.attr('src')
+    const src = $('img#featuredImage').first().attr('src')
     const imagem =
-      src != null
+      String(values.image || '').trim() ||
+      (src
         ? src.startsWith('http')
           ? src
-          : `https:${src}`
-        : IMAGEM_PADRAO
+          : new URL(src, url).toString()
+        : IMAGEM_PADRAO)
 
-    let preco = $('.price').first().text().trim()
-    if (!preco) preco = '0,00'
-    
+    const preco =
+      String(values.price || '').trim() || $('.price').first().text().trim() || '0.00'
+
     return {
       imagem,
       nome,

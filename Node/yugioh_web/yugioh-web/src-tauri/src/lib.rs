@@ -8,7 +8,7 @@ use tauri::command;
 use serde_json::Value;
 
 #[command]
-fn buscar_produto_liga_cmd(url: String) -> Result<Value, String> {
+fn buscar_produto_liga_cmd(url: String, config_json: Option<String>) -> Result<Value, String> {
     let scraping_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .parent()
         .ok_or_else(|| "Nao foi possivel resolver o diretorio do projeto.".to_string())?
@@ -29,10 +29,14 @@ fn buscar_produto_liga_cmd(url: String) -> Result<Value, String> {
         ));
     }
 
-    let output = StdCommand::new("node")
-        .current_dir(&scraping_dir)
-        .arg(&cli_path)
-        .arg(&url)
+    let mut command = StdCommand::new("node");
+    command.current_dir(&scraping_dir).arg(&cli_path).arg(&url);
+
+    if let Some(config_json) = config_json {
+        command.arg(config_json);
+    }
+
+    let output = command
         .output()
         .map_err(|e| format!("Erro ao executar Node: {e}"))?;
 

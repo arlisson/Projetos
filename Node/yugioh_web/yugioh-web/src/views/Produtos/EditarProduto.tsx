@@ -19,6 +19,7 @@ import {
 } from '../../Database/db'
 import { type ProdutoLiga, buscarProdutoLiga } from '../../../scraping/webScraping'
 import { logError } from '../../services/logger'
+import { normalizePriceText, parsePriceNumber } from '../../utils/price'
 
 export function EditarProduto() {
   const navigate = useNavigate()
@@ -191,8 +192,8 @@ export function EditarProduto() {
         link,
         nome_produto: nome,
         imagem: urlImagem,
-        preco_compra: parseFloat(precoCompra),
-        preco_atual: parseFloat(precoAtual),
+        preco_compra: parsePriceNumber(precoCompra),
+        preco_atual: parsePriceNumber(precoAtual),
         data_compra: dataCompra,
         quantidade: parseInt(quantidade, 10),
         origem: origemFormatada,
@@ -235,12 +236,7 @@ export function EditarProduto() {
       if (produto) {
         setNome(produto.nome || '')
         setUrlImagem(produto.imagem || '')
-        setPrecoAtual(
-          produto.preco_atual
-            .replace('R$ ', '')
-            .replace(/\./g, '')
-            .replace(',', '.'),
-        )
+        setPrecoAtual(normalizePriceText(produto.preco_atual))
         setOrigem('liga')
       } else {
         alert('Produto não encontrado ou erro ao buscar.')
@@ -311,7 +307,7 @@ export function EditarProduto() {
     try {
       const payloadVenda: InserirVendaProdutoPayload = {
         id_produto: idProduto!,
-        preco_venda: valorVenda ? parseFloat(valorVenda) : null,
+        preco_venda: valorVenda ? parsePriceNumber(valorVenda) : null,
         data_venda: todayStr(),
         quantidade: qtd,
       }
@@ -323,8 +319,8 @@ export function EditarProduto() {
         link,
         nome_produto: nome,
         imagem: urlImagem,
-        preco_compra: parseFloat(precoCompra),
-        preco_atual: parseFloat(precoAtual),
+        preco_compra: parsePriceNumber(precoCompra),
+        preco_atual: parsePriceNumber(precoAtual),
         data_compra: dataCompra,
         quantidade: parseInt(quantidade, 10) - qtd,
         origem: origemFormatada,

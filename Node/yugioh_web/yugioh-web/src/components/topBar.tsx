@@ -46,6 +46,7 @@ export function Topbar({ pageTitle = 'YU-GI-OH! Manager' }: TopbarProps) {
         { label: 'Raridade/Qualidade', path: '/raridade-qualidade/gestao' },
         { label: 'Colecoes', path: '/colecoes/gestao' },
         { label: 'Banco de dados', path: '/database/gestao' },
+        { label: 'Scrapers', path: '/scrapers/gestao' },
         { label: 'Logs / diagnósticos', path: '/log/visualizar' },
       ],
     },

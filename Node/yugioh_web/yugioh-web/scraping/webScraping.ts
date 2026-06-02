@@ -2,6 +2,8 @@ import * as cheerio from 'cheerio'
 import { fetch } from '@tauri-apps/plugin-http'
 import { logInfo, logError } from '../src/services/logger'
 import { invoke } from '@tauri-apps/api/core'
+import { extractConfiguredData } from './configurableExtractor'
+import { getEffectiveScraperConfig } from '../src/services/scraperConfigStorage'
 
 const HEADERS = {
   'User-Agent':
@@ -58,6 +60,10 @@ function normalizarPreco(valor: string): string {
   return escolhido.replace(/\./g, '').replace(',', '.')
 }
 
+function asString(value: string | number | null | undefined): string {
+  return value === null || value === undefined ? '' : String(value)
+}
+
 function setPage(url: string, page: number): string {
   const parsed = new URL(url)
   parsed.searchParams.set('page', String(page))
@@ -84,23 +90,37 @@ export async function buscarCartaMyp(
 
     const html = await response.text()
     const $ = cheerio.load(html)
+    const config = await getEffectiveScraperConfig('mypcards')
+    const extracted = extractConfiguredData($, config, url)
 
     const dados: CartaMyP[] = []
 
     const nomeTag = $('span.subtitulo').first()
     const nomeSemTag = $('h1#produto-nome').first()
     const nome =
-      (nomeTag.text() || nomeSemTag.text() || 'Desconhecido').trim()
+      (
+        asString(extracted.values.name) ||
+        nomeTag.text() ||
+        nomeSemTag.text() ||
+        'Desconhecido'
+      ).trim()
 
     const imagens = $('img').toArray()
     const imagem =
-      (imagens[2] && $(imagens[2]).attr('src')) || IMAGEM_PADRAO
+      asString(extracted.values.image) ||
+      (imagens[2] && $(imagens[2]).attr('src')) ||
+      IMAGEM_PADRAO
 
     const precoTag = $('span.moeda').first()
-    const precoMinimo = (precoTag.text() || 'R$ 0,00').trim()
+    const precoMinimo = (
+      asString(extracted.values.price) ||
+      precoTag.text() ||
+      'R$ 0,00'
+    ).trim()
 
     const colecaoLinks = $('a[href*="/yugioh/"]').toArray()
     const colecaoCarta =
+      asString(extracted.values.collection) ||
       (colecaoLinks[23] && $(colecaoLinks[23]).text().trim()) ||
       'Coleção não identificada'
 
@@ -297,8 +317,10 @@ export async function buscarCartasColecao(
 export async function buscarProdutoLiga(
   url: string,
 ): Promise<ProdutoLiga | null> {
+  const config = await getEffectiveScraperConfig('ligayugioh')
   const result = await invoke<ProdutoLiga | null>('buscar_produto_liga_cmd', {
     url,
+    configJson: JSON.stringify(config),
   })
   return result
 }
