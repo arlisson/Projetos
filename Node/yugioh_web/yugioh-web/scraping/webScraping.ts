@@ -87,6 +87,21 @@ function toAbsoluteUrl(base: string, href: string): string {
   }
 }
 
+function isCloudflareBlocked(html: string, status?: number): boolean {
+  const texto = html.toLowerCase()
+  const statusSuspeito = status === 403 || status === 429 || status === 503
+
+  return (
+    texto.includes('cf-browser-verification') ||
+    texto.includes('cf_chl_') ||
+    texto.includes('/cdn-cgi/challenge-platform/') ||
+    texto.includes('just a moment') ||
+    texto.includes('checking your browser') ||
+    texto.includes('attention required! | cloudflare') ||
+    (statusSuspeito && texto.includes('cloudflare'))
+  )
+}
+
 export async function buscarCartaMyp(
   url: string,
   chave?: string,
@@ -98,6 +113,14 @@ export async function buscarCartaMyp(
     })
 
     const html = await response.text()
+
+    if (isCloudflareBlocked(html, response.status)) {
+      await logError(
+        `Busca bloqueada pelo Cloudflare em buscarCartaMyp: status=${response.status}; url=${url}`,
+      )
+      return []
+    }
+
     const $ = cheerio.load(html)
     const config = await getEffectiveScraperConfig('mypcards')
     const extracted = extractConfiguredData($, config, url)
@@ -272,6 +295,14 @@ export async function buscarCartasColecao(
       }
 
       const html = await response.text()
+
+      if (isCloudflareBlocked(html, response.status)) {
+        await logError(
+          `Paginacao bloqueada pelo Cloudflare em buscarCartasColecao: status=${response.status}; page=${page}; url=${pageUrl}`,
+        )
+        break
+      }
+
       const $ = cheerio.load(html)
       const itens = $('a.card-img-link').toArray()
 
