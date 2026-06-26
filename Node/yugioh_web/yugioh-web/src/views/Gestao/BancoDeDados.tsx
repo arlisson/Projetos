@@ -3,6 +3,7 @@ import { open, save } from '@tauri-apps/plugin-dialog'
 import { Topbar } from '../../components/topBar'
 import { Footer } from '../../components/footer'
 import { Button } from '../../components/botao'
+import { PageHelpButton } from '../../components/PageHelpButton'
 import {
   clearDatabaseData,
   exportDatabase,
@@ -205,7 +206,13 @@ export default function BancoDeDados() {
           style={{ alignItems: 'center', marginBottom: '1rem' }}
         >
           <div>
-            <div className="section-title">Banco de dados</div>
+            <div className="section-title section-title-with-help">
+              Banco de dados
+              <PageHelpButton
+                configKey="gestao.bancoDeDados"
+                fallbackTitle="Como gerenciar o banco de dados"
+              />
+            </div>
             <div className="section-subtitle">
               Exporte, importe e limpe os dados do SQLite preservando a estrutura.
             </div>

@@ -3,6 +3,7 @@ import { Topbar } from '../../components/topBar'
 import { Footer } from '../../components/footer'
 import { Button } from '../../components/botao'
 import { FormField } from '../../components/formField'
+import { PageHelpButton } from '../../components/PageHelpButton'
 import {
   atualizarColecao,
   excluirColecao,
@@ -157,7 +158,13 @@ export default function Colecoes() {
       <Topbar pageTitle="Gerenciar colecoes" />
 
       <main className="dashboard-content">
-        <div className="section-title">Gerenciar colecoes</div>
+        <div className="section-title section-title-with-help">
+          Gerenciar colecoes
+          <PageHelpButton
+            configKey="gestao.colecoes"
+            fallbackTitle="Como gerenciar colecoes"
+          />
+        </div>
         <div className="section-subtitle">
           Cadastre, edite e exclua colecoes usadas no cadastro de cartas.
         </div>

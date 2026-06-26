@@ -3,6 +3,7 @@ import { Topbar } from '../../components/topBar'
 import { Footer } from '../../components/footer'
 import { Button } from '../../components/botao'
 import { FormField } from '../../components/formField'
+import { PageHelpButton } from '../../components/PageHelpButton'
 import {
   atualizarCadastroBase,
   excluirCadastroBase,
@@ -341,7 +342,13 @@ export default function GerenciarRaridadeQualidade() {
       <Topbar pageTitle="Gerenciar raridade e qualidade" />
 
       <main className="dashboard-content">
-        <div className="section-title">Gerenciar raridade e qualidade</div>
+        <div className="section-title section-title-with-help">
+          Gerenciar raridade e qualidade
+          <PageHelpButton
+            configKey="gestao.raridadeQualidade"
+            fallbackTitle="Como gerenciar raridades e qualidades"
+          />
+        </div>
         <div className="section-subtitle">
           Tela única para manutenção de raridades e qualidades.
         </div>

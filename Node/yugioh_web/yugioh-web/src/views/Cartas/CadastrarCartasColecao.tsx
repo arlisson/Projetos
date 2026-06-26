@@ -5,6 +5,7 @@ import { FormField } from '../../components/formField'
 import { FormSelect } from '../../components/formSelect'
 import { Button } from '../../components/botao'
 import { Loading } from '../../components/Loading'
+import { PageHelpButton } from '../../components/PageHelpButton'
 import {
   listarRaridadeQualidade,
   listarColecoes,
@@ -378,7 +379,13 @@ export function CadastrarCartasColecao() {
 
       <main className="form-page-content">
         <section className="form-page-left" style={{ maxWidth: '100%' }}>
-          <h2 className="section-title">Cadastro em lote por coleção</h2>
+          <h2 className="section-title section-title-with-help">
+            Cadastro em lote por coleção
+            <PageHelpButton
+              configKey="cartas.cadastrarColecao"
+              fallbackTitle="Como cadastrar cartas por colecao"
+            />
+          </h2>
           <p className="section-subtitle">
             Busque uma coleção do MyPCards e preencha os dados de compra de cada
             carta individualmente.

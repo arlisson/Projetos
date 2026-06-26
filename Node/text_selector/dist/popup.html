@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="popup.css" />
+    <title>Capturar</title>
+  </head>
+  <body>
+    <div class="wrap">
+      <h3>Captura</h3>
+
+      <label>Texto selecionado</label>
+      <textarea id="raw" rows="3" placeholder="Selecione algo na página e abra a extensão"></textarea>
+
+      <div class="row">
+        <div>
+          <label>Tipo</label>
+          <input id="type" readonly />
+        </div>
+        <div>
+          <label>Valor</label>
+          <input id="value" />
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="refresh">Ler seleção</button>
+        <button id="copy">Copiar</button>
+        <button id="save">Salvar</button>
+      </div>
+
+      <p id="status"></p>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

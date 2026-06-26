@@ -5,6 +5,7 @@ import { FormField } from '../../components/formField'
 import { FormSelect } from '../../components/formSelect'
 import { Button } from '../../components/botao'
 import { Grafico } from '../../components/grafico'
+import { PageHelpButton } from '../../components/PageHelpButton'
 import {
   listarRaridadeQualidade,
   listarColecoes,
@@ -476,7 +477,13 @@ export function EditarCarta() {
 
       <main className="form-page-content">
         <section className="form-page-left">
-          <h2 className="section-title">Editar {nome}</h2>
+          <h2 className="section-title section-title-with-help">
+            Editar {nome}
+            <PageHelpButton
+              configKey="cartas.editar"
+              fallbackTitle="Como editar uma carta"
+            />
+          </h2>
           <p className="section-subtitle">
             Preencha os dados básicos da carta antes de salvar.
           </p>

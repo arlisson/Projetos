@@ -4,6 +4,7 @@ import { Footer } from '../../components/footer'
 import { FormField } from '../../components/formField'
 import { FormSelect } from '../../components/formSelect'
 import { Button } from '../../components/botao'
+import { PageHelpButton } from '../../components/PageHelpButton'
 import {
   listarRaridadeQualidade,
   listarColecoes,
@@ -353,7 +354,13 @@ export function EditarVendasCartas() {
 
       <main className="form-page-content">
         <section className="form-page-left">
-          <h2 className="section-title">Editar {nome}</h2>
+          <h2 className="section-title section-title-with-help">
+            Editar {nome}
+            <PageHelpButton
+              configKey="cartas.vendas.editar"
+              fallbackTitle="Como editar uma venda de carta"
+            />
+          </h2>
           <p className="section-subtitle">
             Preencha os dados básicos da carta antes de salvar.
           </p>

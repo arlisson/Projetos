@@ -1,0 +1,180 @@
+{
+  "cartas.cadastrar": {
+    "title": "Como cadastrar uma carta",
+    "intro": "Use esta tela para registrar uma carta comprada e manter o estoque atualizado.",
+    "steps": [
+      "Informe o link da carta. Se o link for de um site suportado, use Buscar via scraping para preencher nome, código, imagem e preço atual automaticamente.",
+      "Preencha o preço pago, o preço atual, a data da compra e a quantidade comprada.",
+      "Selecione a origem, a raridade, a qualidade e a coleção da carta.",
+      "Confira a pré-visualização da imagem antes de salvar.",
+      "Clique em Salvar carta e confirme o cadastro na janela exibida."
+    ],
+    "notes": [
+      "Campos obrigatórios precisam estar preenchidos antes de salvar.",
+      "Quando o scraping encontrar a coleção, o sistema tenta selecionar ou criar a coleção automaticamente."
+    ]
+  },
+  "cartas.editar": {
+    "title": "Como editar uma carta",
+    "intro": "Use esta tela para alterar os dados de uma carta cadastrada, registrar uma venda ou excluir o cadastro.",
+    "steps": [
+      "Revise os dados carregados da carta.",
+      "Altere os campos necessários ou use Buscar via scraping para atualizar informações do site.",
+      "Clique em Salvar carta para gravar as alterações.",
+      "Use Vender Carta para registrar a saída de unidades do estoque.",
+      "Use Excluir carta somente quando quiser remover definitivamente o cadastro."
+    ],
+    "notes": [
+      "Ao salvar uma alteração de preço, o histórico de preços pode ser atualizado.",
+      "A exclusão não pode ser desfeita depois da confirmação."
+    ]
+  },
+  "cartas.vendas.editar": {
+    "title": "Como editar uma venda de carta",
+    "intro": "Use esta tela para corrigir informações de uma venda de carta já registrada.",
+    "steps": [
+      "Confira os dados da carta vendida.",
+      "Ajuste a quantidade vendida, a data da venda ou o preço da venda.",
+      "Clique em Atualizar Venda para salvar a correção.",
+      "Use Excluir Venda quando o registro tiver sido lançado por engano."
+    ],
+    "notes": [
+      "Alguns campos da carta ficam bloqueados para preservar o cadastro original.",
+      "Excluir a venda remove apenas o registro de venda selecionado, após confirmação."
+    ]
+  },
+  "cartas.cadastrarColecao": {
+    "title": "Como cadastrar cartas por coleção",
+    "intro": "Use esta tela para importar várias cartas de uma coleção do MyPCards de uma vez.",
+    "steps": [
+      "Informe o link da coleção e a data da compra.",
+      "Opcionalmente, preencha um valor pago padrão e uma qualidade padrão para aplicar nas cartas selecionadas.",
+      "Clique em Buscar coleção para carregar as cartas encontradas.",
+      "Revise a lista, desmarque as cartas que não foram compradas e ajuste preço, quantidade, raridade e qualidade quando necessário.",
+      "Clique em Salvar cartas selecionadas e confirme o cadastro."
+    ],
+    "notes": [
+      "Somente as cartas marcadas como selecionadas serão cadastradas.",
+      "Use o filtro para encontrar cartas específicas quando a coleção tiver muitos itens."
+    ]
+  },
+  "produtos.cadastrar": {
+    "title": "Como cadastrar um produto",
+    "intro": "Use esta tela para registrar produtos comprados, como boosters, decks, sleeves ou acessórios.",
+    "steps": [
+      "Informe o link do produto. Se disponível, use Buscar via scraping para preencher informações automaticamente.",
+      "Preencha nome, imagem, preço de compra, preço atual, data da compra e quantidade.",
+      "Selecione a origem do produto.",
+      "Clique em Salvar produto e confirme o cadastro."
+    ],
+    "notes": [
+      "O preço atual ajuda nos cálculos financeiros e pode ser atualizado depois.",
+      "A imagem é opcional, mas facilita a identificação do produto nas listagens."
+    ]
+  },
+  "produtos.editar": {
+    "title": "Como editar um produto",
+    "intro": "Use esta tela para alterar um produto cadastrado, vender unidades ou excluir o cadastro.",
+    "steps": [
+      "Revise os dados carregados do produto.",
+      "Altere os campos necessários ou use Buscar via scraping para atualizar informações.",
+      "Clique em Salvar produto para gravar as alterações.",
+      "Use Vender Produto para registrar a venda de unidades.",
+      "Use Excluir Produto somente quando quiser remover definitivamente o cadastro."
+    ],
+    "notes": [
+      "A quantidade deve representar o estoque atual.",
+      "A exclusão não pode ser desfeita depois da confirmação."
+    ]
+  },
+  "produtos.vendas.editar": {
+    "title": "Como editar uma venda de produto",
+    "intro": "Use esta tela para corrigir uma venda de produto já registrada.",
+    "steps": [
+      "Confira os dados do produto vendido.",
+      "Ajuste a quantidade, a data da venda ou o preço da venda.",
+      "Clique em Salvar produto para gravar a correção.",
+      "Use Excluir Venda quando o registro tiver sido lançado por engano."
+    ],
+    "notes": [
+      "Alguns dados do produto ficam somente leitura nesta tela.",
+      "Excluir a venda remove apenas o registro selecionado, após confirmação."
+    ]
+  },
+  "gestao.raridadeQualidade": {
+    "title": "Como gerenciar raridades e qualidades",
+    "intro": "Use esta tela para manter as listas usadas nos cadastros de cartas.",
+    "steps": [
+      "Escolha a aba Raridades ou Qualidades.",
+      "Digite um novo nome e clique em Inserir para criar um item.",
+      "Use o filtro para encontrar registros existentes.",
+      "Clique em Editar para alterar o nome e depois em Salvar.",
+      "Clique em Excluir apenas quando o item não estiver mais em uso."
+    ],
+    "notes": [
+      "Raridades e qualidades podem estar vinculadas a cartas cadastradas.",
+      "Se um item estiver vinculado a outros registros, a exclusão pode ser bloqueada pelo sistema."
+    ]
+  },
+  "gestao.colecoes": {
+    "title": "Como gerenciar coleções",
+    "intro": "Use esta tela para cadastrar e corrigir coleções usadas nas cartas.",
+    "steps": [
+      "Informe o nome da coleção e, se houver, o código abreviado.",
+      "Clique em Inserir coleção para criar o registro.",
+      "Use o filtro para buscar por nome ou código.",
+      "Clique em Editar para ajustar nome ou código e depois em Salvar.",
+      "Clique em Excluir somente quando a coleção não precisar mais existir."
+    ],
+    "notes": [
+      "O código abreviado ajuda a identificar coleções por siglas, como LOB ou MRD.",
+      "Coleções vinculadas a cartas podem impedir a exclusão."
+    ]
+  },
+  "gestao.bancoDeDados": {
+    "title": "Como gerenciar o banco de dados",
+    "intro": "Use esta tela para consultar informações do SQLite, exportar backup, importar outro banco ou limpar dados.",
+    "steps": [
+      "Confira o arquivo atual, o tamanho, a data de modificação e o caminho do banco.",
+      "Use Exportar banco para gerar uma cópia de segurança.",
+      "Use Importar banco para substituir o banco atual por outro arquivo SQLite.",
+      "Revise o resumo do conteúdo para ver totais por tabela.",
+      "Na Zona de risco, escolha o modo de limpeza e confirme apenas se tiver certeza."
+    ],
+    "notes": [
+      "Importar banco e apagar dados são ações sensíveis e não podem ser desfeitas pela tela.",
+      "Antes de limpar ou importar, exporte um backup se precisar preservar os dados atuais."
+    ]
+  },
+  "gestao.scrapers": {
+    "title": "Como configurar scrapers",
+    "intro": "Use esta tela para ajustar os seletores CSS que extraem dados dos sites suportados.",
+    "steps": [
+      "Escolha o site que deseja configurar.",
+      "Edite os seletores CSS de cada campo, usando um seletor por linha.",
+      "Ajuste atributo, transformação, ocorrência, regex ou fallback quando necessário.",
+      "Informe uma URL e use Testar para validar todos os campos.",
+      "Use Listar ocorrências para descobrir qual ocorrência do seletor contém o dado correto.",
+      "Clique em Salvar configuração quando o teste estiver correto."
+    ],
+    "notes": [
+      "Restaurar padrão volta a configuração original do site selecionado.",
+      "O Histórico permite restaurar uma versão anterior da configuração."
+    ]
+  },
+  "gestao.logs": {
+    "title": "Como consultar logs",
+    "intro": "Use esta tela para investigar registros do sistema e acompanhar erros, avisos e informações.",
+    "steps": [
+      "Use Buscar nos logs para localizar parte da mensagem, data ou conteúdo bruto.",
+      "Selecione um nível para filtrar por tipo de registro.",
+      "Clique em Atualizar para recarregar os logs mais recentes.",
+      "Leia os cards de resultado para identificar horário, nível e mensagem.",
+      "Use Apagar logs somente quando quiser limpar o histórico exibido."
+    ],
+    "notes": [
+      "Logs ajudam a diagnosticar falhas em scraping, banco de dados e outras rotinas.",
+      "Apagar logs remove o histórico e não corrige a causa de um erro."
+    ]
+  }
+}

@@ -4,6 +4,7 @@ import { Footer } from '../../components/footer'
 import { FormField } from '../../components/formField'
 import { FormSelect } from '../../components/formSelect'
 import { Button } from '../../components/botao'
+import { PageHelpButton } from '../../components/PageHelpButton'
 import {
   type ProdutoLiga,
   buscarProdutoLiga,
@@ -162,7 +163,13 @@ export function CadastrarProduto() {
 
       <main className="form-page-content">
         <section className="form-page-left">
-          <h2 className="section-title">Cadastrar novo produto</h2>
+          <h2 className="section-title section-title-with-help">
+            Cadastrar novo produto
+            <PageHelpButton
+              configKey="produtos.cadastrar"
+              fallbackTitle="Como cadastrar um produto"
+            />
+          </h2>
           <p className="section-subtitle">
             Preencha os dados básicos do produto antes de salvar.
           </p>

@@ -4,6 +4,7 @@ import { Footer } from '../../components/footer'
 import { FormField } from '../../components/formField'
 import { FormSelect } from '../../components/formSelect'
 import { Button } from '../../components/botao'
+import { PageHelpButton } from '../../components/PageHelpButton'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   deletarVendaProduto,
@@ -213,7 +214,13 @@ export function EditarVendasProdutos() {
 
       <main className="form-page-content">
         <section className="form-page-left">
-          <h2 className="section-title">Editar {nome}</h2>
+          <h2 className="section-title section-title-with-help">
+            Editar {nome}
+            <PageHelpButton
+              configKey="produtos.vendas.editar"
+              fallbackTitle="Como editar uma venda de produto"
+            />
+          </h2>
           <p className="section-subtitle">
             Preencha os dados básicos do produto antes de salvar.
           </p>

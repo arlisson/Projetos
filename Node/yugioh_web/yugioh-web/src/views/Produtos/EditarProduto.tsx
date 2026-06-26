@@ -5,6 +5,7 @@ import { FormField } from '../../components/formField'
 import { FormSelect } from '../../components/formSelect'
 import { Button } from '../../components/botao'
 import { Grafico } from '../../components/grafico'
+import { PageHelpButton } from '../../components/PageHelpButton'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   buscarProdutoId,
@@ -351,7 +352,13 @@ export function EditarProduto() {
 
       <main className="form-page-content">
         <section className="form-page-left">
-          <h2 className="section-title">Editar {nome}</h2>
+          <h2 className="section-title section-title-with-help">
+            Editar {nome}
+            <PageHelpButton
+              configKey="produtos.editar"
+              fallbackTitle="Como editar um produto"
+            />
+          </h2>
           <p className="section-subtitle">
             Preencha os dados básicos do produto antes de salvar.
           </p>

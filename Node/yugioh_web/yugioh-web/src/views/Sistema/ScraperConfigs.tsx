@@ -3,6 +3,7 @@ import { Topbar } from '../../components/topBar'
 import { Footer } from '../../components/footer'
 import { Button } from '../../components/botao'
 import { Loading } from '../../components/Loading'
+import { PageHelpButton } from '../../components/PageHelpButton'
 import {
   getEffectiveScraperConfig,
   getScraperSites,
@@ -207,7 +208,13 @@ export function ScraperConfigs() {
         <section className="form-page-left" style={{ maxWidth: '100%' }}>
           <div className="section-header">
             <div>
-              <h2 className="section-title">Seletores de scraping</h2>
+              <h2 className="section-title section-title-with-help">
+                Seletores de scraping
+                <PageHelpButton
+                  configKey="gestao.scrapers"
+                  fallbackTitle="Como configurar scrapers"
+                />
+              </h2>
               <p className="section-subtitle">
                 Ajuste os seletores usados para extrair dados dos sites.
               </p>

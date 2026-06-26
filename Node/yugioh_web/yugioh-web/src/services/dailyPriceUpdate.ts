@@ -41,6 +41,31 @@ interface ControleAtualizacaoJson {
 
 const CONTROLE_DIR = 'controle'
 const CONTROLE_ARQUIVO = 'atualizacao_diaria.json'
+const MAX_TENTATIVAS_SCRAPING = 3
+const TEMPO_MAXIMO_POR_TENTATIVA_MS = 10_000
+const ESPERA_INICIAL_RETRY_MS = 1_000
+
+function aguardar(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+async function executarComTempoMaximo<T>(
+  operacao: Promise<T>,
+  tempoMaximoMs: number,
+): Promise<T | null> {
+  let timer: ReturnType<typeof setTimeout> | undefined
+
+  try {
+    return await Promise.race([
+      operacao,
+      new Promise<null>((resolve) => {
+        timer = setTimeout(() => resolve(null), tempoMaximoMs)
+      }),
+    ])
+  } finally {
+    if (timer) clearTimeout(timer)
+  }
+}
 
 let currentStatus: DailyUpdateStatus = {
   executando: false,
@@ -149,36 +174,35 @@ export async function jaAtualizadoHoje(): Promise<boolean> {
   return controle.ultima_atualizacao === todayStr()
 }
 
-function normalizarNumeroCarta(valor: string | number): number {
-  if (typeof valor === 'number') {
-    return Number.isFinite(valor) ? valor : 0
-  }
-
-  let texto = String(valor || '').trim()
-
-  if (!texto) return 0
-
-  texto = texto.replace(/\s+/g, '')
-
-  const temVirgula = texto.includes(',')
-  const temPonto = texto.includes('.')
-
-  if (temVirgula && temPonto) {
-    if (texto.lastIndexOf(',') > texto.lastIndexOf('.')) {
-      texto = texto.replace(/\./g, '').replace(',', '.')
-    } else {
-      texto = texto.replace(/,/g, '')
-    }
-  } else if (temVirgula) {
-    texto = texto.replace(',', '.')
-  }
-
-  const numero = Number(texto)
-  return Number.isFinite(numero) ? numero : 0
+function normalizarNumeroPreco(valor: string | number): number {
+  return parsePriceNumber(valor)
 }
 
-function normalizarNumeroProduto(valor: string | number): number {
-  return parsePriceNumber(valor)
+async function buscarPrecoCartaComTentativas(
+  link: string,
+  raridade?: string,
+): Promise<{ preco: number; valorBruto: string } | null> {
+  for (let tentativa = 1; tentativa <= MAX_TENTATIVAS_SCRAPING; tentativa++) {
+    const retorno = await executarComTempoMaximo(
+      buscarCartaMyp(link, raridade),
+      TEMPO_MAXIMO_POR_TENTATIVA_MS,
+    )
+    const ofertaValida = retorno?.find(
+      (item) => normalizarNumeroPreco(item.preco_atual) > 0,
+    )
+    const valorBruto = ofertaValida?.preco_atual
+    const preco = normalizarNumeroPreco(valorBruto ?? '')
+
+    if (preco > 0) return { preco, valorBruto: String(valorBruto) }
+
+    if (tentativa < MAX_TENTATIVAS_SCRAPING) {
+      // Só desacelera após uma resposta inválida (normalmente o desafio anti-bot).
+      await aguardar(ESPERA_INICIAL_RETRY_MS * tentativa)
+    }
+
+  }
+
+  return null
 }
 
 async function atualizarCartasEstoque(
@@ -209,14 +233,13 @@ async function atualizarCartasEstoque(
     }
 
     try {
-      const retorno = await buscarCartaMyp(
+      const resultado = await buscarPrecoCartaComTentativas(
         carta.link_site,
         carta.raridade_nome || undefined,
       )
-      const primeira = retorno?.[0]
 
-      if (primeira) {
-        const novoPreco = normalizarNumeroCarta(primeira.preco_atual)
+      if (resultado) {
+        const novoPreco = resultado.preco
         const precoAnterior = carta.preco_atual ?? null
 
         await atualizarPrecoCartaPorScraping(
@@ -231,6 +254,10 @@ async function atualizarCartasEstoque(
             `Preco alterado para carta ${carta.nome} - ${carta.codigo ?? ''}: de ${String(precoAnterior)} para ${String(novoPreco)}`,
           )
         }
+      } else {
+        await logError(
+          `Preco invalido ignorado para carta ${carta.id_carta} apos ${MAX_TENTATIVAS_SCRAPING} tentativas.`,
+        )
       }
     } catch (err) {
       await logError(`Erro ao atualizar carta ID ${carta.id_carta}: ${String(err)}`)
@@ -240,7 +267,6 @@ async function atualizarCartasEstoque(
       cartasAtualizadas: i + 1,
     })
 
-    await new Promise((resolve) => setTimeout(resolve, 30))
   }
 }
 
@@ -275,20 +301,26 @@ async function atualizarProdutosEstoque(
       const retorno = await buscarProdutoLiga(produto.link)
 
       if (retorno) {
-        const novoPreco = normalizarNumeroProduto(retorno.preco_atual)
+        const novoPreco = normalizarNumeroPreco(retorno.preco_atual)
         const precoAnterior = produto.preco_atual ?? null
 
-        await atualizarPrecoProdutoPorScraping(
-          produto.id_produto,
-          novoPreco,
-          todayStr(),
-          'Liga Yugioh',
-        )
-
-        if (precoAnterior !== novoPreco) {
-          await logInfo(
-            `Preco alterado para produto ${produto.nome_produto}: de ${String(precoAnterior)} para ${String(novoPreco)}`,
+        if (novoPreco <= 0) {
+          await logError(
+            `Preco invalido ignorado para produto ${produto.id_produto}: ${String(retorno.preco_atual)}`,
           )
+        } else {
+          await atualizarPrecoProdutoPorScraping(
+            produto.id_produto,
+            novoPreco,
+            todayStr(),
+            'Liga Yugioh',
+          )
+
+          if (precoAnterior !== novoPreco) {
+            await logInfo(
+              `Preco alterado para produto ${produto.nome_produto}: de ${String(precoAnterior)} para ${String(novoPreco)}`,
+            )
+          }
         }
       }
     } catch (err) {

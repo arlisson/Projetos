@@ -64,6 +64,15 @@ function asString(value: string | number | null | undefined): string {
   return value === null || value === undefined ? '' : String(value)
 }
 
+function normalizarRaridade(valor: string): string {
+  return String(valor || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, ' ')
+    .trim()
+}
+
 function setPage(url: string, page: number): string {
   const parsed = new URL(url)
   parsed.searchParams.set('page', String(page))
@@ -151,32 +160,39 @@ export async function buscarCartaMyp(
       codigoCarta = 'Desconhecido'
     }
 
-    const tabela = $('table.table.table-striped.table-bordered').first()
-    const textoTabela = tabela.text()
+    const tabelasPrecos = $(
+      [
+        '#lista-anuncio-lojistas-certificados table',
+        '#lista-anuncio-demais-vendedores table',
+        'table.table.table-striped.table-bordered',
+      ].join(', '),
+    )
 
-    if (
-      tabela.length &&
-      !textoTabela.includes('Nenhum resultado foi encontrado.')
-    ) {
-      tabela.find('tr').each((_, tr) => {
-        const cols = $(tr).find('td').toArray()
-        const valores = cols.map((td) => $(td).text().trim())
+    if (tabelasPrecos.length) {
+      tabelasPrecos.each((_, tabela) => {
+        const textoTabela = $(tabela).text()
+        if (textoTabela.includes('Nenhum resultado foi encontrado.')) return
 
-        if (valores.length >= 5) {
-          const raridade = valores[1].split(',')[0]
-          const preco = valores[4]
+        $(tabela).find('tr').each((_, tr) => {
+          const cols = $(tr).find('td').toArray()
+          const valores = cols.map((td) => $(td).text().trim())
 
-          dados.push({
-            imagem: imagem || IMAGEM_PADRAO,
-            nome,
-            raridade,
-            preco_atual: normalizarPreco(preco || precoMinimo),
-            codigo: codigoCarta.replace(/_/g, '-'),
-            colecao: colecaoCarta,
-            origem: 'MyPCards',
-            link_site: url,
-          })
-        }
+          if (valores.length >= 5) {
+            const raridade = valores[1].split(',')[0]
+            const preco = valores[4]
+
+            dados.push({
+              imagem: imagem || IMAGEM_PADRAO,
+              nome,
+              raridade,
+              preco_atual: normalizarPreco(preco || precoMinimo),
+              codigo: codigoCarta.replace(/_/g, '-'),
+              colecao: colecaoCarta,
+              origem: 'MyPCards',
+              link_site: url,
+            })
+          }
+        })
       })
     } else {
       dados.push({
@@ -196,21 +212,24 @@ export async function buscarCartaMyp(
     )
 
     if (chave) {
-      const chaveLower = chave.toLowerCase()
+      const chaveNormalizada = normalizarRaridade(chave)
 
       if (dados.length === 1) {
         return [dados[0]]
       }
 
       const filtradas = dados.filter((item) =>
-        item.raridade.toLowerCase().includes(chaveLower),
+        normalizarRaridade(item.raridade).includes(chaveNormalizada),
       )
 
       if (filtradas.length > 0) {
         return filtradas
       }
 
-      return dados.length > 0 ? [dados[0]] : []
+      await logError(
+        `Raridade nao encontrada no scraping: solicitada=${chave}; disponiveis=${dados.map((item) => item.raridade).join(', ')}`,
+      )
+      return []
     }
 
     return dados.length > 0 ? [dados[0]] : []

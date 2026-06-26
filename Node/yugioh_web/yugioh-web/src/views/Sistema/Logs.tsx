@@ -4,6 +4,7 @@ import { Footer } from '../../components/footer'
 import { FormField } from '../../components/formField'
 import { Button } from '../../components/botao'
 import { Loading } from '../../components/Loading'
+import { PageHelpButton } from '../../components/PageHelpButton'
 import { listarLogs, limparLogs, type LogItem } from '../../services/logger'
 
 function formatarDataHora(valor: string) {
@@ -95,7 +96,13 @@ export function Logs() {
 
       <main className="form-page-content">
         <section className="form-page-left" style={{ maxWidth: '100%' }}>
-          <h2 className="section-title">Visualização de logs</h2>
+          <h2 className="section-title section-title-with-help">
+            Visualização de logs
+            <PageHelpButton
+              configKey="gestao.logs"
+              fallbackTitle="Como consultar logs"
+            />
+          </h2>
           <p className="section-subtitle">
             Consulte os registros do sistema, filtre por texto e apague o
             histórico quando necessário.

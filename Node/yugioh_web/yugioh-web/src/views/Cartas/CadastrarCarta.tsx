@@ -4,6 +4,7 @@ import { Footer } from '../../components/footer'
 import { FormField } from '../../components/formField'
 import { FormSelect } from '../../components/formSelect'
 import { Button } from '../../components/botao'
+import { PageHelpButton } from '../../components/PageHelpButton'
 import {
   listarRaridadeQualidade,
   listarColecoes,
@@ -384,7 +385,13 @@ export function CadastrarCarta() {
 
       <main className="form-page-content">
         <section className="form-page-left">
-          <h2 className="section-title">Cadastrar nova carta</h2>
+          <h2 className="section-title section-title-with-help">
+            Cadastrar nova carta
+            <PageHelpButton
+              configKey="cartas.cadastrar"
+              fallbackTitle="Como cadastrar uma carta"
+            />
+          </h2>
           <p className="section-subtitle">
             Preencha os dados básicos da carta antes de salvar.
           </p>
